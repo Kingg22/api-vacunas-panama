@@ -83,6 +83,16 @@ public class VacunaService {
         return dosisDto;
     }
 
+    public DosisDto getDosisById(UUID idDosis) {
+        return dosisMapper.toDto(dosisRepository.findById(idDosis).orElseThrow());
+    }
+
+    public List<DosisDto> getDosisByPacienteId(UUID idPaciente) {
+        return pacientesDosisRepository.findAllByPaciente_Id(idPaciente).stream()
+                .map(pacientesDosis -> dosisMapper.toDto(pacientesDosis.getDosis()))
+                .toList();
+    }
+
     Paciente validatePacienteExist(UUID pacienteId) {
         return this.pacienteService.getPacienteById(pacienteId).orElseThrow(() -> new NoSuchElementException("Paciente no encontrado"));
     }

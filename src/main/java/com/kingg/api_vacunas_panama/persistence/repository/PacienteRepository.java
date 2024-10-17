@@ -16,6 +16,9 @@ public interface PacienteRepository extends JpaRepository<Paciente, UUID> {
     @Query(name = "Paciente.getVacunaEnfermedades", nativeQuery = true)
     List<ViewPacienteVacunaEnfermedadDto> findAllFromViewVacunaEnfermedad(@Param("id") UUID id);
 
+    @Query(name = "Paciente.getVacunaPaciente", nativeQuery = true)
+    List<ViewPacienteVacunaEnfermedadDto> findAllFromViewVacunaEnfermedad(@Param("id") UUID id, @Param("vacuna") UUID vacuna);
+
     @Query("SELECT p " +
             "FROM Paciente p " +
             "WHERE (:cedula IS NOT NULL OR :pasaporte IS NOT NULL OR :idTemporal IS NOT NULL OR :correo IS NOT NULL OR :username IS NOT NULL) AND" +

@@ -44,6 +44,25 @@ import java.util.UUID;
                 "ORDER BY fecha_aplicacion DESC",
         resultSetMapping = "view_paciente_vacuna_enfermedad"
 )
+@NamedNativeQuery(name = "Paciente.getVacunaPaciente",
+        query = "SELECT " +
+                "[Nombre Vacuna] AS nombre_vacuna," +
+                "[Número de dosis] AS numero_dosis, " +
+                "[Enfermedades Prevenidas] AS enfermedades_prevenidas, " +
+                "[Edad Mínima Recomendada en Meses] AS edad_minima," +
+                "[Fecha de Aplicación] AS fecha_aplicacion," +
+                "[Intervalo Recomendado entre Dosis 1 y 2 en Meses] AS intervalo_recomendado," +
+                "[Intervalo Real en Días] AS intervalo_real," +
+                "Sede AS nombre_sede," +
+                "Dependencia AS dependencia_sede," +
+                "id," +
+                "id_vacuna," +
+                "ids_enfermedades " +
+                "FROM view_pacientes_vacunas_enfermedades " +
+                "WHERE id = :id AND id_vacuna = :vacuna " +
+                "ORDER BY fecha_aplicacion DESC",
+        resultSetMapping = "view_paciente_vacuna_enfermedad"
+)
 @SqlResultSetMapping(name = "view_paciente_vacuna_enfermedad", classes = @ConstructorResult(
         targetClass = ViewPacienteVacunaEnfermedadDto.class,
         columns = {

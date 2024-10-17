@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/vacunacion/v1/account/restore/**").permitAll()
                         .requestMatchers("/vacunacion/v1/public/**").permitAll()
                         .requestMatchers("/vacunacion/v1/bulk/**").permitAll()
+                        .requestMatchers("/vacunacion/v1/pdf/**").permitAll()
                         .requestMatchers("/vacunacion/v1/patient/**").hasAnyAuthority("PACIENTE_READ")
                         .requestMatchers("/vacunacion/v1/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
                         .anyRequest().authenticated()

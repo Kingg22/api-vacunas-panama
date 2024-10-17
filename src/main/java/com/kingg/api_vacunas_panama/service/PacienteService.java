@@ -99,12 +99,21 @@ public class PacienteService {
         return this.pacienteRepository.findByUsuario_Id(idUser);
     }
 
-    Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
+    public Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
         return this.pacienteRepository.findById(idPaciente);
     }
 
     public PacienteDto getPacienteDtoById(@NotNull UUID idPaciente) {
         return mapper.toDto(this.getPacienteById(idPaciente).orElseThrow());
+    }
+
+    public List<ViewPacienteVacunaEnfermedadDto> getVacunaPaciente(UUID idPaciente, UUID idVacuna) {
+        List<ViewPacienteVacunaEnfermedadDto> view = this.pacienteRepository.findAllFromViewVacunaEnfermedad(idPaciente, idVacuna);
+        if (view.isEmpty()) {
+            return List.of();
+        } else {
+            return view;
+        }
     }
 
 }
