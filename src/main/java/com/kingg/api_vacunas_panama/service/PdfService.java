@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Service
 public class PdfService {
-    public ByteArrayInputStream generatePdf(String nombre) throws IOException {
+    public ByteArrayInputStream generatePdf(String nombreCompleto, String fechaNacimiento, String identificadorCertificado, String dosis, String vacuna) throws IOException {
         String template = """
                 <!DOCTYPE html>
                 <html lang="es">
@@ -85,15 +85,15 @@ public class PdfService {
                     <div class="container">
                         <header>
                             <div class="header-left">
-                                <img src="https://via.placeholder.com/150x50" alt="Logo Panama Digital">
+                                
                                 <p>PANAMA DIGITAL COVID CERTIFICATE<br>
                                     CERTIFICADO COVID DIGITAL DE PANAMÁ</p>
                                 <p><strong>Esquema completo de vacunación</strong><br>
                                     Complete vaccination scheme</p>
                             </div>
                             <div class="header-right">
-                                <img src="https://via.placeholder.com/50x30" alt="Logo Panama">
-                                <img src="https://via.placeholder.com/50x30" alt="Logo EU">
+                               
+                              
                                 <p><strong>República de Panamá</strong><br>
                                     AUTORIDAD NACIONAL PARA LA INNOVACIÓN GUBERNAMENTAL (AIG)</p>
                             </div>
@@ -101,22 +101,22 @@ public class PdfService {
                                
                         <section class="main">
                             <div class="personal-info">
-                                <p><strong>Apellidos y nombre:</strong> Rey Alberto Acosta Muñoz</p>
-                                <p><strong>Fecha de nacimiento:</strong> 2005-07-22</p>
+                                <p><strong>Apellidos y nombre:</strong> [NOMBRE]</p>
+                                <p><strong>Fecha de nacimiento:</strong> [FECHA_NACIMIENTO]</p>
                             </div>
                             <div class="qr-code">
-                                <img src="https://via.placeholder.com/150" alt="QR Code">
+                                //imagen
                             </div>
                         </section>
                                
                         <section class="vaccination-details">
                             <h3>Datos de la vacunación / Vaccination details</h3>
-                            <p><strong>Identificador del certificado:</strong> 1a37bb2f-fe00-46b0-856a-cca0834d642d</p>
+                            <p><strong>Identificador del certificado:</strong> [IDENTIFICADOR]</p>
                             <p><strong>Emisor del certificado:</strong> AUTORIDAD NACIONAL PARA LA INNOVACIÓN GUBERNAMENTAL (AIG)</p>
                             <p><strong>Enfermedad que se previene:</strong> COVID-19</p>
                             <p><strong>Tipo de vacuna:</strong> SARS-CoV-2 vacuna antígeno</p>
-                            <p><strong>Número de dosis:</strong> 3/3</p>
-                            <p><strong>Vacuna administrada:</strong> PFIZER</p>
+                            <p><strong>Número de dosis:</strong> [DOSIS]</p>
+                            <p><strong>Vacuna administrada:</strong> [VACUNA]</p>
                             <p><strong>Fecha de vacunación:</strong> 2022-01-25</p>
                             <p><strong>Estado miembro de vacunación:</strong> PANAMÁ</p>
                         </section>
@@ -126,7 +126,7 @@ public class PdfService {
                 </html>
                 """;
 
-        template.replace("[NOMBRE]", nombre);
+        template.replace("[NOMBRE]", nombreCompleto);
         try(ByteArrayOutputStream fos = new ByteArrayOutputStream()) {
             HtmlConverter.convertToPdf(template, fos);
 

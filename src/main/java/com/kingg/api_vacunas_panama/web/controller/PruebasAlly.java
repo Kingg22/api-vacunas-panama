@@ -13,6 +13,7 @@ import com.kingg.api_vacunas_panama.web.dto.PdfDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Base64;
 import java.util.List;
@@ -39,29 +42,39 @@ public class PruebasAlly {
 
     // endpoint completo = http://localhost:8080/vacunacion/v1/pdf?idVacuna=....
     @GetMapping
-    public ResponseEntity<ByteArrayResource> getPdfFile(@RequestParam("idVacuna") UUID idVacuna) {
+    public ResponseEntity<InputStreamResource> getPdfFile(@RequestParam("idVacuna") UUID idVacuna) {
         try {
             // datos de PRUEBAS id Paciente = 4E40CB68-E567-4EBC-9669-75FAB2FDF933 (pasaporte MN876543C Tomas Gonzales)
             // idVacuna = 7123E92C-EF0B-4001-8004-83578F932B4A (Hep A adultos)
             // para cambiar buscar en la base de datos docker los nuevos id
             // Todos estos pasos son de pruebas, yo me encargo de hacerlo funcionar después que el PDF se crea bien
+            String nombreCompleto = "Hola";
+            String fechaNacimiento = "Hola";
+            String identificadorCertificado = "Hola";
+            String dosis = "Hola";
+            String vacuna = "Hola";
             List<DosisDto> dosisDtos = vacunaService.getDosisByPacienteId(UUID.fromString("4E40CB68-E567-4EBC-9669-75FAB2FDF933"));
             Paciente pDetalle = pacienteService.getPacienteById(UUID.fromString("4E40CB68-E567-4EBC-9669-75FAB2FDF933")).orElseThrow();
             String identificacion = pDetalle.getCedula() != null ? pDetalle.getCedula() : pDetalle.getPasaporte();
             PdfDto pdfDto = new PdfDto(pDetalle.getNombre().concat(pDetalle.getNombre2()), pDetalle.getApellido1().concat(pDetalle.getNombre2()), identificacion, pDetalle.getId(), dosisDtos);
             // utilizando el dto anterior haces el pdf
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ByteArrayResource byteArrayResource = new ByteArrayResource(outputStream.toByteArray());
+            ByteArrayInputStream pdfStream = pdfService.generatePdf(nombreCompleto, fechaNacimiento, identificadorCertificado, dosis, vacuna);
+
+            //ByteArrayResource byteArrayResource = new ByteArrayResource(pdfStream.readAllBytes());
             // Generar el PDF y devolverlo como archivo
             // al pdf anterior se le coloca un id para identificarlo (luego YO REY lo guardo en cache)
             UUID idCertificado = UUID.randomUUID();
+            //         Configurar los encabezados HTTP para enviar el archivo
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vacuna_".concat(idCertificado.toString()).concat(".pdf"));
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+
+            // Retornar el archivo como respuesta
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vacuna_".concat(idCertificado.toString()).concat(".pdf"))
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .contentLength(byteArrayResource.contentLength())
-                    .body(byteArrayResource);
-        } catch (RuntimeException runtimeException) {
-            log.error(runtimeException.getMessage(), runtimeException);
+                    .headers(headers)
+                    .body(new InputStreamResource(pdfStream));
+        } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
