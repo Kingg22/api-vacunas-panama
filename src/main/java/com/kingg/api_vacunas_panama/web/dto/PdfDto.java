@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +20,8 @@ public record PdfDto(
         String apellidos,
         @NotNull @NotBlank
         String identificacion,
+        @NotNull @PastOrPresent
+        LocalDate fechaNacimiento,
         @NotNull
         UUID id,
         @NotNull @NotEmpty

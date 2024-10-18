@@ -1,136 +1,130 @@
 package com.kingg.api_vacunas_panama.service;
 
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.kingg.api_vacunas_panama.web.dto.DosisDto;
+import com.kingg.api_vacunas_panama.web.dto.PdfDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.Base64;
 
 @Service
 public class PdfService {
-    public ByteArrayInputStream generatePdf(String nombreCompleto, String fechaNacimiento, String identificadorCertificado, String dosis, String vacuna) throws IOException {
+
+    /**
+     * Generate a PDF as a byte array
+     */
+    public byte[] generatePdf(PdfDto pdfDto) {
+        String template = generateHtmlTemplate(pdfDto);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        HtmlConverter.convertToPdf(template, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public String generatePdfBase64(PdfDto pdfDto) {
+        return Base64.getEncoder().encodeToString(generatePdf(pdfDto));
+    }
+
+    private String generateHtmlTemplate(@NotNull PdfDto pdfDto) {
+        StringBuilder dosisRows = new StringBuilder();
         String template = """
                 <!DOCTYPE html>
                 <html lang="es">
-                               
                 <head>
+                    <title>Certificado Vacunas Panama</title>
                     <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Certificado de Vacunación</title>
-                               
                     <style>
                         body {
                             font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 0;
                         }
-                               
-                        .container {
-                            width: 800px;
-                            margin: 20px auto;
-                            border: 1px solid #ccc;
-                            padding: 20px;
+                
+                        .title {
+                            font-size: 14px;
+                            font-weight: bold;
                         }
-                               
-                        header {
-                            display: flex;
-                            justify-content: space-between;
+                
+                        .subtitle {
+                            font-size: 12px;
+                            font-weight: bold;
                         }
-                               
-                        .header-left {
-                            width: 60%;
+                
+                        .section {
+                            margin-bottom: 10px;
                         }
-                               
-                        .header-right {
-                            text-align: right;
-                        }
-                               
-                        .header-right img {
-                            margin-left: 10px;
-                        }
-                               
-                        .main {
-                            display: flex;
-                            justify-content: space-between;
-                            margin-top: 20px;
-                        }
-                               
-                        .personal-info {
-                            width: 60%;
-                        }
-                               
-                        .qr-code img {
-                            width: 150px;
-                            height: 150px;
-                        }
-                               
+                
                         .vaccination-details {
-                            margin-top: 20px;
+                            font-size: 12px;
                         }
-                               
-                        .vaccination-details h3 {
-                            border-bottom: 1px solid #ccc;
-                            padding-bottom: 5px;
+                
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
                         }
-                               
-                        .vaccination-details p {
-                            margin: 5px 0;
+                
+                        table, th, td {
+                            border: 1px solid black;
+                        }
+                
+                        th, td {
+                            padding: 8px;
+                            text-align: left;
                         }
                     </style>
-                               
                 </head>
-                               
                 <body>
-                    <div class="container">
-                        <header>
-                            <div class="header-left">
-                                
-                                <p>PANAMA DIGITAL COVID CERTIFICATE<br>
-                                    CERTIFICADO COVID DIGITAL DE PANAMÁ</p>
-                                <p><strong>Esquema completo de vacunación</strong><br>
-                                    Complete vaccination scheme</p>
-                            </div>
-                            <div class="header-right">
-                               
-                              
-                                <p><strong>República de Panamá</strong><br>
-                                    AUTORIDAD NACIONAL PARA LA INNOVACIÓN GUBERNAMENTAL (AIG)</p>
-                            </div>
-                        </header>
-                               
-                        <section class="main">
-                            <div class="personal-info">
-                                <p><strong>Apellidos y nombre:</strong> [NOMBRE]</p>
-                                <p><strong>Fecha de nacimiento:</strong> [FECHA_NACIMIENTO]</p>
-                            </div>
-                            <div class="qr-code">
-                                //imagen
-                            </div>
-                        </section>
-                               
-                        <section class="vaccination-details">
-                            <h3>Datos de la vacunación / Vaccination details</h3>
-                            <p><strong>Identificador del certificado:</strong> [IDENTIFICADOR]</p>
-                            <p><strong>Emisor del certificado:</strong> AUTORIDAD NACIONAL PARA LA INNOVACIÓN GUBERNAMENTAL (AIG)</p>
-                            <p><strong>Enfermedad que se previene:</strong> COVID-19</p>
-                            <p><strong>Tipo de vacuna:</strong> SARS-CoV-2 vacuna antígeno</p>
-                            <p><strong>Número de dosis:</strong> [DOSIS]</p>
-                            <p><strong>Vacuna administrada:</strong> [VACUNA]</p>
-                            <p><strong>Fecha de vacunación:</strong> 2022-01-25</p>
-                            <p><strong>Estado miembro de vacunación:</strong> PANAMÁ</p>
-                        </section>
-                    </div>
+                <div class="section">
+                    <div class="title">PANAMA DIGITAL VACCINES CERTIFICATE</div>
+                    <div class="title">CERTIFICADO DIGITAL DE VACUNAS PANAMÁ</div>
+                    <p>Esquema completo de vacunación</p>
+                    <p>Complete vaccination scheme</p>
+                </div>
+                
+                <div class="section">
+                    <div class="subtitle">Apellidos y nombre:</div>
+                    <span>{{apellidos}}, {{nombres}}</span><br/>
+                    <div class="subtitle">Fecha de nacimiento:</div>
+                    <span>{{fecha_nacimiento}}</span>
+                </div>
+                
+                <div class="section">
+                    <div class="subtitle">Datos de la vacunación / Vaccination details</div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Número de dosis</th>
+                            <th>Nombre de vacuna</th>
+                            <th>Fabricante</th>
+                            <th>Fecha de vacunación</th>
+                            <th>Sede de vacunación</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{dosis}}
+                        </tbody>
+                    </table>
+                </div>
                 </body>
-                               
                 </html>
                 """;
+        template = template.replace("{{nombres}}", pdfDto.nombres())
+                .replace("{{apellidos}}", pdfDto.apellidos())
+                .replace("{{fecha_nacimiento}}", pdfDto.fechaNacimiento().toString());
 
-        template.replace("[NOMBRE]", nombreCompleto);
-        try(ByteArrayOutputStream fos = new ByteArrayOutputStream()) {
-            HtmlConverter.convertToPdf(template, fos);
-
-            return new ByteArrayInputStream(fos.toByteArray());
+        // Se agrega de forma dinámica todas las dosis encontradas a la tabla
+        for (DosisDto dosisDto : pdfDto.dosis()) {
+            dosisRows.append("<tr>")
+                    .append("<td>").append(dosisDto.numeroDosis()).append("</td>")
+                    .append("<td>").append(dosisDto.vacuna().nombre()).append("</td>")
+                    .append("<td>").append(dosisDto.vacuna().fabricantes().isEmpty() ? "N/A" : dosisDto.vacuna().fabricantes().iterator().next().getNombre()).append("</td>")
+                    .append("<td>").append(dosisDto.fechaAplicacion()).append("</td>")
+                    .append("<td>").append(dosisDto.sede().getNombre()).append("</td>")
+                    .append("</tr>");
         }
+
+        template = template.replace("{{dosis}}", dosisRows.toString());
+        return template;
     }
+
 }
