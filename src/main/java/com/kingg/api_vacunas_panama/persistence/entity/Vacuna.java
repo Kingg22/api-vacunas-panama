@@ -34,11 +34,11 @@ public class Vacuna {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "edad_minima_meses")
-    private Short edadMinimaMeses;
+    @Column(name = "edad_minima_dias")
+    private Integer edadMinimaDias;
 
-    @Column(name = "intervalo_dosis_1_2_meses")
-    private Float intervaloDosisMeses;
+    @Column(name = "intervalo_dosis_1_2_dias")
+    private Integer intervaloDosisDias;
 
     @Column(name = "dosis_maxima", columnDefinition = "CHAR(2)")
     private NumDosisEnum dosisMaxima;
@@ -58,11 +58,5 @@ public class Vacuna {
 
     @OneToMany(mappedBy = "vacuna")
     private Set<SedesInventario> sedesInventarios = new LinkedHashSet<>();
-
-    public Vacuna(String nombre, Short edadMinimaMeses, Float intervaloDosisMeses) {
-        this.nombre = nombre;
-        this.edadMinimaMeses = edadMinimaMeses;
-        this.intervaloDosisMeses = intervaloDosisMeses;
-    }
 
 }

@@ -9,8 +9,6 @@ import org.hibernate.annotations.Nationalized;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -25,6 +23,10 @@ public class Dosis {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paciente")
+    private Paciente paciente;
 
     @NotNull
     @Column(name = "fecha_aplicacion", nullable = false)
@@ -59,8 +61,5 @@ public class Dosis {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "dosis")
-    private Set<PacientesDosis> pacientesDosis = new LinkedHashSet<>();
 
 }

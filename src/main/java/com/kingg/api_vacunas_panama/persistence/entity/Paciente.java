@@ -75,6 +75,6 @@ public class Paciente extends Persona {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "paciente")
-    private Set<PacientesDosis> dosis = new LinkedHashSet<>();
+    private Set<Dosis> dosis = new LinkedHashSet<>();
 
 }

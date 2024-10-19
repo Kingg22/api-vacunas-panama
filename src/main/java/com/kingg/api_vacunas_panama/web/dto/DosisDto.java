@@ -15,6 +15,7 @@ import java.util.UUID;
  * DTO for {@link com.kingg.api_vacunas_panama.persistence.entity.Dosis}
  */
 public record DosisDto(@NotNull UUID id,
+                       @NotNull @Valid PacienteDto paciente,
                        @NotNull @JsonProperty(value = "fecha_aplicacion") LocalDateTime fechaAplicacion,
                        @NotNull @JsonProperty(value = "numero_dosis") NumDosisEnum numeroDosis,
                        @NotNull @Valid VacunaDto vacuna,

@@ -20,10 +20,10 @@ import java.util.UUID;
 public record VacunaDto(UUID id,
                         @NotNull @Size(max = 100)
                         @NotBlank String nombre,
-                        @JsonProperty(value = "edad_minima_meses")
-                        Short edadMinimaMeses,
-                        @JsonProperty(value = "intervalo_dosis_meses")
-                        Float intervaloDosisMeses,
+                        @JsonProperty(value = "edad_minima_dias")
+                        Short edadMinimaDias,
+                        @JsonProperty(value = "intervalo_dosis_dias")
+                        Float intervaloDosisDias,
                         @JsonProperty(value = "dosis_maxima")
                         NumDosisEnum dosisMaxima,
                         @PastOrPresent @JsonProperty(value = "created_at") LocalDateTime createdAt,

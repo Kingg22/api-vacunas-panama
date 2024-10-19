@@ -1314,19 +1314,7 @@ BEGIN
                   AND lote LIKE @lote;
             END
 
-        -- Validar dosis previas del paciente
-
-        -- Verifica si la dosis vacuna - numero de dosis ya existe
-        IF EXISTS (SELECT 1
-                   FROM  dosis
-                   WHERE paciente = @id_paciente
-                     AND vacuna = @id_vacuna
-                     AND numero_dosis LIKE @numero_dosis)
-            BEGIN
-                RAISERROR (N'La dosis para el paciente en esa vacuna y número de dosis ya existe. Elimine o corregir la dosis', 16, 1);
-            END
-
-        -- Validar dosis anteriores
+        -- Validar dosis previas del paciente en secuencia esperada
         IF @numero_dosis = 'P' AND EXISTS (SELECT 1
                                            FROM dosis
                                            WHERE paciente = @id_paciente

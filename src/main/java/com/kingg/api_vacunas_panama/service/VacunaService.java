@@ -3,7 +3,6 @@ package com.kingg.api_vacunas_panama.service;
 import com.kingg.api_vacunas_panama.configuration.RabbitMQConfiguration;
 import com.kingg.api_vacunas_panama.persistence.entity.*;
 import com.kingg.api_vacunas_panama.persistence.repository.DosisRepository;
-import com.kingg.api_vacunas_panama.persistence.repository.PacientesDosisRepository;
 import com.kingg.api_vacunas_panama.persistence.repository.VacunaRepository;
 import com.kingg.api_vacunas_panama.util.mapper.DosisMapper;
 import com.kingg.api_vacunas_panama.web.dto.DosisDto;
@@ -24,7 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
- * Service for {@link Vacuna}, {@link Dosis} and {@link PacientesDosis}.
+ * Service for {@link Vacuna} and {@link Dosis}
  */
 @Slf4j
 @Service
@@ -34,7 +33,6 @@ public class VacunaService {
     private final DosisMapper dosisMapper;
     private final VacunaRepository vacunaRepository;
     private final DosisRepository dosisRepository;
-    private final PacientesDosisRepository pacientesDosisRepository;
     private final PacienteService pacienteService;
     private final SedeService sedeService;
     private final DoctorService doctorService;
@@ -54,21 +52,18 @@ public class VacunaService {
         log.debug("Paciente ID: {}", paciente.getId());
         log.debug("Vacuna ID: {}", vacuna.getId());
         log.debug("Sede ID: {}", sede.getId());
-        this.pacientesDosisRepository.findTopByPacienteAndDosis_VacunaOrderByCreatedAtDesc(paciente, vacuna).ifPresent(
+        this.dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente, vacuna).ifPresentOrElse(
                 ultimaDosis -> {
-                    if (ultimaDosis.getDosis() != null) {
-                        log.debug("Dosis encontrada ID: {}", ultimaDosis.getDosis().getId());
-                        if (!ultimaDosis.getDosis().getNumeroDosis().isValidNew(insertDosisDto.numeroDosis())) {
+                        log.debug("Dosis encontrada ID: {}", ultimaDosis.getId());
+                        if (!ultimaDosis.getNumeroDosis().isValidNew(insertDosisDto.numeroDosis())) {
                             throw new IllegalArgumentException("La dosis ".concat(insertDosisDto.numeroDosis().toString()).concat(" no es válida. ")
-                                    .concat("Último número de dosis ".concat(ultimaDosis.getDosis().getNumeroDosis().toString())));
+                                    .concat("Último número de dosis ".concat(ultimaDosis.getNumeroDosis().toString())));
                         }
                         log.debug("Nueva dosis cumple las reglas de secuencia en número de dosis");
-                    } else {
-                        log.debug("El paciente no tiene dosis previa de la vacuna a aplicar");
-                    }
-                });
+                }, () -> log.debug("El paciente no tiene dosis previas"));
 
         Dosis dosis = Dosis.builder()
+                .paciente(paciente)
                 .fechaAplicacion(insertDosisDto.fechaAplicacion() != null ? insertDosisDto.fechaAplicacion() : LocalDateTime.now(ZoneOffset.UTC))
                 .numeroDosis(insertDosisDto.numeroDosis())
                 .vacuna(vacuna)
@@ -80,18 +75,6 @@ public class VacunaService {
         dosis = dosisRepository.save(dosis);
         dosis = dosisRepository.findById(dosis.getId()).orElseThrow();
         log.debug("Nueva dosis. ID: {}", dosis.getId());
-
-        // TODO corregir persistencia de pk compuesta
-        PacientesDosisId pacientesDosisId = new PacientesDosisId();
-        pacientesDosisId.setIdDosis(dosis.getId());
-        pacientesDosisId.setIdPaciente(paciente.getId());
-
-        PacientesDosis pacientesDosis = new PacientesDosis();
-        pacientesDosis.setId(pacientesDosisId);
-        pacientesDosis.setPaciente(paciente);
-        pacientesDosis.setDosis(dosis);
-        pacientesDosis.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        pacientesDosisRepository.save(pacientesDosis);
 
         DosisDto dosisDto = dosisMapper.toDto(dosis);
 

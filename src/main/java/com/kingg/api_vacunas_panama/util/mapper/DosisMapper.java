@@ -3,7 +3,6 @@ package com.kingg.api_vacunas_panama.util.mapper;
 import com.kingg.api_vacunas_panama.persistence.entity.Dosis;
 import com.kingg.api_vacunas_panama.web.dto.DosisDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValueCheckStrategy;
 
@@ -13,7 +12,6 @@ public interface DosisMapper {
 
     DosisDto toDto(Dosis dosis);
 
-    @Mapping(target = "pacientesDosis", ignore = true)
     Dosis toEntity(DosisDto dosisDto);
 
 }
