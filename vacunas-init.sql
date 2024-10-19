@@ -34,19 +34,37 @@ IF NOT EXISTS (SELECT *
             WITH PASSWORD = '',
             DEFAULT_DATABASE = vacunas
     END
-GO
-PRINT (N'Creando el user');
-GO
--- crear usuario de la base de datos y darle permisos
+ELSE
+BEGIN
+    PRINT ('El usuario ya existe');
+END
+-- crear usuario de la base de datos
 -- COLOCAR EL MISMO LOGIN_NAME DE ARRIBA
-CREATE USER SpringAPI FOR LOGIN LOGIN_NAME
-GO
-PRINT (N'Otorgando permisos al user');
-GO
-EXEC sp_addrolemember 'db_datareader', 'SpringApi'
-EXEC sp_addrolemember 'db_datawriter', 'SpringApi'
-GRANT EXECUTE ON SCHEMA::dbo TO SpringAPI
--- dependiendo la aplicación se le puede asignar más o menos permisos**
+PRINT (N'Creando el usuario');
+BEGIN TRY
+    CREATE USER SpringAPI FOR LOGIN LOGIN_NAME;
+END TRY
+BEGIN CATCH
+    PRINT ('Error al crear el usuario. Detalles del error: ' + ERROR_MESSAGE());
+END CATCH;
+-- Verificar si el usuario existe antes de asignar permisos
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'SpringAPI')
+BEGIN
+    BEGIN TRY
+        PRINT (N'Otorgando permisos al user');
+        EXEC sp_addrolemember 'db_datareader', 'SpringApi';
+        EXEC sp_addrolemember 'db_datawriter', 'SpringApi';
+        GRANT EXECUTE ON SCHEMA::dbo TO SpringAPI;
+        -- dependiendo la aplicación se le puede asignar más o menos permisos**
+    END TRY
+    BEGIN CATCH
+        PRINT ('Error al otorgar permisos. Detalles del error: ' + ERROR_MESSAGE());
+    END CATCH;
+END
+ELSE
+BEGIN
+    PRINT ('El usuario SpringAPI no existe, no se pueden otorgar permisos.');
+END
 GO
 
 PRINT (N'Creando tablas');
@@ -412,8 +430,8 @@ CREATE TABLE vacunas
         CONSTRAINT df_vacunas_id DEFAULT NEWID(),
     nombre                    NVARCHAR(100) NOT NULL,
     --fabricante UNIQUEIDENTIFIER NOT NULL,
-    edad_minima_dias         SMALLINT,
-    intervalo_dosis_1_2_dias FLOAT,
+    edad_minima_dias          INT,
+    intervalo_dosis_1_2_dias  INT,
     dosis_maxima              CHAR(2),
     created_at                DATETIME      NOT NULL
         CONSTRAINT df_vacunas_created DEFAULT CURRENT_TIMESTAMP,
