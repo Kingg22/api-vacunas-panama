@@ -402,26 +402,34 @@ CREATE TABLE doctores
     CONSTRAINT fk_doctores_sedes FOREIGN KEY (sede) REFERENCES sedes (id),
     INDEX ix_doctores_idoneidad (idoneidad)
 );
+GO
 
+-- TODO crear tabla intermedia dosis_intervalos
+-- TODO eliminar la relación vacuna fabricante a una vacuna por fabricante
 CREATE TABLE vacunas
 (
     id                        UNIQUEIDENTIFIER PRIMARY KEY
         CONSTRAINT df_vacunas_id DEFAULT NEWID(),
     nombre                    NVARCHAR(100) NOT NULL,
-    edad_minima_meses         SMALLINT,
-    intervalo_dosis_1_2_meses FLOAT,
+    --fabricante UNIQUEIDENTIFIER NOT NULL,
+    edad_minima_dias         SMALLINT,
+    intervalo_dosis_1_2_dias FLOAT,
     dosis_maxima              CHAR(2),
     created_at                DATETIME      NOT NULL
         CONSTRAINT df_vacunas_created DEFAULT CURRENT_TIMESTAMP,
     updated_at                DATETIME,
-    CONSTRAINT ck_vacunas_edad_minima CHECK (edad_minima_meses >= 0),
+    CONSTRAINT ck_vacunas_dosis_maxima CHECK (dosis_maxima IN ('1', '2', '3', 'R', 'R1', 'R2', 'P')),
+    CONSTRAINT ck_vacunas_edad_minima CHECK (edad_minima_dias >= 0),
+    --CONSTRAINT fk_vacunas_fabricantes FOREIGN KEY (fabricante) REFERENCES fabricantes (id) ON UPDATE CASCADE,
     INDEX ix_vacunas_nombre (nombre)
 );
 GO
+
 CREATE TABLE dosis
 (
     id               UNIQUEIDENTIFIER PRIMARY KEY
         CONSTRAINT df_dosis_id DEFAULT NEWID(),
+    paciente UNIQUEIDENTIFIER NOT NULL,
     fecha_aplicacion DATETIME         NOT NULL
         CONSTRAINT df_dosis_aplicacion DEFAULT CURRENT_TIMESTAMP,
     numero_dosis     CHAR(2)          NOT NULL,
@@ -433,20 +441,9 @@ CREATE TABLE dosis
         CONSTRAINT df_dosis_created DEFAULT CURRENT_TIMESTAMP,
     updated_at       DATETIME,
     CONSTRAINT ck_dosis_numero_dosis CHECK (numero_dosis IN ('1', '2', '3', 'R', 'R1', 'R2', 'P')),
+    CONSTRAINT fk_dosis_pacientes FOREIGN KEY (paciente) REFERENCES pacientes (id),
     CONSTRAINT fk_dosis_vacunas FOREIGN KEY (vacuna) REFERENCES vacunas (id) ON UPDATE CASCADE,
     CONSTRAINT fk_dosis_sedes FOREIGN KEY (sede) REFERENCES sedes (id) ON UPDATE CASCADE
-);
-GO
-CREATE TABLE pacientes_dosis
-(
-    paciente   UNIQUEIDENTIFIER,
-    dosis      UNIQUEIDENTIFIER,
-    created_at DATETIME NOT NULL
-        CONSTRAINT df_pacientes_dosis_created DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME,
-    PRIMARY KEY (paciente, dosis),
-    CONSTRAINT fk_pacientes_dosis_pacientes FOREIGN KEY (paciente) REFERENCES pacientes (id),
-    CONSTRAINT fk_pacientes_dosis_dosis FOREIGN KEY (dosis) REFERENCES dosis (id)
 );
 GO
 
@@ -503,6 +500,7 @@ CREATE TABLE almacenes_inventarios
     CONSTRAINT fk_almacenes_inventarios_vacunas FOREIGN KEY (vacuna) REFERENCES vacunas (id)
 );
 GO
+
 CREATE TABLE sedes_inventarios
 (
     sede             UNIQUEIDENTIFIER NOT NULL,
@@ -519,6 +517,7 @@ CREATE TABLE sedes_inventarios
     CONSTRAINT fk_sedes_inventarios_vacunas FOREIGN KEY (vacuna) REFERENCES vacunas (id)
 );
 GO
+
 CREATE TABLE distribuciones_vacunas
 (
     id                 UNIQUEIDENTIFIER PRIMARY KEY
@@ -539,6 +538,7 @@ CREATE TABLE distribuciones_vacunas
     CONSTRAINT fk_distribuciones_vacunas FOREIGN KEY (vacuna) REFERENCES vacunas (id)
 );
 GO
+
 CREATE TABLE fabricantes_vacunas
 (
     fabricante UNIQUEIDENTIFIER,
@@ -548,6 +548,7 @@ CREATE TABLE fabricantes_vacunas
     CONSTRAINT fk_fabricantes_vacunas_vacunas FOREIGN KEY (vacuna) REFERENCES vacunas (id) ON DELETE CASCADE
 );
 GO
+
 CREATE TABLE enfermedades
 (
     id             INT PRIMARY KEY IDENTITY (0,1),
@@ -557,6 +558,7 @@ CREATE TABLE enfermedades
     INDEX ix_enfermedades_nombre (nombre)
 );
 GO
+
 CREATE TABLE sintomas
 (
     id     INT PRIMARY KEY IDENTITY (0,1),
@@ -565,6 +567,7 @@ CREATE TABLE sintomas
     INDEX ix_sintomas_nombre (nombre)
 );
 GO
+
 CREATE TABLE enfermedades_sintomas
 (
     enfermedad INT,
@@ -574,6 +577,7 @@ CREATE TABLE enfermedades_sintomas
     CONSTRAINT fk_enfermedades_sintomas_enfermedades FOREIGN KEY (enfermedad) REFERENCES enfermedades (id) ON UPDATE CASCADE
 );
 GO
+
 CREATE TABLE vacunas_enfermedades
 (
     vacuna     UNIQUEIDENTIFIER,
@@ -709,8 +713,8 @@ GO
 
 CREATE VIEW view_vacunas_enfermedades AS
 SELECT v.nombre                           AS 'Nombre Vacuna',
-       v.edad_minima_meses                AS 'Edad mínima Recomendada en Meses',
-       v.intervalo_dosis_1_2_meses           'Intervalo entre Dosis 1 y 2 Recomendado en Meses',
+       v.edad_minima_dias                 AS 'Edad mínima Recomendada en Meses',
+       v.intervalo_dosis_1_2_dias           'Intervalo entre Dosis 1 y 2 Recomendado en Meses',
        v.dosis_maxima                     AS 'Dosis Máxima Recomendada',
        STRING_AGG(e.nombre, ', ')         AS 'Enfermedades Prevenidas',
        STRING_AGG(e.nivel_gravedad, ', ') AS 'Niveles de Gravedad Enfermedades',
@@ -721,7 +725,7 @@ SELECT v.nombre                           AS 'Nombre Vacuna',
 FROM vacunas v
          LEFT JOIN vacunas_enfermedades ve ON v.id = ve.vacuna
          LEFT JOIN enfermedades e ON ve.enfermedad = e.id
-GROUP BY v.nombre, v.edad_minima_meses, v.intervalo_dosis_1_2_meses, v.dosis_maxima, v.id, v.created_at, v.updated_at,
+GROUP BY v.nombre, v.edad_minima_dias, v.intervalo_dosis_1_2_dias, v.dosis_maxima, v.id, v.created_at, v.updated_at,
          e.id
 GO
 
@@ -778,14 +782,13 @@ CREATE VIEW view_pacientes_vacunas_enfermedades AS
 SELECT v.nombre                    AS 'Nombre Vacuna',
        d.numero_dosis              AS N'Número de dosis',
        STRING_AGG(e.nombre, ', ')  AS N'Enfermedades Prevenidas',
-       v.edad_minima_meses         AS N'Edad Mínima Recomendada en Meses',
+       v.edad_minima_dias          AS N'Edad Mínima Recomendada en Meses',
        d.fecha_aplicacion          AS N'Fecha de Aplicación',
-       v.intervalo_dosis_1_2_meses AS 'Intervalo Recomendado entre Dosis 1 y 2 en Meses',
+       v.intervalo_dosis_1_2_dias AS 'Intervalo Recomendado entre Dosis 1 y 2 en Meses',
        DATEDIFF(DAY, d.fecha_aplicacion,
                 (SELECT MAX(d2.fecha_aplicacion)
                  FROM dosis d2
-                          JOIN pacientes_dosis pd2 ON d2.id = pd2.dosis
-                 WHERE pd2.paciente = p.id
+                 WHERE d2.paciente = p.id
                    AND d2.vacuna = d.vacuna
                    AND d2.numero_dosis > d.numero_dosis))
                                    AS N'Intervalo Real en Días',
@@ -796,15 +799,14 @@ SELECT v.nombre                    AS 'Nombre Vacuna',
        d.id                        AS 'id_dosis',
        STRING_AGG(e.id, ', ')      AS 'ids_enfermedades'
 FROM pacientes p
-         JOIN pacientes_dosis pd ON p.id = pd.paciente
-         JOIN dosis d ON pd.dosis = d.id
+         JOIN dosis d ON p.id = d.paciente
          JOIN vacunas v ON d.vacuna = v.id
          LEFT JOIN vacunas_enfermedades ve ON v.id = ve.vacuna
          LEFT JOIN enfermedades e ON ve.enfermedad = e.id
          LEFT JOIN sedes s ON d.sede = s.id
          LEFT JOIN entidades ee ON s.id = ee.id
 GROUP BY p.id,
-         v.nombre, v.edad_minima_meses, v.intervalo_dosis_1_2_meses,
+         v.nombre, v.edad_minima_dias, v.intervalo_dosis_1_2_dias,
          ee.nombre, ee.dependencia,
          v.id,
          d.id, d.vacuna, d.fecha_aplicacion, d.numero_dosis;
@@ -1248,7 +1250,7 @@ END;
 GO
 
 -- trigger que resta del inventario de la sede si existe para esa vacuna de dosis insertada
-CREATE TRIGGER tr_dosis_update_sede_inventario
+CREATE TRIGGER tr_dosis_validate_update
     ON dosis
     INSTEAD OF INSERT
     AS
@@ -1256,10 +1258,13 @@ BEGIN
     IF TRIGGER_NESTLEVEL() > 1
         RETURN
     BEGIN TRY
-        DECLARE @numero_dosis CHAR(2), @id_vacuna UNIQUEIDENTIFIER, @id_sede UNIQUEIDENTIFIER, @lote NVARCHAR(10), @cantidad_disponible INT, @fecha_lote DATETIME;
+        DECLARE @numero_dosis CHAR(2), @id_paciente UNIQUEIDENTIFIER, @id_vacuna UNIQUEIDENTIFIER, @id_sede UNIQUEIDENTIFIER, @lote NVARCHAR(10), @cantidad_disponible INT, @fecha_lote DATETIME;
 
-        SELECT @numero_dosis = i.numero_dosis, @id_vacuna = i.vacuna, @id_sede = i.sede, @lote = i.lote
+        SELECT @numero_dosis = i.numero_dosis, @id_vacuna = i.vacuna, @id_sede = i.sede, @lote = i.lote, @id_paciente = paciente
         FROM inserted i
+
+        SET @numero_dosis = RTRIM(@numero_dosis);
+        SET @numero_dosis = UPPER(@numero_dosis);
 
         -- Verificar si hay suficiente inventario y fecha de vencimiento del mismo
         IF EXISTS (SELECT 1
@@ -1291,114 +1296,80 @@ BEGIN
                   AND lote LIKE @lote;
             END
 
-        INSERT INTO dosis (id, fecha_aplicacion, numero_dosis, vacuna, sede, lote, created_at, updated_at)
-        SELECT id,
-               fecha_aplicacion,
-               numero_dosis,
-               vacuna,
-               sede,
-               lote,
-               created_at,
-               updated_at
-        FROM inserted
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
-GO
-
--- trigger que valida las dosis previas del paciente al insertar
-CREATE TRIGGER tr_pacientes_dosis_validate_dosis_previa
-    ON pacientes_dosis
-    INSTEAD OF INSERT
-    AS
-BEGIN
-    IF TRIGGER_NESTLEVEL() > 1
-        RETURN
-    BEGIN TRY
-        DECLARE @id_paciente UNIQUEIDENTIFIER, @id_vacuna UNIQUEIDENTIFIER, @id_dosis UNIQUEIDENTIFIER, @numero_dosis CHAR(2);
-
-        SELECT @id_paciente = i.paciente,
-               @id_vacuna = d.vacuna,
-               @numero_dosis = d.numero_dosis,
-               @id_dosis = i.dosis
-        FROM inserted i
-                 JOIN dosis d ON i.dosis = d.id
-
-        SET @numero_dosis = RTRIM(@numero_dosis);
-        SET @numero_dosis = UPPER(@numero_dosis);
+        -- Validar dosis previas del paciente
 
         -- Verifica si la dosis vacuna - numero de dosis ya existe
         IF EXISTS (SELECT 1
-                   FROM pacientes_dosis pd
-                            INNER JOIN dosis d ON pd.dosis = d.id
-                   WHERE pd.paciente = @id_paciente
-                     AND d.vacuna = @id_vacuna
-                     AND d.numero_dosis LIKE @numero_dosis)
+                   FROM  dosis
+                   WHERE paciente = @id_paciente
+                     AND vacuna = @id_vacuna
+                     AND numero_dosis LIKE @numero_dosis)
             BEGIN
                 RAISERROR (N'La dosis para el paciente en esa vacuna y número de dosis ya existe. Elimine o corregir la dosis', 16, 1);
             END
 
         -- Validar dosis anteriores
         IF @numero_dosis = 'P' AND EXISTS (SELECT 1
-                                           FROM pacientes_dosis pd
-                                                    INNER JOIN Dosis d ON pd.dosis = d.id
-                                           WHERE pd.paciente = @id_paciente
-                                             AND d.vacuna = @id_vacuna)
+                                           FROM dosis
+                                           WHERE paciente = @id_paciente
+                                             AND vacuna = @id_vacuna)
             BEGIN
                 RAISERROR ('La dosis P previa solo puede ser aplicada antes de la primera dosis de la misma vacuna.', 16, 1);
             END
 
         IF @numero_dosis = '2' AND NOT EXISTS (SELECT 1
-                                               FROM pacientes_dosis pd
-                                                        JOIN Dosis d ON pd.dosis = d.id
-                                               WHERE pd.paciente = @id_paciente
-                                                 AND d.vacuna = @id_vacuna
-                                                 AND d.numero_dosis = '1')
+                                               FROM dosis
+                                               WHERE paciente = @id_paciente
+                                                 AND vacuna = @id_vacuna
+                                                 AND numero_dosis = '1')
             BEGIN
                 RAISERROR ('La dosis 1 de la misma vacuna debe ser aplicada antes de la dosis 2.', 16, 1);
             END
 
         IF @numero_dosis = '3' AND NOT EXISTS (SELECT 1
-                                               FROM pacientes_dosis pd
-                                                        JOIN Dosis d ON pd.dosis = d.id
-                                               WHERE pd.paciente = @id_paciente
-                                                 AND d.vacuna = @id_vacuna
-                                                 AND d.numero_dosis = '2')
+                                               FROM dosis
+                                               WHERE paciente = @id_paciente
+                                                 AND vacuna = @id_vacuna
+                                                 AND numero_dosis = '2')
             BEGIN
                 RAISERROR ('La dosis 2 de la misma vacuna debe ser aplicada antes de la dosis 3.', 16, 1);
             END
 
         -- Validar refuerzos (R1, R2) para la misma vacuna
         IF @numero_dosis = 'R1' AND NOT EXISTS (SELECT 1
-                                                FROM pacientes_dosis pd
-                                                         JOIN Dosis d ON pd.dosis = d.id
-                                                WHERE pd.paciente = @id_paciente
-                                                  AND d.vacuna = @id_vacuna
-                                                  AND d.numero_dosis = '1')
+                                                FROM dosis
+                                                WHERE paciente = @id_paciente
+                                                  AND vacuna = @id_vacuna
+                                                  AND numero_dosis = '1')
             BEGIN
                 RAISERROR ('La dosis 1 de la misma vacuna debe ser aplicada antes de la dosis R1.', 16, 1);
             END
 
         IF @numero_dosis = 'R2' AND NOT EXISTS (SELECT 1
-                                                FROM pacientes_dosis pd
-                                                         JOIN Dosis d ON pd.dosis = d.id
-                                                WHERE pd.paciente = @id_paciente
-                                                  AND d.vacuna = @id_vacuna
-                                                  AND d.numero_dosis IN ('R1', '1'))
+                                                FROM dosis
+                                                WHERE paciente = @id_paciente
+                                                  AND vacuna = @id_vacuna
+                                                  AND numero_dosis IN ('R1', '1'))
             BEGIN
                 RAISERROR ('La dosis R1 o 1 de la misma vacuna debe ser aplicada antes de la dosis R2.', 16, 1);
             END
 
-        INSERT INTO pacientes_dosis (paciente, dosis, created_at, updated_at)
-        SELECT paciente, dosis, created_at, updated_at
+        INSERT INTO dosis (id, paciente, fecha_aplicacion, numero_dosis, vacuna, sede, doctor, lote, created_at)
+        SELECT id,
+               paciente,
+               fecha_aplicacion,
+               @numero_dosis,
+               vacuna,
+               sede,
+               doctor,
+               lote,
+               created_at
         FROM inserted
     END TRY
     BEGIN CATCH
         THROW;
     END CATCH
-END
+END;
 GO
 
 PRINT (N'Creando procedimientos almacenados');
@@ -2703,16 +2674,8 @@ BEGIN
             END
 
         BEGIN TRANSACTION
-            DECLARE @id_dosis UNIQUEIDENTIFIER = NEWID();
-
-            -- Insertar la nueva dosis
-            INSERT INTO Dosis (id, fecha_aplicacion, numero_dosis, vacuna, sede, lote, doctor)
-            VALUES (@id_dosis, @fecha_aplicacion, @numero_dosis, @uuid_vacuna, @uuid_sede, @lote, @uuid_doctor);
-            SET @result = @result + @@ROWCOUNT;
-
-            -- Insertar la relación en Paciente_Dosis
-            INSERT INTO pacientes_dosis (paciente, dosis)
-            VALUES (@uuid_paciente, @id_dosis);
+            INSERT INTO Dosis (paciente, fecha_aplicacion, numero_dosis, vacuna, sede, lote, doctor)
+            VALUES (@uuid_paciente, @fecha_aplicacion, @numero_dosis, @uuid_vacuna, @uuid_sede, @lote, @uuid_doctor);
             SET @result = @result + @@ROWCOUNT;
         COMMIT TRANSACTION;
     END TRY
@@ -3162,10 +3125,9 @@ CREATE FUNCTION fn_vacunas_find_dosis(
                       d.vacuna,
                       d.sede
                FROM dosis d
-                        LEFT JOIN pacientes_dosis pd ON d.id = pd.dosis
-                        LEFT JOIN personas ON pd.paciente = personas.id
+                        LEFT JOIN personas ON d.paciente = personas.id
                WHERE (d.vacuna = @uuid_vacuna OR @uuid_vacuna IS NULL)
-                 AND (pd.paciente = @uuid_paciente OR pd.paciente = (SELECT id
+                 AND (d.paciente = @uuid_paciente OR d.paciente = (SELECT id
                                                                      FROM pacientes
                                                                      WHERE cedula LIKE @cedula
                                                                         OR pasaporte = @pasaporte
@@ -3312,7 +3274,8 @@ VALUES ('Por registrar', 0);
 GO
 EXEC sp_vacunas_insert_sede 'Por registrar', 'POR_REGISTRAR', NULL, NULL, 'INACTIVO', NULL, NULL, NULL;
 GO
-INSERT INTO vacunas (nombre, edad_minima_meses, intervalo_dosis_1_2_meses)
+
+INSERT INTO vacunas (nombre, edad_minima_dias, intervalo_dosis_1_2_dias)
 VALUES ('Por registrar', NULL, NULL);
 GO
 INSERT INTO enfermedades (nombre, nivel_gravedad)
@@ -3628,29 +3591,30 @@ VALUES (1, 1),  -- Paciente, PACIENTE_READ
 GO
 PRINT ('Insertando vacunas');
 GO
-INSERT INTO vacunas (nombre, edad_minima_meses, intervalo_dosis_1_2_meses)
-VALUES ('Adacel', 132, NULL),
-       ('BCG', 0, NULL),
-       ('COVID-19', 6, 0.92),
+-- TODO cambiar el cálculo a dia exacto
+INSERT INTO vacunas (nombre, edad_minima_dias, intervalo_dosis_1_2_dias)
+VALUES ('Adacel', 132 * 30.44, NULL),
+       ('BCG', 0 * 30.44, NULL),
+       ('COVID-19', 6 * 30.44, 0.92 * 30.44),
        ('Fiebre Amarilla', NULL, NULL),
-       ('Hep A (Euvax) (adultos)', 240, 6),
-       ('Hep A (Euvax) (infantil)', 12, NULL),
-       ('Hep B (adultos)', 240, 6),
-       ('Hep B (infantil)', 0, 1),
-       ('Hexaxim', 2, NULL),
-       ('Influenza (FluQuadri)', 6, 12),
-       ('Meningococo', 132, 48),
-       ('MMR', 12, NULL),
-       (N'MR (antisarampión, antirrubéola)', 12, 72),
-       ('Neumoco conjugado (Prevenar 13 valente)', 2, NULL),
-       ('Papiloma Humano (Gardasil)', 132, NULL),
-       ('Pneumo23', 780, NULL),
-       ('Pneumovax', 780, NULL),
-       ('Priorix', 9, 3),
-       ('Rotarix', 2, NULL),
-       ('TD', 48, 120),
+       ('Hep A (Euvax) (adultos)', 240 * 30.44, 6 * 30.44),
+       ('Hep A (Euvax) (infantil)', 12 * 30.44, NULL),
+       ('Hep B (adultos)', 240 * 30.44, 6 * 30.44),
+       ('Hep B (infantil)', 0, 1 * 30.44),
+       ('Hexaxim', 2 * 30.44, NULL),
+       ('Influenza (FluQuadri)', 6 * 30.44, 12 * 30.44),
+       ('Meningococo', 132 * 30.44, 48 * 30.44),
+       ('MMR', 12 * 30.44, NULL),
+       (N'MR (antisarampión, antirrubéola)', 12 * 30.44, 72 * 30.44),
+       ('Neumoco conjugado (Prevenar 13 valente)', 2 * 30.44, NULL),
+       ('Papiloma Humano (Gardasil)', 132 * 30.44, NULL),
+       ('Pneumo23', 780 * 30.44, NULL),
+       ('Pneumovax', 780 * 30.44, NULL),
+       ('Priorix', 9 * 30.44, 3 * 30.44),
+       ('Rotarix', 2 * 30.44, NULL),
+       ('TD', 48 * 30.44, 120 * 30.44),
        ('Tetravalente', NULL, NULL), -- No se especifica la edad mínima y el intervalo es según el calendario infantil
-       ('Varivax', 12, 69),
+       ('Varivax', 12 * 30.44, 69 * 30.44),
        ('Verorab', NULL, NULL); -- Según el esquema de post-exposición
 GO
 PRINT (N'Relacionando vacunas con enfermedades');
