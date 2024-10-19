@@ -99,7 +99,7 @@ public class PacienteService {
         return this.pacienteRepository.findByUsuario_Id(idUser);
     }
 
-    public Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
+    Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
         return this.pacienteRepository.findById(idPaciente);
     }
 

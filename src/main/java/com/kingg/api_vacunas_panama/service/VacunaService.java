@@ -88,9 +88,7 @@ public class VacunaService {
     }
 
     public List<DosisDto> getDosisVacunaByIdPaciente(UUID idPaciente, UUID idVacuna) {
-        return pacientesDosisRepository.findAllByPaciente_IdAndDosis_Vacuna_Id(idPaciente, idVacuna).stream()
-                .map(pacientesDosis -> dosisMapper.toDto(pacientesDosis.getDosis()))
-                .toList();
+        return dosisMapper.toDtoList(dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna));
     }
 
     Paciente validatePacienteExist(UUID pacienteId) {
