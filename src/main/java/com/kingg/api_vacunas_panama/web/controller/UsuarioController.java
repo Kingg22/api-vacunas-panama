@@ -70,12 +70,15 @@ public class UsuarioController {
      * information and a token if the {@link Persona} or {@link Entidad} is validated and active.
      */
     @PostMapping({"/register"})
-    public ResponseEntity<IApiResponse<String, Serializable>> register(@RequestBody @Valid UsuarioDto usuarioDto, Authentication authentication, ServletWebRequest request) {
+    public ResponseEntity<IApiResponse<String, Serializable>> register(@RequestBody @Valid UsuarioDto usuarioDto,
+                                                                       Authentication authentication,
+                                                                       ServletWebRequest request) {
         IApiResponse<String, Serializable> apiResponse = new ApiResponse();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             List<ApiFailed> failedList = this.usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication);
             apiResponse.addErrors(failedList);
-        } else if (!usuarioDto.roles().stream().allMatch(rolDto -> rolDto.nombre().equalsIgnoreCase("Paciente"))) {
+        } else if (!usuarioDto.roles().stream().allMatch(rolDto -> RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE) ||
+                rolDto.nombre() != null && rolDto.nombre().equalsIgnoreCase("Paciente"))) {
             apiResponse.addError(ApiResponseCode.MISSING_ROLE_OR_PERMISSION, "Solo pacientes pueden registrarse sin autenticación");
         }
 
@@ -113,13 +116,15 @@ public class UsuarioController {
     }
 
     @PatchMapping({"/restore"})
-    public ResponseEntity<IApiResponse<String, Serializable>> restore(@RequestBody @Valid RestoreDto restoreDto, ServletWebRequest request) {
+    public ResponseEntity<IApiResponse<String, Serializable>> restore(@RequestBody @Valid RestoreDto restoreDto,
+                                                                      ServletWebRequest request) {
         IApiResponse<String, Serializable> apiResponse = this.usuarioManagementService.changePasswordPersona(restoreDto);
         return ApiResponseUtil.sendResponse(apiResponse, request);
     }
 
     @GetMapping
-    public ResponseEntity<IApiResponse<String, Serializable>> profile(Authentication authentication, ServletWebRequest request) {
+    public ResponseEntity<IApiResponse<String, Serializable>> profile(Authentication authentication,
+                                                                      ServletWebRequest request) {
         IApiResponse<String, Serializable> apiResponse = new ApiResponse();
         apiResponse.addData(usuarioManagementService.getProfile(UUID.fromString(authentication.getName())));
         apiResponse.addStatusCode(HttpStatus.OK);
