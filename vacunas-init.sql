@@ -529,7 +529,7 @@ CREATE TABLE distribuciones_vacunas
     cantidad           INT              NOT NULL,
     lote               NVARCHAR(50)     NOT NULL,
     fecha_distribucion DATETIME         NOT NULL
-        CONSTRAINT df_distribucionas_fecha_distribucion DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT df_distribuciones_fecha_distribucion DEFAULT CURRENT_TIMESTAMP,
     created_at         DATETIME         NOT NULL
         CONSTRAINT df_distribuciones_created DEFAULT CURRENT_TIMESTAMP,
     updated_at         DATETIME,
@@ -3332,8 +3332,8 @@ GO
 PRINT ('-----------------------------------FIN------------------------------------------------');
 PRINT (N'Insertando datos de prueba');
 GO
--- datos de prueba. Las direcciones se insertan a medida que se requieren.
--- Se recomienda utilizar los procedimientos para insertar ya que respeta la lógica y facilita insertar a varias tablas
+-- Datos de prueba. Las direcciones se insertan a medida que se requieren.
+-- Se recomienda utilizar los procedimientos para insertar, ya que, respeta la lógica y facilita insertar a varias tablas
 PRINT ('Insertando enfermedades');
 GO
 INSERT INTO enfermedades (nombre, nivel_gravedad)
@@ -3602,10 +3602,10 @@ GO
 /*
 Aclaraciones:
 - Diferencia entre ADMINISTRATIVO_WRITE y MED_WRITE, radica en poder gestionar las categorías padre llamase Vacunas, sus enfermedades y síntomas.
-  MED unicamente puede gestionar las dosis de las categorías ya creadas, dando la posibilidad de usar 'Por registrar' para el rol correspondiente corrija.
+  MED únicamente puede gestionar las dosis de las categorías ya creadas, dando la posibilidad de usar 'Por registrar' para el rol correspondiente corrija.
 - Diferencia entre ADMINISTRATIVO_WRITE y USER_MANAGER_WRITE, ambos roles permiten modificar usuarios, pero administrativo puede deshabilitar un usuario y sus roles.
-  Ninguno puede crear usuarios ya que es una facultad de las aplicaciones o sistemas que implementan automáticamente el hash de contraseñas y otorga roles ya definidos.
-- Diferencia entre AUTORIDAD_WRITE y DEV_DB_ADMIN es directamente en crear datos sin restricciones, los dev pueden modificar la estructura más no los datos.
+  Ninguno puede crear usuarios, ya que, es una facultad de las aplicaciones o sistemas que implementan automáticamente el hash de contraseñas y otorga roles ya definidos.
+- Diferencia entre AUTORIDAD_WRITE y DEV_DB_ADMIN es directamente en generar datos sin restricciones, los dev pueden modificar la estructura más no los datos.
 */
 PRINT ('Relacionando roles con sus permisos');
 GO
@@ -3761,7 +3761,7 @@ GO
 
 PRINT (N'Insertando fabricantes y las vacunas que producen');
 GO
--- La licencia_fabricante es fictia*
+-- La licencia_fabricante es ficticia*
 EXEC sp_vacunas_insert_fabricante '08-001 LA/DNFD', 'Sanofi Pasteur', 'info@sanofipasteur.com', '+18008222463',
      'ACTIVO', 'Sanofi Pasteur Inc., 1 Discovery Drive, Swiftwater, PA 18370, USA', 'Extranjero', NULL, NULL, NULL,
      NULL;
@@ -3886,11 +3886,11 @@ GO
 PRINT (N'Insertando sedes y distribuyendo inventario de Almacén a sedes');
 GO
 -- Sedes algunos datos no son veraces*
-EXEC sp_vacunas_insert_sede 'Hospital San Miguel Arcangel', 'MINSA', NULL, '+5075236906', 'ACTIVO',
+EXEC sp_vacunas_insert_sede N'Hospital San Miguel Arcángel', 'MINSA', NULL, '+5075236906', 'ACTIVO',
      N'HISMA, Vía Ricardo J. Alfaro', 'San Miguelito', NULL;
-EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'Hospital San Miguel Arcangel', NULL,
+EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, N'Hospital San Miguel Arcángel', NULL,
      'Adacel', 10, 'LoteA1', NULL, NULL;
-EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'Hospital San Miguel Arcangel', NULL,
+EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, N'Hospital San Miguel Arcángel', NULL,
      'Rotarix', 100, 'LoteA19', NULL, NULL;
 GO
 EXEC sp_vacunas_insert_sede 'MINSA CAPSI FINCA 30 CHANGINOLA', 'MINSA', NULL, '+5077588096', 'ACTIVO', 'Finca 32',
@@ -3907,11 +3907,11 @@ EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'H
 EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'Hospital Aquilino Tejeira', NULL,
      'Tetravalente', 110, 'LoteA21', NULL, NULL;
 GO
-EXEC sp_vacunas_insert_sede 'CENTRO DE SALUD METETI', 'MINSA', NULL, '+5072996151', 'ACTIVO', 'La Palma', 'Pinogana',
+EXEC sp_vacunas_insert_sede N'CENTRO DE SALUD METETÍ', 'MINSA', NULL, '+5072996151', 'ACTIVO', 'La Palma', 'Pinogana',
      NULL;
-EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'CENTRO DE SALUD METETI', NULL,
+EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, N'CENTRO DE SALUD METETÍ', NULL,
      'Fiebre Amarilla', 25, 'LoteA4', NULL, NULL;
-EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'CENTRO DE SALUD METETI', NULL, 'Varivax',
+EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, N'CENTRO DE SALUD METETÍ', NULL, 'Varivax',
      115, 'LoteA22', NULL, NULL;
 GO
 EXEC sp_vacunas_insert_sede 'POLICENTRO DE SALUD de Chepo', 'MINSA', NULL, '+5072967220', 'ACTIVO',
@@ -3981,10 +3981,10 @@ EXEC sp_vacunas_insert_sede 'CSS Complejo Metropolitano', 'CSS', NULL, '+5075064
 EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL, 'CSS Complejo Metropolitano', NULL,
      'Pneumovax', 90, 'LoteA17', NULL, NULL;
 GO
-EXEC sp_vacunas_insert_sede N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', 'CSS', NULL, '+5075137008',
+EXEC sp_vacunas_insert_sede N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', 'CSS', NULL, '+5075137008',
      'ACTIVO', N'Vía España, Ciudad de Panamá', N'Panamá', NULL;
 EXEC sp_vacunas_distribuir_vacunas NULL, N'Almacén Vacúnate Panamá', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, 'Priorix', 95, 'LoteA18', NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, 'Priorix', 95, 'LoteA18', NULL, NULL;
 GO
 
 PRINT ('Insertando pacientes e insertando sus dosis');
@@ -3992,7 +3992,7 @@ PRINT ('Insertando pacientes e insertando sus dosis');
 EXEC sp_vacunas_gestionar_paciente '1-145-987', NULL, NULL, 'Luis', N'Gómez', NULL, '1984-01-12', 'M', '+50760086666',
      'luis.mez@example.com', 'ACTIVO', 'Calle 7, Edificio 6', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '1-145-987', NULL, NULL, '2018-03-15 12:15', '1', NULL, 'Influenza (FluQuadri)',
-     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '1-54-9635', NULL, NULL, 'Luis', 'Mendoza', NULL, '2006-05-05', 'M', '+50763257865',
      NULL, 'ACTIVO', 'Finca 30, casa 45', 'Changuinola', NULL;
@@ -4043,7 +4043,7 @@ EXEC sp_vacunas_gestionar_paciente '3-721-284', NULL, NULL, 'Sandra', N'Pérez',
 EXEC sp_vacunas_insert_dosis NULL, '3-721-284', NULL, NULL, '2022-04-10 10:30', '1', NULL, 'MMR', NULL,
      'Hospital Aquilino Tejeira', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente '3PI-1-654', NULL, NULL, 'Elena', N'nzález', NULL, '1993-09-29', 'F', '+50760036666',
+EXEC sp_vacunas_gestionar_paciente '3PI-1-654', NULL, NULL, 'Elena', N'González', NULL, '1993-09-29', 'F', '+50760036666',
      'elena.nzalez@example.com', 'ACTIVO', 'Calle 11, Edificio C', 'La Chorrera', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '3PI-1-654', NULL, NULL, '2020-03-01 09:30', '1', NULL, 'Rotarix', NULL,
      'Hospital Aquilino Tejeira', NULL, NULL, NULL, NULL;
@@ -4064,7 +4064,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente '4-5678-12345', NULL, NULL, 'Fernanda', 'Torres', NULL, '1998-03-13', 'F',
      '+50760046666', 'fernanda.torres@example.com', 'ACTIVO', 'Calle 7, Casa 5', 'San Miguelito', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '4-5678-12345', NULL, NULL, '2020-02-15 11:45', '1', NULL, 'Pneumo23', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '4-987-123456', NULL, NULL, 'Felipe', N'Hernández', NULL, '1987-03-17', 'M',
      '+50760020000', 'felipe.hernandez@example.com', 'ACTIVO', 'Calle 5, Local 6', N'Panamá', NULL;
@@ -4083,7 +4083,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente '5-554-321', NULL, NULL, 'Martha', 'Cornejo', NULL, '1979-08-24', 'F',
      '+50767841296', NULL, 'ACTIVO', N'Vía Interamericana, Metetí, casa 87F', 'Pinogana', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '5-554-321', NULL, NULL, '2017-11-10 11:45', '1', NULL, 'Priorix', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '5-567-65432', NULL, NULL, 'Natalia', 'Moreno', NULL, '1992-07-21', 'F',
      '+50760032222', 'natalia.moreno@example.com', 'ACTIVO', 'Edificio La Vista, Piso 6', N'Colón', NULL;
@@ -4102,9 +4102,9 @@ GO
 EXEC sp_vacunas_gestionar_paciente '5AV-9-1234', NULL, NULL, 'Javier', N'Fernández', NULL, '1988-02-21', 'M',
      '+50760004444', 'javier.fernandez@example.com', 'ACTIVO', 'Avenida 1A, Local 9', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '5AV-9-1234', NULL, NULL, '2024-04-15 09:00', '1', NULL, 'Varivax', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente '6-1234-65432', NULL, NULL, 'Rosa', N'nzález', NULL, '1981-10-29', 'F',
+EXEC sp_vacunas_gestionar_paciente '6-1234-65432', NULL, NULL, 'Rosa', N'González', NULL, '1981-10-29', 'F',
      '+50760048888', 'rosa.nzalez@example.com', 'ACTIVO', 'Calle 8, Edificio 6', 'La Chorrera', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '6-1234-65432', NULL, NULL, '2019-12-25 14:00', '1', NULL, 'Hep B (infantil)', NULL,
      N'Hospital Santo Tomás', NULL, NULL, NULL, NULL;
@@ -4122,7 +4122,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente '6-2-987654', NULL, NULL, 'Sofia', N'Méndez', N'Hernández', '1993-07-17', 'F',
      '+50760011111', 'sofia.mendez@example.com', 'ACTIVO', 'Avenida 2B, Piso 2', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '6-2-987654', NULL, NULL, '2017-10-01 09:30', '1', NULL, 'Pneumovax', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '6-789-654', NULL, NULL, 'Laura', 'Salazar', N'García', '1993-07-12', 'F',
      '+50760079999', 'laura.salazar@example.com', 'ACTIVO', 'Calle 8, Edificio 6', N'Colón', NULL;
@@ -4145,7 +4145,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente '7-345-678', NULL, NULL, 'Gabriel', N'Ramírez', 'Ramos', '1996-04-21', 'M',
      '+50760049999', 'gabriel.ramirez@example.com', 'ACTIVO', 'Calle 11, Casa 15', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '7-345-678', NULL, NULL, '2021-12-15 13:30', '1', NULL, 'Hep B (infantil)', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '7-4567-123', NULL, NULL, 'Camila', 'Ruiz', NULL, '1996-03-14', 'F', '+50760040000',
      'camila.ruiz@example.com', 'ACTIVO', 'Avenida 3, Casa 12', 'David', NULL;
@@ -4174,7 +4174,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente '8-12-321', NULL, NULL, 'Isabel', N'García', NULL, '1994-07-09', 'F', '+50760042222',
      'isabel.garcia@example.com', 'ACTIVO', 'Edificio Los Robles, Apartamento 8', 'San Miguelito', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '8-12-321', NULL, NULL, '2024-01-30 16:45', '1', NULL, 'TD', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '8-123-56789', NULL, NULL, 'Hu', 'Cruz', NULL, '1980-02-15', 'M', '+50760014444',
      NULL, 'ACTIVO', 'Avenida 3, Local 14', 'San Miguelito', NULL;
@@ -4198,17 +4198,17 @@ GO
 EXEC sp_vacunas_gestionar_paciente '9-123-123', NULL, NULL, 'Ricardo', 'Castillo', NULL, '1987-11-15', 'M',
      '+50760059999', 'ricardo.castillo@example.com', 'ACTIVO', 'Edificio Los Robles, Piso 3', 'David', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '9-123-123', NULL, NULL, '2016-07-20 09:45', '1', NULL, 'Hep B (infantil)', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente '9PI-1-98765', NULL, NULL, 'Natalia', 'Morales', N'Vásquez', '1990-06-14', 'F',
      '+50760017777', 'natalia.morales@example.com', 'ACTIVO', 'Edificio Los Pinos, Piso 4', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '9PI-1-98765', NULL, NULL, '2019-09-20 11:15', '1', NULL, 'Varivax', NULL,
      N'Hospital Dr. Nicolás A. Solano', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente '9PI-234-1', NULL, NULL, N'Tomás', N'nzález', N'Sánchez', '1991-08-15', 'M',
+EXEC sp_vacunas_gestionar_paciente '9PI-234-1', NULL, NULL, N'Tomás', N'González', N'Sánchez', '1991-08-15', 'M',
      '+50760072222', 'tomas.nzalez@example.com', 'ACTIVO', 'Calle 6, Local 8', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '9PI-234-1', NULL, NULL, '2021-10-20 12:00', '1', NULL, 'Hep B (adultos)', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, '9PI-234-1', NULL, NULL, '2017-07-10 11:15', '1', NULL, 'Fiebre Amarilla', NULL,
      'Centro de salud Pacora', NULL, NULL, NULL, NULL;
 GO
@@ -4279,18 +4279,18 @@ GO
 EXEC sp_vacunas_gestionar_paciente 'N-56-2345', NULL, NULL, 'Carla', N'Sánchez', NULL, '1994-06-28', 'F',
      '+50760056666', 'carla.sanchez@example.com', 'ACTIVO', 'Calle 9, Casa 4', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, 'N-56-2345', NULL, NULL, '2021-01-05 16:30', '1', NULL, 'Varivax', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente 'N-56-987', NULL, NULL, 'Juan', N'García', 'Ruiz', '1994-08-15', 'M', '+50760031111',
      'juan.garcia@example.com', 'ACTIVO', 'Calle 4, Casa 8', 'San Miguelito', NULL;
 -- TODO insertarle dosis
 GO
-EXEC sp_vacunas_gestionar_paciente 'N-78-987', NULL, NULL, 'Santia', N'Méndez', N'Vásquez', '1990-11-25', 'M',
+EXEC sp_vacunas_gestionar_paciente 'N-78-987', NULL, NULL, 'Santiago', N'Méndez', N'Vásquez', '1990-11-25', 'M',
      '+50760039999', 'santia.mendez@example.com', 'ACTIVO', 'Calle 9, Apartamento 5', N'Colón', NULL;
 EXEC sp_vacunas_insert_dosis NULL, 'N-78-987', NULL, NULL, '2018-11-10 09:00', '1', NULL, 'Pneumo23', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente 'N-89-1', NULL, NULL, N'Sofía', N'nzález', NULL, '1986-12-15', 'F', '+50762066666',
+EXEC sp_vacunas_gestionar_paciente 'N-89-1', NULL, NULL, N'Sofía', N'González', NULL, '1986-12-15', 'F', '+50762066666',
      'sofia.nzalez@example.com', 'ACTIVO', 'Calle 11, Casa 6', 'La Chorrera', NULL;
 -- TODO insertarle dosis
 GO
@@ -4360,12 +4360,12 @@ EXEC sp_vacunas_gestionar_paciente 'PE-9-123', NULL, NULL, 'Sergio', N'Ramírez'
 -- TODO insertarle dosis
 GO
 -- Pasaportes
-EXEC sp_vacunas_gestionar_paciente NULL, 'AB1234567X', NULL, N'Sofía', N'nzález', NULL, '1986-12-15', 'F',
+EXEC sp_vacunas_gestionar_paciente NULL, 'AB1234567X', NULL, N'Sofía', N'González', NULL, '1986-12-15', 'F',
      '+50760066666', 'sofia.nzalez1@example.com', 'ACTIVO', 'Calle 11, Casa 6', 'La Chorrera', NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'AB1234567X', NULL, '2015-03-14 13:30', '1', NULL, 'Hep B (adultos)', NULL,
      N'Hospital Regional de Changuinola Raul Dávila Mena', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'AB1234567X', NULL, '2019-08-10 12:30', '1', NULL, 'Influenza (FluQuadri)',
-     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'AB9876543K', NULL, 'Laura', 'Salazar', N'García', '1993-07-12', 'F',
      '+50767079999', 'laura.salazar1@example.com', 'ACTIVO', 'Calle 8, Edificio 6', N'Colón', NULL;
@@ -4388,7 +4388,7 @@ EXEC sp_vacunas_gestionar_paciente NULL, 'CD9876543Y', NULL, 'Mario', N'Ramírez
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'CD9876543Y', NULL, '2021-08-01 10:30', '1', NULL, 'COVID-19', NULL,
      N'Pacífica Salud Hospital Punta Pacífica', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'CD9876543Y', NULL, '2017-05-20 09:00', '1', NULL, 'Hep A (Euvax) (adultos)',
-     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     NULL, N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'EF123456Z', NULL, N'Verónica', N'Vásquez', N'Gómez', '1992-07-15', 'F',
      '+50760068888', 'veronica.vasquez1@example.com', 'ACTIVO', 'Edificio La Vista, Piso 7', 'San Miguelito', NULL;
@@ -4414,7 +4414,7 @@ EXEC sp_vacunas_gestionar_paciente NULL, 'GH6543210W', NULL, 'Francisco', N'Sán
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'GH6543210W', NULL, '2021-05-10 12:30', '1', NULL, 'Tetravalente', NULL,
      'Complejo Hospitalario Doctor Arnulfo Arias Madrid', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'GH6543210W', NULL, '2019-03-05 14:00', '1', NULL, 'Hexaxim', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'IJ2109876O', NULL, N'Sofía', N'Rodríguez', NULL, '1995-12-20', 'F',
      '+50760083333', 'sofia.rodriguez1@example.com', 'ACTIVO', 'Avenida 3, Edificio 9', N'Colón', NULL;
@@ -4439,7 +4439,7 @@ EXEC sp_vacunas_insert_dosis NULL, NULL, 'KL1098765P', NULL, '2023-04-20 14:15',
      'Neumoco conjugado (Prevenar 13 valente)', NULL, 'Complejo Hospitalario Dr. Manuel Amador Guerrero', NULL, NULL,
      NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'KL1098765P', NULL, '2019-01-10 12:00', '1', NULL, 'Fiebre Amarilla', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'MN0987654Q', NULL, 'Camila', N'Hernández', NULL, '1993-08-15', 'F',
      '+50760085555', 'camila.hernandez@example.com', 'ACTIVO', 'Edificio El Dorado, Apartamento 2', 'San Miguelito',
@@ -4447,7 +4447,7 @@ EXEC sp_vacunas_gestionar_paciente NULL, 'MN0987654Q', NULL, 'Camila', N'Hernán
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'MN0987654Q', NULL, '2021-02-10 14:00', '1', NULL, 'BCG', NULL,
      'Centro de salud Pacora', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente NULL, 'MN876543C', NULL, N'Tomás', N'nzález', N'Sánchez', '1991-08-15', 'M',
+EXEC sp_vacunas_gestionar_paciente NULL, 'MN876543C', NULL, N'Tomás', N'González', N'Sánchez', '1991-08-15', 'M',
      '+50766072222', 'tomas.nzalez1@example.com', 'ACTIVO', 'Calle 6, Local 8', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'MN876543C', NULL, '2023-03-15 16:00', '1', NULL, 'Hep A (Euvax) (infantil)',
      NULL, 'Centro de salud Pacora', NULL, NULL, NULL, NULL;
@@ -4463,7 +4463,7 @@ GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'OP8765432R', NULL, 'Luis', N'Gómez', NULL, '1984-01-12', 'M', '+50762086666',
      'luis.mez1@example.com', 'ACTIVO', 'Calle 7, Edificio 6', N'Panamá', NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'OP8765432R', NULL, '2023-01-05 10:45', '1', NULL, 'Pneumovax', NULL,
-     'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'OP8765432R', NULL, '2018-10-01 10:15', '1', NULL, 'Priorix', NULL,
      'Hospital Aquilino Tejeira', NULL, NULL, NULL, NULL;
 GO
@@ -4499,14 +4499,14 @@ GO
 EXEC sp_vacunas_gestionar_paciente NULL, 'UV5432109U', NULL, 'Isabella', 'Alvarado', 'Ruiz', '1996-03-22', 'F',
      '+50760089999', 'isabella.alvarado@example.com', 'ACTIVO', 'Edificio La Vista, Piso 4', 'San Miguelito', NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'UV5432109U', NULL, '2022-09-05 15:00', '1', NULL, 'Varivax', NULL,
-     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrena', NULL, NULL, NULL, NULL;
+     N'Hospital de Especialidades Pediátricas Omar Torrijos Herrera', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'UV5432109U', NULL, '2018-06-10 16:00', '1', NULL, 'Hep B (infantil)', NULL,
      N'Hospital Dr. Nicolás A. Solano', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente NULL, 'WX4321098V', NULL, 'Santia', 'Morales', N'Rodríguez', '1991-03-27', 'M',
+EXEC sp_vacunas_gestionar_paciente NULL, 'WX4321098V', NULL, 'Santiago', 'Morales', N'Rodríguez', '1991-03-27', 'M',
      '+50760065555', 'santia.morales@example.com', 'ACTIVO', 'Calle 8, Local 11', 'Bocas del Toro', NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'WX4321098V', NULL, '2020-07-01 12:00', '1', NULL, 'Influenza (FluQuadri)',
-     NULL, 'Hospital San Miguel Arcangel', NULL, NULL, NULL, NULL;
+     NULL, N'Hospital San Miguel Arcángel', NULL, NULL, NULL, NULL;
 EXEC sp_vacunas_insert_dosis NULL, NULL, 'WX4321098V', NULL, '2018-05-05 10:30', '1', NULL,
      'Neumoco conjugado (Prevenar 13 valente)', NULL, 'Centro de salud Pacora', NULL, NULL, NULL, NULL;
 GO
