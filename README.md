@@ -72,6 +72,7 @@ en [THIRD-PARTY](https://github.com/Kingg22/api-vacunas-panama/blob/e6bb6deff78f
 ## :pencil: Autores
 
 - **Rey Acosta** - _Java_ - [Kingg22](https://github.com/Kingg22)
+- **Allisson Ortega** - _PDF module_ - [Applepie2005](https://github.com/Applepie2005)
 
 ## Conclusión
 
