@@ -48,7 +48,7 @@ public class PacienteService {
         if ((pacienteDto.getNombre() == null || pacienteDto.getNombre().isBlank()) && (pacienteDto.getNombre2() == null || pacienteDto.getNombre2().isBlank())) {
             throw new IllegalArgumentException("El nombre del paciente es obligatorio");
         }
-        if ((pacienteDto.getApellido1() == null || pacienteDto.getApellido2().isBlank()) && (pacienteDto.getApellido2() == null || pacienteDto.getApellido2().isBlank())) {
+        if ((pacienteDto.getApellido1() == null || pacienteDto.getApellido1().isBlank()) && (pacienteDto.getApellido2() == null || pacienteDto.getApellido2().isBlank())) {
             throw new IllegalArgumentException("El apellido del paciente es obligatorio");
         }
         if ((pacienteDto.getCedula() == null || pacienteDto.getCedula().isBlank()) &&
