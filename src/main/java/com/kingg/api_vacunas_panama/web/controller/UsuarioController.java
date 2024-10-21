@@ -82,13 +82,21 @@ public class UsuarioController {
             apiResponse.addError(ApiResponseCode.MISSING_ROLE_OR_PERMISSION, "Solo pacientes pueden registrarse sin autenticación");
         }
 
-        if (!apiResponse.hasErrors()) {
-            return ApiResponseUtil.sendResponse(this.usuarioManagementService.createUser(usuarioDto), request);
-        } else {
+        if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN);
             apiResponse.addStatus("Insufficient authorities");
-            return ApiResponseUtil.sendResponse(apiResponse, request);
+        } else {
+            ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(usuarioDto);
+            apiResponse.addWarnings(apiContentResponse.getWarnings());
+            if (apiContentResponse.hasErrors()) {
+                apiResponse.addErrors(apiContentResponse.getErrors());
+                apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
+            } else {
+                apiResponse.addData(apiContentResponse.getData());
+                apiResponse.addStatusCode(HttpStatus.CREATED);
+            }
         }
+        return ApiResponseUtil.sendResponse(apiResponse, request);
     }
 
     @PostMapping({"/login"})
@@ -118,7 +126,15 @@ public class UsuarioController {
     @PatchMapping({"/restore"})
     public ResponseEntity<IApiResponse<String, Serializable>> restore(@RequestBody @Valid RestoreDto restoreDto,
                                                                       ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = this.usuarioManagementService.changePasswordPersona(restoreDto);
+        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        ApiContentResponse apiContentResponse = this.usuarioManagementService.changePassword(restoreDto);
+        if (apiContentResponse.hasErrors()) {
+            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
+            apiResponse.addErrors(apiContentResponse.getErrors());
+        } else {
+            apiResponse.addStatusCode(HttpStatus.OK);
+            apiResponse.addData(apiContentResponse.getData());
+        }
         return ApiResponseUtil.sendResponse(apiResponse, request);
     }
 

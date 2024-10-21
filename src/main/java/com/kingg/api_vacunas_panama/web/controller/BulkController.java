@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,8 @@ public class BulkController {
     private final UsuarioManagementService usuarioManagementService;
     private final PacienteService pacienteService;
 
-    @PostMapping("/create/paciente-usuario-direccion")
+    @Transactional
+    @PostMapping("/paciente-usuario-direccion")
     public ResponseEntity<IApiResponse<String, Serializable>> createPacienteUsuario(@RequestBody @Valid PacienteDto pacienteDto,
                                                                                     ServletWebRequest request) {
         ApiResponse temporal = new ApiResponse();
@@ -57,14 +59,20 @@ public class BulkController {
             try {
                 PacienteDto paciente = this.pacienteService.createPaciente(pacienteDto);
                 UsuarioDto temp = pacienteDto.getUsuario();
+                // TODO crear un DTO para crear usuarios solamente
                 UsuarioDto usuarioDto = new UsuarioDto(temp.id(), temp.username(), temp.password(), temp.createdAt(), null, null, temp.roles(), paciente.getCedula(), paciente.getPasaporte(), null);
-                apiResponse = this.usuarioManagementService.createUser(usuarioDto);
-                if (temporal.hasWarnings()) {
-                    apiResponse.addWarnings(temporal.getWarnings());
+                ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(usuarioDto);
+                apiResponse.addWarnings(apiContentResponse.getWarnings());
+                if (apiContentResponse.hasErrors()) {
+                    apiResponse.addErrors(apiContentResponse.getErrors());
+                    apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
+                } else {
+                    apiResponse.addData(apiContentResponse.getData());
+                    apiResponse.addStatusCode(HttpStatus.CREATED);
                 }
-            } catch (RuntimeException exception) {
+            } catch (IllegalArgumentException exception) {
                 log.error("Error en createPacienteUsuario: ".concat(exception.getMessage()), exception);
-                apiResponse.addError("BAD_REQUEST", exception.getMessage());
+                apiResponse.addError(ApiResponseCode.VALIDATION_FAILED, exception.getMessage());
                 apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             }
         } else {

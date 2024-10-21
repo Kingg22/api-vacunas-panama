@@ -98,7 +98,7 @@ public class DireccionService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Direccion createDireccion(@NotNull @Valid DireccionDto direccionDto) {
         Distrito distrito;
-        if (direccionDto.distrito() != null) {
+        if (direccionDto.distrito() != null && direccionDto.distrito().id() != null) {
             distrito = this.getDistritoById(direccionDto.distrito().id());
         } else {
             distrito = this.getDistritoDefault();
@@ -108,9 +108,7 @@ public class DireccionService {
         direccion.setDireccion(direccionDto.direccion());
         direccion.setDistrito(distrito);
         direccion.setCreatedAt(direccionDto.createdAt() != null ? direccionDto.createdAt() : LocalDateTime.now(ZoneOffset.UTC));
-
-        direccion = direccionRepository.save(direccion);
-        return direccion;
+        return direccionRepository.save(direccion);
     }
 
 }

@@ -35,6 +35,10 @@ class UsuarioValidationService {
 
     Object validateRegistration(@NotNull UsuarioDto usuarioDto) {
         List<ApiFailed> errors = new ArrayList<>();
+        if (usuarioDto.roles().stream().anyMatch(rolDto -> rolDto.id() == null && rolDto.nombre() != null && !rolDto.nombre().isBlank())) {
+            errors.add(new ApiFailed(ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID al realizar peticiones"));
+        }
+
         if (this.isUsernameRegistered(usuarioDto.username())) {
             errors.add(new ApiFailed(ApiResponseCode.ALREADY_TAKEN, "username", "El nombre de usuario ya está en uso"));
         }
@@ -122,7 +126,7 @@ class UsuarioValidationService {
             errores.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "new_password", "La nueva contraseña no puede ser igual a la contraseña actual"));
         }
 
-        if (persona.getUsuario().getUsername() != null && persona.getUsuario().getUsername().equalsIgnoreCase(newPassword)) {
+        if (persona.getUsuario().getUsername() != null && newPassword.contains(persona.getUsuario().getUsername())) {
             errores.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "new_password", "La nueva contraseña no puede ser igual a su username"));
         }
 
