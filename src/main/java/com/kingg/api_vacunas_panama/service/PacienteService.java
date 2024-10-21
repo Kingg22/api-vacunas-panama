@@ -3,19 +3,21 @@ package com.kingg.api_vacunas_panama.service;
 import com.kingg.api_vacunas_panama.persistence.entity.Direccion;
 import com.kingg.api_vacunas_panama.persistence.entity.Paciente;
 import com.kingg.api_vacunas_panama.persistence.repository.PacienteRepository;
-import com.kingg.api_vacunas_panama.util.FormatterUtil;
+import com.kingg.api_vacunas_panama.util.*;
 import com.kingg.api_vacunas_panama.util.mapper.DireccionMapper;
 import com.kingg.api_vacunas_panama.util.mapper.PacienteMapper;
 import com.kingg.api_vacunas_panama.web.dto.PacienteDto;
 import com.kingg.api_vacunas_panama.web.dto.ViewPacienteVacunaEnfermedadDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import java.util.UUID;
  * This service allows for comprehensive management of patient information and integrates with
  * the underlying personal data structure.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PacienteService {
@@ -44,28 +47,102 @@ public class PacienteService {
         }
     }
 
-    private void validateCreatePaciente(PacienteDto pacienteDto) throws IllegalArgumentException {
-        if ((pacienteDto.getNombre() == null || pacienteDto.getNombre().isBlank()) && (pacienteDto.getNombre2() == null || pacienteDto.getNombre2().isBlank())) {
-            throw new IllegalArgumentException("El nombre del paciente es obligatorio");
+    public ApiContentResponse validateCreatePacienteUsuario(PacienteDto pacienteDto) {
+        ApiContentResponse apiContentResponse = new ApiContentResponse();
+        if (pacienteDto.getUsuario() == null) {
+            apiContentResponse.addError(ApiResponseCode.MISSING_INFORMATION, "Esta función necesita el usuario para el paciente");
         }
-        if ((pacienteDto.getApellido1() == null || pacienteDto.getApellido1().isBlank()) && (pacienteDto.getApellido2() == null || pacienteDto.getApellido2().isBlank())) {
-            throw new IllegalArgumentException("El apellido del paciente es obligatorio");
+        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().id() == null && pacienteDto.getUsuario().roles().stream().anyMatch(rolDto -> rolDto.nombre() != null)) {
+            apiContentResponse.addError(ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID para el rol Paciente en esta función");
         }
-        if ((pacienteDto.getCedula() == null || pacienteDto.getCedula().isBlank()) &&
-            (pacienteDto.getPasaporte() == null || pacienteDto.getPasaporte().isBlank()) &&
-            (pacienteDto.getIdentificacionTemporal() == null || pacienteDto.getIdentificacionTemporal().isBlank())) {
-            throw new IllegalArgumentException("Una identificación personal del paciente es obligatorio");
+        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().roles().stream().anyMatch(rolDto -> rolDto.id() != null && !RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE))) {
+            apiContentResponse.addError(ApiResponseCode.VALIDATION_FAILED, "roles[]", "Esta función es solo para pacientes, utilice otra operación");
         }
-        if (pacienteDto.getFechaNacimiento() == null) {
-            throw new IllegalArgumentException("La fecha del paciente es obligatorio");
+        if (pacienteDto.getSexo().toString().equalsIgnoreCase("X")) {
+            apiContentResponse.addWarning(ApiResponseCode.DEPRECATION_WARNING, "sexo", "Pacientes no deben tener sexo no definido. Reglas de vacunación no se podrán aplicar");
         }
+        if (pacienteDto.getDireccion() != null && pacienteDto.getDireccion().id() == null) {
+            apiContentResponse.addWarning(ApiResponseCode.NON_IDEMPOTENCE, "direccion", "Debe trabajar con ID");
+        }
+        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().createdAt() != null &&
+                pacienteDto.getCreatedAt() != null && !pacienteDto.getCreatedAt().isEqual(pacienteDto.getUsuario().createdAt())) {
+            apiContentResponse.addError(ApiResponseCode.VALIDATION_FAILED, "created_at", "created_at de Paciente y Usuario deben ser las mismas o null");
+        }
+        return apiContentResponse;
     }
 
-    @Transactional
-    public PacienteDto createPaciente(@NotNull PacienteDto pacienteDto) throws IllegalArgumentException {
-        validateCreatePaciente(pacienteDto);
+    public List<ApiFailed> validateCreatePaciente(PacienteDto pacienteDto) {
+        List<ApiFailed> failedList = new ArrayList<>();
+
+        if ((pacienteDto.getNombre() == null || pacienteDto.getNombre().isBlank()) &&
+                (pacienteDto.getNombre2() == null || pacienteDto.getNombre2().isBlank())) {
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "nombre", "El nombre del paciente es obligatorio"));
+        }
+
+        if ((pacienteDto.getApellido1() == null || pacienteDto.getApellido1().isBlank()) &&
+                (pacienteDto.getApellido2() == null || pacienteDto.getApellido2().isBlank())) {
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "apellido", "El apellido del paciente es obligatorio"));
+        }
+
+        if ((pacienteDto.getCedula() == null || pacienteDto.getCedula().isBlank()) &&
+                (pacienteDto.getPasaporte() == null || pacienteDto.getPasaporte().isBlank()) &&
+                (pacienteDto.getIdentificacionTemporal() == null || pacienteDto.getIdentificacionTemporal().isBlank())) {
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "identificacion", "Una identificación personal del paciente es obligatoria"));
+        }
+
+        if (pacienteDto.getFechaNacimiento() == null) {
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "fechaNacimiento", "La fecha de nacimiento del paciente es obligatoria"));
+        }
+
+        return failedList;
+    }
+
+    public List<ApiFailed> validatePacienteExist(@NotNull PacienteDto pacienteDto) {
+        List<ApiFailed> failedList = new ArrayList<>();
+
         if (pacienteDto.getCedula() != null) {
             pacienteDto.setCedula(FormatterUtil.formatCedula(pacienteDto.getCedula()));
+            if (this.pacienteRepository.findByCedula(pacienteDto.getCedula()).isPresent()) {
+                log.debug("Existe un paciente con cédula a registrar: {}", pacienteDto.getCedula());
+                failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "cedula", "Ya existe un paciente con la cédula proporcionada"));
+            }
+        }
+
+        if (pacienteDto.getPasaporte() != null && !pacienteDto.getPasaporte().isBlank() &&
+                this.pacienteRepository.findByPasaporte(pacienteDto.getPasaporte()).isPresent()) {
+            log.debug("Existe un paciente con pasaporte: {}", pacienteDto.getPasaporte());
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "pasaporte", "Ya existe un paciente con el pasaporte proporcionado"));
+        }
+
+        if (pacienteDto.getIdentificacionTemporal() != null && !pacienteDto.getIdentificacionTemporal().isBlank() &&
+                this.pacienteRepository.findByIdentificacionTemporal(pacienteDto.getIdentificacionTemporal()).isPresent()) {
+            log.debug("Existe un paciente con este identificador temporal: {}", pacienteDto.getIdentificacionTemporal());
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "identificacionTemporal", "Ya existe un paciente con la identificación temporal proporcionada"));
+        }
+
+        if (pacienteDto.getCorreo() != null && !pacienteDto.getCorreo().isBlank() &&
+                this.pacienteRepository.findByCorreo(pacienteDto.getCorreo()).isPresent()) {
+            log.debug("Existe un paciente con este correo: {}", pacienteDto.getCorreo());
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "correo", "Ya existe un paciente con el correo proporcionado"));
+        }
+
+        if (pacienteDto.getTelefono() != null && !pacienteDto.getTelefono().isBlank() &&
+                this.pacienteRepository.findByTelefono(pacienteDto.getTelefono()).isPresent()) {
+            log.debug("Existe un paciente con este teléfono: {}", pacienteDto.getTelefono());
+            failedList.add(new ApiFailed(ApiResponseCode.VALIDATION_FAILED, "telefono", "Ya existe un paciente con el teléfono proporcionado"));
+        }
+
+        return failedList;
+    }
+
+
+    @Transactional
+    public ApiContentResponse createPaciente(@NotNull final PacienteDto pacienteDto) {
+        ApiContentResponse apiContentResponse = new ApiContentResponse();
+        apiContentResponse.addErrors(this.validatePacienteExist(pacienteDto));
+        apiContentResponse.addErrors(this.validateCreatePaciente(pacienteDto));
+        if (apiContentResponse.hasErrors()) {
+            return apiContentResponse;
         }
         Direccion direccion;
         if (pacienteDto.getDireccion() != null) {
@@ -73,7 +150,6 @@ public class PacienteService {
         } else {
             direccion = direccionMapper.direccionDtoToEntity(direccionService.getDireccionDtoDefault());
         }
-
         Paciente paciente = Paciente.builder()
                 .nombre(pacienteDto.getNombre())
                 .nombre2(pacienteDto.getNombre2())
@@ -91,8 +167,10 @@ public class PacienteService {
                 .disabled(pacienteDto.getDisabled())
                 .createdAt(pacienteDto.getCreatedAt() != null ? pacienteDto.getCreatedAt() : LocalDateTime.now(ZoneOffset.UTC))
                 .build();
-        paciente =  pacienteRepository.save(paciente);
-        return mapper.toDto(paciente);
+        paciente = pacienteRepository.save(paciente);
+        var result = mapper.toDto(paciente);
+        apiContentResponse.addData("paciente", result);
+        return apiContentResponse;
     }
 
     Optional<Paciente> getPacienteByUserID(@NotNull UUID idUser) {

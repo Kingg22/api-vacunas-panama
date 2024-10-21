@@ -35,9 +35,9 @@ IF NOT EXISTS (SELECT *
             DEFAULT_DATABASE = vacunas
     END
 ELSE
-BEGIN
-    PRINT ('El usuario ya existe');
-END
+    BEGIN
+        PRINT ('El usuario ya existe');
+    END
 -- crear usuario de la base de datos
 -- COLOCAR EL MISMO LOGIN_NAME DE ARRIBA
 PRINT (N'Creando el usuario');
@@ -48,23 +48,25 @@ BEGIN CATCH
     PRINT ('Error al crear el usuario. Detalles del error: ' + ERROR_MESSAGE());
 END CATCH;
 -- Verificar si el usuario existe antes de asignar permisos
-IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'SpringAPI')
-BEGIN
-    BEGIN TRY
-        PRINT (N'Otorgando permisos al user');
-        EXEC sp_addrolemember 'db_datareader', 'SpringApi';
-        EXEC sp_addrolemember 'db_datawriter', 'SpringApi';
-        GRANT EXECUTE ON SCHEMA::dbo TO SpringAPI;
-        -- dependiendo la aplicación se le puede asignar más o menos permisos**
-    END TRY
-    BEGIN CATCH
-        PRINT ('Error al otorgar permisos. Detalles del error: ' + ERROR_MESSAGE());
-    END CATCH;
-END
+IF EXISTS (SELECT *
+           FROM sys.database_principals
+           WHERE name = 'SpringAPI')
+    BEGIN
+        BEGIN TRY
+            PRINT (N'Otorgando permisos al user');
+            EXEC sp_addrolemember 'db_datareader', 'SpringApi';
+            EXEC sp_addrolemember 'db_datawriter', 'SpringApi';
+            GRANT EXECUTE ON SCHEMA::dbo TO SpringAPI;
+            -- dependiendo la aplicación se le puede asignar más o menos permisos**
+        END TRY
+        BEGIN CATCH
+            PRINT ('Error al otorgar permisos. Detalles del error: ' + ERROR_MESSAGE());
+        END CATCH;
+    END
 ELSE
-BEGIN
-    PRINT ('El usuario SpringAPI no existe, no se pueden otorgar permisos.');
-END
+    BEGIN
+        PRINT ('El usuario SpringAPI no existe, no se pueden otorgar permisos.');
+    END
 GO
 
 PRINT (N'Creando tablas');
@@ -293,7 +295,7 @@ CREATE TABLE personas
         CONSTRAINT df_personas_sexo DEFAULT ('X'),
     estado           NVARCHAR(50)     NOT NULL
         CONSTRAINT df_personas_estado DEFAULT ('NO_VALIDADO'),
-    disabled BIT
+    disabled         BIT
         CONSTRAINT df_personas_disabled DEFAULT (0),
     direccion        UNIQUEIDENTIFIER NOT NULL,
     usuario          UNIQUEIDENTIFIER,
@@ -347,7 +349,7 @@ CREATE TABLE entidades
     dependencia NVARCHAR(13),
     estado      NVARCHAR(50)     NOT NULL
         CONSTRAINT df_entidades_estado DEFAULT ('ACTIVO'),
-    disabled BIT
+    disabled    BIT
         CONSTRAINT df_entidades_disabled DEFAULT (0),
     direccion   UNIQUEIDENTIFIER NOT NULL,
     CONSTRAINT ck_entidades_correo CHECK (correo IS NULL OR (correo LIKE '%_@_%.__%' AND LEN(correo) >= 5)),
@@ -426,16 +428,16 @@ GO
 -- TODO eliminar la relación vacuna fabricante a una vacuna por fabricante
 CREATE TABLE vacunas
 (
-    id                        UNIQUEIDENTIFIER PRIMARY KEY
+    id                       UNIQUEIDENTIFIER PRIMARY KEY
         CONSTRAINT df_vacunas_id DEFAULT NEWID(),
-    nombre                    NVARCHAR(100) NOT NULL,
+    nombre                   NVARCHAR(100) NOT NULL,
     --fabricante UNIQUEIDENTIFIER NOT NULL,
-    edad_minima_dias          INT,
-    intervalo_dosis_1_2_dias  INT,
-    dosis_maxima              CHAR(2),
-    created_at                DATETIME      NOT NULL
+    edad_minima_dias         INT,
+    intervalo_dosis_1_2_dias INT,
+    dosis_maxima             CHAR(2),
+    created_at               DATETIME      NOT NULL
         CONSTRAINT df_vacunas_created DEFAULT CURRENT_TIMESTAMP,
-    updated_at                DATETIME,
+    updated_at               DATETIME,
     CONSTRAINT ck_vacunas_dosis_maxima CHECK (dosis_maxima IN ('1', '2', '3', 'R', 'R1', 'R2', 'P')),
     CONSTRAINT ck_vacunas_edad_minima CHECK (edad_minima_dias >= 0),
     --CONSTRAINT fk_vacunas_fabricantes FOREIGN KEY (fabricante) REFERENCES fabricantes (id) ON UPDATE CASCADE,
@@ -447,7 +449,7 @@ CREATE TABLE dosis
 (
     id               UNIQUEIDENTIFIER PRIMARY KEY
         CONSTRAINT df_dosis_id DEFAULT NEWID(),
-    paciente UNIQUEIDENTIFIER NOT NULL,
+    paciente         UNIQUEIDENTIFIER NOT NULL,
     fecha_aplicacion DATETIME         NOT NULL
         CONSTRAINT df_dosis_aplicacion DEFAULT CURRENT_TIMESTAMP,
     numero_dosis     CHAR(2)          NOT NULL,
@@ -475,7 +477,7 @@ CREATE TABLE fabricantes
     created_at        DATETIME     NOT NULL
         CONSTRAINT df_fabricantes_created DEFAULT CURRENT_TIMESTAMP,
     updated_at        DATETIME,
-    usuario UNIQUEIDENTIFIER,
+    usuario           UNIQUEIDENTIFIER,
     CONSTRAINT ck_fabricantes_licencia CHECK (licencia LIKE '%/DNFD'),
     CONSTRAINT ck_fabricantes_correo CHECK (contacto_correo IS NULL OR
                                             (contacto_correo LIKE '%_@_%.__%' AND LEN(contacto_correo) >= 5)),
@@ -732,7 +734,7 @@ GO
 CREATE VIEW view_vacunas_enfermedades AS
 SELECT v.nombre                           AS 'Nombre Vacuna',
        v.edad_minima_dias                 AS 'Edad mínima Recomendada en Meses',
-       v.intervalo_dosis_1_2_dias           'Intervalo entre Dosis 1 y 2 Recomendado en Meses',
+       v.intervalo_dosis_1_2_dias            'Intervalo entre Dosis 1 y 2 Recomendado en Meses',
        v.dosis_maxima                     AS 'Dosis Máxima Recomendada',
        STRING_AGG(e.nombre, ', ')         AS 'Enfermedades Prevenidas',
        STRING_AGG(e.nivel_gravedad, ', ') AS 'Niveles de Gravedad Enfermedades',
@@ -797,25 +799,26 @@ GROUP BY v.nombre, v.id
 GO
 
 CREATE VIEW view_pacientes_vacunas_enfermedades AS
-SELECT v.nombre                    AS 'Nombre Vacuna',
-       d.numero_dosis              AS N'Número de dosis',
-       STRING_AGG(e.nombre, ', ')  AS N'Enfermedades Prevenidas',
-       v.edad_minima_dias          AS N'Edad Mínima Recomendada en Meses',
-       d.fecha_aplicacion          AS N'Fecha de Aplicación',
-       v.intervalo_dosis_1_2_dias AS 'Intervalo Recomendado entre Dosis 1 y 2 en Meses',
+SELECT v.nombre                   AS 'Nombre Vacuna',
+       d.numero_dosis             AS N'Número de dosis',
+       STRING_AGG(e.nombre, ', ') AS N'Enfermedades Prevenidas',
+       v.edad_minima_dias         AS N'Edad Mínima Recomendada en Días',
+       d.fecha_aplicacion         AS N'Fecha de Aplicación',
+       v.intervalo_dosis_1_2_dias AS N'Intervalo Recomendado entre Dosis 1 y 2 en Días',
        DATEDIFF(DAY, d.fecha_aplicacion,
                 (SELECT MAX(d2.fecha_aplicacion)
                  FROM dosis d2
                  WHERE d2.paciente = p.id
                    AND d2.vacuna = d.vacuna
                    AND d2.numero_dosis > d.numero_dosis))
-                                   AS N'Intervalo Real en Días',
-       ee.nombre                   AS 'Sede',
-       ee.dependencia              AS 'Dependencia',
+                                  AS N'Intervalo Real en Días',
+       ee.nombre                  AS 'Sede',
+       ee.dependencia             AS 'Dependencia',
        p.id,
-       v.id                        AS 'id_vacuna',
-       d.id                        AS 'id_dosis',
-       STRING_AGG(e.id, ', ')      AS 'ids_enfermedades'
+       v.id                       AS 'id_vacuna',
+       ee.id                      AS 'id_sede',
+       d.id                       AS 'id_dosis',
+       STRING_AGG(e.id, ', ')     AS 'ids_enfermedades'
 FROM pacientes p
          JOIN dosis d ON p.id = d.paciente
          JOIN vacunas v ON d.vacuna = v.id
@@ -825,14 +828,14 @@ FROM pacientes p
          LEFT JOIN entidades ee ON s.id = ee.id
 GROUP BY p.id,
          v.nombre, v.edad_minima_dias, v.intervalo_dosis_1_2_dias,
-         ee.nombre, ee.dependencia,
+         ee.nombre, ee.dependencia, ee.id,
          v.id,
          d.id, d.vacuna, d.fecha_aplicacion, d.numero_dosis;
 GO
 
 CREATE VIEW view_distribuciones_almacenes_sedes_vacunas_fabricantes AS
-SELECT ae.nombre      AS N'Nombre Almacén',
-       ae.dependencia AS N'Dependencia Almacén',
+SELECT ae.nombre            AS N'Nombre Almacén',
+       ae.dependencia       AS N'Dependencia Almacén',
        se.nombre            AS 'Nombre Sede',
        se.dependencia       AS 'Dependencia Sede',
        v.nombre             AS 'Nombre Vacuna',
@@ -859,8 +862,8 @@ FROM distribuciones_vacunas d
 GO
 
 CREATE VIEW view_almacenes_inventarios_vacunas_fabricantes AS
-SELECT ae.nombre      AS N'Nombre Almacén',
-       ae.dependencia AS N'Dependencia Almacén',
+SELECT ae.nombre           AS N'Nombre Almacén',
+       ae.dependencia      AS N'Dependencia Almacén',
        v.nombre            AS 'Nombre Vacuna',
        fe.nombre           AS 'Nombre Fabricante',
        ai.cantidad         AS 'Cantidad Disponible',
@@ -1278,7 +1281,11 @@ BEGIN
     BEGIN TRY
         DECLARE @numero_dosis CHAR(2), @id_paciente UNIQUEIDENTIFIER, @id_vacuna UNIQUEIDENTIFIER, @id_sede UNIQUEIDENTIFIER, @lote NVARCHAR(10), @cantidad_disponible INT, @fecha_lote DATETIME;
 
-        SELECT @numero_dosis = i.numero_dosis, @id_vacuna = i.vacuna, @id_sede = i.sede, @lote = i.lote, @id_paciente = paciente
+        SELECT @numero_dosis = i.numero_dosis,
+               @id_vacuna = i.vacuna,
+               @id_sede = i.sede,
+               @lote = i.lote,
+               @id_paciente = paciente
         FROM inserted i
 
         SET @numero_dosis = RTRIM(@numero_dosis);
@@ -3134,10 +3141,10 @@ CREATE FUNCTION fn_vacunas_find_dosis(
                         LEFT JOIN personas ON d.paciente = personas.id
                WHERE (d.vacuna = @uuid_vacuna OR @uuid_vacuna IS NULL)
                  AND (d.paciente = @uuid_paciente OR d.paciente = (SELECT id
-                                                                     FROM pacientes
-                                                                     WHERE cedula LIKE @cedula
-                                                                        OR pasaporte = @pasaporte
-                                                                        OR identificacion_temporal = @id_temporal))
+                                                                   FROM pacientes
+                                                                   WHERE cedula LIKE @cedula
+                                                                      OR pasaporte = @pasaporte
+                                                                      OR identificacion_temporal = @id_temporal))
                  AND (d.numero_dosis = @numero_dosis OR @numero_dosis IS NULL)
                  AND (d.fecha_aplicacion = @fecha_aplicacion OR @fecha_aplicacion IS NULL)
                  AND (d.sede = @uuid_sede OR @uuid_sede IS NULL));
@@ -4013,8 +4020,8 @@ EXEC sp_vacunas_gestionar_paciente '3-721-284', NULL, NULL, 'Sandra', N'Pérez',
 EXEC sp_vacunas_insert_dosis NULL, '3-721-284', NULL, NULL, '2022-04-10 10:30', '1', NULL, 'MMR', NULL,
      'Hospital Aquilino Tejeira', NULL, NULL, NULL, NULL;
 GO
-EXEC sp_vacunas_gestionar_paciente '3PI-1-654', NULL, NULL, 'Elena', N'González', NULL, '1993-09-29', 'F', '+50760036666',
-     'elena.nzalez@example.com', 'ACTIVO', 'Calle 11, Edificio C', 'La Chorrera', NULL;
+EXEC sp_vacunas_gestionar_paciente '3PI-1-654', NULL, NULL, 'Elena', N'González', NULL, '1993-09-29', 'F',
+     '+50760036666', 'elena.nzalez@example.com', 'ACTIVO', 'Calle 11, Edificio C', 'La Chorrera', NULL;
 EXEC sp_vacunas_insert_dosis NULL, '3PI-1-654', NULL, NULL, '2020-03-01 09:30', '1', NULL, 'Rotarix', NULL,
      'Hospital Aquilino Tejeira', NULL, NULL, NULL, NULL;
 GO

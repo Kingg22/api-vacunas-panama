@@ -16,23 +16,27 @@ import java.util.*;
  */
 public record ViewPacienteVacunaEnfermedadDto(@JsonIgnore
                                               @JsonProperty(value = "id_paciente") UUID idPaciente,
+                                              @JsonProperty(value = "id_dosis") UUID idDosis,
                                               @JsonProperty(value = "id_vacuna") UUID idVacuna,
                                               @NotNull @Size(max = 100) String vacuna,
                                               @NotNull @JsonProperty(value = "numero_dosis") NumDosisEnum numeroDosis,
                                               List<IdNombreDto> enfermedades,
-                                              @JsonProperty(value = "edad_min_recomendada_meses") Short edadMinRecomendadaMeses,
+                                              @JsonProperty(value = "edad_min_recomendada") Short edadMinRecomendada,
                                               @NotNull @JsonProperty(value = "fecha_aplicacion") LocalDateTime fechaAplicacion,
-                                              @JsonProperty(value = "intervalo_recomendado_dosis_meses") Double intervaloRecomendadoDosisMeses,
-                                              @JsonProperty(value = "intervalo_real_dosis_dias") Integer intervaloRealDosisDias,
+                                              @JsonProperty(value = "intervalo_recomendado_dosis") Double intervaloRecomendadoDosis,
+                                              @JsonProperty(value = "intervalo_real_dosis") Integer intervaloRealDosis,
+                                              @JsonProperty(value = "id_sede") UUID idSede,
                                               @Size(max = 100) String sede,
                                               @Size(max = 13) String dependencia) implements Serializable {
 
     public ViewPacienteVacunaEnfermedadDto(String vacuna, String numeroDosis,
                                            String enfermedadesPrevenidas, Short edadMinima,
                                            LocalDateTime fechaAplicacion, Double intervaloRecomendado,
-                                           Integer intervaloReal, String sede, String dependencia, UUID id, UUID idVacuna, String idsEnfermedades) {
-        this(id, idVacuna, vacuna, NumDosisEnum.fromValue(numeroDosis.trim().toUpperCase()), mapEnfermedades(idsEnfermedades, enfermedadesPrevenidas),
-                edadMinima, fechaAplicacion, intervaloRecomendado, intervaloReal, sede, dependencia);
+                                           Integer intervaloReal, String sede, String dependencia, UUID idPaciente,
+                                           UUID idVacuna, UUID idSede, UUID idDosis, String idsEnfermedades) {
+        this(idPaciente, idDosis, idVacuna, vacuna, NumDosisEnum.fromValue(numeroDosis.trim().toUpperCase()),
+                mapEnfermedades(idsEnfermedades, enfermedadesPrevenidas), edadMinima, fechaAplicacion,
+                intervaloRecomendado, intervaloReal, idSede, sede, dependencia);
     }
 
     private static List<IdNombreDto> mapEnfermedades(String idsEnfermedades, String enfermedadesPrevenidas) {

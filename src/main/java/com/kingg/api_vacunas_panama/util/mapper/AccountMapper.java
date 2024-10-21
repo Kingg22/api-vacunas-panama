@@ -28,9 +28,6 @@ public interface AccountMapper {
 
     RolDto rolToDto(Rol rol);
 
-    @Mapping(target = "pasaporte", ignore = true)
-    @Mapping(target = "licenciaFabricante", ignore = true)
-    @Mapping(target = "cedula", ignore = true)
     UsuarioDto usuarioToDto(Usuario usuario);
 
     @Mapping(target = "usuariosRoles", ignore = true)

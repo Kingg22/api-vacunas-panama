@@ -33,4 +33,11 @@ public interface PacienteRepository extends JpaRepository<Paciente, UUID> {
 
     Optional<Paciente> findByUsuario_Id(@NotNull UUID idUser);
 
+    Optional<Paciente> findByCedula(String cedula);
+
+    Optional<Paciente> findByPasaporte(String pasaporte);
+
+    Optional<Paciente> findByCorreo(String correo);
+
+    Optional<Paciente> findByTelefono(String telefono);
 }

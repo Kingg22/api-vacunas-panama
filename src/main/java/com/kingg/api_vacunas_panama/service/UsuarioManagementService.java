@@ -7,6 +7,7 @@ import com.kingg.api_vacunas_panama.persistence.repository.UsuarioRepository;
 import com.kingg.api_vacunas_panama.util.*;
 import com.kingg.api_vacunas_panama.util.mapper.*;
 import com.kingg.api_vacunas_panama.web.dto.IdNombreDto;
+import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import com.kingg.api_vacunas_panama.web.dto.RestoreDto;
 import com.kingg.api_vacunas_panama.web.dto.UsuarioDto;
 import jakarta.validation.constraints.NotNull;
@@ -71,9 +72,10 @@ public class UsuarioManagementService {
         return errors;
     }
 
-    public ApiContentResponse createUser(@NotNull UsuarioDto usuarioDto) {
+    public ApiContentResponse createUser(@NotNull RegisterUser registerUser) {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
-        Object validationResult = this.validationService.validateRegistration(usuarioDto);
+        UsuarioDto usuarioDto = registerUser.usuario();
+        Object validationResult = this.validationService.validateRegistration(registerUser);
         if (usuarioDto.roles().stream().anyMatch(rolDto -> rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
             apiContentResponse.addWarning(ApiResponseCode.INFORMATION_IGNORED, "roles[].permisos[]", "Los permisos de los roles son ignorados al crear un usuario. Para crear o relacionar nuevos permisos a un rol debe utilizar otra opción");
         }

@@ -2,9 +2,12 @@ package com.kingg.api_vacunas_panama.web.controller;
 
 import com.kingg.api_vacunas_panama.service.PacienteService;
 import com.kingg.api_vacunas_panama.service.UsuarioManagementService;
-import com.kingg.api_vacunas_panama.util.*;
+import com.kingg.api_vacunas_panama.util.ApiContentResponse;
+import com.kingg.api_vacunas_panama.util.ApiResponse;
+import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
+import com.kingg.api_vacunas_panama.util.IApiResponse;
 import com.kingg.api_vacunas_panama.web.dto.PacienteDto;
-import com.kingg.api_vacunas_panama.web.dto.UsuarioDto;
+import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,48 +35,28 @@ public class BulkController {
     @PostMapping("/paciente-usuario-direccion")
     public ResponseEntity<IApiResponse<String, Serializable>> createPacienteUsuario(@RequestBody @Valid PacienteDto pacienteDto,
                                                                                     ServletWebRequest request) {
-        ApiResponse temporal = new ApiResponse();
         IApiResponse<String, Serializable> apiResponse = new ApiResponse();
         log.debug(pacienteDto.toString());
-        if (pacienteDto.getUsuario() == null) {
-            temporal.addError(ApiResponseCode.MISSING_INFORMATION, "Esta función necesita el usuario para el paciente");
-        }
-        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().id() == null && pacienteDto.getUsuario().roles().stream().anyMatch(rolDto -> rolDto.nombre() != null)) {
-            temporal.addError(ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID para el rol Paciente en esta función");
-        }
-        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().roles().stream().anyMatch(rolDto -> rolDto.id() != null && !RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE))) {
-            temporal.addError(ApiResponseCode.VALIDATION_FAILED, "roles[]", "Esta función es solo para pacientes, utilice otra operación");
-        }
-        if (pacienteDto.getSexo().toString().equalsIgnoreCase("X")) {
-            temporal.addWarning(ApiResponseCode.DEPRECATION_WARNING, "sexo", "Pacientes no deben tener sexo no definido. Reglas de vacunación no se podrán aplicar");
-        }
-        if (pacienteDto.getDireccion() != null && pacienteDto.getDireccion().id() == null) {
-            temporal.addWarning(ApiResponseCode.NON_IDEMPOTENCE, "direccion", "Debe trabajar con ID");
-        }
-        if (pacienteDto.getUsuario() != null && pacienteDto.getUsuario().createdAt() != null &&
-                pacienteDto.getCreatedAt() != null && !pacienteDto.getCreatedAt().isEqual(pacienteDto.getUsuario().createdAt())) {
-            temporal.addError(ApiResponseCode.VALIDATION_FAILED, "created_at", "created_at de Paciente y Usuario deben ser las mismas o null");
-        }
-
-        if (!temporal.hasErrors()) {
-            try {
-                PacienteDto paciente = this.pacienteService.createPaciente(pacienteDto);
-                UsuarioDto temp = pacienteDto.getUsuario();
-                // TODO crear un DTO para crear usuarios solamente
-                UsuarioDto usuarioDto = new UsuarioDto(temp.id(), temp.username(), temp.password(), temp.createdAt(), null, null, temp.roles(), paciente.getCedula(), paciente.getPasaporte(), null);
-                ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(usuarioDto);
+        ApiContentResponse validateContent = this.pacienteService.validateCreatePacienteUsuario(pacienteDto);
+        apiResponse.addErrors(validateContent.getErrors());
+        apiResponse.addWarnings(validateContent.getWarnings());
+        if (!apiResponse.hasErrors()) {
+            ApiContentResponse pacienteContent = this.pacienteService.createPaciente(pacienteDto);
+            apiResponse.addWarnings(pacienteContent.getWarnings());
+            apiResponse.addErrors(pacienteContent.getErrors());
+            if (pacienteContent.hasErrors()) {
+                apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
+            } else {
+                RegisterUser registerUser = new RegisterUser(pacienteDto.getUsuario(), pacienteDto.getCedula(), pacienteDto.getPasaporte(), null);
+                ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
                 apiResponse.addWarnings(apiContentResponse.getWarnings());
+                apiResponse.addErrors(apiContentResponse.getErrors());
+                apiResponse.addData(apiContentResponse.getData());
                 if (apiContentResponse.hasErrors()) {
-                    apiResponse.addErrors(apiContentResponse.getErrors());
                     apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
                 } else {
-                    apiResponse.addData(apiContentResponse.getData());
                     apiResponse.addStatusCode(HttpStatus.CREATED);
                 }
-            } catch (IllegalArgumentException exception) {
-                log.error("Error en createPacienteUsuario: ".concat(exception.getMessage()), exception);
-                apiResponse.addError(ApiResponseCode.VALIDATION_FAILED, exception.getMessage());
-                apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             }
         } else {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);

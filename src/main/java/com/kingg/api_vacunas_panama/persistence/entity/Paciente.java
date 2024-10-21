@@ -30,14 +30,16 @@ import java.util.UUID;
                 "[Nombre Vacuna] AS nombre_vacuna," +
                 "[Número de dosis] AS numero_dosis, " +
                 "[Enfermedades Prevenidas] AS enfermedades_prevenidas, " +
-                "[Edad Mínima Recomendada en Meses] AS edad_minima," +
+                "[Edad Mínima Recomendada en Días] AS edad_minima," +
                 "[Fecha de Aplicación] AS fecha_aplicacion," +
-                "[Intervalo Recomendado entre Dosis 1 y 2 en Meses] AS intervalo_recomendado," +
+                "[Intervalo Recomendado entre Dosis 1 y 2 en Días] AS intervalo_recomendado," +
                 "[Intervalo Real en Días] AS intervalo_real," +
                 "Sede AS nombre_sede," +
                 "Dependencia AS dependencia_sede," +
                 "id," +
                 "id_vacuna," +
+                "id_sede, " +
+                "id_dosis, " +
                 "ids_enfermedades " +
                 "FROM view_pacientes_vacunas_enfermedades " +
                 "WHERE id = :id " +
@@ -49,14 +51,16 @@ import java.util.UUID;
                 "[Nombre Vacuna] AS nombre_vacuna," +
                 "[Número de dosis] AS numero_dosis, " +
                 "[Enfermedades Prevenidas] AS enfermedades_prevenidas, " +
-                "[Edad Mínima Recomendada en Meses] AS edad_minima," +
+                "[Edad Mínima Recomendada en Días] AS edad_minima," +
                 "[Fecha de Aplicación] AS fecha_aplicacion," +
-                "[Intervalo Recomendado entre Dosis 1 y 2 en Meses] AS intervalo_recomendado," +
+                "[Intervalo Recomendado entre Dosis 1 y 2 en Días] AS intervalo_recomendado," +
                 "[Intervalo Real en Días] AS intervalo_real," +
                 "Sede AS nombre_sede," +
                 "Dependencia AS dependencia_sede," +
                 "id," +
                 "id_vacuna," +
+                "id_sede, " +
+                "id_dosis, " +
                 "ids_enfermedades " +
                 "FROM view_pacientes_vacunas_enfermedades " +
                 "WHERE id = :id AND id_vacuna = :vacuna " +
@@ -77,6 +81,8 @@ import java.util.UUID;
                 @ColumnResult(name = "dependencia_sede", type = String.class),
                 @ColumnResult(name = "id", type = UUID.class),
                 @ColumnResult(name = "id_vacuna", type = UUID.class),
+                @ColumnResult(name = "id_sede", type = UUID.class),
+                @ColumnResult(name = "id_dosis", type = UUID.class),
                 @ColumnResult(name = "ids_enfermedades", type = String.class)
         }
 ))

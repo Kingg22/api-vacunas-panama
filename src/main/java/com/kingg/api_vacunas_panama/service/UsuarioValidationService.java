@@ -6,6 +6,7 @@ import com.kingg.api_vacunas_panama.persistence.repository.UsuarioRepository;
 import com.kingg.api_vacunas_panama.util.ApiFailed;
 import com.kingg.api_vacunas_panama.util.ApiResponseCode;
 import com.kingg.api_vacunas_panama.util.RolesEnum;
+import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import com.kingg.api_vacunas_panama.web.dto.RolDto;
 import com.kingg.api_vacunas_panama.web.dto.UsuarioDto;
 import jakarta.validation.constraints.NotNull;
@@ -33,8 +34,9 @@ class UsuarioValidationService {
     private final FabricanteService fabricanteService;
     private final UsuarioRepository usuarioRepository;
 
-    Object validateRegistration(@NotNull UsuarioDto usuarioDto) {
+    Object validateRegistration(@NotNull RegisterUser registerUser) {
         List<ApiFailed> errors = new ArrayList<>();
+        UsuarioDto usuarioDto = registerUser.usuario();
         if (usuarioDto.roles().stream().anyMatch(rolDto -> rolDto.id() == null && rolDto.nombre() != null && !rolDto.nombre().isBlank())) {
             errors.add(new ApiFailed(ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID al realizar peticiones"));
         }
@@ -54,14 +56,14 @@ class UsuarioValidationService {
         // validation is delegated to other specific methods depending on the role to be registered
         if (usuarioDto.roles().stream().anyMatch(rolDto -> rolDto != null && rolDto.nombre() != null && !rolDto.nombre().isBlank()
                 && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
-            if (usuarioDto.licenciaFabricante() != null) {
-                return this.validateRegistrationFabricante(usuarioDto, errors);
+            if (registerUser.licenciaFabricante() != null) {
+                return this.validateRegistrationFabricante(registerUser, errors);
             } else {
                 errors.add(new ApiFailed(ApiResponseCode.MISSING_INFORMATION, "licencia_fabricante", "Los fabricantes requieren licencia autorizada por Dirección Nacional de Farmacia y Drogas del MINSA"));
             }
         } else {
-            if (usuarioDto.cedula() != null || usuarioDto.pasaporte() != null) {
-                return this.validateRegistrationPersona(usuarioDto, errors);
+            if (registerUser.cedula() != null || registerUser.pasaporte() != null) {
+                return this.validateRegistrationPersona(registerUser, errors);
             } else {
                 errors.add(new ApiFailed(ApiResponseCode.MISSING_INFORMATION, "Las personas requieren una identificación personal como cédula panameña o pasaporte"));
             }
@@ -69,8 +71,8 @@ class UsuarioValidationService {
         return errors;
     }
 
-    Object validateRegistrationPersona(@NotNull UsuarioDto usuarioDto, List<ApiFailed> errors) {
-        String identifier = usuarioDto.cedula() != null ? usuarioDto.cedula() : usuarioDto.pasaporte();
+    Object validateRegistrationPersona(@NotNull RegisterUser registerUser, List<ApiFailed> errors) {
+        String identifier = registerUser.cedula() != null ? registerUser.cedula() : registerUser.pasaporte();
         assert identifier != null;
 
         return this.personaService.getPersona(identifier).map(persona -> {
@@ -94,8 +96,8 @@ class UsuarioValidationService {
         });
     }
 
-    Object validateRegistrationFabricante(@NotNull UsuarioDto usuarioDto, List<ApiFailed> errors) {
-        return this.fabricanteService.getFabricante(usuarioDto.licenciaFabricante()).map(fabricante -> {
+    Object validateRegistrationFabricante(@NotNull RegisterUser registerUser, List<ApiFailed> errors) {
+        return this.fabricanteService.getFabricante(registerUser.licenciaFabricante()).map(fabricante -> {
             if (Boolean.FALSE.equals(fabricante.getDisabled())) {
                 Usuario user = fabricante.getUsuario();
                 if (user != null && user.getId() != null) {

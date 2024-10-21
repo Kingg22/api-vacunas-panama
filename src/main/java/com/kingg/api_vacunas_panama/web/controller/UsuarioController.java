@@ -4,6 +4,7 @@ import com.kingg.api_vacunas_panama.persistence.entity.*;
 import com.kingg.api_vacunas_panama.service.UsuarioManagementService;
 import com.kingg.api_vacunas_panama.util.*;
 import com.kingg.api_vacunas_panama.web.dto.LoginDto;
+import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import com.kingg.api_vacunas_panama.web.dto.RestoreDto;
 import com.kingg.api_vacunas_panama.web.dto.UsuarioDto;
 import jakarta.validation.Valid;
@@ -70,10 +71,11 @@ public class UsuarioController {
      * information and a token if the {@link Persona} or {@link Entidad} is validated and active.
      */
     @PostMapping({"/register"})
-    public ResponseEntity<IApiResponse<String, Serializable>> register(@RequestBody @Valid UsuarioDto usuarioDto,
+    public ResponseEntity<IApiResponse<String, Serializable>> register(@RequestBody @Valid RegisterUser registerUser,
                                                                        Authentication authentication,
                                                                        ServletWebRequest request) {
         IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        UsuarioDto usuarioDto = registerUser.usuario();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             List<ApiFailed> failedList = this.usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication);
             apiResponse.addErrors(failedList);
@@ -86,7 +88,7 @@ public class UsuarioController {
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN);
             apiResponse.addStatus("Insufficient authorities");
         } else {
-            ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(usuarioDto);
+            ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
             apiResponse.addWarnings(apiContentResponse.getWarnings());
             if (apiContentResponse.hasErrors()) {
                 apiResponse.addErrors(apiContentResponse.getErrors());
