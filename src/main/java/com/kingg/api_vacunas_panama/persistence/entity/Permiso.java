@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "permisos", indexes = {
-        @Index(name = "uq_permisos_nombre", columnList = "nombre_permiso", unique = true)
+        @Index(name = "uq_permisos_nombre", columnList = "nombre", unique = true)
 })
 @NoArgsConstructor
 @Getter

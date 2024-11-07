@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles", indexes = {
-        @Index(name = "uq_roles_rol", columnList = "nombre_rol", unique = true)
+        @Index(name = "uq_roles_rol", columnList = "nombre", unique = true)
 })
 @NoArgsConstructor
 @Getter
@@ -64,12 +64,6 @@ public class Rol {
 
     @OneToMany(mappedBy = "idRol")
     private Set<UsuariosRoles> usuariosRoles = new LinkedHashSet<>();
-
-    public Rol(RolesEnum nombre, String descripcion, Set<Permiso> permisos) {
-        this.nombre = nombre.name();
-        this.descripcion = descripcion;
-        this.permisos = permisos;
-    }
 
     public void setNombre(RolesEnum rol) {
         this.nombre = rol.name();

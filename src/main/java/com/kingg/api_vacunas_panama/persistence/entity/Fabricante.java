@@ -23,7 +23,7 @@ import java.util.Set;
 @SuperBuilder
 @Entity
 @Table(name = "fabricantes", indexes = {
-        @Index(name = "ix_fabricantes_licencia", columnList = "licencia_fabricante")
+        @Index(name = "ix_fabricantes_licencia", columnList = "licencia")
 })
 public class Fabricante extends Entidad {
     @Size(max = 50)

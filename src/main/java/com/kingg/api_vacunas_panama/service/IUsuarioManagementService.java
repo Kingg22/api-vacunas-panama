@@ -29,4 +29,6 @@ public interface IUsuarioManagementService {
     Map<String, Serializable> getProfile(UUID id);
 
     Map<String, Serializable> setLoginData(UUID id);
+
+    void updateLastUsed(UUID id);
 }

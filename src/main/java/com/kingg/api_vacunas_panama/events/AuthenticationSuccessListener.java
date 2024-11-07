@@ -1,6 +1,6 @@
 package com.kingg.api_vacunas_panama.events;
 
-import com.kingg.api_vacunas_panama.service.UsuarioTransactionService;
+import com.kingg.api_vacunas_panama.service.IUsuarioManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
-    private final UsuarioTransactionService usuarioTransactionService;
+    private final IUsuarioManagementService usuarioService;
 
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
@@ -22,7 +22,7 @@ public class AuthenticationSuccessListener implements ApplicationListener<Authen
             String userId = event.getAuthentication().getName();
             log.debug("User ID for update last used: {}", userId);
             if (userId != null && !userId.isBlank()) {
-                usuarioTransactionService.updateLastUsed(UUID.fromString(userId));
+                usuarioService.updateLastUsed(UUID.fromString(userId));
             }
         }
     }

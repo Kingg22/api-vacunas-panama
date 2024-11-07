@@ -8,7 +8,8 @@ import com.kingg.api_vacunas_panama.response.ApiContentResponse;
 import com.kingg.api_vacunas_panama.response.ApiFailed;
 import com.kingg.api_vacunas_panama.response.ApiResponseCode;
 import com.kingg.api_vacunas_panama.response.IApiContentResponse;
-import com.kingg.api_vacunas_panama.util.*;
+import com.kingg.api_vacunas_panama.util.FormatterUtil;
+import com.kingg.api_vacunas_panama.util.RolesEnum;
 import com.kingg.api_vacunas_panama.util.mapper.*;
 import com.kingg.api_vacunas_panama.web.dto.IdNombreDto;
 import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
@@ -180,6 +181,10 @@ public class UsuarioManagementService implements IUsuarioManagementService {
             idsAdicionales.put("fabricante", usuario.getFabricante().getId());
         }
         return tokenService.generateTokens(mapper.usuarioToDto(usuario), idsAdicionales);
+    }
+
+    public void updateLastUsed(UUID id) {
+        this.transactionService.updateLastUsed(id);
     }
 
     /**
