@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class DireccionService {
+public class DireccionService implements IDireccionService {
     private final DireccionMapper mapper;
     private final DireccionRepository direccionRepository;
     private final DistritoRepository distritoRepository;

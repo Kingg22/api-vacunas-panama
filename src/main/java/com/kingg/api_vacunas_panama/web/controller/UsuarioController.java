@@ -1,8 +1,9 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
 import com.kingg.api_vacunas_panama.persistence.entity.*;
-import com.kingg.api_vacunas_panama.service.UsuarioManagementService;
-import com.kingg.api_vacunas_panama.util.*;
+import com.kingg.api_vacunas_panama.response.*;
+import com.kingg.api_vacunas_panama.service.IUsuarioManagementService;
+import com.kingg.api_vacunas_panama.util.RolesEnum;
 import com.kingg.api_vacunas_panama.web.dto.LoginDto;
 import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import com.kingg.api_vacunas_panama.web.dto.RestoreDto;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,8 +42,6 @@ import java.util.UUID;
  * </ul>
  * </p>
  * <br>
- * For cases where both the {@link Persona}/{@link Entidad} and the {@link Usuario} need to created in a single request,
- * a different endpoint should be used.
  */
 @Slf4j
 @RestController
@@ -51,7 +49,8 @@ import java.util.UUID;
 @RequestMapping(path = "/vacunacion/v1/account", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsuarioController {
     private final AuthenticationManager authenticationManager;
-    private final UsuarioManagementService usuarioManagementService;
+    private final IUsuarioManagementService usuarioManagementService;
+    private final ApiResponseFactory apiResponseFactory;
 
     /**
      * Handles user registration.
@@ -62,9 +61,11 @@ public class UsuarioController {
      * <p>
      * If all validations pass, the {@link Usuario} is created.
      * <p><b>Note:</b> The user must be assigned roles, and empty roles are not allowed.
-     * If the associated entities is not created, the request will be rejected.</p>
+     * If the associated entities is not created, the request will be rejected.
+     * For cases where both the {@link Persona}/{@link Entidad} and the {@link Usuario} need to created in a single request,
+     * a different endpoint should be used.</p>
      *
-     * @param usuarioDto     The {@link UsuarioDto} containing the user registration details.
+     * @param registerUser   The {@link RegisterUser} containing the user registration details.
      * @param authentication The {@link Authentication} representing the current user (if any).
      * @param request        The {@link ServletWebRequest} used for building the response.
      * @return {@link IApiResponse} containing the registration result, including user details, associated {@link Persona} or {@link Entidad}
@@ -74,10 +75,10 @@ public class UsuarioController {
     public ResponseEntity<IApiResponse<String, Serializable>> register(@RequestBody @Valid RegisterUser registerUser,
                                                                        Authentication authentication,
                                                                        ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         UsuarioDto usuarioDto = registerUser.usuario();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-            List<ApiFailed> failedList = this.usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication);
+            var failedList = this.usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication);
             apiResponse.addErrors(failedList);
         } else if (!usuarioDto.roles().stream().allMatch(rolDto -> RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE) ||
                 rolDto.nombre() != null && rolDto.nombre().equalsIgnoreCase("Paciente"))) {
@@ -88,13 +89,13 @@ public class UsuarioController {
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN);
             apiResponse.addStatus("Insufficient authorities");
         } else {
-            ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
+            var apiContentResponse = this.usuarioManagementService.createUser(registerUser);
             apiResponse.addWarnings(apiContentResponse.getWarnings());
+            apiResponse.addErrors(apiContentResponse.getErrors());
+            apiResponse.addData(apiContentResponse.getData());
             if (apiContentResponse.hasErrors()) {
-                apiResponse.addErrors(apiContentResponse.getErrors());
                 apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             } else {
-                apiResponse.addData(apiContentResponse.getData());
                 apiResponse.addStatusCode(HttpStatus.CREATED);
             }
         }
@@ -103,7 +104,7 @@ public class UsuarioController {
 
     @PostMapping({"/login"})
     public ResponseEntity<IApiResponse<String, Serializable>> login(@RequestBody @Valid LoginDto loginDto, ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         Authentication authentication = null;
 
         try {
@@ -128,8 +129,8 @@ public class UsuarioController {
     @PatchMapping({"/restore"})
     public ResponseEntity<IApiResponse<String, Serializable>> restore(@RequestBody @Valid RestoreDto restoreDto,
                                                                       ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
-        ApiContentResponse apiContentResponse = this.usuarioManagementService.changePassword(restoreDto);
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
+        IApiContentResponse apiContentResponse = this.usuarioManagementService.changePassword(restoreDto);
         if (apiContentResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             apiResponse.addErrors(apiContentResponse.getErrors());
@@ -143,7 +144,7 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<IApiResponse<String, Serializable>> profile(Authentication authentication,
                                                                       ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         apiResponse.addData(usuarioManagementService.getProfile(UUID.fromString(authentication.getName())));
         apiResponse.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(apiResponse, request);

@@ -1,10 +1,10 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
+import com.kingg.api_vacunas_panama.response.ApiResponseFactory;
+import com.kingg.api_vacunas_panama.response.ApiResponseUtil;
+import com.kingg.api_vacunas_panama.response.IApiResponse;
+import com.kingg.api_vacunas_panama.service.IVacunaService;
 import com.kingg.api_vacunas_panama.service.VacunaService;
-import com.kingg.api_vacunas_panama.util.ApiResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponseCode;
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
 import com.kingg.api_vacunas_panama.web.dto.InsertDosisDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.io.Serializable;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/vacunacion/v1/vaccines/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class VacunaController {
-    private final VacunaService vacunaService;
+    private final IVacunaService vacunaService;
+    private final ApiResponseFactory apiResponseFactory;
 
     @PostMapping("/create-dosis")
     public ResponseEntity<IApiResponse<String, Serializable>> createDosis(@RequestBody @Valid InsertDosisDto insertDosisDto,
                                                                           ServletWebRequest servletWebRequest) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
-        try {
-            apiResponse.addData("dosis", vacunaService.createDosis(insertDosisDto));
-            apiResponse.addStatusCode(HttpStatus.CREATED);
-        } catch (IllegalStateException | IllegalArgumentException illegalException) {
-            apiResponse.addError(ApiResponseCode.VALIDATION_FAILED, illegalException.getMessage());
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
+        var response = vacunaService.createDosis(insertDosisDto);
+        apiResponse.addData(response.getData());
+        apiResponse.addErrors(response.getErrors());
+        apiResponse.addWarnings(response.getWarnings());
+        if (response.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
-        } catch (NoSuchElementException noSuchElementException) {
-            apiResponse.addError(ApiResponseCode.NOT_FOUND, noSuchElementException.getMessage());
-            apiResponse.addStatusCode(HttpStatus.NOT_FOUND);
+        } else {
+            apiResponse.addStatusCode(HttpStatus.CREATED);
         }
         return ApiResponseUtil.sendResponse(apiResponse, servletWebRequest);
     }

@@ -1,4 +1,4 @@
-package com.kingg.api_vacunas_panama.util;
+package com.kingg.api_vacunas_panama.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiContentResponse implements Serializable {
+public class ApiContentResponse implements IApiContentResponse, Serializable {
     private Map<String, Serializable> data = new LinkedHashMap<>();
     private List<ApiFailed> errors = new ArrayList<>();
     private List<ApiFailed> warnings = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ApiContentResponse implements Serializable {
         this.errors.add(new ApiFailed(apiResponseCode));
     }
 
-    public void addError(ApiResponseCode apiResponseCode, Object message) {
+    public void addError(ApiResponseCode apiResponseCode, @NotNull Object message) {
         this.errors.add(new ApiFailed(apiResponseCode, message.toString()));
     }
 

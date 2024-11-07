@@ -1,12 +1,9 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
-import com.kingg.api_vacunas_panama.service.PacienteService;
+import com.kingg.api_vacunas_panama.response.*;
+import com.kingg.api_vacunas_panama.service.IPacienteService;
+import com.kingg.api_vacunas_panama.service.IVacunaService;
 import com.kingg.api_vacunas_panama.service.PdfService;
-import com.kingg.api_vacunas_panama.service.VacunaService;
-import com.kingg.api_vacunas_panama.util.ApiResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponseCode;
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
 import com.kingg.api_vacunas_panama.web.dto.DosisDto;
 import com.kingg.api_vacunas_panama.web.dto.PacienteDto;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +29,15 @@ import java.util.UUID;
 @RequestMapping(path = "/vacunacion/v1/pdf")
 public class PdfController {
     private final PdfService pdfService;
-    private final PacienteService pacienteService;
-    private final VacunaService vacunaService;
+    private final IPacienteService pacienteService;
+    private final IVacunaService vacunaService;
+    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping
     public ResponseEntity<byte[]> getPdfFile(@RequestParam("idPaciente") UUID idPaciente,
                                              @RequestParam("idVacuna") UUID idVacuna) {
         try {
-            List<DosisDto> dosisDtos = vacunaService.getDosisVacunaByIdPaciente(idPaciente, idVacuna);
+            List<DosisDto> dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna);
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString());
                 return ResponseEntity.badRequest().build();
@@ -63,9 +61,9 @@ public class PdfController {
     public ResponseEntity<IApiResponse<String, Serializable>> getPdfBase64(@RequestParam("idPaciente") UUID idPaciente,
                                                                            @RequestParam("idVacuna") UUID idVacuna,
                                                                            ServletWebRequest webRequest) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         try {
-            List<DosisDto> dosisDtos = vacunaService.getDosisVacunaByIdPaciente(idPaciente, idVacuna);
+            List<DosisDto> dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna);
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString());
                 apiResponse.addError(ApiResponseCode.NOT_FOUND, "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF");

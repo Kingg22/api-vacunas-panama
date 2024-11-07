@@ -1,4 +1,4 @@
-package com.kingg.api_vacunas_panama.util;
+package com.kingg.api_vacunas_panama.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

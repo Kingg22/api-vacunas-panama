@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class SedeService {
+public class SedeService implements ISedeService {
     private final SedeRepository sedeRepository;
 
     @Cacheable(cacheNames = "massive", key = "'sedesNombre'")

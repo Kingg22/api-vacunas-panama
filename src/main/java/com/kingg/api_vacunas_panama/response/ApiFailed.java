@@ -1,4 +1,4 @@
-package com.kingg.api_vacunas_panama.util;
+package com.kingg.api_vacunas_panama.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

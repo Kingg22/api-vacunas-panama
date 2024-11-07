@@ -1,6 +1,6 @@
 # :syringe: Proyecto de Gestión de Información sobre Vacunación en Panamá - Backend API
 
-![Imagen logo del proyecto](https://github.com/Kingg22/api-vacunas-panama/blob/e6bb6deff78f7bf086a95dab50a0f76dada5bd00/src/main/resources/images/icon.png)
+![Imagen logo del proyecto](https://github.com/Kingg22/api-vacunas-panama/blob/main/src/main/resources/images/icon.png)
 
 ## Descripción
 
@@ -67,7 +67,7 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
   del proyecto y sus dependencias.
 
 Puede encontrar más detalles de las licencias
-en [THIRD-PARTY](https://github.com/Kingg22/api-vacunas-panama/blob/e6bb6deff78f7bf086a95dab50a0f76dada5bd00/THIRD-PARTY.txt)
+en [THIRD-PARTY](https://github.com/Kingg22/api-vacunas-panama/blob/main/THIRD-PARTY.txt)
 
 ## :pencil: Autores
 
@@ -162,7 +162,7 @@ Abre una terminal y ejecuta los siguientes comandos:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/Kingg22/desktopapp-vacunas-panama.git
+git clone https://github.com/Kingg22/api-vacunas-panama.git
 ```
 
 ### 2. Abrir la carpeta donde fue clonado el repositorio
@@ -170,9 +170,13 @@ git clone https://github.com/Kingg22/desktopapp-vacunas-panama.git
 ### 3. Crear un entorno propio para deploy
 
 > [!NOTE]
-> Puede utilizar un archivo .env o docker secrets, ambas deben utilizar los nombres dados en .env.example al menos que
+> Puede utilizar un archivo env o docker secrets, ambas deben utilizar los nombres dados en .env.example al menos que
 > modifique application.properties
-> Si se decide por usar docker secrets puede eliminar la dependencia _spring-dotenv_
+> 
+> Debe utilizar 2 archivos env el docker.env para colocar las ip internas de docker y .env para utilizarlo de forma
+> externa.
+> Si se decide por usar docker secrets puede eliminar la dependencia _spring-dotenv_ y eliminar el uso de env_file en 
+> docker-compose.yaml
 
 1. Modificar vacunas-init.sql el login colocando un usuario y una contraseña segura al inicio del script. 
 

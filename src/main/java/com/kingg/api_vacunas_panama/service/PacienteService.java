@@ -3,7 +3,11 @@ package com.kingg.api_vacunas_panama.service;
 import com.kingg.api_vacunas_panama.persistence.entity.Direccion;
 import com.kingg.api_vacunas_panama.persistence.entity.Paciente;
 import com.kingg.api_vacunas_panama.persistence.repository.PacienteRepository;
-import com.kingg.api_vacunas_panama.util.*;
+import com.kingg.api_vacunas_panama.response.ApiContentResponse;
+import com.kingg.api_vacunas_panama.response.ApiFailed;
+import com.kingg.api_vacunas_panama.response.ApiResponseCode;
+import com.kingg.api_vacunas_panama.util.FormatterUtil;
+import com.kingg.api_vacunas_panama.util.RolesEnum;
 import com.kingg.api_vacunas_panama.util.mapper.DireccionMapper;
 import com.kingg.api_vacunas_panama.util.mapper.PacienteMapper;
 import com.kingg.api_vacunas_panama.web.dto.PacienteDto;
@@ -31,7 +35,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PacienteService {
+public class PacienteService implements IPacienteService {
     private final PacienteMapper mapper;
     private final DireccionMapper direccionMapper;
     private final PacienteRepository pacienteRepository;
@@ -71,7 +75,7 @@ public class PacienteService {
         return apiContentResponse;
     }
 
-    public List<ApiFailed> validateCreatePaciente(PacienteDto pacienteDto) {
+    public List<ApiFailed> validateCreatePaciente(@NotNull PacienteDto pacienteDto) {
         List<ApiFailed> failedList = new ArrayList<>();
 
         if ((pacienteDto.getNombre() == null || pacienteDto.getNombre().isBlank()) &&
@@ -134,7 +138,6 @@ public class PacienteService {
 
         return failedList;
     }
-
 
     @Transactional
     public ApiContentResponse createPaciente(@NotNull final PacienteDto pacienteDto) {

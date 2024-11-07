@@ -148,6 +148,11 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <image>
+                        <env>
+                            <JAVA_TOOL_OPTIONS>-Duser.timezone=UTC</JAVA_TOOL_OPTIONS>
+                        </env>
+                    </image>
                 </configuration>
             </plugin>
             <plugin>

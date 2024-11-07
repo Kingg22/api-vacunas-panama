@@ -1,10 +1,7 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
-import com.kingg.api_vacunas_panama.service.PacienteService;
-import com.kingg.api_vacunas_panama.util.ApiResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponseCode;
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
+import com.kingg.api_vacunas_panama.response.*;
+import com.kingg.api_vacunas_panama.service.IPacienteService;
 import com.kingg.api_vacunas_panama.web.dto.ViewPacienteVacunaEnfermedadDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +24,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping(path = "/vacunacion/v1/patient", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PacienteController {
-    private final PacienteService pacienteService;
+    private final IPacienteService pacienteService;
+    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping
     public ResponseEntity<IApiResponse<String, Serializable>> getPaciente(@AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         apiResponse.addStatusCode(HttpStatus.OK);
         UUID idPersona = UUID.fromString(jwt.getClaimAsString("persona"));
         log.debug("Received a query of Paciente: {}", idPersona);

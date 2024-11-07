@@ -1,7 +1,7 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
+import com.kingg.api_vacunas_panama.response.ApiResponseUtil;
+import com.kingg.api_vacunas_panama.response.IApiResponse;
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ApiErrorResponse;
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ErrorHandlingFacade;
 import lombok.RequiredArgsConstructor;

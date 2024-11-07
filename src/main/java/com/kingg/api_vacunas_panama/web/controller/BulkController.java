@@ -1,11 +1,8 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
-import com.kingg.api_vacunas_panama.service.PacienteService;
-import com.kingg.api_vacunas_panama.service.UsuarioManagementService;
-import com.kingg.api_vacunas_panama.util.ApiContentResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
+import com.kingg.api_vacunas_panama.response.*;
+import com.kingg.api_vacunas_panama.service.IPacienteService;
+import com.kingg.api_vacunas_panama.service.IUsuarioManagementService;
 import com.kingg.api_vacunas_panama.web.dto.PacienteDto;
 import com.kingg.api_vacunas_panama.web.dto.RegisterUser;
 import jakarta.validation.Valid;
@@ -28,27 +25,28 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 @RequestMapping(path = "/vacunacion/v1/bulk", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BulkController {
-    private final UsuarioManagementService usuarioManagementService;
-    private final PacienteService pacienteService;
+    private final IUsuarioManagementService usuarioManagementService;
+    private final IPacienteService pacienteService;
+    private final ApiResponseFactory apiResponseFactory;
 
     @Transactional
     @PostMapping("/paciente-usuario-direccion")
     public ResponseEntity<IApiResponse<String, Serializable>> createPacienteUsuario(@RequestBody @Valid PacienteDto pacienteDto,
                                                                                     ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         log.debug(pacienteDto.toString());
-        ApiContentResponse validateContent = this.pacienteService.validateCreatePacienteUsuario(pacienteDto);
+        IApiContentResponse validateContent = this.pacienteService.validateCreatePacienteUsuario(pacienteDto);
         apiResponse.addErrors(validateContent.getErrors());
         apiResponse.addWarnings(validateContent.getWarnings());
         if (!apiResponse.hasErrors()) {
-            ApiContentResponse pacienteContent = this.pacienteService.createPaciente(pacienteDto);
+            IApiContentResponse pacienteContent = this.pacienteService.createPaciente(pacienteDto);
             apiResponse.addWarnings(pacienteContent.getWarnings());
             apiResponse.addErrors(pacienteContent.getErrors());
             if (pacienteContent.hasErrors()) {
                 apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             } else {
                 RegisterUser registerUser = new RegisterUser(pacienteDto.getUsuario(), pacienteDto.getCedula(), pacienteDto.getPasaporte(), null);
-                ApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
+                IApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
                 apiResponse.addWarnings(apiContentResponse.getWarnings());
                 apiResponse.addErrors(apiContentResponse.getErrors());
                 apiResponse.addData(apiContentResponse.getData());

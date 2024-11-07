@@ -1,9 +1,9 @@
 package com.kingg.api_vacunas_panama.web.controller;
 
-import com.kingg.api_vacunas_panama.service.UsuarioManagementService;
-import com.kingg.api_vacunas_panama.util.ApiResponse;
-import com.kingg.api_vacunas_panama.util.ApiResponseUtil;
-import com.kingg.api_vacunas_panama.util.IApiResponse;
+import com.kingg.api_vacunas_panama.response.ApiResponseFactory;
+import com.kingg.api_vacunas_panama.service.IUsuarioManagementService;
+import com.kingg.api_vacunas_panama.response.ApiResponseUtil;
+import com.kingg.api_vacunas_panama.response.IApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,8 @@ import java.util.UUID;
 @RequestMapping(path = "/vacunacion/v1/token", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TokenController {
     private final RedisTemplate<String, Object> redisTemplate;
-    private final UsuarioManagementService usuarioManagementService;
+    private final IUsuarioManagementService usuarioManagementService;
+    private final ApiResponseFactory apiResponseFactory;
 
     /**
      * Handles refreshing of tokens.
@@ -38,7 +39,7 @@ public class TokenController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<IApiResponse<String, Serializable>> refreshToken(@AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = new ApiResponse();
+        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
         String userId = jwt.getSubject();
         String tokenId = jwt.getId();
 

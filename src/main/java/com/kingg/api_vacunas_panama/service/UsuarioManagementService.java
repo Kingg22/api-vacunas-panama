@@ -4,6 +4,10 @@ import com.kingg.api_vacunas_panama.persistence.entity.*;
 import com.kingg.api_vacunas_panama.persistence.repository.PermisoRepository;
 import com.kingg.api_vacunas_panama.persistence.repository.RolRepository;
 import com.kingg.api_vacunas_panama.persistence.repository.UsuarioRepository;
+import com.kingg.api_vacunas_panama.response.ApiContentResponse;
+import com.kingg.api_vacunas_panama.response.ApiFailed;
+import com.kingg.api_vacunas_panama.response.ApiResponseCode;
+import com.kingg.api_vacunas_panama.response.IApiContentResponse;
 import com.kingg.api_vacunas_panama.util.*;
 import com.kingg.api_vacunas_panama.util.mapper.*;
 import com.kingg.api_vacunas_panama.web.dto.IdNombreDto;
@@ -29,7 +33,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UsuarioManagementService {
+public class UsuarioManagementService implements IUsuarioManagementService {
     private final AccountMapper mapper;
     private final FabricanteMapper fabricanteMapper;
     private final PersonaMapper personaMapper;
@@ -72,7 +76,7 @@ public class UsuarioManagementService {
         return errors;
     }
 
-    public ApiContentResponse createUser(@NotNull RegisterUser registerUser) {
+    public IApiContentResponse createUser(@NotNull RegisterUser registerUser) {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
         UsuarioDto usuarioDto = registerUser.usuario();
         Object validationResult = this.validationService.validateRegistration(registerUser);
@@ -153,12 +157,12 @@ public class UsuarioManagementService {
     }
 
     @Cacheable(cacheNames = "massive", key = "'roles'")
-    public List<IdNombreDto> getRoles() {
+    public List<IdNombreDto> getIdNombreRoles() {
         return rolRepository.findAllIdNombre();
     }
 
     @Cacheable(cacheNames = "massive", key = "'permisos'")
-    public List<IdNombreDto> getPermisos() {
+    public List<IdNombreDto> getIdNombrePermisos() {
         return permisoRepository.findAllIdNombre();
     }
 
@@ -166,8 +170,8 @@ public class UsuarioManagementService {
         return mapper.usuarioToDto(usuarioRepository.findById(id).orElseThrow());
     }
 
-    public Map<String, Serializable> generateTokens(UUID id) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow();
+    public Map<String, Serializable> generateTokens(UUID idUser) {
+        Usuario usuario = usuarioRepository.findById(idUser).orElseThrow();
         Map<String, Serializable> idsAdicionales = new HashMap<>();
         if (usuario.getPersona() != null) {
             idsAdicionales.put("persona", usuario.getPersona().getId());
