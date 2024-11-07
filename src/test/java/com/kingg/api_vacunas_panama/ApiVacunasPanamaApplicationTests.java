@@ -1,9 +1,9 @@
 package com.kingg.api_vacunas_panama;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@SpringBootTest
+@DataJpaTest
 class ApiVacunasPanamaApplicationTests {
 
     @Test
