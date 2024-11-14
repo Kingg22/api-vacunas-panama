@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -54,6 +55,8 @@ public class DireccionService implements IDireccionService {
 
     Direccion getDireccionDefault() {
         var result = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0).orElseThrow();
+        if (result.isEmpty())
+            throw new NoSuchElementException("La dirección por defecto no fue encontrada");
         return result.getFirst();
     }
 
