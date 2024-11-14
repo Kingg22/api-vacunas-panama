@@ -53,7 +53,8 @@ public class DireccionService implements IDireccionService {
     }
 
     Direccion getDireccionDefault() {
-        return direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0).orElseThrow();
+        var result = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0).orElseThrow();
+        return result.getFirst();
     }
 
     @Cacheable(cacheNames = "massive", key = "'direccionDefault'")
@@ -74,23 +75,19 @@ public class DireccionService implements IDireccionService {
         return distritoRepository.findById(id).orElseThrow();
     }
 
-    Optional<Direccion> getDireccionByDireccionAndDistritoId(String direccion, Integer distrito) {
-        return direccionRepository.findDireccionByDireccionAndDistrito_Id(direccion, distrito);
-    }
-
     public Optional<Direccion> getDireccionByDto(@NotNull @Valid DireccionDto direccionDto) {
         Optional<Direccion> direccion = Optional.empty();
         if (direccionDto.id() != null) {
            direccion = direccionRepository.findById(direccionDto.id());
         }
         if (direccion.isEmpty() && direccionDto.distrito() != null && direccionDto.distrito().id() != null) {
-            direccion = direccionRepository.findDireccionByDireccionAndDistrito_Id(direccionDto.direccion(), direccionDto.distrito().id());
+            direccion = this.findUniqueDireccion(direccionRepository.findDireccionByDireccionAndDistrito_Id(direccionDto.direccion(), direccionDto.distrito().id()));
         }
         if (direccion.isEmpty() && direccionDto.distrito() != null && direccionDto.distrito().nombre() != null) {
-            direccion = direccionRepository.findDireccionByDireccionAndDistrito_Nombre(direccionDto.direccion(), direccionDto.distrito().nombre());
+            direccion = this.findUniqueDireccion(direccionRepository.findDireccionByDireccionAndDistrito_Nombre(direccionDto.direccion(), direccionDto.distrito().nombre()));
         }
         if (direccion.isEmpty()) {
-            direccion = direccionRepository.findDireccionByDireccionContainingIgnoreCase(direccionDto.direccion());
+            direccion = this.findUniqueDireccion( direccionRepository.findDireccionByDireccionStartingWith(direccionDto.direccion().toLowerCase()));
         }
         return direccion;
     }
@@ -111,4 +108,7 @@ public class DireccionService implements IDireccionService {
         return direccionRepository.save(direccion);
     }
 
+    private Optional<Direccion> findUniqueDireccion(Optional<List<Direccion>> result) {
+        return result.filter(resp -> resp.size() == 1).map(List::getFirst);
+    }
 }

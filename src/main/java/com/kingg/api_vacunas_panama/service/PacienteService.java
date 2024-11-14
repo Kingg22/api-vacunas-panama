@@ -15,6 +15,7 @@ import com.kingg.api_vacunas_panama.web.dto.ViewPacienteVacunaEnfermedadDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,6 +172,10 @@ public class PacienteService implements IPacienteService {
                 .createdAt(pacienteDto.getCreatedAt() != null ? pacienteDto.getCreatedAt() : LocalDateTime.now(ZoneOffset.UTC))
                 .build();
         paciente = pacienteRepository.save(paciente);
+        Hibernate.initialize(paciente.getDireccion());
+        Hibernate.initialize(paciente.getDireccion().getDistrito());
+        Hibernate.initialize(paciente.getDireccion().getDistrito().getProvincia());
+        Hibernate.initialize(paciente.getUsuario());
         var result = mapper.toDto(paciente);
         apiContentResponse.addData("paciente", result);
         return apiContentResponse;
