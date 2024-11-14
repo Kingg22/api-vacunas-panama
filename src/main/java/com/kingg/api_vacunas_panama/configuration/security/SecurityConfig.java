@@ -18,7 +18,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenService tokenService, JwtDecoder jwtDecoder) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/vacunacion/**"))
                 .headers(headers ->
                         headers.contentSecurityPolicy(cspc -> cspc
                                 .policyDirectives("default-src 'none'; frame-ancestors 'none'; sandbox; media-src 'self'; object-src 'self';")))
@@ -63,13 +62,11 @@ public class SecurityConfig {
                         .requestMatchers("/vacunacion/v1/pdf/**").permitAll()
                         .requestMatchers("/vacunacion/v1/patient/**").hasAnyAuthority("PACIENTE_READ")
                         .requestMatchers("/vacunacion/v1/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .addFilterAfter(new CustomJwtRefreshFilter(tokenService, jwtDecoder), BearerTokenAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler)
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                )
+                        .authenticationEntryPoint(authenticationEntryPoint))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
