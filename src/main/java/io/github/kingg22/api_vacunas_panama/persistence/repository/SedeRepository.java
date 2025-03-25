@@ -13,7 +13,7 @@ public interface SedeRepository extends JpaRepository<Sede, UUID> {
 
     Optional<Sede> findByNombre(String nombre);
 
-    @Query("SELECT new com.kingg.api_vacunas_panama.web.dto.UUIDNombreDto(s.id, s.nombre) FROM Sede s WHERE s.estado LIKE 'ACTIVO'")
+    @Query("SELECT new io.github.kingg22.api_vacunas_panama.web.dto.UUIDNombreDto(s.id, s.nombre) FROM Sede s WHERE s.estado LIKE 'ACTIVO'")
     List<UUIDNombreDto> findAllIdAndNombre();
 
 }

@@ -12,7 +12,7 @@ public interface PermisoRepository extends JpaRepository<Permiso, Short> {
 
     Optional<Permiso> findByNombreOrId(String nombre, Short id);
 
-    @Query("SELECT new com.kingg.api_vacunas_panama.web.dto.IdNombreDto(p.id, p.nombre) FROM Permiso p")
+    @Query("SELECT new io.github.kingg22.api_vacunas_panama.web.dto.IdNombreDto(p.id, p.nombre) FROM Permiso p")
     List<IdNombreDto> findAllIdNombre();
 
 }

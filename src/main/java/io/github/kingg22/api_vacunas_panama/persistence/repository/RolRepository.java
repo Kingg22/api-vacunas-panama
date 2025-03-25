@@ -12,7 +12,7 @@ public interface RolRepository extends JpaRepository<Rol, Short> {
 
     Optional<Rol> findByNombreOrId(String nombreRol, Short id);
 
-    @Query("SELECT new com.kingg.api_vacunas_panama.web.dto.IdNombreDto(r.id, r.nombre) FROM Rol r")
+    @Query("SELECT new io.github.kingg22.api_vacunas_panama.web.dto.IdNombreDto(r.id, r.nombre) FROM Rol r")
     List<IdNombreDto> findAllIdNombre();
 
 }
