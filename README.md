@@ -1,6 +1,6 @@
 # :syringe: Proyecto de Gestión de Información sobre Vacunación en Panamá - Backend API
 
-![Imagen logo del proyecto](https://github.com/Kingg22/api-vacunas-panama/blob/main/src/main/resources/images/icon.png)
+![Imagen logo del proyecto](https://github.com/Kingg22/api-vacunas-panama/blob/main/src/main/resources/images/icon.png?raw=true)
 
 ## Descripción
 
@@ -48,7 +48,8 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
 
 ## :hammer_and_wrench:Tecnologías Utilizadas
 
-- [Java](https://www.java.com/es/) - Lenguaje de programación para el desarrollo de la API.
+- [Java](https://www.java.com/es/) - Lenguaje de programación inicial para el desarrollo de la API.
+- [Kotlin](https://kotlinlang.org/) – Lenguaje de programación principal del API.
 - [SQL Server](https://www.microsoft.com/es-mx/sql-server) - Para la gestión de la base de datos.
 - [Spring Boot](https://spring.io/) - Framework de Java, módulos utilizados: web, data, security, OAuth resource server,
   validations, amqp (mensajería), redis cache, testing.
@@ -63,16 +64,14 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
   Spring Boot utilizada para dar Error Response uniformes y Logger de los mismos.
 - [Redis](https://redis.io/) - Base de datos en memoria para almacenar datos de forma rápida.
 - [RabbitMQ](https://www.rabbitmq.com/) - Broker de mensajería entre microservicios.
-- [license-maven-plugin](https://www.mojohaus.org/license-maven-plugin/) - Plugin de Maven para generar las licencias
-  del proyecto y sus dependencias.
 
 Puede encontrar más detalles de las licencias
 en [THIRD-PARTY](https://github.com/Kingg22/api-vacunas-panama/blob/main/THIRD-PARTY.txt)
 
 ## :pencil: Autores
 
-- **Rey Acosta** - _Java_ - [Kingg22](https://github.com/Kingg22)
-- **Allisson Ortega** - _PDF module_ - [Applepie2005](https://github.com/Applepie2005)
+- **Rey Acosta** – _Java_ – [Kingg22](https://github.com/Kingg22)
+- **Allisson Ortega** – _PDF module_ – [Applepie2005](https://github.com/Applepie2005)
 
 ## Conclusión
 
@@ -152,8 +151,10 @@ y efectividad del sistema de salud en el manejo de la información sobre vacunac
 ## :wrench: Clonación y configuración del repositorio
 
 > [!NOTE]
-> Para disfrutar de un buen ambiente para **programar en local** necesita Java JDK 21 ya instalado.
-> [Maven](https://maven.apache.org/) viene de forma portable con maven wrapper. [Docker](https://www.docker.com/) y [Git](https://git-scm.com/) son necesarios.
+> Para disfrutar de un buen ambiente para **programar en local** necesita:
+> [Gradle](https://gradle.org/) viene de forma portable como wrapper.
+> [Docker](https://www.docker.com/) y [Git](https://git-scm.com/) son necesarios.
+> Java JDK 21 (portable para gradle con [Foojay Toolchains Plugin](https://github.com/gradle/foojay-toolchains)).
 
 Sigue estos pasos para clonar el repositorio:
 
@@ -172,13 +173,13 @@ git clone https://github.com/Kingg22/api-vacunas-panama.git
 > [!NOTE]
 > Puede utilizar un archivo env o docker secrets, ambas deben utilizar los nombres dados en .env.example al menos que
 > modifique application.properties
-> 
+>
 > Debe utilizar 2 archivos env el docker.env para colocar las ip internas de docker y .env para utilizarlo de forma
 > externa.
-> Si se decide por usar docker secrets puede eliminar la dependencia _spring-dotenv_ y eliminar el uso de env_file en 
+> Si se decide por usar docker secrets puede eliminar la dependencia _spring-dotenv_ y eliminar el uso de env_file en
 > docker-compose.yaml
 
-1. Modificar vacunas-init.sql el login colocando un usuario y una contraseña segura al inicio del script. 
+1. Modificar vacunas-init.sql el login colocando un usuario y una contraseña segura al inicio del script.
 
    _Opcional:_ Crear contraseñas con [BCrypt](https://bcrypt-generator.com/) para los usuarios con roles superiores,
    colocarlo en el parámetro de
@@ -218,15 +219,10 @@ git clone https://github.com/Kingg22/api-vacunas-panama.git
 6. Configurar su contraseña sa debe crear un archivo llamado db.env donde **solo coloque la contraseña en texto plano**.
    Esta es necesaria para los scripts configure-db.sh y el test-check.sh del contenedor de la base de datos,
    sin esta no se puede construir la imagen ni verificar si el estado es saludable.
-7. Crear la docker images de la API con su IDE o terminal con maven.
+7. Crear la docker images de la API con su IDE o terminal con gradlew.
 
-   Para Windows:
-    ``` powershell
-    ./mvnw.cmd clean spring-boot:build-image -DskipTests=true 
-    ```
-   Otros SO:
    ```bash
-   ./mvnw clean spring-boot:build-image -DskipTests=true 
+   ./gradlew clean bootBuildImage -DskipTests=true
    ```
    Este proceso puede demorar un poco la primera vez, se recomienda el flag skip tests para disminuir el tiempo de
    espera.
@@ -257,7 +253,7 @@ git clone https://github.com/Kingg22/api-vacunas-panama.git
 
     Debe hacer una copia de rabbitmq_definitions_example.json a un archivo rabbitmq_definitions.json
     En las claves "password_hash" utilizando el contenedor rabbitmq:
-    ```bash 
+    ```bash
     rabbitmqctl hash_password <contraseña>
     ```
     las credenciales de producer debe colocarla en RBMQ_USER, RBMQ_PASSWORD (como texto plano, no hash) respectivamente.
@@ -266,7 +262,7 @@ git clone https://github.com/Kingg22/api-vacunas-panama.git
     _Opcional:_ En el caso del fronted que se conecta a este servicio de mensajería debe usar las credenciales de
     consumer.
     Si ya tiene pensado los nombres para las queues, exchange y routing puede crear en el json y darle permisos
-    exclusivos a esa queue, sino spring creará los objetos mencionados con el nombre dado en RabbitMQConfig, se 
+    exclusivos a esa queue, sino spring creará los objetos mencionados con el nombre dado en RabbitMQConfig, se
     recomienda restringir el consumer a leer esa queue.
 
 > [!TIP]
@@ -290,30 +286,26 @@ Observación: Si cambia el puerto que se expone en docker-compose.yaml debe apun
 
 1. Levantar la base de datos si no está activa o construir una nueva imagen por cambios en vacunas-init.sql:
     ``` bash
-    docker compose up --build -d bd-vacunas 
+    docker compose up --build -d bd-vacunas
     ```
-2. Utilizando el IDE integrado con Maven o el siguiente comando en Windows:
-    ```powershell
-    ./mvnw.cmd clean spring-boot:run
+2. Utilizando el IDE integrado con gradlew o el siguiente comando:
+    ```bash
+    ./gradlew clean bootRun
     ```
-   Otros SO:
-   ```bash
-   ./mvnw clean spring-boot:run
-   ```
 3. Utilizar el cliente Postman o su propio API client al endpoint configurado.
 
 > [!IMPORTANT]
 > ¿Qué se espera de su configuración? Utilice docker secrets con los nombres dados, elimine la dependencia de
-> spring-dotenv al momento de generar la imagen con spring elimine el .env Para pruebas de la API fuera de docker 
-> entonces utilice .env Eliminar los valores por defecto de application.properties y rabbitmq_definitions.json, ya que, 
+> spring-dotenv al momento de generar la imagen con spring elimine el .env Para pruebas de la API fuera de docker
+> entonces utilice .env Eliminar los valores por defecto de application.properties y rabbitmq_definitions.json, ya que,
 > tendrá valores personalizados.
 
 Cualquier error verificar la versión del Java JDK 21, tu archivo .env o docker secrets configurados para cada servicio,
 certificado RSA mínima 2056, la base de datos vacunas esté creada con éxito con todos sus objetos y con las credenciales
-correctas, el login tiene su usuario con los permisos mínimos requeridos, la contraseña de sa es válida según los 
-requisitos mínimos de SQL Server y no contenga caracteres especiales (puede causar conflictos con los scripts de 
-configuración), ningún contenedor está en bucle de reinicio por errores, colocar spring con el flag -Ddebug y des 
-comentar el bloque de líneas relacionadas a logs en application.properties para encontrar cuál es el error si es el 
+correctas, el login tiene su usuario con los permisos mínimos requeridos, la contraseña de sa es válida según los
+requisitos mínimos de SQL Server y no contenga caracteres especiales (puede causar conflictos con los scripts de
+configuración), ningún contenedor está en bucle de reinicio por errores, colocar spring con el flag -Ddebug y des
+comentar el bloque de líneas relacionadas a logs en application.properties para encontrar cuál es el error si es el
 contenedor de la API, eliminar el health_check en el service bd-vacunas y su dependencia en la API.
 
 > [!NOTE]
