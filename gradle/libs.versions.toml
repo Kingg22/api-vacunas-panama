@@ -1,0 +1,88 @@
+[versions]
+kotlin = "2.1.20"
+spring = "3.4.4"
+spring-dependency = "1.1.7"
+mapstruct = "1.6.3"
+spring-error-handling = "4.5.0"
+itextpdf-core = "9.1.0"
+itextpdf-html = "6.1.0"
+spring-dotenv = "4.0.0"
+dotenv-java = "3.2.0"
+
+[libraries]
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server" }
+spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+# Kotlin
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+
+# Annotations
+lombok = { module = "org.projectlombok:lombok" }
+
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+
+# Drivers
+mssql-jdbc = { module = "com.microsoft.sqlserver:mssql-jdbc" }
+postgresql = { module = "org.postgresql:postgresql" }
+h2 = { module = "com.h2database:h2" }
+
+# Testing
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+
+# Third Party
+dotenv-java = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv-java" }
+spring-dotenv = { module = "me.paulschwarz:spring-dotenv", version.ref = "spring-dotenv" }
+spring-error-handling = { module = "io.github.wimdeblauwe:error-handling-spring-boot-starter", version.ref = "spring-error-handling" }
+
+# Mapstruct
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+
+# PDF
+itextpdf = { module = "com.itextpdf:itext-core", version.ref = "itextpdf-core" }
+html2pdf = { module = "com.itextpdf:html2pdf", version.ref = "itextpdf-html" }
+
+[bundles]
+implementation = [
+    "spring-boot-starter-data-jpa",
+    "spring-boot-starter-data-redis",
+    "spring-boot-starter-oauth2-resource-server",
+    "spring-security-oauth2-jose",
+    "spring-boot-starter-web",
+    "spring-boot-starter-security",
+    "spring-boot-starter-validation",
+    "jackson-datatype-jsr310",
+    "jackson-module-kotlin",
+    "kotlin-reflect",
+    "spring-error-handling",
+    "mapstruct",
+    "itextpdf",
+    "html2pdf",
+    "dotenv-java",
+    "spring-dotenv",
+]
+
+runtimeOnly = [
+    "mssql-jdbc",
+    "postgresql",
+    "h2"
+]
+
+testImplementation = [
+    "spring-boot-starter-test",
+    "kotlin-test-junit5",
+    "spring-security-test"
+]
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency" }
