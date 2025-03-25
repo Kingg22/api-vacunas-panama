@@ -39,24 +39,24 @@ services:
       network-vacunas:
         ipv4_address: 172.22.0.3
 
-  rabbitmq-vacunas:
-    image: rabbitmq:management-alpine
-    container_name: msg-rabbitmq-vacunas
-    restart: always
-    ports:
-      - "15692:15692"
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - msg-broker-rabbitmq:/var/lib/rabbitmq
-      - ./rabbitmq_definitions.json:/etc/rabbitmq/definitions.json
-      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-    networks:
-      network-vacunas:
-        ipv4_address: 172.22.0.4
+#  rabbitmq-vacunas:
+#    image: rabbitmq:management-alpine
+#    container_name: msg-rabbitmq-vacunas
+#    restart: always
+#    ports:
+#      - "15692:15692"
+#      - "5672:5672"
+#      - "15672:15672"
+#    volumes:
+#      - msg-broker-rabbitmq:/var/lib/rabbitmq
+#      - ./rabbitmq_definitions.json:/etc/rabbitmq/definitions.json
+#      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+#    networks:
+#      network-vacunas:
+#        ipv4_address: 172.22.0.4
 
   api-vacunas:
-    image: api-vacunas-panama:0.0.1
+    image: api-vacunas-panama:0.2.0
     container_name: api-spring-vacunas
     env_file:
       - "docker.env"
@@ -69,8 +69,8 @@ services:
         condition: service_healthy
       redis-vacunas:
         condition: service_started
-      rabbitmq-vacunas:
-        condition: service_started
+      # rabbitmq-vacunas:
+        # condition: service_started
     ports:
       - "8080:8080"
     networks:
