@@ -78,8 +78,9 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         try {
             List<RolesEnum> authenticatedRoles =
                     authenticatedAuthorities.stream().map(RolesEnum::valueOf).toList();
-            if (!usuarioDto.roles().stream()
-                    .allMatch(rolDto -> this.validationService.canRegisterRole(rolDto, authenticatedRoles))) {
+            if (usuarioDto.roles() != null
+                    && !usuarioDto.roles().stream()
+                            .allMatch(rolDto -> this.validationService.canRegisterRole(rolDto, authenticatedRoles))) {
                 errors.add(new ApiFailed(
                         ApiResponseCode.ROL_HIERARCHY_VIOLATION,
                         "roles[]",
@@ -104,9 +105,10 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
         UsuarioDto usuarioDto = registerUser.usuario();
         Object validationResult = this.validationService.validateRegistration(registerUser);
-        if (usuarioDto.roles().stream()
-                .anyMatch(rolDto ->
-                        rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
+        if (usuarioDto.roles() != null
+                && usuarioDto.roles().stream()
+                        .anyMatch(rolDto ->
+                                rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
             apiContentResponse.addWarning(
                     ApiResponseCode.INFORMATION_IGNORED,
                     "roles[].permisos[]",

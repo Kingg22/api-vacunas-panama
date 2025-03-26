@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -95,6 +96,9 @@ public class TokenService {
     }
 
     private Collection<String> getRolesPermisos(@NotNull UsuarioDto usuarioDto) {
+        if (usuarioDto.roles() == null || usuarioDto.roles().isEmpty()) {
+            return Collections.emptyList();
+        }
         return usuarioDto.roles().stream()
                 .flatMap(role -> role != null && role.permisos() != null
                         ? Stream.concat(
@@ -106,7 +110,7 @@ public class TokenService {
 
     private Collection<String> getRolesPermisos(@NotNull Usuario usuario) {
         return usuario.getRoles().stream()
-                .flatMap(rol -> rol != null && rol.getPermisos() != null
+                .flatMap(rol -> rol != null
                         ? Stream.concat(
                                 Stream.of("ROLE_" + rol.getNombre().toUpperCase()),
                                 rol.getPermisos().stream().map(Permiso::getNombre))
