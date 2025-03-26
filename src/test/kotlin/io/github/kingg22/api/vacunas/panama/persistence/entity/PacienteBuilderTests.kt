@@ -7,8 +7,7 @@ import java.time.LocalDateTime
 class PacienteBuilderTests {
     @Test
     fun build() {
-        val direccion = Direccion()
-        direccion.direccion = "prueba"
+        val direccion = Direccion(direccion = "prueba")
 
         val fecha = LocalDateTime.MIN
         val persona = Persona.builder {
