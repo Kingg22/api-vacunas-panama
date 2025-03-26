@@ -211,6 +211,10 @@ public class PacienteService implements IPacienteService {
         }
         Paciente paciente = (Paciente) Paciente.builderPaciente()
                 .identificacionTemporal(pacienteDto.getIdentificacionTemporal())
+                .createdAt(
+                        pacienteDto.getCreatedAt() != null
+                                ? pacienteDto.getCreatedAt()
+                                : LocalDateTime.now(ZoneOffset.UTC))
                 .nombre(pacienteDto.getNombre())
                 .nombre2(pacienteDto.getNombre2())
                 .apellido1(pacienteDto.getApellido1())
@@ -224,10 +228,6 @@ public class PacienteService implements IPacienteService {
                 .direccion(direccion)
                 .estado(pacienteDto.getEstado())
                 .disabled(pacienteDto.getDisabled())
-                .createdAt(
-                        pacienteDto.getCreatedAt() != null
-                                ? pacienteDto.getCreatedAt()
-                                : LocalDateTime.now(ZoneOffset.UTC))
                 .build();
         paciente = pacienteRepository.save(paciente);
         Hibernate.initialize(paciente.getDireccion());

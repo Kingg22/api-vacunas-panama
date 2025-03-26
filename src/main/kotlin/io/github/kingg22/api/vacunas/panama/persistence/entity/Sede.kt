@@ -7,6 +7,9 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Entity
 @Table(
@@ -31,4 +34,11 @@ class Sede(
 
     @OneToMany(mappedBy = "sede")
     val sedesInventarios: Set<SedesInventario> = emptySet(),
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 ) : Entidad(nombre = nombre, direccion = direccion, estado = estado)

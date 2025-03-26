@@ -16,9 +16,7 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
-import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.UUID
 
 // abstract
@@ -100,13 +98,6 @@ class Persona(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario")
     var usuario: Usuario? = null,
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
-
-    @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null,
 ) {
     companion object {
         @JvmStatic
@@ -130,8 +121,6 @@ class Persona(
         var disabled: Boolean = false
         lateinit var direccion: Direccion
         var usuario: Usuario? = null
-        var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
-        var updatedAt: LocalDateTime? = null
 
         fun id(id: UUID?) = apply { this.id = id }
         fun cedula(cedula: String?) = apply { this.cedula = cedula }
@@ -149,8 +138,6 @@ class Persona(
         fun disabled(disabled: Boolean) = apply { this.disabled = disabled }
         fun direccion(direccion: Direccion) = apply { this.direccion = direccion }
         fun usuario(usuario: Usuario?) = apply { this.usuario = usuario }
-        fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
-        fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
 
         open fun build() = Persona(
             id = id,
@@ -169,8 +156,6 @@ class Persona(
             disabled = disabled,
             direccion = direccion,
             usuario = usuario,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
         )
     }
 }

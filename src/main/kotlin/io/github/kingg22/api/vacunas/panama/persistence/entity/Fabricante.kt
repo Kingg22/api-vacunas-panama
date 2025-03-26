@@ -12,6 +12,9 @@ import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Entity
 @Table(
@@ -53,4 +56,11 @@ class Fabricante(
     )
     @JsonBackReference
     val vacunas: Set<Vacuna> = emptySet(),
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 ) : Entidad(nombre = nombre, estado = estado, direccion = direccion)

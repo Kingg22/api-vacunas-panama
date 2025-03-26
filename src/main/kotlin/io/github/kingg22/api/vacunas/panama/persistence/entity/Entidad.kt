@@ -14,9 +14,6 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
-import org.springframework.data.annotation.CreatedDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.UUID
 
 @Entity
@@ -63,11 +60,4 @@ abstract class Entidad(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion,
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
-
-    @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null,
 )

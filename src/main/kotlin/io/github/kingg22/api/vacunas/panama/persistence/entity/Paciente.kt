@@ -11,7 +11,9 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.SqlResultSetMapping
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Size
+import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 @Entity
@@ -99,12 +101,21 @@ class Paciente(
 
     @OneToMany(mappedBy = "paciente")
     val dosis: Set<Dosis> = emptySet(),
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 ) : Persona(estado = estado, direccion = direccion) {
     constructor(
         persona: Persona,
         identificacionTemporal: String? = null,
         dosis: Set<Dosis> = emptySet(),
-    ) : this(persona.estado, persona.direccion, identificacionTemporal, dosis) {
+        createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+        updatedAt: LocalDateTime? = null,
+    ) : this(persona.estado, persona.direccion, identificacionTemporal, dosis, createdAt, updatedAt) {
         this.apply {
             this.id = persona.id
             this.cedula = persona.cedula
@@ -120,8 +131,6 @@ class Paciente(
             this.sexo = persona.sexo
             this.disabled = persona.disabled
             this.usuario = persona.usuario
-            this.createdAt = persona.createdAt
-            this.updatedAt = persona.updatedAt
         }
     }
 
@@ -138,11 +147,14 @@ class Paciente(
     class Builder : Persona.Builder() {
         var identificacionTemporal: String? = null
         var dosis: Set<Dosis> = emptySet()
+        var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
+        var updatedAt: LocalDateTime? = null
 
         fun identificacionTemporal(identificacionTemporal: String?) =
             apply { this.identificacionTemporal = identificacionTemporal }
-
         fun dosis(dosis: Set<Dosis> = emptySet()) = apply { this.dosis = dosis }
+        fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
+        fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
 
         override fun build(): Paciente {
             val persona = super.build()

@@ -9,6 +9,9 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
+import org.springframework.data.annotation.CreatedDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Entity
 @Table(
@@ -32,4 +35,11 @@ class Doctor(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sede")
     var sede: Sede? = null,
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 ) : Persona(estado = estado, direccion = direccion)
