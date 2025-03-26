@@ -47,7 +47,7 @@ public class VacunaService implements IVacunaService {
     }
 
     @Transactional
-    public IApiContentResponse createDosis(@NotNull InsertDosisDto insertDosisDto) {
+    public IApiContentResponse createDosis(@org.jetbrains.annotations.NotNull @NotNull InsertDosisDto insertDosisDto) {
         ApiContentResponse apiContentResponse = new ApiResponse();
         log.debug(insertDosisDto.toString());
         Paciente paciente = validatePacienteExist(insertDosisDto.pacienteId());
