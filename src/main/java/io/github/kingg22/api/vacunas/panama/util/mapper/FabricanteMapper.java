@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.util.mapper;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante;
 import io.github.kingg22.api.vacunas.panama.web.dto.FabricanteDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants.ComponentModel;
 import org.mapstruct.NullValueCheckStrategy;
 
@@ -12,9 +11,6 @@ import org.mapstruct.NullValueCheckStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         uses = {DireccionMapper.class, AccountMapper.class})
 public interface FabricanteMapper {
-
-    @Mapping(target = "vacunas", ignore = true)
-    Fabricante toEntity(FabricanteDto fabricanteDto);
 
     FabricanteDto toDto(Fabricante fabricante);
 }

@@ -11,8 +11,5 @@ import org.mapstruct.NullValueCheckStrategy;
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         uses = {DireccionMapper.class, AccountMapper.class})
 public interface PersonaMapper {
-
-    Persona toEntity(PersonaDto personaDto);
-
     PersonaDto toDto(Persona persona);
 }

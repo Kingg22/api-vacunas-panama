@@ -14,15 +14,9 @@ import org.mapstruct.NullValueCheckStrategy;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface DireccionMapper {
-    @Mapping(target = "distritos", ignore = true)
-    Provincia provinciaDtoToEntity(ProvinciaDto provinciaDto);
-
     ProvinciaDto provinciaToDto(Provincia provincia);
 
     DistritoDto distritoToDto(Distrito distrito);
-
-    @Mapping(target = "direcciones", ignore = true)
-    Distrito distritoDtoToEntity(DistritoDto distritoDto);
 
     @Mapping(target = "sedes", ignore = true)
     @Mapping(target = "pacientes", ignore = true)
