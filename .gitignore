@@ -142,3 +142,5 @@ venv.bak/
 *.pub
 *.pem
 rabbitmq_definitions.json
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/.cache/
