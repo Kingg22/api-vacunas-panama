@@ -1,7 +1,5 @@
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
-import com.github.jk1.license.render.JsonReportRenderer
-import com.github.jk1.license.render.SimpleHtmlReportRenderer
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
