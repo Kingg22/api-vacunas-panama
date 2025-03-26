@@ -19,7 +19,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "dosis")
-class Dosis(
+class Dosis @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -90,7 +90,7 @@ class Dosis(
         fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
 
-        fun build(): Dosis =
+        fun build() =
             Dosis(id, paciente, fechaAplicacion, numeroDosis, vacuna, sede, doctor, lote, createdAt, updatedAt)
     }
 }

@@ -16,7 +16,7 @@ import org.hibernate.annotations.Nationalized
 
 @Entity
 @Table(name = "distritos")
-class Distrito(
+class Distrito @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "tinyint not null")

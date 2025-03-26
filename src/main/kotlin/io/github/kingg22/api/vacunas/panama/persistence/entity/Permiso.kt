@@ -23,7 +23,7 @@ import java.time.ZoneOffset
     name = "permisos",
     indexes = [Index(name = "uq_permisos_nombre", columnList = "nombre", unique = true)],
 )
-class Permiso(
+class Permiso @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

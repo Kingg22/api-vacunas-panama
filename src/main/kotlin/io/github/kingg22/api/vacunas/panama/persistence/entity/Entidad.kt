@@ -25,7 +25,7 @@ import java.util.UUID
         Index(name = "ix_entidades_telefono", columnList = "telefono", unique = true),
     ],
 )
-abstract class Entidad(
+abstract class Entidad @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)

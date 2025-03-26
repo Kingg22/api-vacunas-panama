@@ -12,7 +12,7 @@ import org.hibernate.annotations.Nationalized
 
 @Entity
 @Table(name = "provincias")
-class Provincia(
+class Provincia @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "tinyint not null")

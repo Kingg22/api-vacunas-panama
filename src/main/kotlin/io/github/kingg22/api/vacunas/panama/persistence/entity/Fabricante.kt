@@ -21,7 +21,7 @@ import java.time.ZoneOffset
     name = "fabricantes",
     indexes = [Index(name = "ix_fabricantes_licencia", columnList = "licencia")],
 )
-class Fabricante(
+class Fabricante @JvmOverloads constructor(
     nombre: String,
     estado: String,
     direccion: Direccion,

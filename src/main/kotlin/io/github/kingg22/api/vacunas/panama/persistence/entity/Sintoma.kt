@@ -18,7 +18,7 @@ import org.hibernate.annotations.Nationalized
         Index(name = "uq_sintomas_nombre", columnList = "nombre", unique = true),
     ],
 )
-class Sintoma(
+class Sintoma @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

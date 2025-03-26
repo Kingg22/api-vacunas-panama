@@ -91,7 +91,7 @@ import java.util.UUID
         ),
     ],
 )
-class Paciente(
+class Paciente @JvmOverloads constructor(
     estado: String,
     direccion: Direccion,
 
@@ -109,6 +109,7 @@ class Paciente(
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
 ) : Persona(estado = estado, direccion = direccion) {
+    @JvmOverloads
     constructor(
         persona: Persona,
         identificacionTemporal: String? = null,
@@ -116,6 +117,10 @@ class Paciente(
         createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
         updatedAt: LocalDateTime? = null,
     ) : this(persona.estado, persona.direccion, identificacionTemporal, dosis, createdAt, updatedAt) {
+        setPersona(persona)
+    }
+
+    final fun setPersona(persona: Persona) {
         this.apply {
             this.id = persona.id
             this.cedula = persona.cedula
@@ -131,6 +136,8 @@ class Paciente(
             this.sexo = persona.sexo
             this.disabled = persona.disabled
             this.usuario = persona.usuario
+            this.estado = persona.estado
+            this.direccion = persona.direccion
         }
     }
 
@@ -152,7 +159,7 @@ class Paciente(
 
         fun identificacionTemporal(identificacionTemporal: String?) =
             apply { this.identificacionTemporal = identificacionTemporal }
-        fun dosis(dosis: Set<Dosis> = emptySet()) = apply { this.dosis = dosis }
+        fun dosis(dosis: Set<Dosis>) = apply { this.dosis = dosis }
         fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
 
@@ -162,6 +169,8 @@ class Paciente(
                 persona = persona,
                 identificacionTemporal = identificacionTemporal,
                 dosis = dosis,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
             )
         }
     }
