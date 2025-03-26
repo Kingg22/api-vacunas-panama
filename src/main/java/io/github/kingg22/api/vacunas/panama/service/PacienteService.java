@@ -209,7 +209,8 @@ public class PacienteService implements IPacienteService {
         } else {
             direccion = direccionMapper.direccionDtoToEntity(direccionService.getDireccionDtoDefault());
         }
-        Paciente paciente = Paciente.builderPaciente()
+        Paciente paciente = (Paciente) Paciente.builderPaciente()
+                .identificacionTemporal(pacienteDto.getIdentificacionTemporal())
                 .nombre(pacienteDto.getNombre())
                 .nombre2(pacienteDto.getNombre2())
                 .apellido1(pacienteDto.getApellido1())
@@ -217,7 +218,6 @@ public class PacienteService implements IPacienteService {
                 .fechaNacimiento(pacienteDto.getFechaNacimiento())
                 .cedula(pacienteDto.getCedula())
                 .pasaporte(pacienteDto.getPasaporte())
-                .identificacionTemporal(pacienteDto.getIdentificacionTemporal())
                 .telefono(pacienteDto.getTelefono())
                 .correo(pacienteDto.getCorreo())
                 .sexo(pacienteDto.getSexo())
