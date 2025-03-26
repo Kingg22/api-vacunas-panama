@@ -40,8 +40,8 @@ IF EXISTS (SELECT *
 BEGIN
 BEGIN TRY
 PRINT (N'Otorgando permisos al user');
-EXEC sp_addrolemember 'db_datareader', 'SpringApi';
-EXEC sp_addrolemember 'db_datawriter', 'SpringApi';
+EXEC sp_addrolemember 'db_datareader', 'SpringAPI';
+EXEC sp_addrolemember 'db_datawriter', 'SpringAPI';
             GRANT EXECUTE ON SCHEMA::dbo TO SpringAPI;
             -- dependiendo la aplicación se le puede asignar más o menos permisos**
 END TRY
