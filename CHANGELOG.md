@@ -39,7 +39,7 @@
 - Migrar el OAuth Server de JWT
   hacia [Auth0](https://auth0.com/docs/quickstart/backend/java-spring-security5/interactive).
     - Utilizar un [Authentication Flow seguro](https://auth0.com/docs/get-started/authentication-and-authorization-flow#authorization-code-flow-with-enhanced-privacy-protection)
-      de Auth0, garantizando la seguridad y confidencialidad de la data.
+      de Auth0, garantizando la seguridad y confidencialidad de los datos.
     - Con este feature abre la posibilidad de tener todos los JWT con las mismas credenciales entre varios sistemas y
       poder guardarlos en la BD de logs sugerida.
 - Precisión en la Edad de los Pacientes: Utilizar eventos programados o jobs de SQL Server Agent para actualizar la edad
