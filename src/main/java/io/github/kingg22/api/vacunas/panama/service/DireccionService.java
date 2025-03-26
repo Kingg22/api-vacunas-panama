@@ -12,8 +12,6 @@ import io.github.kingg22.api.vacunas.panama.web.dto.DistritoDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.ProvinciaDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -114,8 +112,9 @@ public class DireccionService implements IDireccionService {
         Direccion direccion = new Direccion();
         direccion.setDireccion(direccionDto.direccion());
         direccion.setDistrito(distrito);
-        direccion.setCreatedAt(
-                direccionDto.createdAt() != null ? direccionDto.createdAt() : LocalDateTime.now(ZoneOffset.UTC));
+        if (direccionDto.createdAt() != null) {
+            direccion.setCreatedAt(direccionDto.createdAt());
+        }
         return direccionRepository.save(direccion);
     }
 

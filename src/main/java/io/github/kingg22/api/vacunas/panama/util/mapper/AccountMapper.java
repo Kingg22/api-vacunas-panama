@@ -6,7 +6,6 @@ import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
 import io.github.kingg22.api.vacunas.panama.web.dto.PermisoDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.RolDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
-import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -34,8 +33,4 @@ public interface AccountMapper {
     @Mapping(target = "fabricante", ignore = true)
     @Mapping(target = "disabled", ignore = true)
     Usuario usuarioDtoToUsuario(UsuarioDto usuarioDto);
-
-    List<RolDto> rolListToDtoList(List<Rol> roles);
-
-    List<PermisoDto> permisoListToDtoList(List<Permiso> permisos);
 }

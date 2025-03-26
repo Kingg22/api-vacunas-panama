@@ -24,8 +24,6 @@ ktlint_standard_no-consecutive-comments = enabled
 ktlint_standard_if-else-wrapping = enabled
 # noinspection EditorConfigKeyCorrectness
 ktlint_standard_try-catch-finally-spacing = enabled
-# noinspection EditorConfigKeyCorrectness
-ktlint_function_naming_ignore_when_annotated_with = Composable
 
 [**/build/**.{kt,kts}]
 # noinspection EditorConfigKeyCorrectness

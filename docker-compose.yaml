@@ -56,7 +56,7 @@ services:
 #        ipv4_address: 172.22.0.4
 
   api-vacunas:
-    image: api-vacunas-panama:0.2.0
+    image: api-vacunas-panama:0.3.0
     container_name: api-spring-vacunas
     env_file:
       - "docker.env"

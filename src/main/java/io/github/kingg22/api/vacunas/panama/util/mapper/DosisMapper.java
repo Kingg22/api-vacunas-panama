@@ -15,7 +15,5 @@ public interface DosisMapper {
 
     DosisDto toDto(Dosis dosis);
 
-    Dosis toEntity(DosisDto dosisDto);
-
     List<DosisDto> toDtoList(List<Dosis> dosisList);
 }
