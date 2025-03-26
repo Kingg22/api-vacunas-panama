@@ -1,5 +1,6 @@
 [versions]
 kotlin = "2.1.20"
+ksp = "2.1.20-1.0.31"
 spring = "3.4.4"
 spring-dependency = "1.1.7"
 mapstruct = "1.6.3"
@@ -8,6 +9,8 @@ itextpdf-core = "9.1.0"
 itextpdf-html = "6.1.0"
 spring-dotenv = "4.0.0"
 dotenv-java = "3.2.0"
+konvert = "4.0.1"
+spotless = "7.0.2"
 
 [libraries]
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
@@ -47,6 +50,8 @@ spring-error-handling = { module = "io.github.wimdeblauwe:error-handling-spring-
 mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
 
+konvert-api = { module = "io.mcarle:konvert-api", version.ref = "konvert" }
+konvert = { module = "io.mcarle:konvert", version.ref = "konvert" }
 # PDF
 itextpdf = { module = "com.itextpdf:itext-core", version.ref = "itextpdf-core" }
 html2pdf = { module = "com.itextpdf:html2pdf", version.ref = "itextpdf-html" }
@@ -69,6 +74,7 @@ implementation = [
     "html2pdf",
     "dotenv-java",
     "spring-dotenv",
+    "konvert-api"
 ]
 
 runtimeOnly = [
@@ -86,3 +92,5 @@ testImplementation = [
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency" }
+ksp =  { id = "com.google.devtools.ksp", version.ref = "ksp" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
