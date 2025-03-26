@@ -209,7 +209,7 @@ public class PacienteService implements IPacienteService {
         } else {
             direccion = direccionMapper.direccionDtoToEntity(direccionService.getDireccionDtoDefault());
         }
-        Paciente paciente = Paciente.builder()
+        Paciente paciente = Paciente.builderPaciente()
                 .nombre(pacienteDto.getNombre())
                 .nombre2(pacienteDto.getNombre2())
                 .apellido1(pacienteDto.getApellido1())
