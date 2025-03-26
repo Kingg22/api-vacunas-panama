@@ -16,7 +16,7 @@ import java.time.ZoneOffset
     name = "sedes",
     indexes = [Index(name = "ix_sedes_region_dependencia", columnList = "region")],
 )
-class Sede(
+class Sede @JvmOverloads constructor(
     nombre: String,
     estado: String,
     direccion: Direccion,

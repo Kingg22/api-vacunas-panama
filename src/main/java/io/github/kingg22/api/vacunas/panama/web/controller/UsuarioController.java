@@ -96,9 +96,11 @@ public class UsuarioController {
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
             var failedList = this.usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication);
             apiResponse.addErrors(failedList);
-        } else if (!usuarioDto.roles().stream()
-                .allMatch(rolDto -> RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE)
-                        || rolDto.nombre() != null && rolDto.nombre().equalsIgnoreCase("Paciente"))) {
+        } else if (usuarioDto.roles() != null
+                && !usuarioDto.roles().stream()
+                        .allMatch(rolDto -> rolDto.id() != null
+                                        && RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE)
+                                || rolDto.nombre() != null && rolDto.nombre().equalsIgnoreCase("Paciente"))) {
             apiResponse.addError(
                     ApiResponseCode.MISSING_ROLE_OR_PERMISSION, "Solo pacientes pueden registrarse sin autenticación");
         }
@@ -106,16 +108,17 @@ public class UsuarioController {
         if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN);
             apiResponse.addStatus("Insufficient authorities");
+            return ApiResponseUtil.sendResponse(apiResponse, request);
+        }
+
+        var apiContentResponse = this.usuarioManagementService.createUser(registerUser);
+        apiResponse.addWarnings(apiContentResponse.getWarnings());
+        apiResponse.addErrors(apiContentResponse.getErrors());
+        apiResponse.addData(apiContentResponse.getData());
+        if (apiContentResponse.hasErrors()) {
+            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
         } else {
-            var apiContentResponse = this.usuarioManagementService.createUser(registerUser);
-            apiResponse.addWarnings(apiContentResponse.getWarnings());
-            apiResponse.addErrors(apiContentResponse.getErrors());
-            apiResponse.addData(apiContentResponse.getData());
-            if (apiContentResponse.hasErrors()) {
-                apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
-            } else {
-                apiResponse.addStatusCode(HttpStatus.CREATED);
-            }
+            apiResponse.addStatusCode(HttpStatus.CREATED);
         }
         return ApiResponseUtil.sendResponse(apiResponse, request);
     }

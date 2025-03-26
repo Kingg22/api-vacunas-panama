@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,7 @@ public class PdfService {
      * @return byte[] con el PDF
      * @throws IOException Al buscar una imagen en classpath resources
      */
+    @org.jetbrains.annotations.NotNull
     private byte[] generatePdf(UUID idCertificado, PdfDto pdfDto) throws IOException {
         log.debug("Generando PDF con ID: {}", idCertificado);
         String template = generateHtmlTemplate(idCertificado, pdfDto);
@@ -57,49 +60,53 @@ public class PdfService {
         return outputStream.toByteArray();
     }
 
-    private PdfDto generatePdfDto(@NotNull PacienteDto pacienteDto, List<DosisDto> dosisDtos) {
-        String identificacion = pacienteDto.getCedula();
-        String nombres = pacienteDto.getNombre() != null ? pacienteDto.getNombre() : "";
-        String apellidos = pacienteDto.getApellido1() != null ? pacienteDto.getApellido1() : "";
-        if (identificacion == null || identificacion.isBlank()) {
-            identificacion = pacienteDto.getPasaporte() != null
-                    ? pacienteDto.getPasaporte()
-                    : pacienteDto.getIdentificacionTemporal();
-            if (identificacion == null || identificacion.isBlank()) {
-                identificacion = pacienteDto.getId().toString();
-            }
-        }
+    @org.jetbrains.annotations.NotNull
+    private PdfDto generatePdfDto(
+            @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto, List<DosisDto> dosisDtos) {
 
-        if (pacienteDto.getNombre2() != null && !pacienteDto.getNombre2().isBlank()) {
-            if (!nombres.isBlank()) {
-                nombres = nombres.concat(" ");
-            }
-            nombres = nombres.concat(pacienteDto.getNombre2());
-        }
+        String identificacion = obtenerIdentificacion(pacienteDto);
 
-        if (pacienteDto.getApellido2() != null && !pacienteDto.getApellido2().isBlank()) {
-            if (!apellidos.isBlank()) {
-                apellidos = apellidos.concat(" ");
-            }
-            apellidos = apellidos.concat(pacienteDto.getApellido2());
-        }
+        String nombres = String.join(
+                        " ",
+                        Optional.ofNullable(pacienteDto.getNombre()).orElse(""),
+                        Optional.ofNullable(pacienteDto.getNombre2()).orElse(""))
+                .trim();
+
+        String apellidos = String.join(
+                        " ",
+                        Optional.ofNullable(pacienteDto.getApellido1()).orElse(""),
+                        Optional.ofNullable(pacienteDto.getApellido2()).orElse(""))
+                .trim();
 
         log.debug("Received a request to generate PDF with Paciente DTOs");
-        log.debug("Dosis a agregar: {}", dosisDtos.toString());
+        log.debug("Dosis a agregar: {}", dosisDtos);
         log.debug("Paciente ID: {}", pacienteDto.getId());
-        log.debug("identificación a colocar: {}", identificacion);
+        log.debug("Identificación a colocar: {}", identificacion);
+
         PdfDto pdfDto = new PdfDto(
                 nombres,
                 apellidos,
                 identificacion,
-                pacienteDto.getFechaNacimiento().toLocalDate(),
+                Optional.ofNullable(pacienteDto.getFechaNacimiento())
+                        .map(LocalDateTime::toLocalDate)
+                        .orElse(null),
                 pacienteDto.getId(),
                 dosisDtos);
+
         log.debug(pdfDto.toString());
         return pdfDto;
     }
 
-    private void saveCertificadoCache(@NotNull UUID idCertificate, String file) {
+    /** Obtiene la identificación del paciente en el orden de prioridad correcto. */
+    private String obtenerIdentificacion(@org.jetbrains.annotations.NotNull PacienteDto pacienteDto) {
+        return Optional.ofNullable(pacienteDto.getCedula())
+                .filter(id -> !id.isBlank())
+                .or(() -> Optional.ofNullable(pacienteDto.getPasaporte()))
+                .or(() -> Optional.ofNullable(pacienteDto.getIdentificacionTemporal()))
+                .orElseGet(() -> pacienteDto.getId().toString());
+    }
+
+    private void saveCertificadoCache(@org.jetbrains.annotations.NotNull @NotNull UUID idCertificate, String file) {
         log.debug("Guardando en cache certificado por 30 días");
         redisTemplate.opsForValue().set("certificate:".concat(idCertificate.toString()), file, Duration.ofDays(30));
     }
@@ -217,36 +224,27 @@ public class PdfService {
         template = template.replace("{{base64Image}}", base64Image)
                 .replace("{{nombres}}", pdfDto.nombres())
                 .replace("{{apellidos}}", pdfDto.apellidos())
-                .replace("{{fecha_nacimiento}}", pdfDto.fechaNacimiento().toString())
                 .replace("{{identificacion}}", pdfDto.identificacion())
                 .replace("{{certificate_id}}", certificateId.toString());
+        template = pdfDto.fechaNacimiento() != null
+                ? template.replace(
+                        "{{fecha_nacimiento}}", pdfDto.fechaNacimiento().toString())
+                : template.replace("{{fecha_nacimiento}}", "N/A");
 
         // Se agrega de forma dinámica todas las dosis encontradas a la tabla HTML
-        for (DosisDto dosisDto : pdfDto.dosis()) {
-            String fabricantes = dosisDto.vacuna().fabricantes().isEmpty()
-                    ? "N/A"
-                    : dosisDto.vacuna().fabricantes().stream()
-                            .map(FabricanteDto::getNombre)
-                            .collect(Collectors.joining(", "));
-            dosisRows
-                    .append("<tr>")
-                    .append("<td>")
-                    .append(dosisDto.numeroDosis())
-                    .append("</td>")
-                    .append("<td>")
-                    .append(dosisDto.vacuna().nombre())
-                    .append("</td>")
-                    .append("<td>")
-                    .append(fabricantes)
-                    .append("</td>")
-                    .append("<td>")
-                    .append(dosisDto.fechaAplicacion())
-                    .append("</td>")
-                    .append("<td>")
-                    .append(dosisDto.sede().getNombre())
-                    .append("</td>")
-                    .append("</tr>");
-        }
+        pdfDto.dosis().forEach(dosisDto -> {
+            String fabricantes = dosisDto.vacuna().fabricantes().stream()
+                    .map(FabricanteDto::getNombre)
+                    .collect(Collectors.joining(", ", "N/A", ""));
+
+            dosisRows.append(String.format(
+                    "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                    dosisDto.numeroDosis(),
+                    dosisDto.vacuna().nombre(),
+                    fabricantes,
+                    dosisDto.fechaAplicacion(),
+                    dosisDto.sede().getNombre()));
+        });
         return template.replace("{{dosis}}", dosisRows.toString());
     }
 }

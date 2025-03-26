@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.util;
 
 import java.io.Serializable;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public enum NumDosisEnum implements Serializable {
@@ -45,6 +46,7 @@ public enum NumDosisEnum implements Serializable {
         }
     }
 
+    @NotNull
     public static NumDosisEnum fromValue(String value) {
         for (NumDosisEnum numDosisEnum : NumDosisEnum.values()) {
             if (numDosisEnum.value.equals(value)) {

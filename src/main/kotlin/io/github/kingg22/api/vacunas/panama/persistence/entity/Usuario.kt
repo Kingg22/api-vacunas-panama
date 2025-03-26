@@ -26,7 +26,7 @@ import java.util.UUID
     name = "usuarios",
     indexes = [Index(name = "ix_usuarios_username", columnList = "usuario", unique = true)],
 )
-class Usuario(
+class Usuario @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)

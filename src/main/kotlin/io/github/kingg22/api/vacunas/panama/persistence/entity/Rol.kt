@@ -25,7 +25,7 @@ import java.time.ZoneOffset
     name = "roles",
     indexes = [Index(name = "uq_roles_rol", columnList = "nombre", unique = true)],
 )
-class Rol(
+class Rol @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

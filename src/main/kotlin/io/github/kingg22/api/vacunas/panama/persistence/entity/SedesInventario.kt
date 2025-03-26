@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "sedes_inventarios")
-class SedesInventario(
+class SedesInventario @JvmOverloads constructor(
     @EmbeddedId
     val id: SedesInventarioId? = null,
 

@@ -16,7 +16,7 @@ import java.time.ZoneOffset
 
 @Entity
 @Table(name = "roles_permisos")
-class RolesPermisos(
+class RolesPermisos @JvmOverloads constructor(
     @EmbeddedId
     val id: RolesPermisosId? = null,
 

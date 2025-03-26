@@ -54,10 +54,7 @@ public class UsuarioTransactionService {
         Usuario usuario = Usuario.builder()
                 .username(usuarioDto.username())
                 .password(passwordEncoder.encode(usuarioDto.password()))
-                .createdAt(
-                        usuarioDto.createdAt() != null
-                                ? usuarioDto.createdAt()
-                                : LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))
+                .createdAt(usuarioDto.createdAt() != null ? usuarioDto.createdAt() : LocalDateTime.now(ZoneOffset.UTC))
                 .roles(role)
                 .build();
         if (persona != null) {

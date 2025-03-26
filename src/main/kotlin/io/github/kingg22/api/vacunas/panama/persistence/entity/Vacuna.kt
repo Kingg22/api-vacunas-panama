@@ -19,7 +19,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "vacunas", indexes = [Index(name = "ix_vacunas_nombre", columnList = "nombre")])
-class Vacuna(
+class Vacuna @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)

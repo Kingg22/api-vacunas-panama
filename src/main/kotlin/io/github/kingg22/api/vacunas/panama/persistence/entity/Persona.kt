@@ -102,6 +102,9 @@ class Persona(
     companion object {
         @JvmStatic
         fun builder() = Builder()
+
+        @JvmStatic
+        fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
     }
 
     open class Builder {

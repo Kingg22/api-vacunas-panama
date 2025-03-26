@@ -36,10 +36,11 @@ class UsuarioValidationService {
     Object validateRegistration(@NotNull RegisterUser registerUser) {
         List<ApiFailed> errors = new ArrayList<>();
         UsuarioDto usuarioDto = registerUser.usuario();
-        if (usuarioDto.roles().stream()
-                .anyMatch(rolDto -> rolDto.id() == null
-                        && rolDto.nombre() != null
-                        && !rolDto.nombre().isBlank())) {
+        if (usuarioDto.roles() != null
+                && usuarioDto.roles().stream()
+                        .anyMatch(rolDto -> rolDto.id() == null
+                                && rolDto.nombre() != null
+                                && !rolDto.nombre().isBlank())) {
             errors.add(new ApiFailed(ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID al realizar peticiones"));
         }
 
@@ -60,11 +61,12 @@ class UsuarioValidationService {
         }
 
         // validation is delegated to other specific methods depending on the role to be registered
-        if (usuarioDto.roles().stream()
-                .anyMatch(rolDto -> rolDto != null
-                        && rolDto.nombre() != null
-                        && !rolDto.nombre().isBlank()
-                        && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
+        if (usuarioDto.roles() != null
+                && usuarioDto.roles().stream()
+                        .anyMatch(rolDto -> rolDto != null
+                                && rolDto.nombre() != null
+                                && !rolDto.nombre().isBlank()
+                                && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
             if (registerUser.licenciaFabricante() != null) {
                 return this.validateRegistrationFabricante(registerUser, errors);
             } else {
