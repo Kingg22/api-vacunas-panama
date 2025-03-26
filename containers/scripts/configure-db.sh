@@ -21,7 +21,9 @@ done
 echo "FINISH waiting for sql"
 
 # Run the setup script to create the DB and the schema in the DB
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -No -C -d master -i /usr/src/app/setup.sql
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -No -C -d master -i /usr/src/app/setup.sql || { echo "Error ejecutando setup.sql"; exit 1; }
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -No -C -d vacunas -i /usr/src/app/test.sql || { echo "Error ejecutando test.sql"; exit 1; }
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -No -C -d vacunas -i /usr/src/app/user.sql || { echo "Error ejecutando user.sql"; exit 1; }
 
 echo "Database setup sql executed"
 

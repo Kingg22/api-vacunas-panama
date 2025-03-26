@@ -141,6 +141,6 @@ venv.bak/
 *.key
 *.pub
 *.pem
-rabbitmq_definitions.json
+containers/secrets/rabbitmq_definitions.json
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/.cache/

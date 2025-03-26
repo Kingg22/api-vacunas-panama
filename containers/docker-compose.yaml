@@ -14,7 +14,6 @@ services:
     restart: on-failure
     volumes:
       - bd-data:/var/opt/mssql
-      - ./test-check.sh:/usr/src/app/test-check.sh
     networks:
       network-vacunas:
         ipv4_address: 172.22.0.2
@@ -59,7 +58,7 @@ services:
     image: api-vacunas-panama:0.3.0
     container_name: api-spring-vacunas
     env_file:
-      - "docker.env"
+      - "secrets/docker.env"
     secrets:
       - JWT_PUBLIC_KEY
       - JWT_PRIVATE_KEY
@@ -95,8 +94,8 @@ networks:
 
 secrets:
   MSSQL_SA_PASSWORD:
-    file: db.env
+    file: secrets/db.env
   JWT_PUBLIC_KEY:
-    file: public.pem
+    file: secrets/public.pem
   JWT_PRIVATE_KEY:
-    file: private.pem
+    file: secrets/private.pem
