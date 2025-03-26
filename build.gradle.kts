@@ -1,3 +1,8 @@
+import com.github.jk1.license.filter.LicenseBundleNormalizer
+import com.github.jk1.license.render.InventoryMarkdownReportRenderer
+import com.github.jk1.license.render.JsonReportRenderer
+import com.github.jk1.license.render.SimpleHtmlReportRenderer
+
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
     kotlin("plugin.spring") version libs.versions.kotlin.get()
@@ -7,6 +12,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.ksp)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.license.report)
 }
 
 group = "io.github.kingg22"
@@ -75,4 +81,9 @@ spotless {
     sql {
         target("src/main/resources/**/*.sql", "*.sql")
     }
+}
+
+licenseReport {
+    renderers = arrayOf(InventoryMarkdownReportRenderer("THIRD-PARTY.md"))
+    filters = arrayOf(LicenseBundleNormalizer())
 }
