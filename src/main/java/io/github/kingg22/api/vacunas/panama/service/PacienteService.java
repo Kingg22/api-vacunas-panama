@@ -232,7 +232,9 @@ public class PacienteService implements IPacienteService {
         paciente = pacienteRepository.save(paciente);
         Hibernate.initialize(paciente.getDireccion());
         Hibernate.initialize(paciente.getDireccion().getDistrito());
-        Hibernate.initialize(paciente.getDireccion().getDistrito().getProvincia());
+        if (paciente.getDireccion().getDistrito() != null) {
+            Hibernate.initialize(paciente.getDireccion().getDistrito().getProvincia());
+        }
         Hibernate.initialize(paciente.getUsuario());
         var result = mapper.toDto(paciente);
         apiContentResponse.addData("paciente", result);
