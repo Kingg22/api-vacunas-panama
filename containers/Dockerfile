@@ -11,8 +11,12 @@ RUN --mount=type=secret,id=MSSQL_SA_PASSWORD,required=true \
     chmod 644 /tmp/sa_password.txt && \
     chown mssql:mssql /tmp/sa_password.txt
 
-COPY ./vacunas-init.sql /usr/src/app/setup.sql
-COPY ./configure-db.sh /usr/src/app/configure-db.sh
+COPY database/vacunas-init.sql /usr/src/app/setup.sql
+COPY database/test-data.sql /usr/src/app/test.sql
+COPY database/create-user.sql /usr/src/app/user.sql
+
+COPY scripts/configure-db.sh /usr/src/app/configure-db.sh
+COPY scripts/test-check.sh /usr/src/app/test-check.sh
 
 RUN chmod +x /usr/src/app/configure-db.sh
 
