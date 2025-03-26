@@ -128,7 +128,7 @@ class Paciente(
     companion object {
         @JvmStatic
         @JvmName("builderPaciente")
-        fun builder(): Builder = Builder()
+        fun builder() = Builder()
 
         @JvmStatic
         @JvmName("builderPaciente")

@@ -23,7 +23,7 @@ import java.time.ZoneOffset
 @Entity
 @Table(
     name = "roles",
-    indexes = [Index(name = "uq_roles_rol", columnList = "nombre", unique = true)]
+    indexes = [Index(name = "uq_roles_rol", columnList = "nombre", unique = true)],
 )
 class Rol(
     @Id

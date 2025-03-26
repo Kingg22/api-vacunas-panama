@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 
+// abstract
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(
@@ -33,7 +34,6 @@ import java.util.UUID
         Index(name = "ix_personas_telefono", columnList = "telefono", unique = true),
     ],
 )
-// abstract
 class Persona(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -152,7 +152,7 @@ class Persona(
         fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
 
-        open fun build(): Persona = Persona(
+        open fun build() = Persona(
             id = id,
             cedula = cedula,
             pasaporte = pasaporte,
