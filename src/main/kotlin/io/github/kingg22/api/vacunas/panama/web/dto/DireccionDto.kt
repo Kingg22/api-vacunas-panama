@@ -21,11 +21,11 @@ data class DireccionDto @JvmOverloads constructor(
         max = 150,
         message = "La indicaciones de la dirección es muy larga, no incluya la provincia y distrito",
     ) val direccion: String = DEFAULT_DIRECCION,
-    val distrito: @Valid DistritoDto? = null,
+    @Valid val distrito: DistritoDto? = null,
     @JsonProperty(value = "created_at") @PastOrPresent val createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
     @JsonProperty(value = "updated_at") @PastOrPresent val updatedAt: LocalDateTime? = null,
 ) : Serializable {
     companion object {
-        private const val DEFAULT_DIRECCION = "Por registrar"
+        const val DEFAULT_DIRECCION = "Por registrar"
     }
 }
