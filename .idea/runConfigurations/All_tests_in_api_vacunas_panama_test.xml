@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="io.github.kingg22.api.vacunas.panama in api-vacunas-panama.test" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+  <configuration default="false" name="All tests in api-vacunas-panama.test" type="JUnit" factoryName="JUnit">
     <module name="api-vacunas-panama.test" />
     <extension name="coverage">
       <pattern>

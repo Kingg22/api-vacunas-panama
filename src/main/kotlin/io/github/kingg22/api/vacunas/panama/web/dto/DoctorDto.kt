@@ -7,21 +7,19 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor]  */
-class DoctorDto :
-    PersonaDto(),
-    Serializable {
-
+class DoctorDto @JvmOverloads constructor(
     @Size(max = 20)
-    val idoneidad: String? = null
+    val idoneidad: String? = null,
 
     @Size(max = 100)
-    val categoria: String? = null
+    val categoria: String? = null,
 
     @JsonProperty(value = "created_at")
     @PastOrPresent
-    val createdAt: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null,
 
     @JsonProperty(value = "updated_at")
     @PastOrPresent
-    val updatedAt: LocalDateTime? = null
-}
+    val updatedAt: LocalDateTime? = null,
+) : PersonaDto(),
+    Serializable

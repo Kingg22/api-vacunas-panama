@@ -38,7 +38,6 @@ dependencies {
     runtimeOnly(libs.bundles.runtimeOnly)
 
     annotationProcessor(libs.lombok)
-    annotationProcessor(libs.mapstruct.processor)
     ksp(libs.konvert)
 
     testImplementation(libs.bundles.testImplementation)
@@ -71,9 +70,11 @@ spotless {
         removeUnusedImports()
     }
     kotlin {
+        targetExclude("build/generated/**")
         ktlint()
     }
     kotlinGradle {
+        targetExclude("build/generated/**")
         ktlint()
     }
     sql {

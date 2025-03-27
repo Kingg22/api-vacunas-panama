@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -26,6 +28,7 @@ import java.util.UUID
     name = "usuarios",
     indexes = [Index(name = "ix_usuarios_username", columnList = "usuario", unique = true)],
 )
+@KonvertTo(UsuarioDto::class)
 class Usuario @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

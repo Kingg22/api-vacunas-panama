@@ -11,8 +11,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona]  */
-open class PersonaDto : Serializable {
-    val id: UUID? = null
+open class PersonaDto @JvmOverloads constructor(
+    var id: UUID? = null,
 
     @Size(max = 15)
     @Pattern(
@@ -20,7 +20,7 @@ open class PersonaDto : Serializable {
         flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
         message = "El formato de la cédula no es válido",
     )
-    var cedula: String? = null
+    var cedula: String? = null,
 
     @Size(max = 20)
     @Pattern(
@@ -28,23 +28,23 @@ open class PersonaDto : Serializable {
         flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
         message = "El formato del pasaporte no es válido",
     )
-    val pasaporte: String? = null
+    var pasaporte: String? = null,
 
     @Size(max = 100)
-    val nombre: String? = null
+    var nombre: String? = null,
 
     @Size(max = 100)
-    val nombre2: String? = null
+    var nombre2: String? = null,
 
     @Size(max = 100)
-    val apellido1: String? = null
+    var apellido1: String? = null,
 
     @Size(max = 100)
-    val apellido2: String? = null
+    var apellido2: String? = null,
 
     @Size(max = 254)
     @Email
-    val correo: String? = null
+    var correo: String? = null,
 
     @Size(max = 15)
     @Pattern(
@@ -52,26 +52,25 @@ open class PersonaDto : Serializable {
         flags = [Pattern.Flag.MULTILINE],
         message = "El formato del teléfono no es válido",
     )
-    val telefono: String? = null
+    var telefono: String? = null,
 
     @JsonProperty(value = "fecha_nacimiento")
     @PastOrPresent
-    val fechaNacimiento: LocalDateTime? = null
+    var fechaNacimiento: LocalDateTime? = null,
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    val edad: Short? = null
+    var edad: Short? = null,
 
-    val sexo: Char? = null
+    var sexo: Char? = null,
 
     @Size(max = 50)
-    val estado:
-        String? = null
+    var estado: String? = null,
 
-    val disabled: Boolean = false
-
-    @Valid
-    val direccion: DireccionDto? = null
+    var disabled: Boolean = false,
 
     @Valid
-    val usuario: UsuarioDto? = null
-}
+    var direccion: DireccionDto? = null,
+
+    @Valid
+    var usuario: UsuarioDto? = null,
+) : Serializable

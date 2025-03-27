@@ -1,12 +1,14 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Direccion;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.DireccionKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Distrito;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.DistritoKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Provincia;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.extensions.DistritoProvinciaExtKt;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.DireccionRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.DistritoRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.ProvinciaRepository;
-import io.github.kingg22.api.vacunas.panama.util.mapper.DireccionMapper;
 import io.github.kingg22.api.vacunas.panama.web.dto.DireccionDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.DistritoDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.ProvinciaDto;
@@ -21,13 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service for {@link Direccion}, {@link Distrito} and {@link Provincia}.
- */
+/** Service for {@link Direccion}, {@link Distrito} and {@link Provincia}. */
 @Service
 @RequiredArgsConstructor
 public class DireccionService implements IDireccionService {
-    private final DireccionMapper mapper;
     private final DireccionRepository direccionRepository;
     private final DistritoRepository distritoRepository;
     private final ProvinciaRepository provinciaRepository;
@@ -38,7 +37,7 @@ public class DireccionService implements IDireccionService {
 
     @Cacheable(cacheNames = "massive", key = "'distritosDto'")
     public List<DistritoDto> getDistritosDto() {
-        return mapper.distritoListToDto(getDistritos());
+        return DistritoProvinciaExtKt.toListDistritoDto(getDistritos());
     }
 
     List<Provincia> getProvincias() {
@@ -47,7 +46,7 @@ public class DireccionService implements IDireccionService {
 
     @Cacheable(cacheNames = "massive", key = "'provinciasDto'")
     public List<ProvinciaDto> getProvinciasDto() {
-        return mapper.provinciaListToDto(getProvincias());
+        return DistritoProvinciaExtKt.toListProvinciaDto(getProvincias());
     }
 
     Direccion getDireccionDefault() {
@@ -60,7 +59,7 @@ public class DireccionService implements IDireccionService {
 
     @Cacheable(cacheNames = "massive", key = "'direccionDefault'")
     public DireccionDto getDireccionDtoDefault() {
-        return mapper.direccionToDto(getDireccionDefault());
+        return DireccionKonverterKt.toDireccionDto(getDireccionDefault());
     }
 
     Distrito getDistritoDefault() {
@@ -69,7 +68,7 @@ public class DireccionService implements IDireccionService {
 
     @Cacheable(cacheNames = "massive", key = "'distritoDefault'")
     public DistritoDto getDistritoDtoDefault() {
-        return mapper.distritoToDto(getDistritoDefault());
+        return DistritoKonverterKt.toDistritoDto(getDistritoDefault());
     }
 
     Distrito getDistritoById(Short id) {

@@ -1,5 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.ProvinciaDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -12,6 +14,7 @@ import org.hibernate.annotations.Nationalized
 
 @Entity
 @Table(name = "provincias")
+@KonvertTo(ProvinciaDto::class)
 class Provincia @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

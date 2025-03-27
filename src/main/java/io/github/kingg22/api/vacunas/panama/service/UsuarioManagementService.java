@@ -1,12 +1,17 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.DoctorKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.FabricanteKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.PacienteKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Permiso;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.PersonaKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Rol;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.UsuarioKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.PermisoRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.RolRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
@@ -16,11 +21,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.IApiContentResponse;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
-import io.github.kingg22.api.vacunas.panama.util.mapper.AccountMapper;
-import io.github.kingg22.api.vacunas.panama.util.mapper.DoctorMapper;
-import io.github.kingg22.api.vacunas.panama.util.mapper.FabricanteMapper;
-import io.github.kingg22.api.vacunas.panama.util.mapper.PacienteMapper;
-import io.github.kingg22.api.vacunas.panama.util.mapper.PersonaMapper;
 import io.github.kingg22.api.vacunas.panama.web.dto.IdNombreDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.RegisterUser;
 import io.github.kingg22.api.vacunas.panama.web.dto.RestoreDto;
@@ -50,11 +50,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UsuarioManagementService implements IUsuarioManagementService {
-    private final AccountMapper mapper;
-    private final FabricanteMapper fabricanteMapper;
-    private final PersonaMapper personaMapper;
-    private final PacienteMapper pacienteMapper;
-    private final DoctorMapper doctorMapper;
     private final UsuarioRepository usuarioRepository;
     private final PermisoRepository permisoRepository;
     private final RolRepository rolRepository;
@@ -67,7 +62,8 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private final UsuarioTransactionService transactionService;
 
     public List<ApiFailed> validateAuthoritiesRegister(
-            @NotNull UsuarioDto usuarioDto, @NotNull Authentication authentication) {
+            @org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto,
+            @org.jetbrains.annotations.NotNull @NotNull Authentication authentication) {
         List<ApiFailed> errors = new ArrayList<>();
         List<String> authenticatedAuthorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -101,7 +97,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return errors;
     }
 
-    public IApiContentResponse createUser(@NotNull RegisterUser registerUser) {
+    public IApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull RegisterUser registerUser) {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
         UsuarioDto usuarioDto = registerUser.usuario();
         Object validationResult = this.validationService.validateRegistration(registerUser);
@@ -123,16 +119,16 @@ public class UsuarioManagementService implements IUsuarioManagementService {
                     Usuario user = transactionService.createUser(usuarioDto, persona, null);
                     if (persona instanceof Paciente paciente) {
                         paciente.setUsuario(user);
-                        apiContentResponse.addData("paciente", pacienteMapper.toDto(paciente));
+                        apiContentResponse.addData("paciente", PacienteKonverterKt.toPacienteDto(paciente));
                     }
                     if (persona instanceof Doctor doctor) {
                         doctor.setUsuario(user);
-                        apiContentResponse.addData("doctor", doctorMapper.toDto(doctor));
+                        apiContentResponse.addData("doctor", DoctorKonverterKt.toDoctorDto(doctor));
                     }
                 }
                 case Fabricante fabricante -> {
                     fabricante.setUsuario(transactionService.createUser(usuarioDto, null, fabricante));
-                    apiContentResponse.addData("fabricante", fabricanteMapper.toDto(fabricante));
+                    apiContentResponse.addData("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante));
                 }
                 default -> apiContentResponse.addError(
                         ApiResponseCode.API_UPDATE_UNSUPPORTED,
@@ -142,7 +138,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return apiContentResponse;
     }
 
-    public ApiContentResponse changePassword(@NotNull RestoreDto restoreDto) {
+    public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull RestoreDto restoreDto) {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
         Optional<Persona> opPersona = this.personaService.getPersona(restoreDto.username());
         opPersona.ifPresentOrElse(
@@ -169,18 +165,18 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         if (usuario.getPersona() != null) {
             Persona persona = usuario.getPersona();
             if (persona instanceof Paciente paciente) {
-                data.put("paciente", this.pacienteMapper.toDto(paciente));
+                data.put("paciente", PacienteKonverterKt.toPacienteDto(paciente));
             }
             if (persona instanceof Doctor doctor) {
-                data.put("doctor", this.doctorMapper.toDto(doctor));
+                data.put("doctor", DoctorKonverterKt.toDoctorDto(doctor));
             }
             // En caso de que necesites manejar la persona genérica
             if (!(persona instanceof Paciente) && !(persona instanceof Doctor)) {
-                data.put("persona", this.personaMapper.toDto(persona));
+                data.put("persona", PersonaKonverterKt.toPersonaDto(persona));
             }
         }
         if (usuario.getFabricante() != null) {
-            data.put("fabricante", this.fabricanteMapper.toDto(usuario.getFabricante()));
+            data.put("fabricante", FabricanteKonverterKt.toFabricanteDto(usuario.getFabricante()));
         }
         data.putAll(this.generateTokens(idUser));
         return data;
@@ -191,13 +187,13 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         Map<String, Serializable> data = new LinkedHashMap<>();
         this.pacienteService
                 .getPacienteByUserID(idUser)
-                .ifPresent(paciente -> data.put("paciente", this.pacienteMapper.toDto(paciente)));
+                .ifPresent(paciente -> data.put("paciente", PacienteKonverterKt.toPacienteDto(paciente)));
         this.doctorService
                 .getDoctorByUserID(idUser)
-                .ifPresent(doctor -> data.put("doctor", this.doctorMapper.toDto(doctor)));
+                .ifPresent(doctor -> data.put("doctor", DoctorKonverterKt.toDoctorDto(doctor)));
         this.fabricanteService
                 .getFabricanteByUserID(idUser)
-                .ifPresent(fabricante -> data.put("fabricante", this.fabricanteMapper.toDto(fabricante)));
+                .ifPresent(fabricante -> data.put("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante)));
         return data;
     }
 
@@ -211,10 +207,6 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return permisoRepository.findAllIdNombre();
     }
 
-    public UsuarioDto getUsuarioDto(UUID id) {
-        return mapper.usuarioToDto(usuarioRepository.findById(id).orElseThrow());
-    }
-
     public Map<String, Serializable> generateTokens(UUID idUser) {
         Usuario usuario = usuarioRepository.findById(idUser).orElseThrow();
         Map<String, Serializable> idsAdicionales = new HashMap<>();
@@ -224,7 +216,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         if (usuario.getFabricante() != null) {
             idsAdicionales.put("fabricante", usuario.getFabricante().getId());
         }
-        return tokenService.generateTokens(mapper.usuarioToDto(usuario), idsAdicionales);
+        return tokenService.generateTokens(UsuarioKonverterKt.toUsuarioDto(usuario), idsAdicionales);
     }
 
     public void updateLastUsed(UUID id) {

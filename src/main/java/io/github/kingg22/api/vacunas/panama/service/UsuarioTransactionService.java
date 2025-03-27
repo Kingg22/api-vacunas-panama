@@ -1,15 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Permiso;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Rol;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.PermisoRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.RolRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
-import io.github.kingg22.api.vacunas.panama.util.mapper.AccountMapper;
-import io.github.kingg22.api.vacunas.panama.web.dto.PermisoDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.RolDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
 import jakarta.annotation.Nullable;
@@ -35,10 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UsuarioTransactionService {
-    private final AccountMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository usuarioRepository;
-    private final PermisoRepository permisoRepository;
     private final RolRepository rolRepository;
 
     @Transactional
@@ -68,10 +62,6 @@ public class UsuarioTransactionService {
         return usuarioRepository.save(usuario);
     }
 
-    PermisoDto createPermiso(PermisoDto permisoDto) {
-        return mapper.permisoToDto(permisoRepository.save(mapper.permisoDtoToPermiso(permisoDto)));
-    }
-
     @Modifying
     public void updateLastUsed(UUID id) {
         Usuario usuario = this.usuarioRepository.findById(id).orElseThrow();
@@ -81,19 +71,13 @@ public class UsuarioTransactionService {
 
     @Transactional
     @Modifying
-    public void changePasswordPersonas(Persona persona, String newPassword) {
+    public void changePasswordPersonas(@org.jetbrains.annotations.NotNull Persona persona, String newPassword) {
         Usuario usuario = persona.getUsuario();
         usuario.setPassword(passwordEncoder.encode(newPassword));
         usuarioRepository.save(usuario);
     }
 
-    Rol convertToRoleExisting(RolDto rolDto) {
+    Rol convertToRoleExisting(@org.jetbrains.annotations.NotNull RolDto rolDto) {
         return rolRepository.findByNombreOrId(rolDto.nombre(), rolDto.id()).orElse(null);
-    }
-
-    Permiso convertToPermisoExisting(PermisoDto permisoDto) {
-        return permisoRepository
-                .findByNombreOrId(permisoDto.nombre(), permisoDto.id())
-                .orElse(null);
     }
 }

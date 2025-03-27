@@ -1,6 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.web.dto.ViewPacienteVacunaEnfermedadDto
+import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.ColumnResult
 import jakarta.persistence.ConstructorResult
@@ -91,6 +94,27 @@ import java.util.UUID
         ),
     ],
 )
+@KonvertTo(
+    PacienteDto::class,
+    mappings = [
+        Mapping(target = "id", source = "id"),
+        Mapping(target = "cedula", source = "cedula"),
+        Mapping(target = "pasaporte", source = "pasaporte"),
+        Mapping(target = "nombre", source = "nombre"),
+        Mapping(target = "nombre2", source = "nombre2"),
+        Mapping(target = "apellido1", source = "apellido1"),
+        Mapping(target = "apellido2", source = "apellido2"),
+        Mapping(target = "correo", source = "correo"),
+        Mapping(target = "telefono", source = "telefono"),
+        Mapping(target = "fechaNacimiento", source = "fechaNacimiento"),
+        Mapping(target = "edad", source = "edad"),
+        Mapping(target = "sexo", source = "sexo"),
+        Mapping(target = "estado", source = "estado"),
+        Mapping(target = "disabled", source = "disabled"),
+        Mapping(target = "direccion", expression = "direccion.toDireccionDto()"),
+        Mapping(target = "usuario", expression = "usuario?.toUsuarioDto()"),
+    ],
+)
 class Paciente @JvmOverloads constructor(
     estado: String,
     direccion: Direccion,
@@ -159,6 +183,7 @@ class Paciente @JvmOverloads constructor(
 
         fun identificacionTemporal(identificacionTemporal: String?) =
             apply { this.identificacionTemporal = identificacionTemporal }
+
         fun dosis(dosis: Set<Dosis>) = apply { this.dosis = dosis }
         fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }

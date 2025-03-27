@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import io.github.kingg22.api.vacunas.panama.util.NumDosisEnum
+import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -19,15 +21,16 @@ import java.util.UUID
 
 @Entity
 @Table(name = "dosis")
+@KonvertTo(DosisDto::class)
 class Dosis @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "paciente")
-    var paciente: Paciente? = null,
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "paciente", nullable = false)
+    var paciente: Paciente,
 
     @Column(name = "fecha_aplicacion", nullable = false)
     var fechaAplicacion: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
@@ -69,7 +72,7 @@ class Dosis @JvmOverloads constructor(
 
     class Builder {
         var id: UUID? = null
-        var paciente: Paciente? = null
+        lateinit var paciente: Paciente
         lateinit var fechaAplicacion: LocalDateTime
         lateinit var numeroDosis: NumDosisEnum
         lateinit var vacuna: Vacuna
@@ -80,7 +83,7 @@ class Dosis @JvmOverloads constructor(
         var updatedAt: LocalDateTime? = null
 
         fun id(id: UUID?) = apply { this.id = id }
-        fun paciente(paciente: Paciente?) = apply { this.paciente = paciente }
+        fun paciente(paciente: Paciente) = apply { this.paciente = paciente }
         fun fechaAplicacion(fechaAplicacion: LocalDateTime) = apply { this.fechaAplicacion = fechaAplicacion }
         fun numeroDosis(numeroDosis: NumDosisEnum) = apply { this.numeroDosis = numeroDosis }
         fun vacuna(vacuna: Vacuna) = apply { this.vacuna = vacuna }

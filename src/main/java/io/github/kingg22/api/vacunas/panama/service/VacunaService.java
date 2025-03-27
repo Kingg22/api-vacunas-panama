@@ -2,16 +2,17 @@ package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Dosis;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.DosisKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Sede;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Vacuna;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.extensions.DosisExtKt;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.DosisRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.VacunaRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.IApiContentResponse;
-import io.github.kingg22.api.vacunas.panama.util.mapper.DosisMapper;
 import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.InsertDosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.VacunaFabricanteDto;
@@ -27,14 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for {@link Vacuna} and {@link Dosis}
- */
+/** Service for {@link Vacuna} and {@link Dosis} */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VacunaService implements IVacunaService {
-    private final DosisMapper dosisMapper;
     private final VacunaRepository vacunaRepository;
     private final DosisRepository dosisRepository;
     private final PacienteService pacienteService;
@@ -89,17 +87,13 @@ public class VacunaService implements IVacunaService {
         dosis = dosisRepository.save(dosis);
         dosis = dosisRepository.findById(dosis.getId()).orElseThrow();
         log.debug("Nueva dosis. ID: {}", dosis.getId());
-        DosisDto dosisDto = dosisMapper.toDto(dosis);
+        DosisDto dosisDto = DosisKonverterKt.toDosisDto(dosis);
         apiContentResponse.addData("dosis", dosisDto);
         return apiContentResponse;
     }
 
-    public DosisDto getDosisById(UUID idDosis) {
-        return dosisMapper.toDto(dosisRepository.findById(idDosis).orElseThrow());
-    }
-
     public List<DosisDto> getDosisByIdPacienteIdVacuna(UUID idPaciente, UUID idVacuna) {
-        return dosisMapper.toDtoList(
+        return DosisExtKt.toListDosisDto(
                 dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna));
     }
 

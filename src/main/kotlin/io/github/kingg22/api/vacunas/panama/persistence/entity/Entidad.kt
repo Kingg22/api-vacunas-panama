@@ -1,5 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.EntidadDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -25,7 +27,8 @@ import java.util.UUID
         Index(name = "ix_entidades_telefono", columnList = "telefono", unique = true),
     ],
 )
-abstract class Entidad @JvmOverloads constructor(
+@KonvertTo(EntidadDto::class)
+class Entidad @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
