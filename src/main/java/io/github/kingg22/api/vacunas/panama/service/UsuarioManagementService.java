@@ -241,9 +241,14 @@ public class UsuarioManagementService implements IUsuarioManagementService {
             log.debug("Found user: {}, with username", usuario.getId());
         });
         if (usuarioOpt.isEmpty()) {
-            String[] result = FormatterUtil.formatToSearch(identifier);
-            log.debug("Searching by cedula: {}, pasaporte: {}, correo: {}", result[0], result[1], result[2]);
-            usuarioOpt = this.usuarioRepository.findByCedulaOrPasaporteOrCorreo(result[0], result[1], result[2]);
+            FormatterUtil.FormatterResult result = FormatterUtil.formatToSearch(identifier);
+            log.debug(
+                    "Searching by cedula: {}, pasaporte: {}, correo: {}",
+                    result.cedula(),
+                    result.pasaporte(),
+                    result.correo());
+            usuarioOpt = this.usuarioRepository.findByCedulaOrPasaporteOrCorreo(
+                    result.cedula(), result.pasaporte(), result.correo());
             usuarioOpt.ifPresent(usuario -> {
                 this.personaService
                         .getPersonaByUserID(usuario.getId())
