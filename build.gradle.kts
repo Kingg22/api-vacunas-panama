@@ -38,7 +38,6 @@ dependencies {
     runtimeOnly(libs.bundles.runtimeOnly)
 
     annotationProcessor(libs.lombok)
-    annotationProcessor(libs.mapstruct.processor)
     ksp(libs.konvert)
 
     testImplementation(libs.bundles.testImplementation)
