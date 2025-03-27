@@ -12,9 +12,9 @@ ij_smart_tabs = false
 
 [*.{kt,kts}]
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
-ij_kotlin_packages_to_use_import_on_demand =
-ij_kotlin_name_count_to_use_star_import = 999
-ij_kotlin_name_count_to_use_star_import_for_members = 999
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+ij_kotlin_packages_to_use_import_on_demand = unset
 
 # noinspection EditorConfigKeyCorrectness
 ktlint_code_style = intellij_idea
@@ -25,9 +25,15 @@ ktlint_standard_if-else-wrapping = enabled
 # noinspection EditorConfigKeyCorrectness
 ktlint_standard_try-catch-finally-spacing = enabled
 
-[**/build/**.{kt,kts}]
+[build/**/*.{kt,kts}]
 # noinspection EditorConfigKeyCorrectness
 ktlint = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_standard_final-newline = disabled
+# noinspection EditorConfigKeyCorrectness
+ktlint_experimental = disabled
 
 [{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
 indent_size = 2

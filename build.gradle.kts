@@ -70,9 +70,11 @@ spotless {
         removeUnusedImports()
     }
     kotlin {
+        targetExclude("build/generated/**")
         ktlint()
     }
     kotlinGradle {
+        targetExclude("build/generated/**")
         ktlint()
     }
     sql {
