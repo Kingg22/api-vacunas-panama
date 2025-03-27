@@ -33,18 +33,18 @@ class PacienteTests {
 
         // Assert: Verificar que los valores se mapean correctamente
         assertNotNull(dto)
-        assertEquals(paciente.id, dto.id)
-        assertEquals(paciente.estado, dto.estado)
+        assertEquals(paciente.id, dto.persona.id)
+        assertEquals(paciente.estado, dto.persona.estado)
         assertEquals(paciente.identificacionTemporal, dto.identificacionTemporal)
         assertEquals(paciente.createdAt, dto.createdAt)
         assertEquals(paciente.updatedAt, dto.updatedAt)
 
         // Verificar conversión de direccion a DireccionDto
-        assertNotNull(dto.direccion)
-        assertEquals(paciente.direccion.id, dto.direccion?.id)
-        assertEquals(paciente.direccion.direccion, dto.direccion?.direccion)
-        assertEquals(paciente.direccion.createdAt, dto.direccion?.createdAt)
-        assertEquals(paciente.direccion.updatedAt, dto.direccion?.updatedAt)
-        assertNull(dto.direccion?.distrito)
+        assertNotNull(dto.persona.direccion)
+        assertEquals(paciente.direccion.id, dto.persona.direccion?.id)
+        assertEquals(paciente.direccion.direccion, dto.persona.direccion?.direccion)
+        assertEquals(paciente.direccion.createdAt, dto.persona.direccion?.createdAt)
+        assertEquals(paciente.direccion.updatedAt, dto.persona.direccion?.updatedAt)
+        assertNull(dto.persona.direccion?.distrito)
     }
 }

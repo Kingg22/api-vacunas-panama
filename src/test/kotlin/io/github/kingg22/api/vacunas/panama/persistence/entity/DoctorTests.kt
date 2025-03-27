@@ -44,19 +44,19 @@ class DoctorTests {
 
         // Assert: Verificar que los valores se mapean correctamente
         assertNotNull(dto)
-        assertEquals(doctor.id, dto.id)
-        assertEquals(doctor.estado, dto.estado)
+        assertEquals(doctor.id, dto.persona.id)
+        assertEquals(doctor.estado, dto.persona.estado)
         assertEquals(doctor.idoneidad, dto.idoneidad)
         assertEquals(doctor.categoria, dto.categoria)
         assertEquals(doctor.createdAt, dto.createdAt)
         assertEquals(doctor.updatedAt, dto.updatedAt)
 
         // Verificar conversión de direccion a DireccionDto
-        assertNotNull(dto.direccion)
-        assertEquals(doctor.direccion.id, dto.direccion?.id)
-        assertEquals(doctor.direccion.direccion, dto.direccion?.direccion)
-        assertEquals(doctor.direccion.createdAt, dto.direccion?.createdAt)
-        assertEquals(doctor.direccion.updatedAt, dto.direccion?.updatedAt)
-        assertNull(dto.direccion?.distrito)
+        assertNotNull(dto.persona.direccion)
+        assertEquals(doctor.direccion.id, dto.persona.direccion?.id)
+        assertEquals(doctor.direccion.direccion, dto.persona.direccion?.direccion)
+        assertEquals(doctor.direccion.createdAt, dto.persona.direccion?.createdAt)
+        assertEquals(doctor.direccion.updatedAt, dto.persona.direccion?.updatedAt)
+        assertNull(dto.persona.direccion?.distrito)
     }
 }

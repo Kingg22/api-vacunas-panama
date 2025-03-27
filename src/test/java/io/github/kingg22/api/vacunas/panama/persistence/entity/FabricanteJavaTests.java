@@ -39,40 +39,43 @@ class FabricanteJavaTests {
 
         // Assert: Verificar que los valores se mapean correctamente
         assertNotNull(dto);
-        assertEquals(fabricante.getId(), dto.getId());
-        assertEquals(fabricante.getNombre(), dto.getNombre());
-        assertEquals(fabricante.getCorreo(), dto.getCorreo());
-        assertEquals(fabricante.getTelefono(), dto.getTelefono());
-        assertEquals(fabricante.getDependencia(), dto.getDependencia());
-        assertEquals(fabricante.getEstado(), dto.getEstado());
-        assertEquals(fabricante.getDisabled(), dto.getDisabled());
-        assertEquals(fabricante.getLicencia(), dto.getLicencia());
-        assertEquals(fabricante.getContactoNombre(), dto.getContactoNombre());
-        assertEquals(fabricante.getContactoCorreo(), dto.getContactoCorreo());
-        assertEquals(fabricante.getContactoTelefono(), dto.getContactoTelefono());
-        assertEquals(fabricante.getCreatedAt(), dto.getCreatedAt());
-        assertEquals(fabricante.getUpdatedAt(), dto.getUpdatedAt());
+        assertEquals(fabricante.getId(), dto.entidad().id());
+        assertEquals(fabricante.getNombre(), dto.entidad().nombre());
+        assertEquals(fabricante.getCorreo(), dto.entidad().correo());
+        assertEquals(fabricante.getTelefono(), dto.entidad().telefono());
+        assertEquals(fabricante.getDependencia(), dto.entidad().dependencia());
+        assertEquals(fabricante.getEstado(), dto.entidad().estado());
+        assertEquals(fabricante.getDisabled(), dto.entidad().disabled());
+        assertEquals(fabricante.getLicencia(), dto.licencia());
+        assertEquals(fabricante.getContactoNombre(), dto.contactoNombre());
+        assertEquals(fabricante.getContactoCorreo(), dto.contactoCorreo());
+        assertEquals(fabricante.getContactoTelefono(), dto.contactoTelefono());
+        assertEquals(fabricante.getCreatedAt(), dto.createdAt());
+        assertEquals(fabricante.getUpdatedAt(), dto.updatedAt());
 
         // Verificar conversión de direccion a DireccionDto
-        assertNotNull(dto.getDireccion());
-        assertEquals(fabricante.getDireccion().getId(), dto.getDireccion().id());
+        assertNotNull(dto.entidad().direccion());
         assertEquals(
-                fabricante.getDireccion().getCreatedAt(), dto.getDireccion().createdAt());
+                fabricante.getDireccion().getId(), dto.entidad().direccion().id());
         assertEquals(
-                fabricante.getDireccion().getUpdatedAt(), dto.getDireccion().updatedAt());
-        assertNotNull(dto.getDireccion().distrito());
+                fabricante.getDireccion().getCreatedAt(),
+                dto.entidad().direccion().createdAt());
+        assertEquals(
+                fabricante.getDireccion().getUpdatedAt(),
+                dto.entidad().direccion().updatedAt());
+        assertNotNull(dto.entidad().direccion().distrito());
         assertEquals(
                 fabricante.getDireccion().getDistrito().getId(),
-                dto.getDireccion().distrito().id());
+                dto.entidad().direccion().distrito().id());
         assertEquals(
                 fabricante.getDireccion().getDistrito().getNombre(),
-                dto.getDireccion().distrito().nombre());
-        assertNotNull(dto.getDireccion().distrito().provincia());
+                dto.entidad().direccion().distrito().nombre());
+        assertNotNull(dto.entidad().direccion().distrito().provincia());
         assertEquals(
                 fabricante.getDireccion().getDistrito().getProvincia().getId(),
-                dto.getDireccion().distrito().provincia().id());
+                dto.entidad().direccion().distrito().provincia().id());
         assertEquals(
                 fabricante.getDireccion().getDistrito().getProvincia().getNombre(),
-                dto.getDireccion().distrito().provincia().nombre());
+                dto.entidad().direccion().distrito().provincia().nombre());
     }
 }
