@@ -18,10 +18,14 @@ public class PersonaService {
     private final PersonaRepository personaRepository;
 
     Optional<Persona> getPersona(@NotNull String identifier) {
-        String[] result = FormatterUtil.formatToSearch(identifier);
-        log.debug("Searching Persona by cedula: {}, pasaporte: {}, correo: {}", result[0], result[1], result[2]);
-        Optional<Persona> persona =
-                this.personaRepository.findByCedulaOrPasaporteOrCorreo(result[0], result[1], result[2]);
+        FormatterUtil.FormatterResult result = FormatterUtil.formatToSearch(identifier);
+        log.debug(
+                "Searching Persona by cedula: {}, pasaporte: {}, correo: {}",
+                result.cedula(),
+                result.pasaporte(),
+                result.correo());
+        Optional<Persona> persona = this.personaRepository.findByCedulaOrPasaporteOrCorreo(
+                result.cedula(), result.pasaporte(), result.correo());
         if (persona.isEmpty()) {
             log.debug("Searching Persona by username: {}", identifier);
             persona = this.personaRepository.findByUsuario_Username(identifier);
