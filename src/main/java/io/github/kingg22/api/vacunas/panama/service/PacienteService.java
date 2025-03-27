@@ -51,18 +51,18 @@ public class PacienteService implements IPacienteService {
 
     public ApiContentResponse validateCreatePacienteUsuario(PacienteDto pacienteDto) {
         ApiContentResponse apiContentResponse = new ApiContentResponse();
-        if (pacienteDto.getUsuario() == null) {
+        if (pacienteDto.persona().usuario() == null) {
             apiContentResponse.addError(
                     ApiResponseCode.MISSING_INFORMATION, "Esta función necesita el usuario para el paciente");
         }
-        if (pacienteDto.getUsuario() != null
-                && pacienteDto.getUsuario().id() == null
-                && pacienteDto.getUsuario().roles().stream().anyMatch(rolDto -> rolDto.nombre() != null)) {
+        if (pacienteDto.persona().usuario() != null
+                && pacienteDto.persona().usuario().id() == null
+                && pacienteDto.persona().usuario().roles().stream().anyMatch(rolDto -> rolDto.nombre() != null)) {
             apiContentResponse.addError(
                     ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID para el rol Paciente en esta función");
         }
-        if (pacienteDto.getUsuario() != null
-                && pacienteDto.getUsuario().roles().stream()
+        if (pacienteDto.persona().usuario() != null
+                && pacienteDto.persona().usuario().roles().stream()
                         .anyMatch(rolDto -> rolDto.id() != null
                                 && !RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE))) {
             apiContentResponse.addError(
@@ -70,19 +70,22 @@ public class PacienteService implements IPacienteService {
                     "roles[]",
                     "Esta función es solo para pacientes, utilice otra operación");
         }
-        if (pacienteDto.getSexo().toString().equalsIgnoreCase("X")) {
+        if (pacienteDto.persona().sexo().toString().equalsIgnoreCase("X")) {
             apiContentResponse.addWarning(
                     ApiResponseCode.DEPRECATION_WARNING,
                     "sexo",
                     "Pacientes no deben tener sexo no definido. Reglas de vacunación no se podrán aplicar");
         }
-        if (pacienteDto.getDireccion() != null && pacienteDto.getDireccion().id() == null) {
+        if (pacienteDto.persona().direccion() != null
+                && pacienteDto.persona().direccion().id() == null) {
             apiContentResponse.addWarning(ApiResponseCode.NON_IDEMPOTENCE, "direccion", "Debe trabajar con ID");
         }
-        if (pacienteDto.getUsuario() != null
-                && pacienteDto.getUsuario().createdAt() != null
-                && pacienteDto.getCreatedAt() != null
-                && !pacienteDto.getCreatedAt().isEqual(pacienteDto.getUsuario().createdAt())) {
+        if (pacienteDto.persona().usuario() != null
+                && pacienteDto.persona().usuario().createdAt() != null
+                && pacienteDto.createdAt() != null
+                && !pacienteDto
+                        .createdAt()
+                        .isEqual(pacienteDto.persona().usuario().createdAt())) {
             apiContentResponse.addError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "created_at",
@@ -94,31 +97,35 @@ public class PacienteService implements IPacienteService {
     public List<ApiFailed> validateCreatePaciente(@NotNull PacienteDto pacienteDto) {
         List<ApiFailed> failedList = new ArrayList<>();
 
-        if ((pacienteDto.getNombre() == null || pacienteDto.getNombre().isBlank())
-                && (pacienteDto.getNombre2() == null || pacienteDto.getNombre2().isBlank())) {
+        if ((pacienteDto.persona().nombre() == null
+                        || pacienteDto.persona().nombre().isBlank())
+                && (pacienteDto.persona().nombre2() == null
+                        || pacienteDto.persona().nombre2().isBlank())) {
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED, "nombre", "El nombre del paciente es obligatorio"));
         }
 
-        if ((pacienteDto.getApellido1() == null || pacienteDto.getApellido1().isBlank())
-                && (pacienteDto.getApellido2() == null
-                        || pacienteDto.getApellido2().isBlank())) {
+        if ((pacienteDto.persona().apellido1() == null
+                        || pacienteDto.persona().apellido1().isBlank())
+                && (pacienteDto.persona().apellido2() == null
+                        || pacienteDto.persona().apellido2().isBlank())) {
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED, "apellido", "El apellido del paciente es obligatorio"));
         }
 
-        if ((pacienteDto.getCedula() == null || pacienteDto.getCedula().isBlank())
-                && (pacienteDto.getPasaporte() == null
-                        || pacienteDto.getPasaporte().isBlank())
-                && (pacienteDto.getIdentificacionTemporal() == null
-                        || pacienteDto.getIdentificacionTemporal().isBlank())) {
+        if ((pacienteDto.persona().cedula() == null
+                        || pacienteDto.persona().cedula().isBlank())
+                && (pacienteDto.persona().pasaporte() == null
+                        || pacienteDto.persona().pasaporte().isBlank())
+                && (pacienteDto.identificacionTemporal() == null
+                        || pacienteDto.identificacionTemporal().isBlank())) {
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED,
                     "identificacion",
                     "Una identificación personal del paciente es obligatoria"));
         }
 
-        if (pacienteDto.getFechaNacimiento() == null) {
+        if (pacienteDto.persona().fechaNacimiento() == null) {
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED,
                     "fechaNacimiento",
@@ -128,13 +135,21 @@ public class PacienteService implements IPacienteService {
         return failedList;
     }
 
-    public List<ApiFailed> validatePacienteExist(@NotNull PacienteDto pacienteDto) {
+    public List<ApiFailed> validatePacienteExist(@org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
         List<ApiFailed> failedList = new ArrayList<>();
 
-        if (pacienteDto.getCedula() != null) {
-            pacienteDto.setCedula(FormatterUtil.formatCedula(pacienteDto.getCedula()));
-            if (this.pacienteRepository.findByCedula(pacienteDto.getCedula()).isPresent()) {
-                log.debug("Existe un paciente con cédula a registrar: {}", pacienteDto.getCedula());
+        if (pacienteDto.persona().cedula() != null) {
+            pacienteDto = pacienteDto.changePersona(pacienteDto
+                    .persona()
+                    .changeCedulaOrID(
+                            FormatterUtil.formatCedula(pacienteDto.persona().cedula())));
+
+            if (this.pacienteRepository
+                    .findByCedula(pacienteDto.persona().cedula())
+                    .isPresent()) {
+                log.debug(
+                        "Existe un paciente con cédula a registrar: {}",
+                        pacienteDto.persona().cedula());
                 failedList.add(new ApiFailed(
                         ApiResponseCode.VALIDATION_FAILED,
                         "cedula",
@@ -142,45 +157,52 @@ public class PacienteService implements IPacienteService {
             }
         }
 
-        if (pacienteDto.getPasaporte() != null
-                && !pacienteDto.getPasaporte().isBlank()
+        if (pacienteDto.persona().pasaporte() != null
+                && !pacienteDto.persona().pasaporte().isBlank()
                 && this.pacienteRepository
-                        .findByPasaporte(pacienteDto.getPasaporte())
+                        .findByPasaporte(pacienteDto.persona().pasaporte())
                         .isPresent()) {
-            log.debug("Existe un paciente con pasaporte: {}", pacienteDto.getPasaporte());
+            log.debug(
+                    "Existe un paciente con pasaporte: {}",
+                    pacienteDto.persona().pasaporte());
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED,
                     "pasaporte",
                     "Ya existe un paciente con el pasaporte proporcionado"));
         }
 
-        if (pacienteDto.getIdentificacionTemporal() != null
-                && !pacienteDto.getIdentificacionTemporal().isBlank()
+        if (pacienteDto.identificacionTemporal() != null
+                && !pacienteDto.identificacionTemporal().isBlank()
                 && this.pacienteRepository
-                        .findByIdentificacionTemporal(pacienteDto.getIdentificacionTemporal())
+                        .findByIdentificacionTemporal(pacienteDto.identificacionTemporal())
                         .isPresent()) {
-            log.debug(
-                    "Existe un paciente con este identificador temporal: {}", pacienteDto.getIdentificacionTemporal());
+            log.debug("Existe un paciente con este identificador temporal: {}", pacienteDto.identificacionTemporal());
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED,
                     "identificacionTemporal",
                     "Ya existe un paciente con la identificación temporal proporcionada"));
         }
 
-        if (pacienteDto.getCorreo() != null
-                && !pacienteDto.getCorreo().isBlank()
-                && this.pacienteRepository.findByCorreo(pacienteDto.getCorreo()).isPresent()) {
-            log.debug("Existe un paciente con este correo: {}", pacienteDto.getCorreo());
+        if (pacienteDto.persona().correo() != null
+                && !pacienteDto.persona().correo().isBlank()
+                && this.pacienteRepository
+                        .findByCorreo(pacienteDto.persona().correo())
+                        .isPresent()) {
+            log.debug(
+                    "Existe un paciente con este correo: {}",
+                    pacienteDto.persona().correo());
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED, "correo", "Ya existe un paciente con el correo proporcionado"));
         }
 
-        if (pacienteDto.getTelefono() != null
-                && !pacienteDto.getTelefono().isBlank()
+        if (pacienteDto.persona().telefono() != null
+                && !pacienteDto.persona().telefono().isBlank()
                 && this.pacienteRepository
-                        .findByTelefono(pacienteDto.getTelefono())
+                        .findByTelefono(pacienteDto.persona().telefono())
                         .isPresent()) {
-            log.debug("Existe un paciente con este teléfono: {}", pacienteDto.getTelefono());
+            log.debug(
+                    "Existe un paciente con este teléfono: {}",
+                    pacienteDto.persona().telefono());
             failedList.add(new ApiFailed(
                     ApiResponseCode.VALIDATION_FAILED,
                     "telefono",
@@ -199,32 +221,31 @@ public class PacienteService implements IPacienteService {
             return apiContentResponse;
         }
         Direccion direccion;
-        if (pacienteDto.getDireccion() != null) {
+        if (pacienteDto.persona().direccion() != null) {
             direccion = direccionService
-                    .getDireccionByDto(pacienteDto.getDireccion())
-                    .orElseGet(() -> direccionService.createDireccion(pacienteDto.getDireccion()));
+                    .getDireccionByDto(pacienteDto.persona().direccion())
+                    .orElseGet(() -> direccionService.createDireccion(
+                            pacienteDto.persona().direccion()));
         } else {
             direccion = DireccionDtoKonverterKt.toDireccion(direccionService.getDireccionDtoDefault());
         }
         Paciente paciente = (Paciente) Paciente.builderPaciente()
-                .identificacionTemporal(pacienteDto.getIdentificacionTemporal())
+                .identificacionTemporal(pacienteDto.identificacionTemporal())
                 .createdAt(
-                        pacienteDto.getCreatedAt() != null
-                                ? pacienteDto.getCreatedAt()
-                                : LocalDateTime.now(ZoneOffset.UTC))
-                .nombre(pacienteDto.getNombre())
-                .nombre2(pacienteDto.getNombre2())
-                .apellido1(pacienteDto.getApellido1())
-                .apellido2(pacienteDto.getApellido2())
-                .fechaNacimiento(pacienteDto.getFechaNacimiento())
-                .cedula(pacienteDto.getCedula())
-                .pasaporte(pacienteDto.getPasaporte())
-                .telefono(pacienteDto.getTelefono())
-                .correo(pacienteDto.getCorreo())
-                .sexo(pacienteDto.getSexo())
+                        pacienteDto.createdAt() != null ? pacienteDto.createdAt() : LocalDateTime.now(ZoneOffset.UTC))
+                .nombre(pacienteDto.persona().nombre())
+                .nombre2(pacienteDto.persona().nombre2())
+                .apellido1(pacienteDto.persona().apellido1())
+                .apellido2(pacienteDto.persona().apellido2())
+                .fechaNacimiento(pacienteDto.persona().fechaNacimiento())
+                .cedula(pacienteDto.persona().cedula())
+                .pasaporte(pacienteDto.persona().pasaporte())
+                .telefono(pacienteDto.persona().telefono())
+                .correo(pacienteDto.persona().correo())
+                .sexo(pacienteDto.persona().sexo())
                 .direccion(direccion)
-                .estado(pacienteDto.getEstado())
-                .disabled(pacienteDto.getDisabled())
+                .estado(pacienteDto.persona().estado())
+                .disabled(pacienteDto.persona().disabled())
                 .build();
         paciente = pacienteRepository.save(paciente);
         Hibernate.initialize(paciente.getDireccion());

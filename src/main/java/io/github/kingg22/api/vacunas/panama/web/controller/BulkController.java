@@ -48,7 +48,9 @@ public class BulkController {
                 apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
             } else {
                 RegisterUser registerUser = new RegisterUser(
-                        pacienteDto.getUsuario(), pacienteDto.getCedula(), pacienteDto.getPasaporte(), null);
+                        pacienteDto.persona().usuario(),
+                        pacienteDto.persona().cedula(),
+                        pacienteDto.persona().pasaporte());
                 IApiContentResponse apiContentResponse = this.usuarioManagementService.createUser(registerUser);
                 apiResponse.addWarnings(apiContentResponse.getWarnings());
                 apiResponse.addErrors(apiContentResponse.getErrors());
