@@ -70,7 +70,8 @@ public class PacienteService implements IPacienteService {
                     "roles[]",
                     "Esta función es solo para pacientes, utilice otra operación");
         }
-        if (pacienteDto.persona().sexo() != null && pacienteDto.persona().sexo().toString().equalsIgnoreCase("X")) {
+        if (pacienteDto.persona().sexo() != null
+                && pacienteDto.persona().sexo().toString().equalsIgnoreCase("X")) {
             apiContentResponse.addWarning(
                     ApiResponseCode.DEPRECATION_WARNING,
                     "sexo",
