@@ -18,7 +18,13 @@ class AuthenticationSuccessListener(private val usuarioService: IUsuarioManageme
             val userId = event.authentication.name
             log.debug("User ID for update last used: {}", userId)
             if (userId.isNotBlank()) {
-                usuarioService.updateLastUsed(UUID.fromString(userId))
+                try {
+                    val uuid = UUID.fromString(userId)
+                    usuarioService.updateLastUsed(uuid)
+                    log.debug("User updated successfully for usuario: {}", userId)
+                } catch (e: IllegalArgumentException) {
+                    log.error("Invalid user ID: {} is not a valid UUID", userId)
+                }
             }
         }
     }

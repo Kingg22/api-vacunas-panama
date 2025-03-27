@@ -13,6 +13,9 @@ class FormatterUtil private constructor() {
             "^(RN(\\d{1,2}?)?)-(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$".toPattern()
         private val CORRECT_PATTERN_RI =
             "^(RN(\\d{1,2}?)?)-(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
+        private val CORREO_REGEX =
+            @Suppress("ktlint:standard:max-line-length")
+            "^[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\$".toRegex()
 
         @JvmStatic
         fun formatCedula(cedula: String): String {
@@ -49,7 +52,7 @@ class FormatterUtil private constructor() {
                     "idTemporal don't need format because is NI: {}",
                     idTemporal,
                 )
-                idTemporal.trim { it <= ' ' }
+                idTemporal.trim()
             }
         }
 
@@ -64,7 +67,7 @@ class FormatterUtil private constructor() {
             log.debug("Received a data to identifier type. Data: {}", identifier)
             var cedula: String? = null
             val pasaporte = if (identifier.matches("^[A-Z0-9]{5,20}$".toRegex())) identifier else null
-            val correo = if (identifier.matches("^_@_.__$".toRegex())) identifier else null
+            val correo = if (identifier.matches(CORREO_REGEX)) identifier else null
 
             try {
                 cedula = formatCedula(identifier)
