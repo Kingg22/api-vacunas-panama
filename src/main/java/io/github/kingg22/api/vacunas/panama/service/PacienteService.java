@@ -2,14 +2,14 @@ package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Direccion;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.PacienteKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.PacienteRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiFailed;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
-import io.github.kingg22.api.vacunas.panama.util.mapper.DireccionMapper;
-import io.github.kingg22.api.vacunas.panama.util.mapper.PacienteMapper;
+import io.github.kingg22.api.vacunas.panama.web.dto.DireccionDtoKonverterKt;
 import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.ViewPacienteVacunaEnfermedadDto;
 import jakarta.validation.constraints.NotNull;
@@ -36,8 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PacienteService implements IPacienteService {
-    private final PacienteMapper mapper;
-    private final DireccionMapper direccionMapper;
     private final PacienteRepository pacienteRepository;
     private final DireccionService direccionService;
 
@@ -207,7 +205,7 @@ public class PacienteService implements IPacienteService {
                     .getDireccionByDto(pacienteDto.getDireccion())
                     .orElseGet(() -> direccionService.createDireccion(pacienteDto.getDireccion()));
         } else {
-            direccion = direccionMapper.direccionDtoToEntity(direccionService.getDireccionDtoDefault());
+            direccion = DireccionDtoKonverterKt.toDireccion(direccionService.getDireccionDtoDefault());
         }
         Paciente paciente = (Paciente) Paciente.builderPaciente()
                 .identificacionTemporal(pacienteDto.getIdentificacionTemporal())
@@ -236,7 +234,7 @@ public class PacienteService implements IPacienteService {
             Hibernate.initialize(paciente.getDireccion().getDistrito().getProvincia());
         }
         Hibernate.initialize(paciente.getUsuario());
-        var result = mapper.toDto(paciente);
+        var result = PacienteKonverterKt.toPacienteDto(paciente);
         apiContentResponse.addData("paciente", result);
         return apiContentResponse;
     }
@@ -250,7 +248,8 @@ public class PacienteService implements IPacienteService {
     }
 
     public PacienteDto getPacienteDtoById(@NotNull UUID idPaciente) {
-        return mapper.toDto(this.getPacienteById(idPaciente).orElseThrow());
+        return PacienteKonverterKt.toPacienteDto(
+                this.getPacienteById(idPaciente).orElseThrow());
     }
 
     public List<ViewPacienteVacunaEnfermedadDto> getVacunaPaciente(UUID idPaciente, UUID idVacuna) {
