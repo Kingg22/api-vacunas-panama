@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.spotless)
     alias(libs.plugins.license.report)
+    alias(libs.plugins.kover)
 }
 
 group = "io.github.kingg22"
