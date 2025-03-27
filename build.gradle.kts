@@ -87,3 +87,9 @@ licenseReport {
     renderers = arrayOf(InventoryMarkdownReportRenderer("THIRD-PARTY.md"))
     filters = arrayOf(LicenseBundleNormalizer())
 }
+
+kover {
+    reports.filters.excludes {
+        annotatedBy("io.mcarle.konvert.api.GeneratedKonverter")
+    }
+}
