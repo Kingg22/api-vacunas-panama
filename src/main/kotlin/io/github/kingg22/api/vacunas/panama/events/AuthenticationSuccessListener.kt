@@ -23,7 +23,7 @@ class AuthenticationSuccessListener(private val usuarioService: IUsuarioManageme
                     usuarioService.updateLastUsed(uuid)
                     log.debug("User updated successfully for usuario: {}", userId)
                 } catch (e: IllegalArgumentException) {
-                    log.error("Invalid user ID: {} is not a valid UUID", userId)
+                    log.error("Invalid user ID: {} is not a valid UUID", userId, e)
                 }
             }
         }
