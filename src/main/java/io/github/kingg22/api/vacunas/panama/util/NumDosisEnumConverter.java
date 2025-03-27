@@ -7,7 +7,7 @@ import jakarta.persistence.Converter;
 public class NumDosisEnumConverter implements AttributeConverter<NumDosisEnum, String> {
 
     @Override
-    public String convertToDatabaseColumn(NumDosisEnum attribute) {
+    public String convertToDatabaseColumn(final NumDosisEnum attribute) {
         if (attribute == null) {
             return null;
         }
@@ -15,11 +15,10 @@ public class NumDosisEnumConverter implements AttributeConverter<NumDosisEnum, S
     }
 
     @Override
-    public NumDosisEnum convertToEntityAttribute(String dbData) {
+    public NumDosisEnum convertToEntityAttribute(final String dbData) {
         if (dbData == null || dbData.isBlank()) {
             return null;
         }
-        dbData = dbData.trim().toUpperCase();
-        return NumDosisEnum.fromValue(dbData);
+        return NumDosisEnum.fromValue(dbData.trim().toUpperCase());
     }
 }
