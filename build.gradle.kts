@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.spotless)
     alias(libs.plugins.license.report)
+    alias(libs.plugins.kover)
 }
 
 group = "io.github.kingg22"
@@ -85,4 +86,10 @@ spotless {
 licenseReport {
     renderers = arrayOf(InventoryMarkdownReportRenderer("THIRD-PARTY.md"))
     filters = arrayOf(LicenseBundleNormalizer())
+}
+
+kover {
+    reports.filters.excludes {
+        annotatedBy("io.mcarle.konvert.api.GeneratedKonverter")
+    }
 }
