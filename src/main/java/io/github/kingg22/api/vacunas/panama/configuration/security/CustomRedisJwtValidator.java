@@ -9,10 +9,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 /**
  * Custom validator for {@link Jwt} tokens using Redis for validation.
- * <p>
- * Validate JWT tokens against stored values in a Redis cache.
- * The validation process ensures that revoked tokens are not accepted.
- * </p>
+ *
+ * <p>Validate JWT tokens against stored values in a Redis cache. The validation process ensures that revoked tokens are
+ * not accepted.
  */
 @RequiredArgsConstructor
 class CustomRedisJwtValidator implements OAuth2TokenValidator<Jwt> {

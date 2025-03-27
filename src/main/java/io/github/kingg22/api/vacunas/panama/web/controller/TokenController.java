@@ -27,12 +27,10 @@ public class TokenController {
     private final ApiResponseFactory apiResponseFactory;
 
     /**
-     * Handles refreshing of tokens.
-     * The validation is not performed here as a security filter and OAuth ensures access to this endpoint only if a
-     * valid refresh token is provided.
-     * The used refresh token is removed from memory.
+     * Handles refreshing of tokens. The validation is not performed here as a security filter and OAuth ensures access
+     * to this endpoint only if a valid refresh token is provided. The used refresh token is removed from memory.
      *
-     * @param jwt     The {@link Jwt} containing user ID.
+     * @param jwt The {@link Jwt} containing user ID.
      * @param request The {@link ServletWebRequest} used for building the response.
      * @return {@link IApiResponse} with new access_token and refresh_token.
      */

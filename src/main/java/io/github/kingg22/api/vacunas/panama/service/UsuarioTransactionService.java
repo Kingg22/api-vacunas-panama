@@ -23,10 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service for {@link UsuarioManagementService} transaction.
- * Public methods required by {@link Transactional}
- */
+/** Service for {@link UsuarioManagementService} transaction. Public methods required by {@link Transactional} */
 @Slf4j
 @Service
 @RequiredArgsConstructor

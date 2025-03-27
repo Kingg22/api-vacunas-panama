@@ -15,17 +15,18 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for managing RSA keys used in {@link org.springframework.security.oauth2.jwt.Jwt} authentication.
- * <p>
- * This class is responsible for determining whether the RSA key is provided as a {@link String} or as a file in
- * application.properties If the keys is provided as a String, it is encoded into a {@link java.security.interfaces.RSAKey}
- * for use in {@link org.springframework.security.oauth2.jwt.JwtEncoder} and {@link org.springframework.security.oauth2.jwt.JwtDecoder}
- * This configuration is a part of the Spring Security setup for securing JWT tokens.
- * </p>
+ *
+ * <p>This class is responsible for determining whether the RSA key is provided as a {@link String} or as a file in
+ * application.properties If the keys is provided as a String, it is encoded into a
+ * {@link java.security.interfaces.RSAKey} for use in {@link org.springframework.security.oauth2.jwt.JwtEncoder} and
+ * {@link org.springframework.security.oauth2.jwt.JwtDecoder} This configuration is a part of the Spring Security setup
+ * for securing JWT tokens.
  *
  * @see SecurityConfig
  * @see RSAPublicKey
  * @see RSAPrivateKey
- * @see org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
+ * @see
+ *     org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
  * @see org.springframework.security.config.annotation.web.builders.HttpSecurity
  */
 @Slf4j

@@ -27,10 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service for {@link Paciente}.
- * Extends {@link PersonaService} to inherit methods for directly modifying all details related to a {@link Paciente}.
- * This service allows for comprehensive management of patient information and integrates with
- * the underlying personal data structure.
+ * Service for {@link Paciente}. Extends {@link PersonaService} to inherit methods for directly modifying all details
+ * related to a {@link Paciente}. This service allows for comprehensive management of patient information and integrates
+ * with the underlying personal data structure.
  */
 @Slf4j
 @Service

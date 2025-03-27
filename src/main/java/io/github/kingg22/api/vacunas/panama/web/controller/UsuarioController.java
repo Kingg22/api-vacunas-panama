@@ -42,20 +42,20 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 /**
  * Controller for {@link Usuario} registration and management, {@link Rol} and {@link Permiso}.
- * <p>
- * This controller handles operations related to registering users and managing their roles and associated entities
- * (e.g., {@link Paciente}, {@link Doctor}, {@link Fabricante}). It ensures that users are linked to an existing {@link Persona} or {@link Entidad}
- * and properly assigned roles.
- * </p>
+ *
+ * <p>This controller handles operations related to registering users and managing their roles and associated entities
+ * (e.g., {@link Paciente}, {@link Doctor}, {@link Fabricante}). It ensures that users are linked to an existing
+ * {@link Persona} or {@link Entidad} and properly assigned roles.
  *
  * <p><b>Response Format:</b> The response for registration and related endpoints typically includes:
+ *
  * <ul>
- *   <li>User details (e.g., username, roles, etc.).</li>
- *   <li>Associated {@link Persona} or {@link Entidad} information (e.g., {@link Paciente}, {@link Doctor}, {@link Fabricante})
- *   if applicable.</li>
- *   <li>A JWT token, which is only generated if the associated persona or entity has an active (validated) status.</li>
+ *   <li>User details (e.g., username, roles, etc.).
+ *   <li>Associated {@link Persona} or {@link Entidad} information (e.g., {@link Paciente}, {@link Doctor},
+ *       {@link Fabricante}) if applicable.
+ *   <li>A JWT token, which is only generated if the associated persona or entity has an active (validated) status.
  * </ul>
- * </p>
+ *
  * <br>
  */
 @Slf4j
@@ -69,22 +69,23 @@ public class UsuarioController {
 
     /**
      * Handles user registration.
-     * <p>
-     * First, it checks if the current {@link Authentication} is for an authenticated user with sufficient permissions
-     * to create users with lower {@link Rol}. If not authenticated, it allows registering a {@link Paciente}.
-     * It also validates tha data to be registered (e.g., username, email) is not currently in use.
-     * <p>
-     * If all validations pass, the {@link Usuario} is created.
-     * <p><b>Note:</b> The user must be assigned roles, and empty roles are not allowed.
-     * If the associated entities is not created, the request will be rejected.
-     * For cases where both the {@link Persona}/{@link Entidad} and the {@link Usuario} need to created in a single request,
-     * a different endpoint should be used.</p>
      *
-     * @param registerUser   The {@link RegisterUser} containing the user registration details.
+     * <p>First, it checks if the current {@link Authentication} is for an authenticated user with sufficient
+     * permissions to create users with lower {@link Rol}. If not authenticated, it allows registering a
+     * {@link Paciente}. It also validates tha data to be registered (e.g., username, email) is not currently in use.
+     *
+     * <p>If all validations pass, the {@link Usuario} is created.
+     *
+     * <p><b>Note:</b> The user must be assigned roles, and empty roles are not allowed. If the associated entities is
+     * not created, the request will be rejected. For cases where both the {@link Persona}/{@link Entidad} and the
+     * {@link Usuario} need to created in a single request, a different endpoint should be used.
+     *
+     * @param registerUser The {@link RegisterUser} containing the user registration details.
      * @param authentication The {@link Authentication} representing the current user (if any).
-     * @param request        The {@link ServletWebRequest} used for building the response.
-     * @return {@link IApiResponse} containing the registration result, including user details, associated {@link Persona} or {@link Entidad}
-     * information and a token if the {@link Persona} or {@link Entidad} is validated and active.
+     * @param request The {@link ServletWebRequest} used for building the response.
+     * @return {@link IApiResponse} containing the registration result, including user details, associated
+     *     {@link Persona} or {@link Entidad} information and a token if the {@link Persona} or {@link Entidad} is
+     *     validated and active.
      */
     @PostMapping({"/register"})
     public ResponseEntity<IApiResponse<String, Serializable>> register(

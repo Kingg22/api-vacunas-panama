@@ -20,9 +20,7 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for {@link UsuarioManagementService} validations.
- */
+/** Service for {@link UsuarioManagementService} validations. */
 @Slf4j
 @Service
 @RequiredArgsConstructor

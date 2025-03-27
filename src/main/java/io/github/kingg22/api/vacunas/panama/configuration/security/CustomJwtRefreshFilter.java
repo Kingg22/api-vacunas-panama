@@ -18,18 +18,17 @@ class CustomJwtRefreshFilter extends OncePerRequestFilter {
     private static final String REFRESH_TOKEN_ENDPOINT = "/vacunacion/v1/token/refresh";
 
     /**
-     * Filter to validate {@link Jwt} tokens on each request.
-     * This filter checks if the token present in the request is a refresh token.
-     * If the request is made to the {@code REFRESH_TOKEN_ENDPOINT}, it allows access only if the provided token is a
-     * valid refresh token.
-     * If a refresh token is used to access any other endpoint, it will be rejected.
-     * Additionally, if an access token is used to access the {@code REFRESH_TOKEN_ENDPOINT} it will also be rejected.
+     * Filter to validate {@link Jwt} tokens on each request. This filter checks if the token present in the request is
+     * a refresh token. If the request is made to the {@code REFRESH_TOKEN_ENDPOINT}, it allows access only if the
+     * provided token is a valid refresh token. If a refresh token is used to access any other endpoint, it will be
+     * rejected. Additionally, if an access token is used to access the {@code REFRESH_TOKEN_ENDPOINT} it will also be
+     * rejected.
      *
-     * @param request     The {@link HttpServletRequest} containing the incoming request data.
-     * @param response    The {@link HttpServletResponse} used to send the response.
+     * @param request The {@link HttpServletRequest} containing the incoming request data.
+     * @param response The {@link HttpServletResponse} used to send the response.
      * @param filterChain The {@link FilterChain} used to invoke the next filter in the chain.
      * @throws ServletException If an error occurs during the processing of the request.
-     * @throws IOException      If an input or output error occurs while handling the request.
+     * @throws IOException If an input or output error occurs while handling the request.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -80,10 +79,11 @@ class CustomJwtRefreshFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Set header {@code WWW-Authenticate} based on the format that {@link org.springframework.security.oauth2.core.OAuth2TokenValidatorResult} does for validation errors
+     * Set header {@code WWW-Authenticate} based on the format that
+     * {@link org.springframework.security.oauth2.core.OAuth2TokenValidatorResult} does for validation errors
      *
-     * @param response    The {@link HttpServletResponse} used to send the response.
-     * @param errorCode   The code based on {@link org.springframework.security.oauth2.core.OAuth2Error}
+     * @param response The {@link HttpServletResponse} used to send the response.
+     * @param errorCode The code based on {@link org.springframework.security.oauth2.core.OAuth2Error}
      * @param description The description of error based on {@link org.springframework.security.oauth2.core.OAuth2Error}
      * @see org.springframework.security.oauth2.core.OAuth2AuthenticationException
      */

@@ -16,9 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for loading user details during JWT authentication.
- * Extends {@link UserDetailsService} and is used by Spring Security to verify and authenticate JWT tokens.
- * Delegates user operations to {@link UsuarioManagementService}.
+ * Service for loading user details during JWT authentication. Extends {@link UserDetailsService} and is used by Spring
+ * Security to verify and authenticate JWT tokens. Delegates user operations to {@link UsuarioManagementService}.
  */
 @Slf4j
 @Service

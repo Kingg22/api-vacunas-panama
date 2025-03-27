@@ -42,9 +42,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for {@link Usuario}, {@link Rol} and {@link Permiso}
- * Extends functionality from {@link PersonaService}, {@link PacienteService}, {@link DoctorService} and {@link FabricanteService}
- * inheriting methods that involve {@link Usuario} in relation to these services.
+ * Service for {@link Usuario}, {@link Rol} and {@link Permiso} Extends functionality from {@link PersonaService},
+ * {@link PacienteService}, {@link DoctorService} and {@link FabricanteService} inheriting methods that involve
+ * {@link Usuario} in relation to these services.
  */
 @Slf4j
 @Service
@@ -130,9 +130,10 @@ public class UsuarioManagementService implements IUsuarioManagementService {
                     fabricante.setUsuario(transactionService.createUser(usuarioDto, null, fabricante));
                     apiContentResponse.addData("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante));
                 }
-                default -> apiContentResponse.addError(
-                        ApiResponseCode.API_UPDATE_UNSUPPORTED,
-                        "Ha ocurrido un error posterior a la validación. No created");
+                default ->
+                    apiContentResponse.addError(
+                            ApiResponseCode.API_UPDATE_UNSUPPORTED,
+                            "Ha ocurrido un error posterior a la validación. No created");
             }
         }
         return apiContentResponse;
@@ -225,9 +226,8 @@ public class UsuarioManagementService implements IUsuarioManagementService {
 
     /**
      * Finds a user based on a given identifier by searching across multiple fields form related tables.
-     * <p>
-     * Additionally, the user's {@code disabled} status is manually set as part of the result.
-     * </p>
+     *
+     * <p>Additionally, the user's {@code disabled} status is manually set as part of the result.
      *
      * @param identifier the identifier used to search for the user (e.g. username, email, cedula)
      * @return an {@link Optional} containing the found {@link Usuario} or empty if no user matches the identifier.

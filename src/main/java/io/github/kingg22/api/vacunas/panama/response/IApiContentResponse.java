@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface used to transport information between layers of the API.
- * This interface extends {@link Serializable} to ensure that implementations can be easily serialized.
- * Additionally, it's designed to be inherited by {@link IApiResponse}, allowing addition information directly to the
- * final API response. The purpose is flexibility and decoupling within the application architecture.
+ * Interface used to transport information between layers of the API. This interface extends {@link Serializable} to
+ * ensure that implementations can be easily serialized. Additionally, it's designed to be inherited by
+ * {@link IApiResponse}, allowing addition information directly to the final API response. The purpose is flexibility
+ * and decoupling within the application architecture.
  */
 public interface IApiContentResponse extends Serializable {
     /**
      * Adds a data entry to the response with a specified key-value pair.
      *
-     * @param key   data key.
+     * @param key data key.
      * @param value data value.
      */
     void addData(String key, Serializable value);
@@ -22,7 +22,7 @@ public interface IApiContentResponse extends Serializable {
     /**
      * Adds an error message with a specific code to the response.
      *
-     * @param code    the error code.
+     * @param code the error code.
      * @param message the error message for the client or end user.
      */
     void addError(String code, String message);
@@ -30,7 +30,7 @@ public interface IApiContentResponse extends Serializable {
     /**
      * Adds an error with a predefined code from {@link ApiResponseCode}.
      *
-     * @param code    predefined error code.
+     * @param code predefined error code.
      * @param message the error message for the client or end user.
      */
     void addError(ApiResponseCode code, String message);
@@ -38,25 +38,25 @@ public interface IApiContentResponse extends Serializable {
     /**
      * Adds an error with a specific property and message.
      *
-     * @param code     the error code.
+     * @param code the error code.
      * @param property property associated with the error.
-     * @param message  message providing additional details.
+     * @param message message providing additional details.
      */
     void addError(String code, String property, String message);
 
     /**
      * Adds an error with a predefined {@link ApiResponseCode}, a property, and a message.
      *
-     * @param code     predefined error code.
+     * @param code predefined error code.
      * @param property property associated with the error.
-     * @param message  message providing additional details.
+     * @param message message providing additional details.
      */
     void addError(ApiResponseCode code, String property, String message);
 
     /**
      * Adds a warning with a specific code and message.
      *
-     * @param code    the warning code.
+     * @param code the warning code.
      * @param message the warning message.
      */
     void addWarning(String code, String message);
@@ -64,7 +64,7 @@ public interface IApiContentResponse extends Serializable {
     /**
      * Adds a warning with a predefined {@link ApiResponseCode} and message.
      *
-     * @param code    predefined warning code.
+     * @param code predefined warning code.
      * @param message the warning message.
      */
     void addWarning(ApiResponseCode code, String message);
@@ -73,8 +73,8 @@ public interface IApiContentResponse extends Serializable {
      * Adds a warning with a predefined {@link ApiResponseCode}, a property, and a message.
      *
      * @param apiResponseCode predefined warning code.
-     * @param property        property associated with the warning.
-     * @param message         additional warning details.
+     * @param property property associated with the warning.
+     * @param message additional warning details.
      */
     void addWarning(ApiResponseCode apiResponseCode, String property, String message);
 

@@ -27,18 +27,15 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for managing JWT tokens.
- * <p>
- * This service is responsible for encoding information from DTOs  entities previously fetched by {@link UsuarioManagementService},
- * Its sets the issuer and time values based on application.properties.
- * </p>
- * <p>
- * The service now supports both access tokens and refresh tokens, ensuring the correct usage of each token type.
+ *
+ * <p>This service is responsible for encoding information from DTOs entities previously fetched by
+ * {@link UsuarioManagementService}, Its sets the issuer and time values based on application.properties.
+ *
+ * <p>The service now supports both access tokens and refresh tokens, ensuring the correct usage of each token type.
  * Tokens are stored in Redis cache to facilitate efficient validation and retrieval.
- * </p>
- * <p>
- * This service provides methods for validating the existence of tokens in the cache. It does not handler the decoding of
- * tokens; this is managed by the {@link org.springframework.security.oauth2.jwt.JwtDecoder}
- * </p>
+ *
+ * <p>This service provides methods for validating the existence of tokens in the cache. It does not handler the
+ * decoding of tokens; this is managed by the {@link org.springframework.security.oauth2.jwt.JwtDecoder}
  *
  * @see UsuarioManagementService
  * @see org.springframework.security.oauth2.jwt.JwtDecoder

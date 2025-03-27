@@ -65,13 +65,14 @@ tasks.withType<Test> {
 spotless {
     encoding("UTF-8")
     java {
+        target("src/*/java/**/*.java")
         encoding("Cp1252")
-        palantirJavaFormat()
-        importOrder()
+        palantirJavaFormat("2.61.0").formatJavadoc(true)
+        importOrder().semanticSort()
         removeUnusedImports()
     }
     kotlin {
-        targetExclude("build/generated/**")
+        target("src/*/kotlin/**/*.kt")
         ktlint()
     }
     kotlinGradle {

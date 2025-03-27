@@ -46,7 +46,7 @@ public class PdfService {
      * Generador de certificados PDF basados en una plantilla
      *
      * @param idCertificado Para colocar en caché el certificado
-     * @param pdfDto        DTO para añadir información al HTML
+     * @param pdfDto DTO para añadir información al HTML
      * @return byte[] con el PDF
      * @throws IOException Al buscar una imagen en classpath resources
      */

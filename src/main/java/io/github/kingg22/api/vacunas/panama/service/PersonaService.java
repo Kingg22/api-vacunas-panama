@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for {@link Persona}.
- */
+/** Service for {@link Persona}. */
 @Service
 @Slf4j
 @RequiredArgsConstructor

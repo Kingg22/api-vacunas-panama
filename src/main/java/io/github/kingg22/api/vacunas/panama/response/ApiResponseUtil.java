@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
- * Utility class for handling and formatting API responses.
- * Provides helper methods to standardize metadata and create ResponseEntity objects.
+ * Utility class for handling and formatting API responses. Provides helper methods to standardize metadata and create
+ * ResponseEntity objects.
  */
 @Slf4j
 public class ApiResponseUtil {
@@ -26,6 +26,7 @@ public class ApiResponseUtil {
 
     /**
      * Adds metadata information to the provided API response.
+     *
      * @param apiResponse {@link IApiResponse} object to which metadata will be added.
      * @param servletWebRequest {@link ServletWebRequest} request data used to extract information.
      */
@@ -39,6 +40,7 @@ public class ApiResponseUtil {
 
     /**
      * Creates a standardized HTTP response from the API response.
+     *
      * @param apiResponse {@link IApiResponse} object containing the response with status.
      * @param webRequest {@link ServletWebRequest} used to set metadata in the response.
      * @return A {@link ResponseEntity} with the status code and body set to the API response object.
@@ -53,6 +55,7 @@ public class ApiResponseUtil {
     /**
      * Transforms an {@link ApiErrorResponse} from the error-handling library into a custom API response format.
      * Additionally, it hides internal errors in the response.
+     *
      * @param apiErrorResponse {@link ApiErrorResponse} object to be transformed.
      * @param request Additional request information, indicating the endpoint where the exception was thrown.
      * @return A new {@link IApiResponse} object.
@@ -78,8 +81,8 @@ public class ApiResponseUtil {
         }
         switch (request) {
             case ServletWebRequest servletWebRequest -> setMetadata(response, servletWebRequest);
-            case HttpServletRequest httpServletRequest -> setMetadata(
-                    response, new ServletWebRequest(httpServletRequest));
+            case HttpServletRequest httpServletRequest ->
+                setMetadata(response, new ServletWebRequest(httpServletRequest));
             default -> response.addMetadata("timestamp", Instant.now().toString());
         }
         log.debug(response.toString());
