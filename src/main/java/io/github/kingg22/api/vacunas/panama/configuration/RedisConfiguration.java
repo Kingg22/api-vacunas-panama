@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Duration;
@@ -39,8 +40,8 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory, ObjectMapper mapper) {
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
         serializer.configure(objectMapper -> {
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -56,8 +57,8 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
-        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory, ObjectMapper mapper) {
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
         serializer.configure(objectMapper -> {
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

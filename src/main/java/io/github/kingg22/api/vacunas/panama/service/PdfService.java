@@ -2,9 +2,11 @@ package io.github.kingg22.api.vacunas.panama.service;
 
 import com.itextpdf.html2pdf.HtmlConverter;
 import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
+import io.github.kingg22.api.vacunas.panama.web.dto.EntidadDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.FabricanteDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.PdfDto;
+import io.github.kingg22.api.vacunas.panama.web.dto.PersonaDto;
 import jakarta.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,32 +67,32 @@ public class PdfService {
             @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto, List<DosisDto> dosisDtos) {
 
         String identificacion = obtenerIdentificacion(pacienteDto);
-
+        PersonaDto personaDto = pacienteDto.persona();
         String nombres = String.join(
                         " ",
-                        Optional.ofNullable(pacienteDto.getNombre()).orElse(""),
-                        Optional.ofNullable(pacienteDto.getNombre2()).orElse(""))
+                        Optional.ofNullable(personaDto.nombre()).orElse(""),
+                        Optional.ofNullable(personaDto.nombre2()).orElse(""))
                 .trim();
 
         String apellidos = String.join(
                         " ",
-                        Optional.ofNullable(pacienteDto.getApellido1()).orElse(""),
-                        Optional.ofNullable(pacienteDto.getApellido2()).orElse(""))
+                        Optional.ofNullable(personaDto.apellido1()).orElse(""),
+                        Optional.ofNullable(personaDto.apellido2()).orElse(""))
                 .trim();
 
         log.debug("Received a request to generate PDF with Paciente DTOs");
         log.debug("Dosis a agregar: {}", dosisDtos);
-        log.debug("Paciente ID: {}", pacienteDto.getId());
+        log.debug("Paciente ID: {}", personaDto.id());
         log.debug("Identificación a colocar: {}", identificacion);
 
         PdfDto pdfDto = new PdfDto(
                 nombres,
                 apellidos,
                 identificacion,
-                Optional.ofNullable(pacienteDto.getFechaNacimiento())
+                Optional.ofNullable(personaDto.fechaNacimiento())
                         .map(LocalDateTime::toLocalDate)
                         .orElse(null),
-                pacienteDto.getId(),
+                personaDto.id(),
                 dosisDtos);
 
         log.debug(pdfDto.toString());
@@ -99,11 +101,11 @@ public class PdfService {
 
     /** Obtiene la identificación del paciente en el orden de prioridad correcto. */
     private String obtenerIdentificacion(@org.jetbrains.annotations.NotNull PacienteDto pacienteDto) {
-        return Optional.ofNullable(pacienteDto.getCedula())
+        return Optional.ofNullable(pacienteDto.persona().cedula())
                 .filter(id -> !id.isBlank())
-                .or(() -> Optional.ofNullable(pacienteDto.getPasaporte()))
-                .or(() -> Optional.ofNullable(pacienteDto.getIdentificacionTemporal()))
-                .orElseGet(() -> pacienteDto.getId().toString());
+                .or(() -> Optional.ofNullable(pacienteDto.persona().pasaporte()))
+                .or(() -> Optional.ofNullable(pacienteDto.identificacionTemporal()))
+                .orElseGet(() -> pacienteDto.persona().id().toString());
     }
 
     private void saveCertificadoCache(@org.jetbrains.annotations.NotNull @NotNull UUID idCertificate, String file) {
@@ -234,7 +236,8 @@ public class PdfService {
         // Se agrega de forma dinámica todas las dosis encontradas a la tabla HTML
         pdfDto.dosis().forEach(dosisDto -> {
             String fabricantes = dosisDto.vacuna().fabricantes().stream()
-                    .map(FabricanteDto::getNombre)
+                    .map(FabricanteDto::entidad)
+                    .map(EntidadDto::nombre)
                     .collect(Collectors.joining(", ", "N/A", ""));
 
             dosisRows.append(String.format(
@@ -243,7 +246,7 @@ public class PdfService {
                     dosisDto.vacuna().nombre(),
                     fabricantes,
                     dosisDto.fechaAplicacion(),
-                    dosisDto.sede().getNombre()));
+                    dosisDto.sede().entidad().nombre()));
         });
         return template.replace("{{dosis}}", dosisRows.toString());
     }

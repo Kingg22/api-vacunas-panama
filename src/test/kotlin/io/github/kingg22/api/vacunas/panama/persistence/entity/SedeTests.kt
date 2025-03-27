@@ -34,23 +34,23 @@ class SedeTests {
 
         // Assert: Verificar que los valores se mapean correctamente
         assertNotNull(dto)
-        assertEquals(sede.id, dto.id)
-        assertEquals(sede.nombre, dto.nombre)
-        assertEquals(sede.correo, dto.correo)
-        assertEquals(sede.telefono, dto.telefono)
-        assertEquals(sede.dependencia, dto.dependencia)
-        assertEquals(sede.estado, dto.estado)
-        assertEquals(sede.disabled, dto.disabled)
+        assertEquals(sede.id, dto.entidad.id)
+        assertEquals(sede.nombre, dto.entidad.nombre)
+        assertEquals(sede.correo, dto.entidad.correo)
+        assertEquals(sede.telefono, dto.entidad.telefono)
+        assertEquals(sede.dependencia, dto.entidad.dependencia)
+        assertEquals(sede.estado, dto.entidad.estado)
+        assertEquals(sede.disabled, dto.entidad.disabled)
         assertEquals(sede.region, dto.region)
         assertEquals(sede.createdAt, dto.createdAt)
         assertEquals(sede.updatedAt, dto.updatedAt)
 
         // Verificar conversión de direccion a DireccionDto
-        assertNotNull(dto.direccion)
-        assertEquals(sede.direccion.id, dto.direccion?.id)
-        assertEquals(sede.direccion.direccion, dto.direccion?.direccion)
-        assertEquals(sede.direccion.createdAt, dto.direccion?.createdAt)
-        assertEquals(sede.direccion.updatedAt, dto.direccion?.updatedAt)
-        assertNull(dto.direccion?.distrito)
+        assertNotNull(dto.entidad.direccion)
+        assertEquals(sede.direccion.id, dto.entidad.direccion?.id)
+        assertEquals(sede.direccion.direccion, dto.entidad.direccion?.direccion)
+        assertEquals(sede.direccion.createdAt, dto.entidad.direccion?.createdAt)
+        assertEquals(sede.direccion.updatedAt, dto.entidad.direccion?.updatedAt)
+        assertNull(dto.entidad.direccion?.distrito)
     }
 }

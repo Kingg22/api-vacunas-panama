@@ -9,29 +9,30 @@ import java.io.Serializable
 import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] */
-open class EntidadDto @JvmOverloads constructor(
-    var id: UUID? = null,
+@JvmRecord
+data class EntidadDto @JvmOverloads constructor(
+    val id: UUID? = null,
 
     @Size(max = 100)
-    var nombre: String? = null,
+    val nombre: String? = null,
 
     @Size(max = 254)
     @Email
-    var correo: String? = null,
+    val correo: String? = null,
 
     @Size(max = 15)
     @Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-    var telefono: String? = null,
+    val telefono: String? = null,
 
     @Size(max = 13)
-    var dependencia: String? = null,
+    val dependencia: String? = null,
 
     @Size(max = 50)
     @NotBlank
-    var estado: String? = null,
+    val estado: String? = null,
 
-    var disabled: Boolean = false,
+    val disabled: Boolean = false,
 
     @Valid
-    var direccion: DireccionDto? = null,
+    val direccion: DireccionDto? = null,
 ) : Serializable

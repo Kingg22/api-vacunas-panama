@@ -16,6 +16,6 @@ data class DistritoDto @JvmOverloads constructor(
     @Valid val provincia: ProvinciaDto = ProvinciaDto(),
 ) : Serializable {
     companion object {
-        private const val DEFAULT_DISTRITO = "Por registrar"
+        const val DEFAULT_DISTRITO = "Por registrar"
     }
 }

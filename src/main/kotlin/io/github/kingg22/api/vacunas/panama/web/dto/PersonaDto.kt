@@ -10,9 +10,10 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona]  */
-open class PersonaDto @JvmOverloads constructor(
-    var id: UUID? = null,
+/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] */
+@JvmRecord
+data class PersonaDto @JvmOverloads constructor(
+    val id: UUID? = null,
 
     @Size(max = 15)
     @Pattern(
@@ -20,7 +21,7 @@ open class PersonaDto @JvmOverloads constructor(
         flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
         message = "El formato de la cédula no es válido",
     )
-    var cedula: String? = null,
+    val cedula: String? = null,
 
     @Size(max = 20)
     @Pattern(
@@ -28,23 +29,23 @@ open class PersonaDto @JvmOverloads constructor(
         flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
         message = "El formato del pasaporte no es válido",
     )
-    var pasaporte: String? = null,
+    val pasaporte: String? = null,
 
     @Size(max = 100)
-    var nombre: String? = null,
+    val nombre: String? = null,
 
     @Size(max = 100)
-    var nombre2: String? = null,
+    val nombre2: String? = null,
 
     @Size(max = 100)
-    var apellido1: String? = null,
+    val apellido1: String? = null,
 
     @Size(max = 100)
-    var apellido2: String? = null,
+    val apellido2: String? = null,
 
     @Size(max = 254)
     @Email
-    var correo: String? = null,
+    val correo: String? = null,
 
     @Size(max = 15)
     @Pattern(
@@ -52,25 +53,29 @@ open class PersonaDto @JvmOverloads constructor(
         flags = [Pattern.Flag.MULTILINE],
         message = "El formato del teléfono no es válido",
     )
-    var telefono: String? = null,
+    val telefono: String? = null,
 
     @JsonProperty(value = "fecha_nacimiento")
     @PastOrPresent
-    var fechaNacimiento: LocalDateTime? = null,
+    val fechaNacimiento: LocalDateTime? = null,
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    var edad: Short? = null,
+    val edad: Short? = null,
 
-    var sexo: Char? = null,
+    val sexo: Char? = null,
 
     @Size(max = 50)
-    var estado: String? = null,
+    val estado: String? = null,
 
-    var disabled: Boolean = false,
-
-    @Valid
-    var direccion: DireccionDto? = null,
+    val disabled: Boolean = false,
 
     @Valid
-    var usuario: UsuarioDto? = null,
-) : Serializable
+    val direccion: DireccionDto? = null,
+
+    @Valid
+    val usuario: UsuarioDto? = null,
+) : Serializable {
+    @JvmOverloads
+    fun changeCedulaOrID(nuevaCedula: String, nuevoId: UUID? = this.id): PersonaDto =
+        this.copy(id = nuevoId, cedula = nuevaCedula)
+}

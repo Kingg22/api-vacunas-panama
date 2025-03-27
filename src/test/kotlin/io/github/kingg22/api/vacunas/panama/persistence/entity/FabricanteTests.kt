@@ -35,13 +35,13 @@ class FabricanteTests {
 
         // Assert: Verificar que los valores se mapean correctamente
         assertNotNull(dto)
-        assertEquals(fabricante.id, dto.id)
-        assertEquals(fabricante.nombre, dto.nombre)
-        assertEquals(fabricante.correo, dto.correo)
-        assertEquals(fabricante.telefono, dto.telefono)
-        assertEquals(fabricante.dependencia, dto.dependencia)
-        assertEquals(fabricante.estado, dto.estado)
-        assertEquals(fabricante.disabled, dto.disabled)
+        assertEquals(fabricante.id, dto.entidad.id)
+        assertEquals(fabricante.nombre, dto.entidad.nombre)
+        assertEquals(fabricante.correo, dto.entidad.correo)
+        assertEquals(fabricante.telefono, dto.entidad.telefono)
+        assertEquals(fabricante.dependencia, dto.entidad.dependencia)
+        assertEquals(fabricante.estado, dto.entidad.estado)
+        assertEquals(fabricante.disabled, dto.entidad.disabled)
         assertEquals(fabricante.licencia, dto.licencia)
         assertEquals(fabricante.contactoNombre, dto.contactoNombre)
         assertEquals(fabricante.contactoCorreo, dto.contactoCorreo)
@@ -50,15 +50,18 @@ class FabricanteTests {
         assertEquals(fabricante.updatedAt, dto.updatedAt)
 
         // Verificar conversión de direccion a DireccionDto
-        assertNotNull(dto.direccion)
-        assertEquals(fabricante.direccion.id, dto.direccion?.id)
-        assertEquals(fabricante.direccion.createdAt, dto.direccion?.createdAt)
-        assertEquals(fabricante.direccion.updatedAt, dto.direccion?.updatedAt)
-        assertNotNull(dto.direccion?.distrito)
-        assertEquals(fabricante.direccion.distrito?.id, dto.direccion?.distrito?.id)
-        assertEquals(fabricante.direccion.distrito?.nombre, dto.direccion?.distrito?.nombre)
-        assertNotNull(dto.direccion?.distrito?.provincia)
-        assertEquals(fabricante.direccion?.distrito?.provincia?.id, dto.direccion?.distrito?.provincia?.id)
-        assertEquals(fabricante.direccion?.distrito?.provincia?.nombre, dto.direccion?.distrito?.provincia?.nombre)
+        assertNotNull(dto.entidad.direccion)
+        assertEquals(fabricante.direccion.id, dto.entidad.direccion?.id)
+        assertEquals(fabricante.direccion.createdAt, dto.entidad.direccion?.createdAt)
+        assertEquals(fabricante.direccion.updatedAt, dto.entidad.direccion?.updatedAt)
+        assertNotNull(dto.entidad.direccion?.distrito)
+        assertEquals(fabricante.direccion.distrito?.id, dto.entidad.direccion?.distrito?.id)
+        assertEquals(fabricante.direccion.distrito?.nombre, dto.entidad.direccion?.distrito?.nombre)
+        assertNotNull(dto.entidad.direccion?.distrito?.provincia)
+        assertEquals(fabricante.direccion.distrito?.provincia?.id, dto.entidad.direccion?.distrito?.provincia?.id)
+        assertEquals(
+            fabricante.direccion.distrito?.provincia?.nombre,
+            dto.entidad.direccion?.distrito?.provincia?.nombre,
+        )
     }
 }

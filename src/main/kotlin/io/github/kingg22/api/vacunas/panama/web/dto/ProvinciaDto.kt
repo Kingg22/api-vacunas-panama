@@ -14,6 +14,6 @@ data class ProvinciaDto @JvmOverloads constructor(
     @JsonProperty(defaultValue = DEFAULT_PROVINCIA) @Size(max = 30) val nombre: String = DEFAULT_PROVINCIA,
 ) : Serializable {
     companion object {
-        private const val DEFAULT_PROVINCIA = "Por registrar"
+        const val DEFAULT_PROVINCIA = "Por registrar"
     }
 }
