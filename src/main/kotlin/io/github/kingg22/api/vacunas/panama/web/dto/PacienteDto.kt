@@ -8,10 +8,7 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente]  */
-class PacienteDto :
-    PersonaDto(),
-    Serializable {
-
+class PacienteDto @JvmOverloads constructor(
     @JsonProperty(value = "identificacion_temporal")
     @Size(max = 255)
     @Pattern(
@@ -20,13 +17,14 @@ class PacienteDto :
         flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
         message = "El formato de id temporal no es válido",
     )
-    val identificacionTemporal: String? = null
+    val identificacionTemporal: String? = null,
 
     @JsonProperty(value = "created_at")
     @PastOrPresent
-    val createdAt: LocalDateTime? = null
+    val createdAt: LocalDateTime? = null,
 
     @JsonProperty(value = "updated_at")
     @PastOrPresent
-    val updatedAt: LocalDateTime? = null
-}
+    val updatedAt: LocalDateTime? = null,
+) : PersonaDto(),
+    Serializable

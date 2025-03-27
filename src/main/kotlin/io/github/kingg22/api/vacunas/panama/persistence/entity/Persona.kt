@@ -32,7 +32,7 @@ import java.util.UUID
         Index(name = "ix_personas_telefono", columnList = "telefono", unique = true),
     ],
 )
-class Persona(
+class Persona @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
