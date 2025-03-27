@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import io.github.kingg22.api.vacunas.panama.web.dto.DireccionDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -19,6 +21,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "direcciones")
+@KonvertTo(DireccionDto::class)
 class Direccion @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

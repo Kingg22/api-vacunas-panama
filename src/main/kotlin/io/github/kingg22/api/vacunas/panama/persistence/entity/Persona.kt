@@ -1,5 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.PersonaDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -32,6 +34,7 @@ import java.util.UUID
         Index(name = "ix_personas_telefono", columnList = "telefono", unique = true),
     ],
 )
+@KonvertTo(PersonaDto::class)
 class Persona @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

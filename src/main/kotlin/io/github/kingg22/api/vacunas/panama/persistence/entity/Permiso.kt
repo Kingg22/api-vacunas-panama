@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import io.github.kingg22.api.vacunas.panama.web.dto.PermisoDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -23,6 +25,7 @@ import java.time.ZoneOffset
     name = "permisos",
     indexes = [Index(name = "uq_permisos_nombre", columnList = "nombre", unique = true)],
 )
+@KonvertTo(PermisoDto::class)
 class Permiso @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,8 @@ package io.github.kingg22.api.vacunas.panama.persistence.entity
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum
+import io.github.kingg22.api.vacunas.panama.web.dto.RolDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -25,6 +27,7 @@ import java.time.ZoneOffset
     name = "roles",
     indexes = [Index(name = "uq_roles_rol", columnList = "nombre", unique = true)],
 )
+@KonvertTo(RolDto::class)
 class Rol @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

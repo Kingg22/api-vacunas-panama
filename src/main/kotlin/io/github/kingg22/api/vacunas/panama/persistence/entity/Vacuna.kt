@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import io.github.kingg22.api.vacunas.panama.util.NumDosisEnum
+import io.github.kingg22.api.vacunas.panama.web.dto.VacunaDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -19,6 +21,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "vacunas", indexes = [Index(name = "ix_vacunas_nombre", columnList = "nombre")])
+@KonvertTo(VacunaDto::class)
 class Vacuna @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,7 +34,7 @@ class Vacuna @JvmOverloads constructor(
     var nombre: String,
 
     @Column(name = "edad_minima_dias")
-    var edadMinimaDias: Int? = null,
+    var edadMinimaDias: Short? = null,
 
     @Column(name = "intervalo_dosis_1_2_dias")
     var intervaloDosisDias: Int? = null,

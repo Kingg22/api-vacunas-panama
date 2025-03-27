@@ -12,7 +12,7 @@ import java.util.UUID
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Dosis]  */
 @JvmRecord
 data class DosisDto @JvmOverloads constructor(
-    val id: UUID,
+    val id: UUID? = null,
     @Valid val paciente: PacienteDto,
     @JsonProperty(value = "fecha_aplicacion") val fechaAplicacion: LocalDateTime,
     @JsonProperty(value = "numero_dosis") val numeroDosis: NumDosisEnum,

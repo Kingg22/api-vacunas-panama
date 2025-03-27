@@ -1,5 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.DoctorDto
+import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -17,6 +20,27 @@ import java.time.ZoneOffset
 @Table(
     name = "doctores",
     indexes = [Index(name = "ix_doctores_idoneidad", columnList = "idoneidad")],
+)
+@KonvertTo(
+    DoctorDto::class,
+    mappings = [
+        Mapping(target = "id", source = "id"),
+        Mapping(target = "cedula", source = "cedula"),
+        Mapping(target = "pasaporte", source = "pasaporte"),
+        Mapping(target = "nombre", source = "nombre"),
+        Mapping(target = "nombre2", source = "nombre2"),
+        Mapping(target = "apellido1", source = "apellido1"),
+        Mapping(target = "apellido2", source = "apellido2"),
+        Mapping(target = "correo", source = "correo"),
+        Mapping(target = "telefono", source = "telefono"),
+        Mapping(target = "fechaNacimiento", source = "fechaNacimiento"),
+        Mapping(target = "edad", source = "edad"),
+        Mapping(target = "sexo", source = "sexo"),
+        Mapping(target = "estado", source = "estado"),
+        Mapping(target = "disabled", source = "disabled"),
+        Mapping(target = "direccion", expression = "direccion.toDireccionDto()"),
+        Mapping(target = "usuario", expression = "usuario?.toUsuarioDto()"),
+    ],
 )
 class Doctor @JvmOverloads constructor(
     estado: String,

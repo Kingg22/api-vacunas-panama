@@ -1,6 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import io.github.kingg22.api.vacunas.panama.web.dto.FabricanteDto
+import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -20,6 +23,19 @@ import java.time.ZoneOffset
 @Table(
     name = "fabricantes",
     indexes = [Index(name = "ix_fabricantes_licencia", columnList = "licencia")],
+)
+@KonvertTo(
+    FabricanteDto::class,
+    mappings = [
+        Mapping(target = "id", source = "id"),
+        Mapping(target = "nombre", source = "nombre"),
+        Mapping(target = "correo", source = "correo"),
+        Mapping(target = "telefono", source = "telefono"),
+        Mapping(target = "dependencia", source = "dependencia"),
+        Mapping(target = "estado", source = "estado"),
+        Mapping(target = "disabled", source = "disabled"),
+        Mapping(target = "direccion", expression = "direccion.toDireccionDto()"),
+    ],
 )
 class Fabricante @JvmOverloads constructor(
     nombre: String,

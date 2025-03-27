@@ -1,5 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.persistence.entity
 
+import io.github.kingg22.api.vacunas.panama.web.dto.SedeDto
+import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Index
@@ -15,6 +18,19 @@ import java.time.ZoneOffset
 @Table(
     name = "sedes",
     indexes = [Index(name = "ix_sedes_region_dependencia", columnList = "region")],
+)
+@KonvertTo(
+    SedeDto::class,
+    mappings = [
+        Mapping(target = "id", source = "id"),
+        Mapping(target = "nombre", source = "nombre"),
+        Mapping(target = "correo", source = "correo"),
+        Mapping(target = "telefono", source = "telefono"),
+        Mapping(target = "dependencia", source = "dependencia"),
+        Mapping(target = "estado", source = "estado"),
+        Mapping(target = "disabled", source = "disabled"),
+        Mapping(target = "direccion", expression = "direccion.toDireccionDto()"),
+    ],
 )
 class Sede @JvmOverloads constructor(
     nombre: String,
