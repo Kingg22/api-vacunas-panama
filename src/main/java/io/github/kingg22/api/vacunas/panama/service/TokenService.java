@@ -1,7 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Permiso;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
 import io.github.kingg22.api.vacunas.panama.web.dto.PermisoDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
 import jakarta.validation.constraints.NotNull;
@@ -43,7 +41,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class TokenService implements ITokenService {
     private final JwtEncoder jwtEncoder;
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -56,8 +54,9 @@ public class TokenService {
     @Value("${security.jwt.refresh-time}")
     private Integer refreshTime;
 
-    public Map<String, Serializable> generateTokens(UsuarioDto usuarioDto, Map<String, Serializable> idsAdicionales) {
-        Map<String, Serializable> data = new LinkedHashMap<>();
+    public Map<String, Serializable> generateTokens(
+            @org.jetbrains.annotations.NotNull UsuarioDto usuarioDto, Map<String, Serializable> idsAdicionales) {
+        var data = new LinkedHashMap<String, Serializable>();
         data.put(
                 "access_token",
                 this.createToken(usuarioDto.id().toString(), getRolesPermisos(usuarioDto), idsAdicionales));
@@ -65,25 +64,20 @@ public class TokenService {
         return data;
     }
 
-    public Map<String, Serializable> generateTokens(Usuario usuario, Map<String, Serializable> idsAdicionales) {
-        Map<String, Serializable> data = new LinkedHashMap<>();
-        data.put(
-                "access_token",
-                this.createToken(usuario.getId().toString(), getRolesPermisos(usuario), idsAdicionales));
-        data.put("refresh_token", this.createRefreshToken(usuario.getId().toString()));
-        return data;
-    }
-
-    public boolean isAccessTokenValid(@NotNull String userId, @NotNull String tokenId) {
-        String key = "token:access:".concat(userId).concat(":").concat(tokenId);
-        Boolean hasKeyAccessToken = redisTemplate.hasKey(key);
+    public boolean isAccessTokenValid(
+            @org.jetbrains.annotations.NotNull @NotNull String userId,
+            @org.jetbrains.annotations.NotNull @NotNull String tokenId) {
+        var key = generateKey("access", userId, tokenId);
+        var hasKeyAccessToken = redisTemplate.hasKey(key);
         if (hasKeyAccessToken == null) {
             throw new IllegalStateException("Redis is unavailable, token validation failed");
         }
         return hasKeyAccessToken;
     }
 
-    public boolean isRefreshTokenValid(@NotNull String userId, @NotNull String tokenId) {
+    public boolean isRefreshTokenValid(
+            @org.jetbrains.annotations.NotNull @NotNull String userId,
+            @org.jetbrains.annotations.NotNull @NotNull String tokenId) {
         String key = "token:refresh:".concat(userId).concat(":").concat(tokenId);
         Boolean hasKeyRefreshToken = redisTemplate.hasKey(key);
         if (hasKeyRefreshToken == null) {
@@ -92,7 +86,7 @@ public class TokenService {
         return hasKeyRefreshToken;
     }
 
-    private Collection<String> getRolesPermisos(@NotNull UsuarioDto usuarioDto) {
+    private Collection<String> getRolesPermisos(@org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto) {
         if (usuarioDto.roles() == null || usuarioDto.roles().isEmpty()) {
             return Collections.emptyList();
         }
@@ -105,20 +99,10 @@ public class TokenService {
                 .toList();
     }
 
-    private Collection<String> getRolesPermisos(@NotNull Usuario usuario) {
-        return usuario.getRoles().stream()
-                .flatMap(rol -> rol != null
-                        ? Stream.concat(
-                                Stream.of("ROLE_" + rol.getNombre().toUpperCase()),
-                                rol.getPermisos().stream().map(Permiso::getNombre))
-                        : null)
-                .toList();
-    }
-
     private String createToken(
             @NotNull String subject, Collection<String> rolesPermisos, Map<String, Serializable> claimsAdicionales) {
-        Instant now = Instant.now();
-        JwtClaimsSet.Builder builder = JwtClaimsSet.builder()
+        var now = Instant.now();
+        var builder = JwtClaimsSet.builder()
                 .issuer(issuer)
                 .issuedAt(now)
                 .notBefore(now)
@@ -128,16 +112,16 @@ public class TokenService {
                 .id(UUID.randomUUID().toString());
 
         if (claimsAdicionales != null) {
-            for (Map.Entry<String, Serializable> claim : claimsAdicionales.entrySet()) {
+            for (var claim : claimsAdicionales.entrySet()) {
                 if (claim.getValue() != null) {
                     builder.claim(claim.getKey(), claim.getValue());
                 }
             }
         }
-        JwtClaimsSet claims = builder.build();
-        JwsHeader header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build();
+        var claims = builder.build();
+        var header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build();
 
-        String jwtToken = this.jwtEncoder
+        var jwtToken = this.jwtEncoder
                 .encode(JwtEncoderParameters.from(header, claims))
                 .getTokenValue();
         log.debug(
@@ -146,15 +130,13 @@ public class TokenService {
                 claims.getExpiresAt(),
                 claims.getId());
 
-        String key = "token:access:".concat(subject).concat(":").concat(claims.getId());
-        redisTemplate.opsForValue().set(key, jwtToken, Duration.ofSeconds(expirationTime));
-
+        saveInCache("access", subject, claims.getId(), jwtToken);
         return jwtToken;
     }
 
-    private String createRefreshToken(@NotNull String subject) {
-        Instant now = Instant.now();
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+    private String createRefreshToken(@org.jetbrains.annotations.NotNull @NotNull String subject) {
+        var now = Instant.now();
+        var claims = JwtClaimsSet.builder()
                 .issuer(issuer)
                 .issuedAt(now)
                 .notBefore(now)
@@ -162,8 +144,8 @@ public class TokenService {
                 .subject(subject)
                 .id(UUID.randomUUID().toString())
                 .build();
-        JwsHeader header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build();
-        String jwtToken = this.jwtEncoder
+        var header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build();
+        var jwtToken = this.jwtEncoder
                 .encode(JwtEncoderParameters.from(header, claims))
                 .getTokenValue();
         log.debug(
@@ -172,9 +154,25 @@ public class TokenService {
                 claims.getExpiresAt(),
                 claims.getId());
 
-        String key = "token:refresh:".concat(subject).concat(":").concat(claims.getId());
-        redisTemplate.opsForValue().set(key, jwtToken, Duration.ofSeconds(refreshTime));
-
+        saveInCache("refresh", subject, claims.getId(), jwtToken);
         return jwtToken;
+    }
+
+    private void saveInCache(
+            @NotNull @org.jetbrains.annotations.NotNull String type,
+            @NotNull @org.jetbrains.annotations.NotNull String subject,
+            @NotNull @org.jetbrains.annotations.NotNull String id,
+            @NotNull @org.jetbrains.annotations.NotNull String jwtToken) {
+        redisTemplate.opsForValue().set(generateKey(type, subject, id), jwtToken, Duration.ofSeconds(refreshTime));
+    }
+
+    @org.jetbrains.annotations.NotNull
+    private String generateKey(
+            @NotNull @org.jetbrains.annotations.NotNull String type,
+            @NotNull @org.jetbrains.annotations.NotNull String subject,
+            @NotNull @org.jetbrains.annotations.NotNull String id) {
+        var key = new StringBuilder("token:");
+        key.append(type).append(":").append(subject).append(":").append(id);
+        return key.toString();
     }
 }
