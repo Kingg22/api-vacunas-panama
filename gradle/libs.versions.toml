@@ -29,8 +29,6 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 # Annotations
 lombok = { module = "org.projectlombok:lombok" }
 
-spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
-
 # Drivers
 mssql-jdbc = { module = "com.microsoft.sqlserver:mssql-jdbc" }
 postgresql = { module = "org.postgresql:postgresql" }

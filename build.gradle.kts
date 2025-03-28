@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.7.0"
+version = "0.8.0"
 
 java {
     toolchain {
@@ -35,8 +35,6 @@ dependencies {
     implementation(libs.bundles.implementation)
 
     compileOnly(libs.lombok)
-
-    developmentOnly(libs.spring.boot.devtools)
 
     runtimeOnly(libs.bundles.runtimeOnly)
 

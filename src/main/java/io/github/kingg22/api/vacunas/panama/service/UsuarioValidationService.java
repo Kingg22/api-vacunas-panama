@@ -1,8 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
+import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
@@ -13,7 +13,9 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,21 +28,40 @@ import org.springframework.stereotype.Service;
 class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
     private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final UsuarioRepository usuarioRepository;
     private final PersonaService personaService;
     private final FabricanteService fabricanteService;
-    private final UsuarioRepository usuarioRepository;
+    private static final String NEW_PASSWORD = "new_password";
 
-    Object validateRegistration(@NotNull RegisterUser registerUser) {
-        List<DefaultApiError> errors = new ArrayList<>();
-        UsuarioDto usuarioDto = registerUser.usuario();
+    @org.jetbrains.annotations.NotNull
+    List<ApiError> validateWarningsRegistrarion(
+            @org.jetbrains.annotations.NotNull @NotNull final UsuarioDto usuarioDto) {
+        val apiContentResponse = new ArrayList<ApiError>();
+        if (usuarioDto.roles() != null
+                && usuarioDto.roles().stream()
+                        .anyMatch(rolDto ->
+                                rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
+            apiContentResponse.add(
+                    new DefaultApiError(
+                            ApiResponseCode.INFORMATION_IGNORED,
+                            "roles[].permisos[]",
+                            "Los permisos de los roles son ignorados al crear un usuario. Para crear o relacionar nuevos permisos a un rol debe utilizar otra opción"));
+        }
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
                         .anyMatch(rolDto -> rolDto.id() == null
                                 && rolDto.nombre() != null
                                 && !rolDto.nombre().isBlank())) {
-            errors.add(new DefaultApiError(
+            apiContentResponse.add(new DefaultApiError(
                     ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID al realizar peticiones"));
         }
+        return apiContentResponse;
+    }
+
+    RegistrationResult validateRegistration(
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+        var errors = new ArrayList<ApiError>();
+        var usuarioDto = registerUser.usuario();
 
         if (this.isUsernameRegistered(usuarioDto.username())) {
             errors.add(new DefaultApiError(
@@ -55,10 +76,13 @@ class UsuarioValidationService {
         }
 
         if (!errors.isEmpty()) {
-            return errors;
+            return new RegistrationError(errors);
         }
 
         // validation is delegated to other specific methods depending on the role to be registered
+        if (registerUser.cedula() != null || registerUser.pasaporte() != null) {
+            return this.validateRegistrationPersona(registerUser);
+        }
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
                         .anyMatch(rolDto -> rolDto != null
@@ -66,7 +90,7 @@ class UsuarioValidationService {
                                 && !rolDto.nombre().isBlank()
                                 && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
             if (registerUser.licenciaFabricante() != null) {
-                return this.validateRegistrationFabricante(registerUser, errors);
+                return this.validateRegistrationFabricante(registerUser);
             } else {
                 errors.add(
                         new DefaultApiError(
@@ -74,80 +98,71 @@ class UsuarioValidationService {
                                 "licencia_fabricante",
                                 "Los fabricantes requieren licencia autorizada por Dirección Nacional de Farmacia y Drogas del MINSA"));
             }
-        } else {
-            if (registerUser.cedula() != null || registerUser.pasaporte() != null) {
-                return this.validateRegistrationPersona(registerUser, errors);
-            } else {
-                errors.add(new DefaultApiError(
-                        ApiResponseCode.MISSING_INFORMATION,
-                        "Las personas requieren una identificación personal como cédula panameña o pasaporte"));
-            }
         }
-        return errors;
+        errors.add(
+                new DefaultApiError(
+                        ApiResponseCode.MISSING_INFORMATION,
+                        "Las personas requieren una identificación personal como cédula o pasaporte, los fabricantes deben usar licencia_fabricante."));
+        return new RegistrationError(errors);
     }
 
-    Object validateRegistrationPersona(@NotNull RegisterUser registerUser, List<DefaultApiError> errors) {
-        String identifier = registerUser.cedula() != null ? registerUser.cedula() : registerUser.pasaporte();
+    RegistrationResult validateRegistrationPersona(
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+        var identifier = registerUser.cedula() != null ? registerUser.cedula() : registerUser.pasaporte();
         assert identifier != null;
 
         return this.personaService
                 .getPersona(identifier)
                 .map(persona -> {
-                    if (Boolean.FALSE.equals(persona.getDisabled())) {
-                        Usuario user = persona.getUsuario();
+                    if (!persona.getDisabled()) {
+                        var user = persona.getUsuario();
                         if (user != null && user.getId() != null) {
                             log.debug("Usuario de persona: {}", user.getId());
-                            errors.add(new DefaultApiError(
+                            return new RegistrationError(new DefaultApiError(
                                     ApiResponseCode.ALREADY_EXISTS, "La persona ya tiene un usuario registrado"));
-                            return errors;
                         } else {
-                            return persona;
+                            return new RegistrationSuccess(persona);
                         }
                     } else {
                         log.debug("Persona attempting register but is disabled. ID: {}", persona.getId());
-                        errors.add(new DefaultApiError(ApiResponseCode.PERMISSION_DENIED, "No puede registrarse"));
-                        return errors;
+                        return new RegistrationError(
+                                new DefaultApiError(ApiResponseCode.PERMISSION_DENIED, "No puede registrarse"));
                     }
                 })
-                .orElseGet(() -> {
-                    errors.add(new DefaultApiError(
-                            ApiResponseCode.NOT_FOUND,
-                            "La persona con la identificación personal proporcionada no fue encontrado"));
-                    return errors;
-                });
+                .orElse(new RegistrationError(new DefaultApiError(
+                        ApiResponseCode.NOT_FOUND,
+                        "La persona con la identificación personal proporcionada no fue encontrado")));
     }
 
-    Object validateRegistrationFabricante(@NotNull RegisterUser registerUser, List<DefaultApiError> errors) {
+    RegistrationResult validateRegistrationFabricante(
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
         return this.fabricanteService
                 .getFabricante(registerUser.licenciaFabricante())
                 .map(fabricante -> {
-                    if (Boolean.FALSE.equals(fabricante.getDisabled())) {
-                        Usuario user = fabricante.getUsuario();
+                    if (!fabricante.getDisabled()) {
+                        var user = fabricante.getUsuario();
                         if (user != null && user.getId() != null) {
                             log.debug("Usuario de fabricante: {}", user.getId());
-                            errors.add(new DefaultApiError(
+                            return new RegistrationError(new DefaultApiError(
                                     ApiResponseCode.ALREADY_EXISTS, "El fabricante ya tiene un usuario registrado"));
-                            return errors;
                         } else {
-                            return fabricante;
+                            return new RegistrationSuccess(fabricante);
                         }
                     } else {
                         log.debug("Fabricante attempting register but is disabled. ID: {}", fabricante.getId());
-                        errors.add(new DefaultApiError(ApiResponseCode.PERMISSION_DENIED, "No puede registrarse"));
-                        return errors;
+                        return new RegistrationError(
+                                new DefaultApiError(ApiResponseCode.PERMISSION_DENIED, "No puede registrarse"));
                     }
                 })
-                .orElseGet(() -> {
-                    errors.add(new DefaultApiError(
-                            ApiResponseCode.NOT_FOUND,
-                            "El fabricante con la licencia proporcionada no fue encontrado"));
-                    return errors;
-                });
+                .orElse(new RegistrationError(new DefaultApiError(
+                        ApiResponseCode.NOT_FOUND, "El fabricante con la licencia proporcionada no fue encontrado")));
     }
 
-    List<DefaultApiError> validateChangePasswordPersona(
-            @NotNull Persona persona, String newPassword, LocalDate birthdate) {
-        List<DefaultApiError> errores = new ArrayList<>();
+    List<ApiError> validateChangePasswordPersona(
+            @org.jetbrains.annotations.NotNull @NotNull final Persona persona,
+            final String newPassword,
+            final LocalDate birthdate) {
+        var errores = new ArrayList<ApiError>();
         if (!persona.getFechaNacimiento().toLocalDate().equals(birthdate)) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED, "fecha_nacimiento", "La fecha de cumpleaños no coincide"));
@@ -156,7 +171,7 @@ class UsuarioValidationService {
         if (this.passwordEncoder.matches(newPassword, persona.getUsuario().getPassword())) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
-                    "new_password",
+                    NEW_PASSWORD,
                     "La nueva contraseña no puede ser igual a la contraseña actual"));
         }
 
@@ -164,38 +179,26 @@ class UsuarioValidationService {
                 && newPassword.contains(persona.getUsuario().getUsername())) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
-                    "new_password",
+                    NEW_PASSWORD,
                     "La nueva contraseña no puede ser igual a su username"));
         }
 
         if (this.compromisedPasswordChecker.check(newPassword).isCompromised()) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
-                    "new_password",
+                    NEW_PASSWORD,
                     "La nueva contraseña está comprometida, utilice contraseñas seguras"));
         }
         return errores;
     }
 
-    boolean isCedulaRegistered(String cedula) {
-        return cedula != null && usuarioRepository.findByCedula(cedula).isPresent();
-    }
-
-    boolean isUsernameRegistered(String username) {
+    boolean isUsernameRegistered(final String username) {
         return username != null && usuarioRepository.findByUsername(username).isPresent();
     }
 
-    boolean isCorreoRegistered(String correo) {
-        return correo != null
-                && (usuarioRepository.findByCorreoPersona(correo).isPresent()
-                        || usuarioRepository.findByCorreoFabricante(correo).isPresent());
-    }
-
-    boolean isLicenciaFabricanteRegistered(String licencia) {
-        return licencia != null && usuarioRepository.findByLicencia(licencia).isPresent();
-    }
-
-    boolean canRegisterRole(RolDto rolDto, List<RolesEnum> authenticatedRoles) {
+    boolean canRegisterRole(
+            @org.jetbrains.annotations.NotNull final RolDto rolDto,
+            @org.jetbrains.annotations.NotNull final List<RolesEnum> authenticatedRoles) {
         int maxRolPriority = authenticatedRoles.stream()
                 .mapToInt(RolesEnum::getPriority)
                 .max()
@@ -204,9 +207,34 @@ class UsuarioValidationService {
         return RolesEnum.valueOf(rolDto.nombre().toUpperCase()).getPriority() <= maxRolPriority;
     }
 
-    boolean hasUserManagementPermissions(List<String> authenticatedAuthorities) {
+    boolean hasUserManagementPermissions(
+            @org.jetbrains.annotations.NotNull final List<String> authenticatedAuthorities) {
         return authenticatedAuthorities.contains("ADMINISTRATIVO_WRITE")
                 || authenticatedAuthorities.contains("AUTORIDAD_WRITE")
                 || authenticatedAuthorities.contains("USER_MANAGER_WRITE");
+    }
+
+    public sealed interface RegistrationResult permits RegistrationSuccess, RegistrationError {}
+
+    @Getter
+    public static final class RegistrationSuccess implements RegistrationResult {
+        private final Object outcome;
+
+        public RegistrationSuccess(final Object outcome) {
+            this.outcome = outcome;
+        }
+    }
+
+    @Getter
+    public static final class RegistrationError implements RegistrationResult {
+        private final List<ApiError> errors;
+
+        public RegistrationError(final List<ApiError> errors) {
+            this.errors = errors;
+        }
+
+        public RegistrationError(final ApiError error) {
+            this.errors = List.of(error);
+        }
     }
 }
