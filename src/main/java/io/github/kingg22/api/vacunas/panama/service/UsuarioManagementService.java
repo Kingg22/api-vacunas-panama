@@ -20,6 +20,8 @@ import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
+import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationError;
+import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationSuccess;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.web.dto.IdNombreDto;
@@ -54,17 +56,21 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private final UsuarioRepository usuarioRepository;
     private final PermisoRepository permisoRepository;
     private final RolRepository rolRepository;
+    private final IPacienteService pacienteService;
     private final TokenService tokenService;
     private final PersonaService personaService;
-    private final IPacienteService pacienteService;
     private final DoctorService doctorService;
     private final FabricanteService fabricanteService;
     private final UsuarioValidationService validationService;
     private final UsuarioTransactionService transactionService;
+    private static final String PERSONA = "persona";
+    private static final String PACIENTE = "paciente";
+    private static final String FABRICANTE = "fabricante";
+    private static final String DOCTOR = "doctor";
 
     public List<ApiError> validateAuthoritiesRegister(
-            @org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto,
-            @org.jetbrains.annotations.NotNull @NotNull Authentication authentication) {
+            @org.jetbrains.annotations.NotNull @NotNull final UsuarioDto usuarioDto,
+            @org.jetbrains.annotations.NotNull @NotNull final Authentication authentication) {
         var errors = new ArrayList<ApiError>();
         var authenticatedAuthorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -98,43 +104,32 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return errors;
     }
 
-    public ApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull RegisterUser registerUser) {
+    public ApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         var usuarioDto = registerUser.usuario();
+        apiContentResponse.addWarnings(this.validationService.validateWarningsRegistrarion(usuarioDto));
         var validationResult = this.validationService.validateRegistration(registerUser);
-        if (usuarioDto.roles() != null
-                && usuarioDto.roles().stream()
-                        .anyMatch(rolDto ->
-                                rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
-            apiContentResponse.addWarning(
-                    new DefaultApiError(
-                            ApiResponseCode.INFORMATION_IGNORED,
-                            "roles[].permisos[]",
-                            "Los permisos de los roles son ignorados al crear un usuario. Para crear o relacionar nuevos permisos a un rol debe utilizar otra opción"));
+        if (validationResult instanceof RegistrationError error) {
+            apiContentResponse.addErrors(error.getErrors());
         }
-        if (validationResult instanceof List<?> failedList) {
-            for (var failed : failedList) {
-                if (failed instanceof ApiError error) {
-                    apiContentResponse.addError(error);
-                }
-            }
-        }
-        if (!apiContentResponse.hasErrors()) {
-            switch (validationResult) {
+        if (!apiContentResponse.hasErrors() && validationResult instanceof RegistrationSuccess success) {
+            switch (success.getOutcome()) {
                 case Persona persona -> {
-                    Usuario user = transactionService.createUser(usuarioDto, persona, null);
+                    var user = transactionService.createUser(usuarioDto, persona, null);
                     if (persona instanceof Paciente paciente) {
                         paciente.setUsuario(user);
-                        apiContentResponse.addData("paciente", PacienteKonverterKt.toPacienteDto(paciente));
+                        apiContentResponse.addData(PACIENTE, PacienteKonverterKt.toPacienteDto(paciente));
                     }
                     if (persona instanceof Doctor doctor) {
                         doctor.setUsuario(user);
-                        apiContentResponse.addData("doctor", DoctorKonverterKt.toDoctorDto(doctor));
+                        apiContentResponse.addData(DOCTOR, DoctorKonverterKt.toDoctorDto(doctor));
                     }
+                    persona.setUsuario(user);
+                    apiContentResponse.addData(PERSONA, PersonaKonverterKt.toPersonaDto(persona));
                 }
                 case Fabricante fabricante -> {
                     fabricante.setUsuario(transactionService.createUser(usuarioDto, null, fabricante));
-                    apiContentResponse.addData("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante));
+                    apiContentResponse.addData(FABRICANTE, FabricanteKonverterKt.toFabricanteDto(fabricante));
                 }
                 default ->
                     apiContentResponse.addError(new DefaultApiError(
@@ -145,12 +140,12 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return apiContentResponse;
     }
 
-    public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull RestoreDto restoreDto) {
+    public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull final RestoreDto restoreDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         var opPersona = this.personaService.getPersona(restoreDto.username());
         opPersona.ifPresentOrElse(
                 persona -> {
-                    List<DefaultApiError> failedList = this.validationService.validateChangePasswordPersona(
+                    var failedList = this.validationService.validateChangePasswordPersona(
                             persona, restoreDto.newPassword(), restoreDto.fechaNacimiento());
                     apiContentResponse.addErrors(failedList);
                     if (failedList.isEmpty()) {
@@ -166,41 +161,41 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @Cacheable(cacheNames = "short", key = "'login:' + #idUser")
-    public Map<String, Serializable> setLoginData(UUID idUser) {
+    public Map<String, Serializable> setLoginData(final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
         Usuario usuario = this.usuarioRepository.findById(idUser).orElseThrow();
         if (usuario.getPersona() != null) {
             Persona persona = usuario.getPersona();
             if (persona instanceof Paciente paciente) {
-                data.put("paciente", PacienteKonverterKt.toPacienteDto(paciente));
+                data.put(PACIENTE, PacienteKonverterKt.toPacienteDto(paciente));
             }
             if (persona instanceof Doctor doctor) {
-                data.put("doctor", DoctorKonverterKt.toDoctorDto(doctor));
+                data.put(DOCTOR, DoctorKonverterKt.toDoctorDto(doctor));
             }
             // En caso de que necesites manejar la persona genérica
             if (!(persona instanceof Paciente) && !(persona instanceof Doctor)) {
-                data.put("persona", PersonaKonverterKt.toPersonaDto(persona));
+                data.put(PERSONA, PersonaKonverterKt.toPersonaDto(persona));
             }
         }
         if (usuario.getFabricante() != null) {
-            data.put("fabricante", FabricanteKonverterKt.toFabricanteDto(usuario.getFabricante()));
+            data.put(FABRICANTE, FabricanteKonverterKt.toFabricanteDto(usuario.getFabricante()));
         }
         data.putAll(this.generateTokens(idUser));
         return data;
     }
 
     @Cacheable(cacheNames = "short", key = "'profile:' + #idUser")
-    public Map<String, Serializable> getProfile(UUID idUser) {
+    public Map<String, Serializable> getProfile(final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
         this.pacienteService
                 .getPacienteByUserID(idUser)
-                .ifPresent(paciente -> data.put("paciente", PacienteKonverterKt.toPacienteDto(paciente)));
+                .ifPresent(paciente -> data.put(PACIENTE, PacienteKonverterKt.toPacienteDto(paciente)));
         this.doctorService
                 .getDoctorByUserID(idUser)
-                .ifPresent(doctor -> data.put("doctor", DoctorKonverterKt.toDoctorDto(doctor)));
+                .ifPresent(doctor -> data.put(DOCTOR, DoctorKonverterKt.toDoctorDto(doctor)));
         this.fabricanteService
                 .getFabricanteByUserID(idUser)
-                .ifPresent(fabricante -> data.put("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante)));
+                .ifPresent(fabricante -> data.put(FABRICANTE, FabricanteKonverterKt.toFabricanteDto(fabricante)));
         return data;
     }
 
@@ -214,19 +209,19 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return permisoRepository.findAllIdNombre();
     }
 
-    public Map<String, Serializable> generateTokens(UUID idUser) {
+    public Map<String, Serializable> generateTokens(final UUID idUser) {
         Usuario usuario = usuarioRepository.findById(idUser).orElseThrow();
         Map<String, Serializable> idsAdicionales = new HashMap<>();
         if (usuario.getPersona() != null) {
-            idsAdicionales.put("persona", usuario.getPersona().getId());
+            idsAdicionales.put(PERSONA, usuario.getPersona().getId());
         }
         if (usuario.getFabricante() != null) {
-            idsAdicionales.put("fabricante", usuario.getFabricante().getId());
+            idsAdicionales.put(FABRICANTE, usuario.getFabricante().getId());
         }
         return tokenService.generateTokens(UsuarioKonverterKt.toUsuarioDto(usuario), idsAdicionales);
     }
 
-    public void updateLastUsed(UUID id) {
+    public void updateLastUsed(final UUID id) {
         this.transactionService.updateLastUsed(id);
     }
 
@@ -238,7 +233,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
      * @param identifier the identifier used to search for the user (e.g. username, email, cedula)
      * @return an {@link Optional} containing the found {@link Usuario} or empty if no user matches the identifier.
      */
-    public Optional<Usuario> getUsuario(@NotNull String identifier) {
+    public Optional<Usuario> getUsuario(@NotNull final String identifier) {
         log.debug("Searching by username: {}", identifier);
         Optional<Usuario> usuarioOpt = this.usuarioRepository.findByUsername(identifier);
         usuarioOpt.ifPresent(usuario -> {
