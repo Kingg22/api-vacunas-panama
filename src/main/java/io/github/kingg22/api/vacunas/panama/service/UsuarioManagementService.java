@@ -68,6 +68,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private static final String FABRICANTE = "fabricante";
     private static final String DOCTOR = "doctor";
 
+    @org.jetbrains.annotations.NotNull
     public List<ApiError> validateAuthoritiesRegister(
             @org.jetbrains.annotations.NotNull @NotNull final UsuarioDto usuarioDto,
             @org.jetbrains.annotations.NotNull @NotNull final Authentication authentication) {
@@ -104,6 +105,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return errors;
     }
 
+    @org.jetbrains.annotations.NotNull
     public ApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         var usuarioDto = registerUser.usuario();
@@ -140,6 +142,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return apiContentResponse;
     }
 
+    @org.jetbrains.annotations.NotNull
     public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull final RestoreDto restoreDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         var opPersona = this.personaService.getPersona(restoreDto.username());
@@ -160,8 +163,9 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return apiContentResponse;
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "short", key = "'login:' + #idUser")
-    public Map<String, Serializable> setLoginData(final UUID idUser) {
+    public Map<String, Serializable> setLoginData(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
         Usuario usuario = this.usuarioRepository.findById(idUser).orElseThrow();
         if (usuario.getPersona() != null) {
@@ -184,8 +188,9 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return data;
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "short", key = "'profile:' + #idUser")
-    public Map<String, Serializable> getProfile(final UUID idUser) {
+    public Map<String, Serializable> getProfile(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
         this.pacienteService
                 .getPacienteByUserID(idUser)
@@ -199,17 +204,20 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return data;
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "massive", key = "'roles'")
     public List<IdNombreDto> getIdNombreRoles() {
         return rolRepository.findAllIdNombre();
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "massive", key = "'permisos'")
     public List<IdNombreDto> getIdNombrePermisos() {
         return permisoRepository.findAllIdNombre();
     }
 
-    public Map<String, Serializable> generateTokens(final UUID idUser) {
+    @org.jetbrains.annotations.NotNull
+    public Map<String, Serializable> generateTokens(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Usuario usuario = usuarioRepository.findById(idUser).orElseThrow();
         Map<String, Serializable> idsAdicionales = new HashMap<>();
         if (usuario.getPersona() != null) {
@@ -221,7 +229,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
         return tokenService.generateTokens(UsuarioKonverterKt.toUsuarioDto(usuario), idsAdicionales);
     }
 
-    public void updateLastUsed(final UUID id) {
+    public void updateLastUsed(@org.jetbrains.annotations.NotNull final UUID id) {
         this.transactionService.updateLastUsed(id);
     }
 
@@ -233,16 +241,18 @@ public class UsuarioManagementService implements IUsuarioManagementService {
      * @param identifier the identifier used to search for the user (e.g. username, email, cedula)
      * @return an {@link Optional} containing the found {@link Usuario} or empty if no user matches the identifier.
      */
-    public Optional<Usuario> getUsuario(@NotNull final String identifier) {
+    @org.jetbrains.annotations.NotNull
+    public Optional<Usuario> getUsuario(@org.jetbrains.annotations.NotNull @NotNull final String identifier) {
         log.debug("Searching by username: {}", identifier);
-        Optional<Usuario> usuarioOpt = this.usuarioRepository.findByUsername(identifier);
+        var usuarioOpt = this.usuarioRepository.findByUsername(identifier);
         usuarioOpt.ifPresent(usuario -> {
-            Optional<Persona> personaOpt = this.personaService.getPersonaByUserID(usuario.getId());
+            assert usuario.getId() != null;
+            var personaOpt = this.personaService.getPersonaByUserID(usuario.getId());
             personaOpt.ifPresent(persona -> usuario.setDisabled(persona.getDisabled()));
             log.debug("Found user: {}, with username", usuario.getId());
         });
         if (usuarioOpt.isEmpty()) {
-            FormatterUtil.FormatterResult result = FormatterUtil.formatToSearch(identifier);
+            var result = FormatterUtil.formatToSearch(identifier);
             log.debug(
                     "Searching by cedula: {}, pasaporte: {}, correo: {}",
                     result.cedula(),
@@ -251,6 +261,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
             usuarioOpt = this.usuarioRepository.findByCedulaOrPasaporteOrCorreo(
                     result.cedula(), result.pasaporte(), result.correo());
             usuarioOpt.ifPresent(usuario -> {
+                assert usuario.getId() != null;
                 this.personaService
                         .getPersonaByUserID(usuario.getId())
                         .ifPresent(persona -> usuario.setDisabled(persona.getDisabled()));
@@ -262,6 +273,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
             log.debug("Searching by licencia or correo Fabricante");
             usuarioOpt = this.usuarioRepository.findByLicenciaOrCorreo(identifier, identifier);
             usuarioOpt.ifPresent(usuario -> {
+                assert usuario.getId() != null;
                 this.fabricanteService
                         .getFabricanteByUserID(usuario.getId())
                         .ifPresent(fabricante -> usuario.setDisabled(fabricante.getDisabled()));

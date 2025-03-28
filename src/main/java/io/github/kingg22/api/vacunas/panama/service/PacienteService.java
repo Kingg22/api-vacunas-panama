@@ -40,11 +40,14 @@ public class PacienteService implements IPacienteService {
     private final PacienteRepository pacienteRepository;
     private final DireccionService direccionService;
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "cache", key = "'view_vacuna_enfermedad'.concat(#idPaciente)")
-    public List<ViewPacienteVacunaEnfermedadDto> getViewVacunaEnfermedad(UUID idPaciente) {
+    public List<ViewPacienteVacunaEnfermedadDto> getViewVacunaEnfermedad(
+            @org.jetbrains.annotations.NotNull UUID idPaciente) {
         return this.pacienteRepository.findAllFromViewVacunaEnfermedad(idPaciente);
     }
 
+    @org.jetbrains.annotations.NotNull
     public ApiContentResponse validateCreatePacienteUsuario(
             @org.jetbrains.annotations.NotNull PacienteDto pacienteDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
@@ -211,15 +214,17 @@ public class PacienteService implements IPacienteService {
         return failedList;
     }
 
+    @org.jetbrains.annotations.NotNull
     @Transactional
-    public ApiContentResponse createPaciente(@NotNull final PacienteDto pacienteDto) {
+    public ApiContentResponse createPaciente(
+            @org.jetbrains.annotations.NotNull @NotNull final PacienteDto pacienteDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         apiContentResponse.addErrors(this.validatePacienteExist(pacienteDto));
         apiContentResponse.addErrors(this.validateCreatePaciente(pacienteDto));
         if (apiContentResponse.hasErrors()) {
             return apiContentResponse;
         }
-        Direccion direccion;
+        @org.jetbrains.annotations.NotNull final Direccion direccion;
         if (pacienteDto.persona().direccion() != null) {
             direccion = direccionService
                     .getDireccionByDto(pacienteDto.persona().direccion())
@@ -228,7 +233,7 @@ public class PacienteService implements IPacienteService {
         } else {
             direccion = DireccionDtoKonverterKt.toDireccion(direccionService.getDireccionDtoDefault());
         }
-        Paciente paciente = (Paciente) Paciente.builderPaciente()
+        final Paciente paciente = pacienteRepository.save((Paciente) Paciente.builderPaciente()
                 .identificacionTemporal(pacienteDto.identificacionTemporal())
                 .createdAt(
                         pacienteDto.createdAt() != null ? pacienteDto.createdAt() : LocalDateTime.now(ZoneOffset.UTC))
@@ -245,28 +250,29 @@ public class PacienteService implements IPacienteService {
                 .direccion(direccion)
                 .estado(pacienteDto.persona().estado())
                 .disabled(pacienteDto.persona().disabled())
-                .build();
-        paciente = pacienteRepository.save(paciente);
+                .build());
         Hibernate.initialize(paciente.getDireccion());
         Hibernate.initialize(paciente.getDireccion().getDistrito());
         if (paciente.getDireccion().getDistrito() != null) {
             Hibernate.initialize(paciente.getDireccion().getDistrito().getProvincia());
         }
         Hibernate.initialize(paciente.getUsuario());
-        var result = PacienteKonverterKt.toPacienteDto(paciente);
-        apiContentResponse.addData("paciente", result);
+        apiContentResponse.addData("paciente", PacienteKonverterKt.toPacienteDto(paciente));
         return apiContentResponse;
     }
 
-    public Optional<Paciente> getPacienteByUserID(@NotNull UUID idUser) {
+    @org.jetbrains.annotations.NotNull
+    public Optional<Paciente> getPacienteByUserID(@org.jetbrains.annotations.NotNull @NotNull UUID idUser) {
         return this.pacienteRepository.findByUsuario_Id(idUser);
     }
 
-    public Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
+    @org.jetbrains.annotations.NotNull
+    public Optional<Paciente> getPacienteById(@org.jetbrains.annotations.NotNull @NotNull UUID idPaciente) {
         return this.pacienteRepository.findById(idPaciente);
     }
 
-    public PacienteDto getPacienteDtoById(@NotNull UUID idPaciente) {
+    @org.jetbrains.annotations.NotNull
+    public PacienteDto getPacienteDtoById(@org.jetbrains.annotations.NotNull @NotNull UUID idPaciente) {
         return PacienteKonverterKt.toPacienteDto(
                 this.getPacienteById(idPaciente).orElseThrow());
     }

@@ -33,12 +33,20 @@ public class PdfService implements IPdfService {
     private final ResourceLoader resourceLoader;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public byte[] generatePdf(PacienteDto pacienteDto, List<DosisDto> dosisDtos, UUID idCertificate)
+    @org.jetbrains.annotations.NotNull
+    public byte[] generatePdf(
+            @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
+            @org.jetbrains.annotations.NotNull List<DosisDto> dosisDtos,
+            @org.jetbrains.annotations.NotNull UUID idCertificate)
             throws IOException {
         return this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos));
     }
 
-    public String generatePdfBase64(PacienteDto pacienteDto, List<DosisDto> dosisDtos, UUID idCertificate)
+    @org.jetbrains.annotations.NotNull
+    public String generatePdfBase64(
+            @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
+            @org.jetbrains.annotations.NotNull List<DosisDto> dosisDtos,
+            @org.jetbrains.annotations.NotNull UUID idCertificate)
             throws IOException {
         return Base64.getEncoder()
                 .encodeToString(this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos)));

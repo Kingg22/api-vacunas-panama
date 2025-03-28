@@ -39,11 +39,13 @@ public class VacunaService implements IVacunaService {
     private final ISedeService sedeService;
     private final IDoctorService doctorService;
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "huge", key = "'vacunas'")
     public List<VacunaFabricanteDto> getVacunasFabricante() {
         return vacunaRepository.findAllIdAndNombreAndFabricante();
     }
 
+    @org.jetbrains.annotations.NotNull
     @Transactional
     public ApiContentResponse createDosis(@org.jetbrains.annotations.NotNull @NotNull InsertDosisDto insertDosisDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
@@ -92,7 +94,9 @@ public class VacunaService implements IVacunaService {
         return apiContentResponse;
     }
 
-    public List<DosisDto> getDosisByIdPacienteIdVacuna(UUID idPaciente, UUID idVacuna) {
+    @org.jetbrains.annotations.NotNull
+    public List<DosisDto> getDosisByIdPacienteIdVacuna(
+            @org.jetbrains.annotations.NotNull UUID idPaciente, @org.jetbrains.annotations.NotNull UUID idVacuna) {
         return DosisExtKt.toListDosisDto(
                 dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna));
     }

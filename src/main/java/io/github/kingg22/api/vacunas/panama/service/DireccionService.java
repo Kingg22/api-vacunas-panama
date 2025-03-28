@@ -35,6 +35,7 @@ public class DireccionService implements IDireccionService {
         return distritoRepository.findAll();
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "massive", key = "'distritosDto'")
     public List<DistritoDto> getDistritosDto() {
         return DistritoProvinciaExtKt.toListDistritoDto(getDistritos());
@@ -44,6 +45,7 @@ public class DireccionService implements IDireccionService {
         return provinciaRepository.findAll();
     }
 
+    @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "massive", key = "'provinciasDto'")
     public List<ProvinciaDto> getProvinciasDto() {
         return DistritoProvinciaExtKt.toListProvinciaDto(getProvincias());
@@ -75,7 +77,8 @@ public class DireccionService implements IDireccionService {
         return distritoRepository.findById(id).orElseThrow();
     }
 
-    public Optional<Direccion> getDireccionByDto(@NotNull @Valid DireccionDto direccionDto) {
+    public Optional<Direccion> getDireccionByDto(
+            @org.jetbrains.annotations.NotNull @NotNull @Valid DireccionDto direccionDto) {
         Optional<Direccion> direccion = Optional.empty();
         if (direccionDto.id() != null) {
             direccion = direccionRepository.findById(direccionDto.id());
@@ -99,8 +102,9 @@ public class DireccionService implements IDireccionService {
         return direccion;
     }
 
+    @org.jetbrains.annotations.NotNull
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Direccion createDireccion(@NotNull @Valid DireccionDto direccionDto) {
+    public Direccion createDireccion(@org.jetbrains.annotations.NotNull @NotNull @Valid DireccionDto direccionDto) {
         Distrito distrito;
         if (direccionDto.distrito() != null && direccionDto.distrito().id() != null) {
             distrito = this.getDistritoById(direccionDto.distrito().id());
@@ -117,7 +121,8 @@ public class DireccionService implements IDireccionService {
         return direccionRepository.save(direccion);
     }
 
-    private Optional<Direccion> findUniqueDireccion(Optional<List<Direccion>> result) {
+    private Optional<Direccion> findUniqueDireccion(
+            @org.jetbrains.annotations.NotNull Optional<List<Direccion>> result) {
         return result.filter(resp -> resp.size() == 1).map(List::getFirst);
     }
 }
