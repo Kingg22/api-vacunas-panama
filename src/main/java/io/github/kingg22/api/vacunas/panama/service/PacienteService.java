@@ -93,8 +93,7 @@ public class PacienteService implements IPacienteService {
         return apiContentResponse;
     }
 
-    public List<ApiError> validateCreatePaciente(
-            @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
+    public List<ApiError> validateCreatePaciente(@org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
         var failedList = new ArrayList<ApiError>();
 
         if ((pacienteDto.persona().nombre() == null
@@ -135,8 +134,7 @@ public class PacienteService implements IPacienteService {
         return failedList;
     }
 
-    public List<ApiError> validatePacienteExist(
-            @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
+    public List<ApiError> validatePacienteExist(@org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
         var failedList = new ArrayList<ApiError>();
 
         if (pacienteDto.persona().cedula() != null) {

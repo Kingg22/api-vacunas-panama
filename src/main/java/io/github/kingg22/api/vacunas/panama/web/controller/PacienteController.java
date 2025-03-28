@@ -34,12 +34,11 @@ public class PacienteController {
         var idPersona = UUID.fromString(jwt.getClaimAsString("persona"));
         log.debug("Received a query of Paciente: {}", idPersona);
         var viewPacienteVacunaEnfermedadDtoList =
-            new ArrayList<>(this.pacienteService.getViewVacunaEnfermedad(idPersona));
+                new ArrayList<>(this.pacienteService.getViewVacunaEnfermedad(idPersona));
         apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedadDtoList);
         if (viewPacienteVacunaEnfermedadDtoList.isEmpty()) {
-            apiResponse.addError(new DefaultApiError(
-                ApiResponseCode.NOT_FOUND,
-                "El paciente no tiene dosis registradas"));
+            apiResponse.addError(
+                    new DefaultApiError(ApiResponseCode.NOT_FOUND, "El paciente no tiene dosis registradas"));
             apiResponse.addStatusCode(HttpStatus.NOT_FOUND);
         } else {
             apiResponse.addStatusCode(HttpStatus.OK);
