@@ -1,5 +1,7 @@
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+import java.time.Instant
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
@@ -15,7 +17,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.6.0"
+version = "0.7.0"
 
 java {
     toolchain {
@@ -93,4 +95,9 @@ kover {
     reports.filters.excludes {
         annotatedBy("io.mcarle.konvert.api.GeneratedKonverter")
     }
+}
+
+tasks.named<BootBuildImage>("bootBuildImage") {
+    createdDate.set(Instant.now().toString())
+    tags.add("api-vacunas-panama:latest")
 }

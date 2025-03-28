@@ -16,9 +16,10 @@ import io.github.kingg22.api.vacunas.panama.persistence.repository.PermisoReposi
 import io.github.kingg22.api.vacunas.panama.persistence.repository.RolRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
-import io.github.kingg22.api.vacunas.panama.response.ApiFailed;
+import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
-import io.github.kingg22.api.vacunas.panama.response.IApiContentResponse;
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
+import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.web.dto.IdNombreDto;
@@ -55,63 +56,68 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private final RolRepository rolRepository;
     private final TokenService tokenService;
     private final PersonaService personaService;
-    private final PacienteService pacienteService;
+    private final IPacienteService pacienteService;
     private final DoctorService doctorService;
     private final FabricanteService fabricanteService;
     private final UsuarioValidationService validationService;
     private final UsuarioTransactionService transactionService;
 
-    public List<ApiFailed> validateAuthoritiesRegister(
+    public List<ApiError> validateAuthoritiesRegister(
             @org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto,
             @org.jetbrains.annotations.NotNull @NotNull Authentication authentication) {
-        List<ApiFailed> errors = new ArrayList<>();
-        List<String> authenticatedAuthorities = authentication.getAuthorities().stream()
+        var errors = new ArrayList<ApiError>();
+        var authenticatedAuthorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(authority -> authority.startsWith("ROLE_"))
                 .map(role -> role.substring("ROLE_".length()))
                 .toList();
 
         try {
-            List<RolesEnum> authenticatedRoles =
+            var authenticatedRoles =
                     authenticatedAuthorities.stream().map(RolesEnum::valueOf).toList();
             if (usuarioDto.roles() != null
                     && !usuarioDto.roles().stream()
                             .allMatch(rolDto -> this.validationService.canRegisterRole(rolDto, authenticatedRoles))) {
-                errors.add(new ApiFailed(
+                errors.add(new DefaultApiError(
                         ApiResponseCode.ROL_HIERARCHY_VIOLATION,
                         "roles[]",
                         "No puede asignar roles superiores a su rol máximo actual"));
             }
         } catch (IllegalArgumentException exception) {
             log.debug("Argument exception by RolesEnum: {}", exception.getMessage());
-            errors.add(new ApiFailed(
+            errors.add(new DefaultApiError(
                     ApiResponseCode.API_UPDATE_UNSUPPORTED,
                     "roles[]",
                     "Roles creados recientemente no son soportados para registrarse"));
         }
 
         if (!this.validationService.hasUserManagementPermissions(authenticatedAuthorities)) {
-            errors.add(new ApiFailed(
+            errors.add(new DefaultApiError(
                     ApiResponseCode.PERMISSION_DENIED, "No tienes permisos para registrar a otros usuarios"));
         }
         return errors;
     }
 
-    public IApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull RegisterUser registerUser) {
-        ApiContentResponse apiContentResponse = new ApiContentResponse();
-        UsuarioDto usuarioDto = registerUser.usuario();
-        Object validationResult = this.validationService.validateRegistration(registerUser);
+    public ApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull RegisterUser registerUser) {
+        var apiContentResponse = ApiResponseFactory.createContentResponse();
+        var usuarioDto = registerUser.usuario();
+        var validationResult = this.validationService.validateRegistration(registerUser);
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
                         .anyMatch(rolDto ->
                                 rolDto.permisos() != null && !rolDto.permisos().isEmpty())) {
             apiContentResponse.addWarning(
-                    ApiResponseCode.INFORMATION_IGNORED,
-                    "roles[].permisos[]",
-                    "Los permisos de los roles son ignorados al crear un usuario. Para crear o relacionar nuevos permisos a un rol debe utilizar otra opción");
+                    new DefaultApiError(
+                            ApiResponseCode.INFORMATION_IGNORED,
+                            "roles[].permisos[]",
+                            "Los permisos de los roles son ignorados al crear un usuario. Para crear o relacionar nuevos permisos a un rol debe utilizar otra opción"));
         }
         if (validationResult instanceof List<?> failedList) {
-            apiContentResponse.addErrors(failedList);
+            for (var failed : failedList) {
+                if (failed instanceof ApiError error) {
+                    apiContentResponse.addError(error);
+                }
+            }
         }
         if (!apiContentResponse.hasErrors()) {
             switch (validationResult) {
@@ -131,20 +137,20 @@ public class UsuarioManagementService implements IUsuarioManagementService {
                     apiContentResponse.addData("fabricante", FabricanteKonverterKt.toFabricanteDto(fabricante));
                 }
                 default ->
-                    apiContentResponse.addError(
+                    apiContentResponse.addError(new DefaultApiError(
                             ApiResponseCode.API_UPDATE_UNSUPPORTED,
-                            "Ha ocurrido un error posterior a la validación. No created");
+                            "Ha ocurrido un error posterior a la validación. No created"));
             }
         }
         return apiContentResponse;
     }
 
     public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull RestoreDto restoreDto) {
-        ApiContentResponse apiContentResponse = new ApiContentResponse();
-        Optional<Persona> opPersona = this.personaService.getPersona(restoreDto.username());
+        var apiContentResponse = ApiResponseFactory.createContentResponse();
+        var opPersona = this.personaService.getPersona(restoreDto.username());
         opPersona.ifPresentOrElse(
                 persona -> {
-                    List<ApiFailed> failedList = this.validationService.validateChangePasswordPersona(
+                    List<DefaultApiError> failedList = this.validationService.validateChangePasswordPersona(
                             persona, restoreDto.newPassword(), restoreDto.fechaNacimiento());
                     apiContentResponse.addErrors(failedList);
                     if (failedList.isEmpty()) {
@@ -152,10 +158,10 @@ public class UsuarioManagementService implements IUsuarioManagementService {
                         apiContentResponse.addData("status", "Contraseña cambiada con éxito");
                     }
                 },
-                () -> apiContentResponse.addError(
+                () -> apiContentResponse.addError(new DefaultApiError(
                         ApiResponseCode.NOT_FOUND,
                         "username",
-                        "La persona con la identificación dada no fue encontrada"));
+                        "La persona con la identificación dada no fue encontrada")));
         return apiContentResponse;
     }
 
@@ -232,7 +238,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
      * @param identifier the identifier used to search for the user (e.g. username, email, cedula)
      * @return an {@link Optional} containing the found {@link Usuario} or empty if no user matches the identifier.
      */
-    Optional<Usuario> getUsuario(@NotNull String identifier) {
+    public Optional<Usuario> getUsuario(@NotNull String identifier) {
         log.debug("Searching by username: {}", identifier);
         Optional<Usuario> usuarioOpt = this.usuarioRepository.findByUsername(identifier);
         usuarioOpt.ifPresent(usuario -> {

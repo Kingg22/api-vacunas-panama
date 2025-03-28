@@ -1,16 +1,16 @@
 package io.github.kingg22.api.vacunas.panama.web.controller;
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
-import io.github.kingg22.api.vacunas.panama.response.IApiResponse;
+import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.service.IPacienteService;
 import io.github.kingg22.api.vacunas.panama.service.IVacunaService;
 import io.github.kingg22.api.vacunas.panama.service.PdfService;
 import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,6 @@ public class PdfController {
     private final PdfService pdfService;
     private final IPacienteService pacienteService;
     private final IVacunaService vacunaService;
-    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping
     public ResponseEntity<byte[]> getPdfFile(
@@ -64,18 +63,18 @@ public class PdfController {
     }
 
     @GetMapping("/base64")
-    public ResponseEntity<IApiResponse<String, Serializable>> getPdfBase64(
+    public ResponseEntity<ApiResponse> getPdfBase64(
             @RequestParam("idPaciente") UUID idPaciente,
             @RequestParam("idVacuna") UUID idVacuna,
             ServletWebRequest webRequest) {
-        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
+        var apiResponse = ApiResponseFactory.createResponse();
         try {
             List<DosisDto> dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna);
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString());
-                apiResponse.addError(
+                apiResponse.addError(new DefaultApiError(
                         ApiResponseCode.NOT_FOUND,
-                        "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF");
+                        "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF"));
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND);
             }
             PacienteDto pDetalle = pacienteService.getPacienteDtoById(idPaciente);
@@ -87,7 +86,8 @@ public class PdfController {
             return ApiResponseUtil.sendResponse(apiResponse, webRequest);
         } catch (RuntimeException | IOException e) {
             log.debug(e.getMessage(), e);
-            apiResponse.addError(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Ha ocurrido un error al generar el PDF");
+            apiResponse.addError(new DefaultApiError(
+                    HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Ha ocurrido un error al generar el PDF"));
             apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
             return ApiResponseUtil.sendResponse(apiResponse, webRequest);
         }

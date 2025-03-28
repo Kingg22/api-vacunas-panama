@@ -1,18 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.web.controller;
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
-import io.github.kingg22.api.vacunas.panama.response.IApiResponse;
 import io.github.kingg22.api.vacunas.panama.service.IDireccionService;
 import io.github.kingg22.api.vacunas.panama.service.ISedeService;
 import io.github.kingg22.api.vacunas.panama.service.IUsuarioManagementService;
 import io.github.kingg22.api.vacunas.panama.service.IVacunaService;
-import io.github.kingg22.api.vacunas.panama.web.dto.DistritoDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.IdNombreDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.ProvinciaDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.UUIDNombreDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.VacunaFabricanteDto;
-import java.io.Serializable;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,57 +25,56 @@ public class PublicResourcesController {
     private final ISedeService sedeService;
     private final IVacunaService vacunaService;
     private final IUsuarioManagementService usuarioManagementService;
-    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping("/distritos")
-    public ResponseEntity<IApiResponse<String, Serializable>> getDistritos(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<DistritoDto> distritoDtos = new ArrayList<>(direccionService.getDistritosDto());
+    public ResponseEntity<ApiResponse> getDistritos(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var distritoDtos = new ArrayList<>(direccionService.getDistritosDto());
         response.addData("distritos", distritoDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);
     }
 
     @GetMapping("/provincias")
-    public ResponseEntity<IApiResponse<String, Serializable>> getProvincias(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<ProvinciaDto> provinciaDtos = new ArrayList<>(direccionService.getProvinciasDto());
+    public ResponseEntity<ApiResponse> getProvincias(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var provinciaDtos = new ArrayList<>(direccionService.getProvinciasDto());
         response.addData("provincias", provinciaDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);
     }
 
     @GetMapping("/sedes")
-    public ResponseEntity<IApiResponse<String, Serializable>> getSedes(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<UUIDNombreDto> sedesNombreDtos = new ArrayList<>(sedeService.getIdNombreSedes());
+    public ResponseEntity<ApiResponse> getSedes(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var sedesNombreDtos = new ArrayList<>(sedeService.getIdNombreSedes());
         response.addData("sedes", sedesNombreDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);
     }
 
     @GetMapping("/vacunas")
-    public ResponseEntity<IApiResponse<String, Serializable>> getVacunas(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<VacunaFabricanteDto> vacunaFabricanteDtos = new ArrayList<>(vacunaService.getVacunasFabricante());
+    public ResponseEntity<ApiResponse> getVacunas(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var vacunaFabricanteDtos = new ArrayList<>(vacunaService.getVacunasFabricante());
         response.addData("vacunas", vacunaFabricanteDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<IApiResponse<String, Serializable>> getRoles(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<IdNombreDto> rolesNombreDtos = new ArrayList<>(usuarioManagementService.getIdNombreRoles());
+    public ResponseEntity<ApiResponse> getRoles(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var rolesNombreDtos = new ArrayList<>(usuarioManagementService.getIdNombreRoles());
         response.addData("roles", rolesNombreDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);
     }
 
     @GetMapping("/roles/permisos")
-    public ResponseEntity<IApiResponse<String, Serializable>> getPermisos(ServletWebRequest request) {
-        IApiResponse<String, Serializable> response = apiResponseFactory.createResponse();
-        ArrayList<IdNombreDto> permisosNombreDtos = new ArrayList<>(usuarioManagementService.getIdNombrePermisos());
+    public ResponseEntity<ApiResponse> getPermisos(ServletWebRequest request) {
+        var response = ApiResponseFactory.createResponse();
+        var permisosNombreDtos = new ArrayList<>(usuarioManagementService.getIdNombrePermisos());
         response.addData("permisos", permisosNombreDtos);
         response.addStatusCode(HttpStatus.OK);
         return ApiResponseUtil.sendResponse(response, request);

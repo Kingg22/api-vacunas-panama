@@ -21,7 +21,7 @@ public class SedeService implements ISedeService {
         return sedeRepository.findAllIdAndNombre();
     }
 
-    Optional<Sede> getSedeById(UUID id) {
+    public Optional<Sede> getSedeById(UUID id) {
         return sedeRepository.findById(id);
     }
 }

@@ -1,12 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.web.controller;
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
-import io.github.kingg22.api.vacunas.panama.response.IApiResponse;
+import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.service.IPacienteService;
-import io.github.kingg22.api.vacunas.panama.web.dto.ViewPacienteVacunaEnfermedadDto;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +26,19 @@ import org.springframework.web.context.request.ServletWebRequest;
 @RequestMapping(path = "/vacunacion/v1/patient", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PacienteController {
     private final IPacienteService pacienteService;
-    private final ApiResponseFactory apiResponseFactory;
 
     @GetMapping
-    public ResponseEntity<IApiResponse<String, Serializable>> getPaciente(
-            @AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
+    public ResponseEntity<ApiResponse> getPaciente(@AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
+        var apiResponse = ApiResponseFactory.createResponse();
         apiResponse.addStatusCode(HttpStatus.OK);
-        UUID idPersona = UUID.fromString(jwt.getClaimAsString("persona"));
+        var idPersona = UUID.fromString(jwt.getClaimAsString("persona"));
         log.debug("Received a query of Paciente: {}", idPersona);
-        ArrayList<ViewPacienteVacunaEnfermedadDto> viewPacienteVacunaEnfermedadDtoList =
+        var viewPacienteVacunaEnfermedadDtoList =
                 new ArrayList<>(this.pacienteService.getViewVacunaEnfermedad(idPersona));
         apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedadDtoList);
         if (viewPacienteVacunaEnfermedadDtoList.isEmpty()) {
-            apiResponse.addError(ApiResponseCode.NOT_FOUND, "El paciente no tiene dosis registradas");
+            apiResponse.addError(
+                    new DefaultApiError(ApiResponseCode.NOT_FOUND, "El paciente no tiene dosis registradas"));
             apiResponse.addStatusCode(HttpStatus.NOT_FOUND);
         } else {
             apiResponse.addStatusCode(HttpStatus.OK);

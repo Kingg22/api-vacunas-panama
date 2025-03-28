@@ -1,12 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.web.controller;
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
-import io.github.kingg22.api.vacunas.panama.response.IApiResponse;
 import io.github.kingg22.api.vacunas.panama.service.IUsuarioManagementService;
-import java.io.Serializable;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +24,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 public class TokenController {
     private final RedisTemplate<String, Object> redisTemplate;
     private final IUsuarioManagementService usuarioManagementService;
-    private final ApiResponseFactory apiResponseFactory;
 
     /**
      * Handles refreshing of tokens. The validation is not performed here as a security filter and OAuth ensures access
@@ -32,16 +31,16 @@ public class TokenController {
      *
      * @param jwt The {@link Jwt} containing user ID.
      * @param request The {@link ServletWebRequest} used for building the response.
-     * @return {@link IApiResponse} with new access_token and refresh_token.
+     * @return {@link ApiResponse} with new access_token and refresh_token.
      */
     @PostMapping("/refresh")
-    public ResponseEntity<IApiResponse<String, Serializable>> refreshToken(
-            @AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
-        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
-        String userId = jwt.getSubject();
-        String tokenId = jwt.getId();
+    public ResponseEntity<ApiResponse> refreshToken(
+            @NotNull @AuthenticationPrincipal Jwt jwt, ServletWebRequest request) {
+        var apiResponse = ApiResponseFactory.createResponse();
+        var userId = jwt.getSubject();
+        var tokenId = jwt.getId();
 
-        String key = "token:refresh:".concat(userId).concat(":").concat(tokenId);
+        var key = "token:refresh:".concat(userId).concat(":").concat(tokenId);
         redisTemplate.delete(key);
 
         apiResponse.addData(this.usuarioManagementService.generateTokens(UUID.fromString(userId)));

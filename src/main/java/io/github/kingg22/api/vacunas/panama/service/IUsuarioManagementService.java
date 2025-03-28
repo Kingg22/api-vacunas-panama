@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.response.IApiContentResponse;
+import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
+import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
+import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.web.dto.IdNombreDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.RegisterUser;
 import io.github.kingg22.api.vacunas.panama.web.dto.RestoreDto;
@@ -9,16 +11,20 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.security.core.Authentication;
 
 public interface IUsuarioManagementService {
-    IApiContentResponse createUser(RegisterUser registerUser);
+    Optional<Usuario> getUsuario(String identifier);
 
-    IApiContentResponse changePassword(RestoreDto restoreDto);
+    ApiContentResponse createUser(RegisterUser registerUser);
 
-    List<? extends Serializable> validateAuthoritiesRegister(
-            @NotNull UsuarioDto usuarioDto, @NotNull Authentication authentication);
+    ApiContentResponse changePassword(RestoreDto restoreDto);
+
+    List<? extends ApiError> validateAuthoritiesRegister(
+            @org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto,
+            @org.jetbrains.annotations.NotNull @NotNull Authentication authentication);
 
     Map<String, Serializable> generateTokens(UUID id);
 
