@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PersonaService {
+public class PersonaService implements IPersonaService {
     private final PersonaRepository personaRepository;
 
-    Optional<Persona> getPersona(@NotNull String identifier) {
+    public Optional<Persona> getPersona(@org.jetbrains.annotations.NotNull @NotNull String identifier) {
         FormatterUtil.FormatterResult result = FormatterUtil.formatToSearch(identifier);
         log.debug(
                 "Searching Persona by cedula: {}, pasaporte: {}, correo: {}",
@@ -34,7 +34,7 @@ public class PersonaService {
         return persona;
     }
 
-    Optional<Persona> getPersonaByUserID(UUID idUser) {
+    public Optional<Persona> getPersonaByUserID(@org.jetbrains.annotations.NotNull UUID idUser) {
         return this.personaRepository.findByUsuario_Id(idUser);
     }
 }
