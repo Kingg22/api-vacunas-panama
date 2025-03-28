@@ -1,7 +1,7 @@
 
 # api-vacunas-panama
 ## Dependency License Report
-_2025-03-26 23:03:10 EST_
+_2025-03-28 01:33:40 EST_
 ## Apache License, Version 2.0
 
 **1** **Group:** `com.fasterxml` **Name:** `classmate` **Version:** `1.7.0`
@@ -335,152 +335,146 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [spring-boot-autoconfigure-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-autoconfigure-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.4.jar/META-INF/NOTICE.txt)
 
-**60** **Group:** `org.springframework.boot` **Name:** `spring-boot-devtools` **Version:** `3.4.4`
-> - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
-> - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-devtools-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-devtools-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-devtools-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-devtools-3.4.4.jar/META-INF/NOTICE.txt)
-
-**61** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter` **Version:** `3.4.4`
+**60** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-3.4.4.jar/META-INF/NOTICE.txt)
 
-**62** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-jpa` **Version:** `3.4.4`
+**61** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-jpa` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-data-jpa-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-data-jpa-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.4.jar/META-INF/NOTICE.txt)
 
-**63** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-redis` **Version:** `3.4.4`
+**62** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-redis` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-data-redis-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-data-redis-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-3.4.4.jar/META-INF/NOTICE.txt)
 
-**64** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-jdbc` **Version:** `3.4.4`
+**63** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-jdbc` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-jdbc-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-jdbc-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.4.jar/META-INF/NOTICE.txt)
 
-**65** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-json` **Version:** `3.4.4`
+**64** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-json` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-json-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-json-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.4.jar/META-INF/NOTICE.txt)
 
-**66** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-logging` **Version:** `3.4.4`
+**65** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-logging` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-logging-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-logging-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.4.jar/META-INF/NOTICE.txt)
 
-**67** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-oauth2-resource-server` **Version:** `3.4.4`
+**66** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-oauth2-resource-server` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/NOTICE.txt)
 
-**68** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-security` **Version:** `3.4.4`
+**67** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-security` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-security-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-security-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.4.jar/META-INF/NOTICE.txt)
 
-**69** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-tomcat` **Version:** `3.4.4`
+**68** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-tomcat` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-tomcat-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-tomcat-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-tomcat-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-tomcat-3.4.4.jar/META-INF/NOTICE.txt)
 
-**70** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-validation` **Version:** `3.4.4`
+**69** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-validation` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-validation-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-validation-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.4.jar/META-INF/NOTICE.txt)
 
-**71** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-web` **Version:** `3.4.4`
+**70** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-web` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-boot-starter-web-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-web-3.4.4.jar/META-INF/LICENSE.txt)
     - [spring-boot-starter-web-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-web-3.4.4.jar/META-INF/NOTICE.txt)
 
-**72** **Group:** `org.springframework.data` **Name:** `spring-data-commons` **Version:** `3.4.4`
+**71** **Group:** `org.springframework.data` **Name:** `spring-data-commons` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-data](https://spring.io/projects/spring-data)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-data-commons-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-commons-3.4.4.jar/license.txt)
     - [spring-data-commons-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-commons-3.4.4.jar/notice.txt)
 
-**73** **Group:** `org.springframework.data` **Name:** `spring-data-jpa` **Version:** `3.4.4`
+**72** **Group:** `org.springframework.data` **Name:** `spring-data-jpa` **Version:** `3.4.4`
 > - **POM Project URL**: [https://projects.spring.io/spring-data-jpa](https://projects.spring.io/spring-data-jpa)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-data-jpa-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/license.txt)
     - [spring-data-jpa-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/notice.txt)
     - [spring-data-jpa-3.4.4.jar/readme.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/readme.txt)
 
-**74** **Group:** `org.springframework.data` **Name:** `spring-data-keyvalue` **Version:** `3.4.4`
+**73** **Group:** `org.springframework.data` **Name:** `spring-data-keyvalue` **Version:** `3.4.4`
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-data-keyvalue-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.4.jar/license.txt)
     - [spring-data-keyvalue-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.4.jar/notice.txt)
 
-**75** **Group:** `org.springframework.data` **Name:** `spring-data-redis` **Version:** `3.4.4`
+**74** **Group:** `org.springframework.data` **Name:** `spring-data-redis` **Version:** `3.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-data-redis](https://spring.io/projects/spring-data-redis)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 > - **Embedded license files**: [spring-data-redis-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-redis-3.4.4.jar/license.txt)
     - [spring-data-redis-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-redis-3.4.4.jar/notice.txt)
 
-**76** **Group:** `org.springframework.security` **Name:** `spring-security-config` **Version:** `6.4.4`
+**75** **Group:** `org.springframework.security` **Name:** `spring-security-config` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**77** **Group:** `org.springframework.security` **Name:** `spring-security-core` **Version:** `6.4.4`
+**76** **Group:** `org.springframework.security` **Name:** `spring-security-core` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**78** **Group:** `org.springframework.security` **Name:** `spring-security-crypto` **Version:** `6.4.4`
+**77** **Group:** `org.springframework.security` **Name:** `spring-security-crypto` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**79** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-core` **Version:** `6.4.4`
+**78** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-core` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**80** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-jose` **Version:** `6.4.4`
+**79** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-jose` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**81** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-resource-server` **Version:** `6.4.4`
+**80** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-resource-server` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**82** **Group:** `org.springframework.security` **Name:** `spring-security-web` **Version:** `6.4.4`
+**81** **Group:** `org.springframework.security` **Name:** `spring-security-web` **Version:** `6.4.4`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**83** **Group:** `org.yaml` **Name:** `snakeyaml` **Version:** `2.3`
+**82** **Group:** `org.yaml` **Name:** `snakeyaml` **Version:** `2.3`
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## EPL 1.0
 
-**84** **Group:** `com.h2database` **Name:** `h2` **Version:** `2.3.232`
+**83** **Group:** `com.h2database` **Name:** `h2` **Version:** `2.3.232`
 > - **POM Project URL**: [https://h2database.com](https://h2database.com)
 > - **POM License**: EPL 1.0 - [https://opensource.org/licenses/eclipse-1.0.php](https://opensource.org/licenses/eclipse-1.0.php)
 > - **POM License**: MPL 2.0 - [https://www.mozilla.org/en-US/MPL/2.0/](https://www.mozilla.org/en-US/MPL/2.0/)
 
 ## Eclipse Distribution License - v 1.0
 
-**85** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
+**84** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 > - **POM License**: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - [https://openjdk.java.net/legal/gplv2+ce.html](https://openjdk.java.net/legal/gplv2+ce.html)
 
-**86** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
+**85** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/jakartaee/jaf-api](https://github.com/jakartaee/jaf-api)
@@ -490,7 +484,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md)
     - [jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md)
 
-**87** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
+**86** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/eclipse-ee4j/jpa-api](https://github.com/eclipse-ee4j/jpa-api)
@@ -500,7 +494,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md)
     - [jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md)
 
-**88** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
+**87** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -509,7 +503,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md)
     - [jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md)
 
-**89** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
+**88** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -518,7 +512,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [angus-activation-2.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/LICENSE.md)
     - [angus-activation-2.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/NOTICE.md)
 
-**90** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
+**89** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -528,7 +522,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-core-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-core-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/NOTICE.md)
 
-**91** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
+**90** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -538,7 +532,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md)
 
-**92** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
+**91** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
@@ -548,13 +542,13 @@ _2025-03-26 23:03:10 EST_
 
 ## Eclipse Public License - v 1.0
 
-**93** **Group:** `ch.qos.logback` **Name:** `logback-classic` **Version:** `1.5.18`
+**92** **Group:** `ch.qos.logback` **Name:** `logback-classic` **Version:** `1.5.18`
 > - **Manifest Project URL**: [http://www.qos.ch](http://www.qos.ch)
 > - **Manifest License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 (Not Packaged)
 > - **POM License**: Eclipse Public License - v 1.0 - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
 
-**94** **Group:** `ch.qos.logback` **Name:** `logback-core` **Version:** `1.5.18`
+**93** **Group:** `ch.qos.logback` **Name:** `logback-core` **Version:** `1.5.18`
 > - **Manifest Project URL**: [http://www.qos.ch](http://www.qos.ch)
 > - **Manifest License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 (Not Packaged)
 > - **POM License**: Eclipse Public License - v 1.0 - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
@@ -562,14 +556,14 @@ _2025-03-26 23:03:10 EST_
 
 ## Eclipse Public License - v 2.0
 
-**95** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
+**94** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 > - **POM License**: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - [https://openjdk.java.net/legal/gplv2+ce.html](https://openjdk.java.net/legal/gplv2+ce.html)
 
-**96** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
+**95** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/jakartaee/jaf-api](https://github.com/jakartaee/jaf-api)
@@ -579,7 +573,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md)
     - [jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md)
 
-**97** **Group:** `jakarta.annotation` **Name:** `jakarta.annotation-api` **Version:** `2.1.1`
+**96** **Group:** `jakarta.annotation` **Name:** `jakarta.annotation-api` **Version:** `2.1.1`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Public License - v 2.0 (Not Packaged)
 > - **POM Project URL**: [https://projects.eclipse.org/projects/ee4j.ca](https://projects.eclipse.org/projects/ee4j.ca)
@@ -588,7 +582,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.annotation-api-2.1.1.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.annotation-api-2.1.1.jar/META-INF/LICENSE.md)
     - [jakarta.annotation-api-2.1.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.annotation-api-2.1.1.jar/META-INF/NOTICE.md)
 
-**98** **Group:** `jakarta.inject` **Name:** `jakarta.inject-api` **Version:** `2.0.1`
+**97** **Group:** `jakarta.inject` **Name:** `jakarta.inject-api` **Version:** `2.0.1`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/eclipse-ee4j/injection-api](https://github.com/eclipse-ee4j/injection-api)
@@ -598,7 +592,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.inject-api-2.0.1.jar/META-INF/LICENSE.txt](build/reports/dependency-license/jakarta.inject-api-2.0.1.jar/META-INF/LICENSE.txt)
     - [jakarta.inject-api-2.0.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.inject-api-2.0.1.jar/META-INF/NOTICE.md)
 
-**99** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
+**98** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/eclipse-ee4j/jpa-api](https://github.com/eclipse-ee4j/jpa-api)
@@ -608,7 +602,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md)
     - [jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md)
 
-**100** **Group:** `jakarta.transaction` **Name:** `jakarta.transaction-api` **Version:** `2.0.1`
+**99** **Group:** `jakarta.transaction` **Name:** `jakarta.transaction-api` **Version:** `2.0.1`
 > - **Manifest Project URL**: [https://github.com/eclipse-ee4j](https://github.com/eclipse-ee4j)
 > - **Manifest License**: Eclipse Public License - v 2.0 (Not Packaged)
 > - **POM Project URL**: [https://projects.eclipse.org/projects/ee4j.jta](https://projects.eclipse.org/projects/ee4j.jta)
@@ -617,7 +611,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.transaction-api-2.0.1.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.transaction-api-2.0.1.jar/META-INF/LICENSE.md)
     - [jakarta.transaction-api-2.0.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.transaction-api-2.0.1.jar/META-INF/NOTICE.md)
 
-**101** **Group:** `jakarta.validation` **Name:** `jakarta.validation-api` **Version:** `3.0.2`
+**100** **Group:** `jakarta.validation` **Name:** `jakarta.validation-api` **Version:** `3.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://beanvalidation.org](https://beanvalidation.org)
@@ -625,7 +619,7 @@ _2025-03-26 23:03:10 EST_
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 > - **POM License**: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - [https://openjdk.java.net/legal/gplv2+ce.html](https://openjdk.java.net/legal/gplv2+ce.html)
 
-**102** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
+**101** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -634,11 +628,11 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md)
     - [jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md)
 
-**103** **Group:** `org.aspectj` **Name:** `aspectjweaver` **Version:** `1.9.23`
+**102** **Group:** `org.aspectj` **Name:** `aspectjweaver` **Version:** `1.9.23`
 > - **POM Project URL**: [https://www.eclipse.org/aspectj/](https://www.eclipse.org/aspectj/)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 
-**104** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
+**103** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -647,7 +641,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [angus-activation-2.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/LICENSE.md)
     - [angus-activation-2.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/NOTICE.md)
 
-**105** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
+**104** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -657,7 +651,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-core-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-core-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/NOTICE.md)
 
-**106** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
+**105** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -667,7 +661,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md)
 
-**107** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
+**106** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
@@ -677,82 +671,82 @@ _2025-03-26 23:03:10 EST_
 
 ## GNU Affero General Public License v3
 
-**108** **Group:** `com.itextpdf` **Name:** `barcodes` **Version:** `9.1.0`
+**107** **Group:** `com.itextpdf` **Name:** `barcodes` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**109** **Group:** `com.itextpdf` **Name:** `bouncy-castle-connector` **Version:** `9.1.0`
+**108** **Group:** `com.itextpdf` **Name:** `bouncy-castle-connector` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**110** **Group:** `com.itextpdf` **Name:** `commons` **Version:** `9.1.0`
+**109** **Group:** `com.itextpdf` **Name:** `commons` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**111** **Group:** `com.itextpdf` **Name:** `font-asian` **Version:** `9.1.0`
+**110** **Group:** `com.itextpdf` **Name:** `font-asian` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 > - **POM License**: Various licenses (see individual files)
 
-**112** **Group:** `com.itextpdf` **Name:** `forms` **Version:** `9.1.0`
+**111** **Group:** `com.itextpdf` **Name:** `forms` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**113** **Group:** `com.itextpdf` **Name:** `html2pdf` **Version:** `6.1.0`
+**112** **Group:** `com.itextpdf` **Name:** `html2pdf` **Version:** `6.1.0`
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**114** **Group:** `com.itextpdf` **Name:** `hyph` **Version:** `9.1.0`
+**113** **Group:** `com.itextpdf` **Name:** `hyph` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 > - **POM License**: Various licenses (see individual files)
 > - **Embedded license files**: [hyph-9.1.0.jar/com/itextpdf/hyph/readme.txt](build/reports/dependency-license/hyph-9.1.0.jar/com/itextpdf/hyph/readme.txt)
 
-**115** **Group:** `com.itextpdf` **Name:** `io` **Version:** `9.1.0`
+**114** **Group:** `com.itextpdf` **Name:** `io` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**116** **Group:** `com.itextpdf` **Name:** `itext-core` **Version:** `9.1.0`
+**115** **Group:** `com.itextpdf` **Name:** `itext-core` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**117** **Group:** `com.itextpdf` **Name:** `kernel` **Version:** `9.1.0`
+**116** **Group:** `com.itextpdf` **Name:** `kernel` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**118** **Group:** `com.itextpdf` **Name:** `layout` **Version:** `9.1.0`
+**117** **Group:** `com.itextpdf` **Name:** `layout` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**119** **Group:** `com.itextpdf` **Name:** `pdfa` **Version:** `9.1.0`
+**118** **Group:** `com.itextpdf` **Name:** `pdfa` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**120** **Group:** `com.itextpdf` **Name:** `pdfua` **Version:** `9.1.0`
+**119** **Group:** `com.itextpdf` **Name:** `pdfua` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**121** **Group:** `com.itextpdf` **Name:** `sign` **Version:** `9.1.0`
+**120** **Group:** `com.itextpdf` **Name:** `sign` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**122** **Group:** `com.itextpdf` **Name:** `styled-xml-parser` **Version:** `9.1.0`
+**121** **Group:** `com.itextpdf` **Name:** `styled-xml-parser` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
-**123** **Group:** `com.itextpdf` **Name:** `svg` **Version:** `9.1.0`
+**122** **Group:** `com.itextpdf` **Name:** `svg` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 
 ## GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception
 
-**124** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
+**123** **Group:** `com.sun.istack` **Name:** `istack-commons-runtime` **Version:** `4.1.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 > - **POM License**: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - [https://openjdk.java.net/legal/gplv2+ce.html](https://openjdk.java.net/legal/gplv2+ce.html)
 
-**125** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
+**124** **Group:** `jakarta.activation` **Name:** `jakarta.activation-api` **Version:** `2.1.3`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/jakartaee/jaf-api](https://github.com/jakartaee/jaf-api)
@@ -762,7 +756,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/LICENSE.md)
     - [jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.activation-api-2.1.3.jar/META-INF/NOTICE.md)
 
-**126** **Group:** `jakarta.annotation` **Name:** `jakarta.annotation-api` **Version:** `2.1.1`
+**125** **Group:** `jakarta.annotation` **Name:** `jakarta.annotation-api` **Version:** `2.1.1`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Public License - v 2.0 (Not Packaged)
 > - **POM Project URL**: [https://projects.eclipse.org/projects/ee4j.ca](https://projects.eclipse.org/projects/ee4j.ca)
@@ -771,7 +765,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.annotation-api-2.1.1.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.annotation-api-2.1.1.jar/META-INF/LICENSE.md)
     - [jakarta.annotation-api-2.1.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.annotation-api-2.1.1.jar/META-INF/NOTICE.md)
 
-**127** **Group:** `jakarta.inject` **Name:** `jakarta.inject-api` **Version:** `2.0.1`
+**126** **Group:** `jakarta.inject` **Name:** `jakarta.inject-api` **Version:** `2.0.1`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/eclipse-ee4j/injection-api](https://github.com/eclipse-ee4j/injection-api)
@@ -781,7 +775,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.inject-api-2.0.1.jar/META-INF/LICENSE.txt](build/reports/dependency-license/jakarta.inject-api-2.0.1.jar/META-INF/LICENSE.txt)
     - [jakarta.inject-api-2.0.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.inject-api-2.0.1.jar/META-INF/NOTICE.md)
 
-**128** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
+**127** **Group:** `jakarta.persistence` **Name:** `jakarta.persistence-api` **Version:** `3.1.0`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://github.com/eclipse-ee4j/jpa-api](https://github.com/eclipse-ee4j/jpa-api)
@@ -791,7 +785,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/LICENSE.md)
     - [jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.persistence-api-3.1.0.jar/META-INF/NOTICE.md)
 
-**129** **Group:** `jakarta.transaction` **Name:** `jakarta.transaction-api` **Version:** `2.0.1`
+**128** **Group:** `jakarta.transaction` **Name:** `jakarta.transaction-api` **Version:** `2.0.1`
 > - **Manifest Project URL**: [https://github.com/eclipse-ee4j](https://github.com/eclipse-ee4j)
 > - **Manifest License**: Eclipse Public License - v 2.0 (Not Packaged)
 > - **POM Project URL**: [https://projects.eclipse.org/projects/ee4j.jta](https://projects.eclipse.org/projects/ee4j.jta)
@@ -800,7 +794,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.transaction-api-2.0.1.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.transaction-api-2.0.1.jar/META-INF/LICENSE.md)
     - [jakarta.transaction-api-2.0.1.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.transaction-api-2.0.1.jar/META-INF/NOTICE.md)
 
-**130** **Group:** `jakarta.validation` **Name:** `jakarta.validation-api` **Version:** `3.0.2`
+**129** **Group:** `jakarta.validation` **Name:** `jakarta.validation-api` **Version:** `3.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://beanvalidation.org](https://beanvalidation.org)
@@ -808,7 +802,7 @@ _2025-03-26 23:03:10 EST_
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 > - **POM License**: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - [https://openjdk.java.net/legal/gplv2+ce.html](https://openjdk.java.net/legal/gplv2+ce.html)
 
-**131** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
+**130** **Group:** `jakarta.xml.bind` **Name:** `jakarta.xml.bind-api` **Version:** `4.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -817,7 +811,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md)
     - [jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md)
 
-**132** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
+**131** **Group:** `org.eclipse.angus` **Name:** `angus-activation` **Version:** `2.0.2`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
@@ -826,7 +820,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [angus-activation-2.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/LICENSE.md)
     - [angus-activation-2.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/angus-activation-2.0.2.jar/META-INF/NOTICE.md)
 
-**133** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
+**132** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-core` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -836,7 +830,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-core-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-core-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-core-4.0.5.jar/META-INF/NOTICE.md)
 
-**134** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
+**133** **Group:** `org.glassfish.jaxb` **Name:** `jaxb-runtime` **Version:** `4.0.5`
 > - **Manifest Project URL**: [https://www.eclipse.org](https://www.eclipse.org)
 > - **Manifest License**: Eclipse Distribution License - v 1.0 (Not Packaged)
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
@@ -846,7 +840,7 @@ _2025-03-26 23:03:10 EST_
 > - **Embedded license files**: [jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/LICENSE.md)
     - [jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md](build/reports/dependency-license/jaxb-runtime-4.0.5.jar/META-INF/NOTICE.md)
 
-**135** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
+**134** **Group:** `org.glassfish.jaxb` **Name:** `txw2` **Version:** `4.0.5`
 > - **POM Project URL**: [https://eclipse-ee4j.github.io/jaxb-ri/](https://eclipse-ee4j.github.io/jaxb-ri/)
 > - **POM License**: Eclipse Distribution License - v 1.0 - [https://www.eclipse.org/org/documents/edl-v10.html](https://www.eclipse.org/org/documents/edl-v10.html)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
@@ -856,72 +850,72 @@ _2025-03-26 23:03:10 EST_
 
 ## GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1
 
-**136** **Group:** `ch.qos.logback` **Name:** `logback-classic` **Version:** `1.5.18`
+**135** **Group:** `ch.qos.logback` **Name:** `logback-classic` **Version:** `1.5.18`
 > - **Manifest Project URL**: [http://www.qos.ch](http://www.qos.ch)
 > - **Manifest License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 (Not Packaged)
 > - **POM License**: Eclipse Public License - v 1.0 - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
 
-**137** **Group:** `ch.qos.logback` **Name:** `logback-core` **Version:** `1.5.18`
+**136** **Group:** `ch.qos.logback` **Name:** `logback-core` **Version:** `1.5.18`
 > - **Manifest Project URL**: [http://www.qos.ch](http://www.qos.ch)
 > - **Manifest License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 (Not Packaged)
 > - **POM License**: Eclipse Public License - v 1.0 - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
 
-**138** **Group:** `org.hibernate.orm` **Name:** `hibernate-core` **Version:** `6.6.11.Final`
+**137** **Group:** `org.hibernate.orm` **Name:** `hibernate-core` **Version:** `6.6.11.Final`
 > - **Manifest Project URL**: [https://www.hibernate.org/orm/6.6](https://www.hibernate.org/orm/6.6)
 > - **POM Project URL**: [https://hibernate.org/orm](https://hibernate.org/orm)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
 
 ## MIT License
 
-**139** **Group:** `com.microsoft.sqlserver` **Name:** `mssql-jdbc` **Version:** `12.8.1.jre11`
+**138** **Group:** `com.microsoft.sqlserver` **Name:** `mssql-jdbc` **Version:** `12.8.1.jre11`
 > - **POM Project URL**: [https://github.com/Microsoft/mssql-jdbc](https://github.com/Microsoft/mssql-jdbc)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 
-**140** **Group:** `io.lettuce` **Name:** `lettuce-core` **Version:** `6.4.2.RELEASE`
+**139** **Group:** `io.lettuce` **Name:** `lettuce-core` **Version:** `6.4.2.RELEASE`
 > - **POM Project URL**: [http://github.com/lettuce-io/lettuce-core](http://github.com/lettuce-io/lettuce-core)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 > - **Embedded license files**: [lettuce-core-6.4.2.RELEASE.jar/META-INF/LICENSE](build/reports/dependency-license/lettuce-core-6.4.2.RELEASE.jar/META-INF/LICENSE)
     - [lettuce-core-6.4.2.RELEASE.jar/META-INF/NOTICE](build/reports/dependency-license/lettuce-core-6.4.2.RELEASE.jar/META-INF/NOTICE)
 
-**141** **Group:** `me.paulschwarz` **Name:** `spring-dotenv` **Version:** `4.0.0`
+**140** **Group:** `me.paulschwarz` **Name:** `spring-dotenv` **Version:** `4.0.0`
 > - **POM Project URL**: [https://github.com/paulschwarz/spring-dotenv](https://github.com/paulschwarz/spring-dotenv)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 
-**142** **Group:** `org.checkerframework` **Name:** `checker-qual` **Version:** `3.48.3`
+**141** **Group:** `org.checkerframework` **Name:** `checker-qual` **Version:** `3.48.3`
 > - **Manifest License**: MIT License (Not Packaged)
 > - **POM Project URL**: [https://checkerframework.org/](https://checkerframework.org/)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 > - **Embedded license files**: [checker-qual-3.48.3.jar/META-INF/LICENSE.txt](build/reports/dependency-license/checker-qual-3.48.3.jar/META-INF/LICENSE.txt)
 
-**143** **Group:** `org.slf4j` **Name:** `jul-to-slf4j` **Version:** `2.0.17`
+**142** **Group:** `org.slf4j` **Name:** `jul-to-slf4j` **Version:** `2.0.17`
 > - **Project URL**: [http://www.slf4j.org](http://www.slf4j.org)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 > - **Embedded license files**: [jul-to-slf4j-2.0.17.jar/META-INF/LICENSE.txt](build/reports/dependency-license/jul-to-slf4j-2.0.17.jar/META-INF/LICENSE.txt)
 
-**144** **Group:** `org.slf4j` **Name:** `slf4j-api` **Version:** `2.0.17`
+**143** **Group:** `org.slf4j` **Name:** `slf4j-api` **Version:** `2.0.17`
 > - **Project URL**: [http://www.slf4j.org](http://www.slf4j.org)
 > - **POM License**: MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 > - **Embedded license files**: [slf4j-api-2.0.17.jar/META-INF/LICENSE.txt](build/reports/dependency-license/slf4j-api-2.0.17.jar/META-INF/LICENSE.txt)
 
 ## MIT-0
 
-**145** **Group:** `org.reactivestreams` **Name:** `reactive-streams` **Version:** `1.0.4`
+**144** **Group:** `org.reactivestreams` **Name:** `reactive-streams` **Version:** `1.0.4`
 > - **Manifest Project URL**: [http://reactive-streams.org](http://reactive-streams.org)
 > - **POM Project URL**: [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
 > - **POM License**: MIT-0 - [https://spdx.org/licenses/MIT-0.html](https://spdx.org/licenses/MIT-0.html)
 
 ## MPL 2.0
 
-**146** **Group:** `com.h2database` **Name:** `h2` **Version:** `2.3.232`
+**145** **Group:** `com.h2database` **Name:** `h2` **Version:** `2.3.232`
 > - **POM Project URL**: [https://h2database.com](https://h2database.com)
 > - **POM License**: EPL 1.0 - [https://opensource.org/licenses/eclipse-1.0.php](https://opensource.org/licenses/eclipse-1.0.php)
 > - **POM License**: MPL 2.0 - [https://www.mozilla.org/en-US/MPL/2.0/](https://www.mozilla.org/en-US/MPL/2.0/)
 
 ## The 2-Clause BSD License
 
-**147** **Group:** `org.postgresql` **Name:** `postgresql` **Version:** `42.7.5`
+**146** **Group:** `org.postgresql` **Name:** `postgresql` **Version:** `42.7.5`
 > - **Manifest Project URL**: [https://jdbc.postgresql.org/](https://jdbc.postgresql.org/)
 > - **Manifest License**: The 2-Clause BSD License (Not Packaged)
 > - **POM Project URL**: [https://jdbc.postgresql.org](https://jdbc.postgresql.org)
@@ -934,18 +928,18 @@ _2025-03-26 23:03:10 EST_
 
 ## The 3-Clause BSD License
 
-**148** **Group:** `org.antlr` **Name:** `antlr4-runtime` **Version:** `4.13.0`
+**147** **Group:** `org.antlr` **Name:** `antlr4-runtime` **Version:** `4.13.0`
 > - **Manifest Project URL**: [https://www.antlr.org/](https://www.antlr.org/)
 > - **POM License**: The 3-Clause BSD License - [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Various licenses (see individual files)
 
-**149** **Group:** `com.itextpdf` **Name:** `font-asian` **Version:** `9.1.0`
+**148** **Group:** `com.itextpdf` **Name:** `font-asian` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 > - **POM License**: Various licenses (see individual files)
 
-**150** **Group:** `com.itextpdf` **Name:** `hyph` **Version:** `9.1.0`
+**149** **Group:** `com.itextpdf` **Name:** `hyph` **Version:** `9.1.0`
 > - **POM Project URL**: [https://itextpdf.com/](https://itextpdf.com/)
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 > - **POM License**: Various licenses (see individual files)
