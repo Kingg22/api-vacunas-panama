@@ -5,8 +5,10 @@ import io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente;
 import io.github.kingg22.api.vacunas.panama.persistence.entity.PacienteKonverterKt;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.PacienteRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
-import io.github.kingg22.api.vacunas.panama.response.ApiFailed;
+import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
+import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.web.dto.DireccionDtoKonverterKt;
@@ -40,46 +42,42 @@ public class PacienteService implements IPacienteService {
 
     @Cacheable(cacheNames = "cache", key = "'view_vacuna_enfermedad'.concat(#idPaciente)")
     public List<ViewPacienteVacunaEnfermedadDto> getViewVacunaEnfermedad(UUID idPaciente) {
-        List<ViewPacienteVacunaEnfermedadDto> view =
-                this.pacienteRepository.findAllFromViewVacunaEnfermedad(idPaciente);
-        if (view.isEmpty()) {
-            return List.of();
-        } else {
-            return view;
-        }
+        return this.pacienteRepository.findAllFromViewVacunaEnfermedad(idPaciente);
     }
 
-    public ApiContentResponse validateCreatePacienteUsuario(PacienteDto pacienteDto) {
-        ApiContentResponse apiContentResponse = new ApiContentResponse();
+    public ApiContentResponse validateCreatePacienteUsuario(
+            @org.jetbrains.annotations.NotNull PacienteDto pacienteDto) {
+        var apiContentResponse = ApiResponseFactory.createContentResponse();
         if (pacienteDto.persona().usuario() == null) {
-            apiContentResponse.addError(
-                    ApiResponseCode.MISSING_INFORMATION, "Esta función necesita el usuario para el paciente");
+            apiContentResponse.addError(new DefaultApiError(
+                    ApiResponseCode.MISSING_INFORMATION, "Esta función necesita el usuario para el paciente"));
         }
         if (pacienteDto.persona().usuario() != null
                 && pacienteDto.persona().usuario().id() == null
                 && pacienteDto.persona().usuario().roles().stream().anyMatch(rolDto -> rolDto.nombre() != null)) {
-            apiContentResponse.addError(
-                    ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID para el rol Paciente en esta función");
+            apiContentResponse.addError(new DefaultApiError(
+                    ApiResponseCode.NON_IDEMPOTENCE, "roles[]", "Utilice ID para el rol Paciente en esta función"));
         }
         if (pacienteDto.persona().usuario() != null
                 && pacienteDto.persona().usuario().roles().stream()
                         .anyMatch(rolDto -> rolDto.id() != null
                                 && !RolesEnum.getByPriority(rolDto.id()).equals(RolesEnum.PACIENTE))) {
-            apiContentResponse.addError(
+            apiContentResponse.addError(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "roles[]",
-                    "Esta función es solo para pacientes, utilice otra operación");
+                    "Esta función es solo para pacientes, utilice otra operación"));
         }
         if (pacienteDto.persona().sexo() != null
                 && pacienteDto.persona().sexo().toString().equalsIgnoreCase("X")) {
-            apiContentResponse.addWarning(
+            apiContentResponse.addWarning(new DefaultApiError(
                     ApiResponseCode.DEPRECATION_WARNING,
                     "sexo",
-                    "Pacientes no deben tener sexo no definido. Reglas de vacunación no se podrán aplicar");
+                    "Pacientes no deben tener sexo no definido. Reglas de vacunación no se podrán aplicar"));
         }
         if (pacienteDto.persona().direccion() != null
                 && pacienteDto.persona().direccion().id() == null) {
-            apiContentResponse.addWarning(ApiResponseCode.NON_IDEMPOTENCE, "direccion", "Debe trabajar con ID");
+            apiContentResponse.addWarning(
+                    new DefaultApiError(ApiResponseCode.NON_IDEMPOTENCE, "direccion", "Debe trabajar con ID"));
         }
         if (pacienteDto.persona().usuario() != null
                 && pacienteDto.persona().usuario().createdAt() != null
@@ -87,22 +85,23 @@ public class PacienteService implements IPacienteService {
                 && !pacienteDto
                         .createdAt()
                         .isEqual(pacienteDto.persona().usuario().createdAt())) {
-            apiContentResponse.addError(
+            apiContentResponse.addError(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "created_at",
-                    "created_at de Paciente y Usuario deben ser las mismas o null");
+                    "created_at de Paciente y Usuario deben ser las mismas o null"));
         }
         return apiContentResponse;
     }
 
-    public List<ApiFailed> validateCreatePaciente(@NotNull PacienteDto pacienteDto) {
-        List<ApiFailed> failedList = new ArrayList<>();
+    public List<ApiError> validateCreatePaciente(
+            @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
+        var failedList = new ArrayList<ApiError>();
 
         if ((pacienteDto.persona().nombre() == null
                         || pacienteDto.persona().nombre().isBlank())
                 && (pacienteDto.persona().nombre2() == null
                         || pacienteDto.persona().nombre2().isBlank())) {
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED, "nombre", "El nombre del paciente es obligatorio"));
         }
 
@@ -110,7 +109,7 @@ public class PacienteService implements IPacienteService {
                         || pacienteDto.persona().apellido1().isBlank())
                 && (pacienteDto.persona().apellido2() == null
                         || pacienteDto.persona().apellido2().isBlank())) {
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED, "apellido", "El apellido del paciente es obligatorio"));
         }
 
@@ -120,14 +119,14 @@ public class PacienteService implements IPacienteService {
                         || pacienteDto.persona().pasaporte().isBlank())
                 && (pacienteDto.identificacionTemporal() == null
                         || pacienteDto.identificacionTemporal().isBlank())) {
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "identificacion",
                     "Una identificación personal del paciente es obligatoria"));
         }
 
         if (pacienteDto.persona().fechaNacimiento() == null) {
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "fechaNacimiento",
                     "La fecha de nacimiento del paciente es obligatoria"));
@@ -136,8 +135,9 @@ public class PacienteService implements IPacienteService {
         return failedList;
     }
 
-    public List<ApiFailed> validatePacienteExist(@org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
-        List<ApiFailed> failedList = new ArrayList<>();
+    public List<ApiError> validatePacienteExist(
+            @org.jetbrains.annotations.NotNull @NotNull PacienteDto pacienteDto) {
+        var failedList = new ArrayList<ApiError>();
 
         if (pacienteDto.persona().cedula() != null) {
             pacienteDto = pacienteDto.changePersona(pacienteDto
@@ -151,7 +151,7 @@ public class PacienteService implements IPacienteService {
                 log.debug(
                         "Existe un paciente con cédula a registrar: {}",
                         pacienteDto.persona().cedula());
-                failedList.add(new ApiFailed(
+                failedList.add(new DefaultApiError(
                         ApiResponseCode.VALIDATION_FAILED,
                         "cedula",
                         "Ya existe un paciente con la cédula proporcionada"));
@@ -166,7 +166,7 @@ public class PacienteService implements IPacienteService {
             log.debug(
                     "Existe un paciente con pasaporte: {}",
                     pacienteDto.persona().pasaporte());
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "pasaporte",
                     "Ya existe un paciente con el pasaporte proporcionado"));
@@ -178,7 +178,7 @@ public class PacienteService implements IPacienteService {
                         .findByIdentificacionTemporal(pacienteDto.identificacionTemporal())
                         .isPresent()) {
             log.debug("Existe un paciente con este identificador temporal: {}", pacienteDto.identificacionTemporal());
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "identificacionTemporal",
                     "Ya existe un paciente con la identificación temporal proporcionada"));
@@ -192,7 +192,7 @@ public class PacienteService implements IPacienteService {
             log.debug(
                     "Existe un paciente con este correo: {}",
                     pacienteDto.persona().correo());
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED, "correo", "Ya existe un paciente con el correo proporcionado"));
         }
 
@@ -204,7 +204,7 @@ public class PacienteService implements IPacienteService {
             log.debug(
                     "Existe un paciente con este teléfono: {}",
                     pacienteDto.persona().telefono());
-            failedList.add(new ApiFailed(
+            failedList.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "telefono",
                     "Ya existe un paciente con el teléfono proporcionado"));
@@ -215,7 +215,7 @@ public class PacienteService implements IPacienteService {
 
     @Transactional
     public ApiContentResponse createPaciente(@NotNull final PacienteDto pacienteDto) {
-        ApiContentResponse apiContentResponse = new ApiContentResponse();
+        var apiContentResponse = ApiResponseFactory.createContentResponse();
         apiContentResponse.addErrors(this.validatePacienteExist(pacienteDto));
         apiContentResponse.addErrors(this.validateCreatePaciente(pacienteDto));
         if (apiContentResponse.hasErrors()) {
@@ -260,26 +260,16 @@ public class PacienteService implements IPacienteService {
         return apiContentResponse;
     }
 
-    Optional<Paciente> getPacienteByUserID(@NotNull UUID idUser) {
+    public Optional<Paciente> getPacienteByUserID(@NotNull UUID idUser) {
         return this.pacienteRepository.findByUsuario_Id(idUser);
     }
 
-    Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
+    public Optional<Paciente> getPacienteById(@NotNull UUID idPaciente) {
         return this.pacienteRepository.findById(idPaciente);
     }
 
     public PacienteDto getPacienteDtoById(@NotNull UUID idPaciente) {
         return PacienteKonverterKt.toPacienteDto(
                 this.getPacienteById(idPaciente).orElseThrow());
-    }
-
-    public List<ViewPacienteVacunaEnfermedadDto> getVacunaPaciente(UUID idPaciente, UUID idVacuna) {
-        List<ViewPacienteVacunaEnfermedadDto> view =
-                this.pacienteRepository.findAllFromViewVacunaEnfermedad(idPaciente, idVacuna);
-        if (view.isEmpty()) {
-            return List.of();
-        } else {
-            return view;
-        }
     }
 }

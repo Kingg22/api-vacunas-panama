@@ -10,9 +10,9 @@ import io.github.kingg22.api.vacunas.panama.persistence.entity.extensions.DosisE
 import io.github.kingg22.api.vacunas.panama.persistence.repository.DosisRepository;
 import io.github.kingg22.api.vacunas.panama.persistence.repository.VacunaRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
-import io.github.kingg22.api.vacunas.panama.response.IApiContentResponse;
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
+import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.InsertDosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.VacunaFabricanteDto;
@@ -35,8 +35,8 @@ import org.springframework.stereotype.Service;
 public class VacunaService implements IVacunaService {
     private final VacunaRepository vacunaRepository;
     private final DosisRepository dosisRepository;
-    private final PacienteService pacienteService;
-    private final SedeService sedeService;
+    private final IPacienteService pacienteService;
+    private final ISedeService sedeService;
     private final DoctorService doctorService;
 
     @Cacheable(cacheNames = "huge", key = "'vacunas'")
@@ -45,8 +45,8 @@ public class VacunaService implements IVacunaService {
     }
 
     @Transactional
-    public IApiContentResponse createDosis(@org.jetbrains.annotations.NotNull @NotNull InsertDosisDto insertDosisDto) {
-        ApiContentResponse apiContentResponse = new ApiResponse();
+    public ApiContentResponse createDosis(@org.jetbrains.annotations.NotNull @NotNull InsertDosisDto insertDosisDto) {
+        var apiContentResponse = ApiResponseFactory.createContentResponse();
         log.debug(insertDosisDto.toString());
         Paciente paciente = validatePacienteExist(insertDosisDto.pacienteId());
         Vacuna vacuna = validateVacunaExist(insertDosisDto.vacunaId());
@@ -61,11 +61,11 @@ public class VacunaService implements IVacunaService {
                         ultimaDosis -> {
                             log.debug("Dosis encontrada ID: {}", ultimaDosis.getId());
                             if (!ultimaDosis.getNumeroDosis().isValidNew(insertDosisDto.numeroDosis())) {
-                                apiContentResponse.addError(
+                                apiContentResponse.addError(new DefaultApiError(
                                         ApiResponseCode.VALIDATION_FAILED,
                                         String.format(
                                                 "La dosis %s no es válida. Último número de dosis %s",
-                                                insertDosisDto.numeroDosis(), ultimaDosis.getNumeroDosis()));
+                                                insertDosisDto.numeroDosis(), ultimaDosis.getNumeroDosis())));
                             }
                             log.debug("Nueva dosis cumple las reglas de secuencia en número de dosis");
                         },

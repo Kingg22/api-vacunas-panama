@@ -1,12 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.web.controller;
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponse;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
-import io.github.kingg22.api.vacunas.panama.response.IApiResponse;
 import io.github.kingg22.api.vacunas.panama.service.IVacunaService;
 import io.github.kingg22.api.vacunas.panama.web.dto.InsertDosisDto;
 import jakarta.validation.Valid;
-import java.io.Serializable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,16 +21,13 @@ import org.springframework.web.context.request.ServletWebRequest;
 @RequestMapping(path = "/vacunacion/v1/vaccines/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class VacunaController {
     private final IVacunaService vacunaService;
-    private final ApiResponseFactory apiResponseFactory;
 
     @PostMapping("/create-dosis")
-    public ResponseEntity<IApiResponse<String, Serializable>> createDosis(
+    public ResponseEntity<ApiResponse> createDosis(
             @RequestBody @Valid InsertDosisDto insertDosisDto, ServletWebRequest servletWebRequest) {
-        IApiResponse<String, Serializable> apiResponse = apiResponseFactory.createResponse();
+        var apiResponse = ApiResponseFactory.createResponse();
         var response = vacunaService.createDosis(insertDosisDto);
-        apiResponse.addData(response.getData());
-        apiResponse.addErrors(response.getErrors());
-        apiResponse.addWarnings(response.getWarnings());
+        apiResponse.mergeContentResponse(response);
         if (response.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST);
         } else {
