@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security;
 
-import io.github.kingg22.api.vacunas.panama.service.TokenService;
+import io.github.kingg22.api.vacunas.panama.service.ITokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -15,16 +15,16 @@ import org.springframework.security.oauth2.jwt.Jwt;
  */
 @RequiredArgsConstructor
 class CustomRedisJwtValidator implements OAuth2TokenValidator<Jwt> {
-    private final TokenService tokenService;
+    private final ITokenService tokenService;
 
     @Override
     public OAuth2TokenValidatorResult validate(Jwt token) {
-        String userId = token.getSubject();
-        String tokenId = token.getId();
+        var userId = token.getSubject();
+        var tokenId = token.getId();
 
         try {
-            boolean accessTokenValid = tokenService.isAccessTokenValid(userId, tokenId);
-            boolean refreshTokenValid = tokenService.isRefreshTokenValid(userId, tokenId);
+            var accessTokenValid = tokenService.isAccessTokenValid(userId, tokenId);
+            var refreshTokenValid = tokenService.isRefreshTokenValid(userId, tokenId);
 
             if (accessTokenValid || refreshTokenValid) {
                 return OAuth2TokenValidatorResult.success();

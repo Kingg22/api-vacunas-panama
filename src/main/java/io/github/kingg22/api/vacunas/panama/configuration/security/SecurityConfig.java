@@ -1,10 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security;
 
-import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import io.github.kingg22.api.vacunas.panama.service.TokenService;
+import io.github.kingg22.api.vacunas.panama.service.ITokenService;
 import io.github.kingg22.api.vacunas.panama.service.UserDetailsServiceImpl;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -51,7 +50,7 @@ public class SecurityConfig {
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, TokenService tokenService, JwtDecoder jwtDecoder)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ITokenService tokenService, JwtDecoder jwtDecoder)
             throws Exception {
         return http.csrf(csrf -> csrf.ignoringRequestMatchers("/vacunacion/**"))
                 .headers(headers -> headers.contentSecurityPolicy(cspc -> cspc.policyDirectives(
@@ -86,17 +85,17 @@ public class SecurityConfig {
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        var grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
         grantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        var converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return converter;
     }
 
     @Bean
-    JwtDecoder jwtDecoder(TokenService tokenService) {
-        NimbusJwtDecoder nimbusJwtDecoder = NimbusJwtDecoder.withPublicKey(this.publicKey)
+    JwtDecoder jwtDecoder(ITokenService tokenService) {
+        var nimbusJwtDecoder = NimbusJwtDecoder.withPublicKey(this.publicKey)
                 .signatureAlgorithm(SignatureAlgorithm.RS256)
                 .build();
         nimbusJwtDecoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer));
@@ -106,7 +105,7 @@ public class SecurityConfig {
 
     @Bean
     JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
+        var jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
         return new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(jwk)));
     }
 
@@ -125,7 +124,7 @@ public class SecurityConfig {
             UserDetailsServiceImpl userDetailsServiceImpl,
             PasswordEncoder passwordEncoder,
             CompromisedPasswordChecker compromisedPasswordChecker) {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
+        var daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         daoAuthenticationProvider.setCompromisedPasswordChecker(compromisedPasswordChecker);
         return new ProviderManager(daoAuthenticationProvider);
