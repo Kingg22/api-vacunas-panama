@@ -37,7 +37,7 @@ public class VacunaService implements IVacunaService {
     private final DosisRepository dosisRepository;
     private final IPacienteService pacienteService;
     private final ISedeService sedeService;
-    private final DoctorService doctorService;
+    private final IDoctorService doctorService;
 
     @Cacheable(cacheNames = "huge", key = "'vacunas'")
     public List<VacunaFabricanteDto> getVacunasFabricante() {
