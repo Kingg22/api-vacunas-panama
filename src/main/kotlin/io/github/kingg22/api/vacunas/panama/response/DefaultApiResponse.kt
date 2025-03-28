@@ -44,7 +44,7 @@ class DefaultApiResponse(
     override fun hasWarnings() = warnings.isNotEmpty()
 
     override fun addStatusCode(@NotNull httpStatus: HttpStatusCode) {
-        status["code"] = httpStatus.value()
+        status["code"] = httpStatus
     }
 
     override fun addStatus(key: String, value: Serializable) {
@@ -55,7 +55,7 @@ class DefaultApiResponse(
         metadata[key] = value
     }
 
-    override fun retrieveStatusCode(): Int = status["code"] as? Int ?: 500
+    override fun retrieveStatusCode(): Int = (status["code"] as? HttpStatusCode ?: HttpStatusCode.valueOf(500)).value()
 
     override fun retrieveHttpStatusCode(): HttpStatusCode =
         status["code"] as? HttpStatusCode ?: HttpStatusCode.valueOf(500)
