@@ -1,19 +1,20 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security;
 
-import io.github.kingg22.api.vacunas.panama.service.TokenService;
+import io.github.kingg22.api.vacunas.panama.service.ITokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 class CustomJwtRefreshFilter extends OncePerRequestFilter {
-    private final TokenService tokenService;
+    private final ITokenService tokenService;
     private final JwtDecoder jwtDecoder;
     private static final String REFRESH_TOKEN_ENDPOINT = "/vacunacion/v1/token/refresh";
 
@@ -33,18 +34,18 @@ class CustomJwtRefreshFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        var authorization = request.getHeader("Authorization");
 
         if (authorization != null && authorization.startsWith("Bearer ")) {
-            String token = authorization.substring("Bearer ".length());
+            var token = authorization.substring("Bearer ".length());
 
             try {
-                Jwt jwt = jwtDecoder.decode(token);
-                String userId = jwt.getSubject();
-                String tokenId = jwt.getId();
+                var jwt = jwtDecoder.decode(token);
+                var userId = jwt.getSubject();
+                var tokenId = jwt.getId();
 
-                boolean accessTokenValid = tokenService.isAccessTokenValid(userId, tokenId);
-                boolean refreshTokenValid = tokenService.isRefreshTokenValid(userId, tokenId);
+                var accessTokenValid = tokenService.isAccessTokenValid(userId, tokenId);
+                var refreshTokenValid = tokenService.isRefreshTokenValid(userId, tokenId);
 
                 if (!accessTokenValid
                         && refreshTokenValid
@@ -66,6 +67,7 @@ class CustomJwtRefreshFilter extends OncePerRequestFilter {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return;
                 }
+                // TODO add validation if the type is false to both type
             } catch (RuntimeException exception) {
                 setWWWHeader(
                         response,
@@ -87,10 +89,13 @@ class CustomJwtRefreshFilter extends OncePerRequestFilter {
      * @param description The description of error based on {@link org.springframework.security.oauth2.core.OAuth2Error}
      * @see org.springframework.security.oauth2.core.OAuth2AuthenticationException
      */
-    private void setWWWHeader(HttpServletResponse response, String errorCode, String description) {
+    private void setWWWHeader(
+            @NotNull final HttpServletResponse response,
+            @NotNull final String errorCode,
+            @NotNull final String description) {
         StringBuilder wwwAuthenticate = new StringBuilder();
         wwwAuthenticate.append("Bearer");
-        if (errorCode != null && !errorCode.isBlank() && description != null && !description.isBlank()) {
+        if (!errorCode.isBlank() && !description.isBlank()) {
             wwwAuthenticate.append(" error=\"").append(errorCode).append("\", error_description=\"");
             wwwAuthenticate.append(description).append("\"");
         }

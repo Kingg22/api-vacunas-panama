@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PdfService {
+public class PdfService implements IPdfService {
     private final ResourceLoader resourceLoader;
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -119,7 +119,11 @@ public class PdfService {
         return Base64.getEncoder().encodeToString(imageBytes);
     }
 
-    private String generateHtmlTemplate(@NotNull UUID certificateId, @NotNull PdfDto pdfDto) throws IOException {
+    @org.jetbrains.annotations.NotNull
+    private String generateHtmlTemplate(
+            @org.jetbrains.annotations.NotNull @NotNull UUID certificateId,
+            @org.jetbrains.annotations.NotNull @NotNull PdfDto pdfDto)
+            throws IOException {
         StringBuilder dosisRows = new StringBuilder();
         String base64Image = "data:image/png;base64,".concat(this.getIconImageBase64());
         String template =

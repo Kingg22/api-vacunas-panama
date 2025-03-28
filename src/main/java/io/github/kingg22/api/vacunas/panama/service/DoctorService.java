@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DoctorService {
+public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
 
-    Optional<Doctor> getDoctorByUserID(UUID idUser) {
+    public Optional<Doctor> getDoctorByUserID(UUID idUser) {
         return this.doctorRepository.findByUsuario_Id(idUser);
     }
 
-    Optional<Doctor> getDoctorById(UUID idDoctor) {
+    public Optional<Doctor> getDoctorById(UUID idDoctor) {
         return this.doctorRepository.findById(idDoctor);
     }
 }

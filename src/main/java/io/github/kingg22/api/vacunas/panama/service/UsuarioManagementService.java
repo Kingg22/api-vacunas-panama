@@ -57,10 +57,10 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private final PermisoRepository permisoRepository;
     private final RolRepository rolRepository;
     private final IPacienteService pacienteService;
-    private final TokenService tokenService;
-    private final PersonaService personaService;
-    private final DoctorService doctorService;
-    private final FabricanteService fabricanteService;
+    private final IDoctorService doctorService;
+    private final ITokenService tokenService;
+    private final IPersonaService personaService;
+    private final IFabricanteService fabricanteService;
     private final UsuarioValidationService validationService;
     private final UsuarioTransactionService transactionService;
     private static final String PERSONA = "persona";

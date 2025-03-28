@@ -29,8 +29,8 @@ class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
     private final CompromisedPasswordChecker compromisedPasswordChecker;
     private final UsuarioRepository usuarioRepository;
-    private final PersonaService personaService;
-    private final FabricanteService fabricanteService;
+    private final IPersonaService personaService;
+    private final IFabricanteService fabricanteService;
     private static final String NEW_PASSWORD = "new_password";
 
     @org.jetbrains.annotations.NotNull

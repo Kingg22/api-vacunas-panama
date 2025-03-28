@@ -6,8 +6,8 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil;
 import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
 import io.github.kingg22.api.vacunas.panama.service.IPacienteService;
+import io.github.kingg22.api.vacunas.panama.service.IPdfService;
 import io.github.kingg22.api.vacunas.panama.service.IVacunaService;
-import io.github.kingg22.api.vacunas.panama.service.PdfService;
 import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
 import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 @RequiredArgsConstructor
 @RequestMapping(path = "/vacunacion/v1/pdf")
 public class PdfController {
-    private final PdfService pdfService;
+    private final IPdfService pdfService;
     private final IPacienteService pacienteService;
     private final IVacunaService vacunaService;
 
