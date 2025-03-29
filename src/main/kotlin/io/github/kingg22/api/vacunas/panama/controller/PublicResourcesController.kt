@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 /** TODO move to specific module controller in default '/' get */
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/public"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/public"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class PublicResourcesController(
     private val direccionService: IDireccionService,
     private val sedeService: ISedeService,

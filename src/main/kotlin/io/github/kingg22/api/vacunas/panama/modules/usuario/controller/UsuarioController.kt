@@ -55,7 +55,7 @@ import java.util.UUID
  * @see io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
  */
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsuarioController(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
     private val usuarioManagementService: IUsuarioManagementService,

@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 
 /** TODO to split in modules controllers */
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/bulk"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/bulk"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class BulkController(
     private val usuarioManagementService: IUsuarioManagementService,
     private val pacienteService: IPacienteService,

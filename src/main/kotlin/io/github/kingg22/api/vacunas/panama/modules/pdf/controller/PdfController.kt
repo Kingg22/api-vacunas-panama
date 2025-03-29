@@ -23,7 +23,7 @@ import java.io.IOException
 import java.util.UUID
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/pdf"])
+@RequestMapping(path = ["/pdf"])
 class PdfController(
     private val pdfService: IPdfService,
     private val pacienteService: IPacienteService,

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -27,7 +27,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiReactivePasswordChecker
-import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
@@ -37,7 +36,7 @@ import java.security.interfaces.RSAPublicKey
 
 @Configuration
 @EnableWebFluxSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableReactiveMethodSecurity
 class SecurityConfig(
     @Value("\${security.jwt.issuer}") private val issuer: String,
     private val privateKey: RSAPrivateKey,
@@ -51,7 +50,7 @@ class SecurityConfig(
         reactiveJwtDecoder: ReactiveJwtDecoder,
         reactiveJwtAuthenticationConverter: ReactiveJwtAuthenticationConverterAdapter,
         jwtRefreshFilter: CustomJwtRefreshFilter,
-    ): SecurityWebFilterChain = http
+    ) = http
         .csrf {
             it.requireCsrfProtectionMatcher(PathPatternParserServerWebExchangeMatcher("/vacunacion/**"))
             it.disable()
@@ -64,14 +63,16 @@ class SecurityConfig(
             }
         }
         .authorizeExchange {
-            it.pathMatchers("/vacunacion/v1/account/register").permitAll()
-                .pathMatchers("/vacunacion/v1/account/login").permitAll()
-                .pathMatchers("/vacunacion/v1/account/restore/**").permitAll()
-                .pathMatchers("/vacunacion/v1/public/**").permitAll()
-                .pathMatchers("/vacunacion/v1/bulk/**").permitAll()
-                .pathMatchers("/vacunacion/v1/pdf/**").permitAll()
-                .pathMatchers("/vacunacion/v1/patient/**").hasAnyAuthority("PACIENTE_READ")
-                .pathMatchers("/vacunacion/v1/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
+            it.pathMatchers(
+                "/account/register",
+                "/account/login",
+                "/account/restore/**",
+                "/public/**",
+                "/bulk/**",
+                "/pdf/**",
+            ).permitAll()
+                .pathMatchers("/patient/**").hasAnyAuthority("PACIENTE_READ")
+                .pathMatchers("/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
                 .anyExchange().authenticated()
         }
         .addFilterAfter(jwtRefreshFilter, SecurityWebFiltersOrder.AUTHENTICATION) // check this

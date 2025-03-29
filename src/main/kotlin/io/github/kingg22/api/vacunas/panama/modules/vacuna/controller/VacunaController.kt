@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/vaccines/"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/vaccines"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class VacunaController(private val vacunaService: IVacunaService) {
     @PostMapping("/create-dosis")
     fun createDosis(

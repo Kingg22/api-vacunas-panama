@@ -20,7 +20,7 @@ import java.io.Serializable
 import java.util.UUID
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/token"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/token"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TokenController(
     private val redisTemplate: ReactiveRedisTemplate<String, Serializable>,
     private val usuarioManagementService: IUsuarioManagementService,

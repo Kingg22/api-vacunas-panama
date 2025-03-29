@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono
 import java.util.UUID
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/patient"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/patient"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class PacienteController(private val pacienteService: IPacienteService) {
     private val log = logger()
 
