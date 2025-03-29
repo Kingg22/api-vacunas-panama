@@ -18,7 +18,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
-    private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final ReactiveCompromisedPasswordChecker compromisedPasswordChecker;
     private final UsuarioRepository usuarioRepository;
     private final IPersonaService personaService;
     private final IFabricanteService fabricanteService;
@@ -69,7 +69,7 @@ class UsuarioValidationService {
                     ApiResponseCode.ALREADY_TAKEN, "username", "El nombre de usuario ya está en uso"));
         }
 
-        if (this.compromisedPasswordChecker.check(usuarioDto.password()).isCompromised()) {
+        if (this.compromisedPasswordChecker.check(usuarioDto.password()).block().isCompromised()) {
             errors.add(new DefaultApiError(
                     ApiResponseCode.COMPROMISED_PASSWORD,
                     "password",
@@ -184,7 +184,7 @@ class UsuarioValidationService {
                     "La nueva contraseña no puede ser igual a su username"));
         }
 
-        if (this.compromisedPasswordChecker.check(newPassword).isCompromised()) {
+        if (this.compromisedPasswordChecker.check(newPassword).block().isCompromised()) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     NEW_PASSWORD,
