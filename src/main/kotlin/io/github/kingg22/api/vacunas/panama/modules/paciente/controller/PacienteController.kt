@@ -10,12 +10,13 @@ import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 import java.util.UUID
 
 @RestController
@@ -24,7 +25,7 @@ class PacienteController(private val pacienteService: IPacienteService) {
     private val log = logger()
 
     @GetMapping
-    fun getPaciente(@AuthenticationPrincipal jwt: Jwt, request: ServletWebRequest): ResponseEntity<ApiResponse> {
+    fun getPaciente(@AuthenticationPrincipal jwt: Jwt, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         val idPersona = UUID.fromString(jwt.getClaimAsString("persona"))
         log.debug("Received a query of Paciente: {}", idPersona)

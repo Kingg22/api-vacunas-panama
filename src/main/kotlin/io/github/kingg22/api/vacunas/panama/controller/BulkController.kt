@@ -12,12 +12,13 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 
 /** TODO to split in modules controllers */
 @RestController
@@ -32,8 +33,8 @@ class BulkController(
     @PostMapping("/paciente-usuario-direccion")
     fun createPacienteUsuario(
         @RequestBody @Valid pacienteDto: PacienteDto,
-        request: ServletWebRequest,
-    ): ResponseEntity<ApiResponse> {
+        request: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         log.debug(pacienteDto.toString())
         val validateContent = pacienteService.validateCreatePacienteUsuario(pacienteDto)

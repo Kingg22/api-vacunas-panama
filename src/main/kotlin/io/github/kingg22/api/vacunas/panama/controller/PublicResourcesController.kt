@@ -7,10 +7,10 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.IVacunaServic
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createAndSendResponse
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import org.springframework.http.MediaType
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
 
 /** TODO move to specific module controller in default '/' get */
 @RestController
@@ -22,26 +22,26 @@ class PublicResourcesController(
     private val usuarioManagementService: IUsuarioManagementService,
 ) {
     @GetMapping("/distritos")
-    fun getDistritos(request: ServletWebRequest) =
+    fun getDistritos(request: ServerHttpRequest) =
         createAndSendResponse(request, "distritos", direccionService.distritosDto.toArrayList())
 
     @GetMapping("/provincias")
-    fun getProvincias(request: ServletWebRequest) =
+    fun getProvincias(request: ServerHttpRequest) =
         createAndSendResponse(request, "provincias", direccionService.provinciasDto.toArrayList())
 
     @GetMapping("/sedes")
-    fun getSedes(request: ServletWebRequest) =
+    fun getSedes(request: ServerHttpRequest) =
         createAndSendResponse(request, "sedes", sedeService.idNombreSedes.toArrayList())
 
     @GetMapping("/vacunas")
-    fun getVacunas(request: ServletWebRequest) =
+    fun getVacunas(request: ServerHttpRequest) =
         createAndSendResponse(request, "vacunas", vacunaService.vacunasFabricante.toArrayList())
 
     @GetMapping("/roles")
-    fun getRoles(request: ServletWebRequest) =
+    fun getRoles(request: ServerHttpRequest) =
         createAndSendResponse(request, "roles", usuarioManagementService.idNombreRoles.toArrayList())
 
     @GetMapping("/roles/permisos")
-    fun getPermisos(request: ServletWebRequest) =
+    fun getPermisos(request: ServerHttpRequest) =
         createAndSendResponse(request, "permisos", usuarioManagementService.idNombrePermisos.toArrayList())
 }

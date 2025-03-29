@@ -9,11 +9,12 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(path = ["/vacunacion/v1/vaccines/"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -21,8 +22,8 @@ class VacunaController(private val vacunaService: IVacunaService) {
     @PostMapping("/create-dosis")
     fun createDosis(
         @RequestBody @Valid insertDosisDto: InsertDosisDto,
-        servletWebRequest: ServletWebRequest,
-    ): ResponseEntity<ApiResponse> {
+        servletWebRequest: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {
