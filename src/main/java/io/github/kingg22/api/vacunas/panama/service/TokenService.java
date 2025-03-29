@@ -47,10 +47,10 @@ public class TokenService implements ITokenService {
     public static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
     public TokenService(
-        JwtEncoder jwtEncoder,
-        @Value("${security.jwt.issuer}") String issuer,
-        @Value("${security.jwt.expiration-time}") Integer expirationTime,
-        @Value("${security.jwt.refresh-time}") Integer refreshTime) {
+            JwtEncoder jwtEncoder,
+            @Value("${security.jwt.issuer}") String issuer,
+            @Value("${security.jwt.expiration-time}") Integer expirationTime,
+            @Value("${security.jwt.refresh-time}") Integer refreshTime) {
         this.jwtEncoder = jwtEncoder;
         this.issuer = issuer;
         this.expirationTime = expirationTime;
