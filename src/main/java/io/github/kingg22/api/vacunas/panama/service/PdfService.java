@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -32,7 +30,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PdfService implements IPdfService {
     private final ResourceLoader resourceLoader;
-    private final RedisTemplate<String, Object> redisTemplate;
 
     public byte @org.jetbrains.annotations.NotNull [] generatePdf(
             @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
@@ -117,8 +114,7 @@ public class PdfService implements IPdfService {
     }
 
     private void saveCertificadoCache(@org.jetbrains.annotations.NotNull @NotNull UUID idCertificate, String file) {
-        log.debug("Guardando en cache certificado por 30 días");
-        redisTemplate.opsForValue().set("certificate:".concat(idCertificate.toString()), file, Duration.ofDays(30));
+        /* Temporal do nothing */
     }
 
     private String getIconImageBase64() throws IOException {

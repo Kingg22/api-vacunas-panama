@@ -5,7 +5,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,10 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -39,21 +37,25 @@ import org.springframework.stereotype.Service;
  * @see UsuarioManagementService
  * @see org.springframework.security.oauth2.jwt.JwtDecoder
  */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class TokenService implements ITokenService {
     private final JwtEncoder jwtEncoder;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final String issuer;
+    private final Integer expirationTime;
+    private final Integer refreshTime;
 
-    @Value("${security.jwt.issuer}")
-    private String issuer;
+    public static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
-    @Value("${security.jwt.expiration-time}")
-    private Integer expirationTime;
-
-    @Value("${security.jwt.refresh-time}")
-    private Integer refreshTime;
+    public TokenService(
+        JwtEncoder jwtEncoder,
+        @Value("${security.jwt.issuer}") String issuer,
+        @Value("${security.jwt.expiration-time}") Integer expirationTime,
+        @Value("${security.jwt.refresh-time}") Integer refreshTime) {
+        this.jwtEncoder = jwtEncoder;
+        this.issuer = issuer;
+        this.expirationTime = expirationTime;
+        this.refreshTime = refreshTime;
+    }
 
     @org.jetbrains.annotations.NotNull
     public Map<String, Serializable> generateTokens(
@@ -70,23 +72,29 @@ public class TokenService implements ITokenService {
     public boolean isAccessTokenValid(
             @org.jetbrains.annotations.NotNull @NotNull String userId,
             @org.jetbrains.annotations.NotNull @NotNull String tokenId) {
+        return true;
+        /*
         var key = generateKey("access", userId, tokenId);
         var hasKeyAccessToken = redisTemplate.hasKey(key);
         if (hasKeyAccessToken == null) {
             throw new IllegalStateException("Redis is unavailable, token validation failed");
         }
         return hasKeyAccessToken;
+         */
     }
 
     public boolean isRefreshTokenValid(
             @org.jetbrains.annotations.NotNull @NotNull String userId,
             @org.jetbrains.annotations.NotNull @NotNull String tokenId) {
+        return false;
+        /*
         String key = "token:refresh:".concat(userId).concat(":").concat(tokenId);
         Boolean hasKeyRefreshToken = redisTemplate.hasKey(key);
         if (hasKeyRefreshToken == null) {
             throw new IllegalStateException("Redis is unavailable, token validation failed");
         }
         return hasKeyRefreshToken;
+         */
     }
 
     private Collection<String> getRolesPermisos(@org.jetbrains.annotations.NotNull @NotNull UsuarioDto usuarioDto) {
@@ -167,7 +175,7 @@ public class TokenService implements ITokenService {
             @NotNull @org.jetbrains.annotations.NotNull String key,
             @NotNull @org.jetbrains.annotations.NotNull String jwtToken,
             long expirationTime) {
-        redisTemplate.opsForValue().set(key, jwtToken, Duration.ofSeconds(expirationTime));
+        // redisTemplate.opsForValue().set(key, jwtToken, Duration.ofSeconds(expirationTime));
     }
 
     @org.jetbrains.annotations.NotNull

@@ -5,7 +5,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.io.Serializable
 import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["/vacunacion/v1/token"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TokenController(
-    private val redisTemplate: RedisTemplate<String, Any>,
+    private val redisTemplate: ReactiveRedisTemplate<String, Serializable>,
     private val usuarioManagementService: IUsuarioManagementService,
 ) {
     private val log = logger()
@@ -41,7 +42,6 @@ class TokenController(
         val tokenId = jwt.id
 
         val key = "token:refresh:$userId:$tokenId"
-        redisTemplate.delete(key)
 
         try {
             apiResponse.addData(usuarioManagementService.generateTokens(UUID.fromString(userId)))
@@ -52,6 +52,6 @@ class TokenController(
             return sendResponse(apiResponse, request)
         }
         apiResponse.addStatusCode(HttpStatus.OK)
-        return sendResponse(apiResponse, request)
+        return redisTemplate.delete(key).then(sendResponse(apiResponse, request))
     }
 }
