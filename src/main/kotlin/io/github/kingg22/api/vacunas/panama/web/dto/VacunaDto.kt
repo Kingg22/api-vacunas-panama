@@ -14,11 +14,32 @@ import java.util.UUID
 @JvmRecord
 data class VacunaDto @JvmOverloads constructor(
     val id: UUID? = null,
-    @Size(max = 100) @NotBlank val nombre: String,
-    @JsonProperty(value = "edad_minima_dias") val edadMinimaDias: Short? = null,
-    @JsonProperty(value = "intervalo_dosis_dias") val intervaloDosisDias: Int? = null,
-    @JsonProperty(value = "dosis_maxima") val dosisMaxima: NumDosisEnum? = null,
-    @JsonProperty(value = "created_at") @PastOrPresent val createdAt: LocalDateTime? = null,
-    @JsonProperty(value = "updated_at") @PastOrPresent val updatedAt: LocalDateTime? = null,
-    @Valid val fabricantes: Set<FabricanteDto> = emptySet(),
+
+    @param:Size(max = 100) @field:Size(max = 100) @param:NotBlank @field:NotBlank val nombre: String,
+
+    @param:JsonProperty(value = "edad_minima_dias")
+    @field:JsonProperty(value = "edad_minima_dias")
+    val edadMinimaDias: Short? = null,
+
+    @param:JsonProperty(value = "intervalo_dosis_dias")
+    @field:JsonProperty(value = "intervalo_dosis_dias")
+    val intervaloDosisDias: Int? = null,
+
+    @param:JsonProperty(value = "dosis_maxima")
+    @field:JsonProperty(value = "dosis_maxima")
+    val dosisMaxima: NumDosisEnum? = null,
+
+    @param:JsonProperty(value = "created_at")
+    @field:JsonProperty(value = "created_at")
+    @param:PastOrPresent
+    @field:PastOrPresent
+    val createdAt: LocalDateTime? = null,
+
+    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at")
+    @param:PastOrPresent
+    @field:PastOrPresent
+    val updatedAt: LocalDateTime? = null,
+
+    @param:Valid @field:Valid val fabricantes: Set<FabricanteDto> = emptySet(),
 ) : Serializable

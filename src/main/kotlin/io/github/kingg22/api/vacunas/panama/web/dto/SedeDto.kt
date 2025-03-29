@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.web.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 import jakarta.annotation.Nullable
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -16,16 +17,22 @@ import java.util.UUID
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Sede] */
 @JvmRecord
 data class SedeDto @JvmOverloads constructor(
-    val entidad: EntidadDto,
+    @field:JsonUnwrapped @param:JsonUnwrapped val entidad: EntidadDto,
+
     val region: String? = null,
 
-    @Nullable
-    @JsonProperty(value = "created_at")
-    @PastOrPresent
+    @field:Nullable
+    @param:Nullable
+    @field:JsonProperty(value = "created_at")
+    @param:JsonProperty(value = "created_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val createdAt: LocalDateTime? = null,
 
-    @JsonProperty(value = "updated_at")
-    @PastOrPresent
+    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,
 ) : Serializable {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

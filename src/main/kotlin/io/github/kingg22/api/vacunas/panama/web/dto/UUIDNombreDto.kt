@@ -4,4 +4,4 @@ import java.io.Serializable
 import java.util.UUID
 
 @JvmRecord
-data class UUIDNombreDto(@JvmField val id: UUID, @JvmField val nombre: String) : Serializable
+data class UUIDNombreDto(val id: UUID, val nombre: String) : Serializable

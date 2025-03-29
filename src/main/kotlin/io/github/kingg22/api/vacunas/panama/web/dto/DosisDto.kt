@@ -13,13 +13,34 @@ import java.util.UUID
 @JvmRecord
 data class DosisDto @JvmOverloads constructor(
     val id: UUID? = null,
-    @Valid val paciente: PacienteDto,
-    @JsonProperty(value = "fecha_aplicacion") val fechaAplicacion: LocalDateTime,
-    @JsonProperty(value = "numero_dosis") val numeroDosis: NumDosisEnum,
-    @Valid val vacuna: VacunaDto,
-    @Valid val sede: SedeDto,
-    @Valid val doctor: DoctorDto? = null,
-    @Size(max = 50) val lote: String? = null,
-    @JsonProperty(value = "created_at") val createdAt: @PastOrPresent LocalDateTime,
-    @JsonProperty(value = "updated_at") val updatedAt: @PastOrPresent LocalDateTime? = null,
+
+    @field:Valid @param:Valid val paciente: PacienteDto,
+
+    @field:JsonProperty(value = "fecha_aplicacion")
+    @param:JsonProperty(value = "fecha_aplicacion")
+    val fechaAplicacion: LocalDateTime,
+
+    @field:JsonProperty(value = "numero_dosis")
+    @param:JsonProperty(value = "numero_dosis")
+    val numeroDosis: NumDosisEnum,
+
+    @field:Valid @param:Valid val vacuna: VacunaDto,
+
+    @field:Valid @param:Valid val sede: SedeDto,
+
+    @field:Valid @param:Valid val doctor: DoctorDto? = null,
+
+    @field:Size(max = 50) @param:Size(max = 50) val lote: String? = null,
+
+    @field:JsonProperty(value = "created_at")
+    @param:JsonProperty(value = "created_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
+    val createdAt: LocalDateTime,
+
+    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
+    val updatedAt: LocalDateTime? = null,
 ) : Serializable

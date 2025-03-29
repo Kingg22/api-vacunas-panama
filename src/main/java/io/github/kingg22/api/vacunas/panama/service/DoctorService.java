@@ -5,6 +5,7 @@ import io.github.kingg22.api.vacunas.panama.persistence.repository.DoctorReposit
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Service;
 public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
 
-    public Optional<Doctor> getDoctorByUserID(UUID idUser) {
+    @NotNull
+    public Optional<Doctor> getDoctorByUserID(@NotNull UUID idUser) {
         return this.doctorRepository.findByUsuario_Id(idUser);
     }
 
-    public Optional<Doctor> getDoctorById(UUID idDoctor) {
+    @NotNull
+    public Optional<Doctor> getDoctorById(@NotNull UUID idDoctor) {
         return this.doctorRepository.findById(idDoctor);
     }
 }

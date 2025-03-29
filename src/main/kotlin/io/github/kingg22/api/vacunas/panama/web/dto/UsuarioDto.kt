@@ -12,14 +12,32 @@ import java.util.UUID
 @JvmRecord
 data class UsuarioDto @JvmOverloads constructor(
     val id: UUID? = null,
+
     val username: String? = null,
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 8, max = 70, message = "La contraseña no es válida")
+
+    @param:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @field:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @param:Size(min = 8, max = 70, message = "La contraseña no es válida")
+    @field:Size(min = 8, max = 70, message = "La contraseña no es válida")
     val password: String,
-    @JsonProperty(value = "created_at") val createdAt: LocalDateTime? = null,
-    @JsonProperty(value = "updated_at") val updatedAt: LocalDateTime? = null,
-    @JsonProperty(value = "last_used") val lastUsed: LocalDateTime? = null,
-    @NotEmpty(message = "Los roles no puede estar vacíos") @Valid val roles: Set<RolDto>? = null,
+
+    @param:JsonProperty(value = "created_at")
+    @field:JsonProperty(value = "created_at")
+    val createdAt: LocalDateTime? = null,
+
+    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at")
+    val updatedAt: LocalDateTime? = null,
+
+    @param:JsonProperty(value = "last_used")
+    @field:JsonProperty(value = "last_used")
+    val lastUsed: LocalDateTime? = null,
+
+    @param:NotEmpty(message = "Los roles no puede estar vacíos")
+    @field:NotEmpty(message = "Los roles no puede estar vacíos")
+    @param:Valid
+    @field:Valid
+    val roles: Set<RolDto>? = null,
 ) : Serializable {
     override fun toString() = UsuarioDto::class.simpleName +
         "(id: $id, username: $username, createdAt: $createdAt, updatedAt: $updatedAt, lastUsed: $lastUsed, roles: $roles)"

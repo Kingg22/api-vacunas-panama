@@ -10,13 +10,17 @@ import java.util.UUID
 /** DTO for generate PDF with basic information  */
 @JvmRecord
 data class PdfDto @JvmOverloads constructor(
-    @NotBlank val nombres: String,
-    @NotBlank val apellidos: String,
-    @NotBlank val identificacion: String,
-    @PastOrPresent val fechaNacimiento: LocalDate? = null,
+    @field:NotBlank @param:NotBlank val nombres: String,
+
+    @field:NotBlank @param:NotBlank val apellidos: String,
+
+    @field:NotBlank @param:NotBlank val identificacion: String,
+
+    @field:PastOrPresent @param:PastOrPresent val fechaNacimiento: LocalDate? = null,
+
     val id: UUID? = null,
     // Extraer id fecha_aplicacion, numero_dosis, vacuna.nombre, sede.nombre, doctor.nombre,
     // doctor.idoneidad, lote
     // De esos datos si es null colocar 'Desconocido'
-    @NotEmpty @Valid val dosis: List<DosisDto> = emptyList(),
+    @field:NotEmpty @param:NotEmpty @field:Valid @param:Valid val dosis: List<DosisDto> = emptyList(),
 )

@@ -54,8 +54,10 @@ public class TokenService implements ITokenService {
     @Value("${security.jwt.refresh-time}")
     private Integer refreshTime;
 
+    @org.jetbrains.annotations.NotNull
     public Map<String, Serializable> generateTokens(
-            @org.jetbrains.annotations.NotNull UsuarioDto usuarioDto, Map<String, Serializable> idsAdicionales) {
+            @org.jetbrains.annotations.NotNull UsuarioDto usuarioDto,
+            @org.jetbrains.annotations.NotNull Map<String, ? extends Serializable> idsAdicionales) {
         var data = new LinkedHashMap<String, Serializable>();
         data.put(
                 "access_token",
@@ -100,7 +102,9 @@ public class TokenService implements ITokenService {
     }
 
     private String createToken(
-            @NotNull String subject, Collection<String> rolesPermisos, Map<String, Serializable> claimsAdicionales) {
+            @NotNull String subject,
+            Collection<String> rolesPermisos,
+            Map<String, ? extends Serializable> claimsAdicionales) {
         var now = Instant.now();
         var builder = JwtClaimsSet.builder()
                 .issuer(issuer)
@@ -130,7 +134,7 @@ public class TokenService implements ITokenService {
                 claims.getExpiresAt(),
                 claims.getId());
 
-        saveInCache("access", subject, claims.getId(), jwtToken);
+        saveInCache(generateKey("access", subject, claims.getId()), jwtToken, expirationTime);
         return jwtToken;
     }
 
@@ -154,16 +158,15 @@ public class TokenService implements ITokenService {
                 claims.getExpiresAt(),
                 claims.getId());
 
-        saveInCache("refresh", subject, claims.getId(), jwtToken);
+        saveInCache(generateKey("refresh", subject, claims.getId()), jwtToken, refreshTime);
         return jwtToken;
     }
 
     private void saveInCache(
-            @NotNull @org.jetbrains.annotations.NotNull String type,
-            @NotNull @org.jetbrains.annotations.NotNull String subject,
-            @NotNull @org.jetbrains.annotations.NotNull String id,
-            @NotNull @org.jetbrains.annotations.NotNull String jwtToken) {
-        redisTemplate.opsForValue().set(generateKey(type, subject, id), jwtToken, Duration.ofSeconds(refreshTime));
+            @NotNull @org.jetbrains.annotations.NotNull String key,
+            @NotNull @org.jetbrains.annotations.NotNull String jwtToken,
+            long expirationTime) {
+        redisTemplate.opsForValue().set(key, jwtToken, Duration.ofSeconds(expirationTime));
     }
 
     @org.jetbrains.annotations.NotNull
@@ -171,8 +174,6 @@ public class TokenService implements ITokenService {
             @NotNull @org.jetbrains.annotations.NotNull String type,
             @NotNull @org.jetbrains.annotations.NotNull String subject,
             @NotNull @org.jetbrains.annotations.NotNull String id) {
-        var key = new StringBuilder("token:");
-        key.append(type).append(":").append(subject).append(":").append(id);
-        return key.toString();
+        return "token:" + type + ":" + subject + ":" + id;
     }
 }

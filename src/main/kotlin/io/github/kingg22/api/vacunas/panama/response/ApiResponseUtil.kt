@@ -1,10 +1,14 @@
 package io.github.kingg22.api.vacunas.panama.response
 
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ApiErrorResponse
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.context.request.ServletWebRequest
+import java.io.Serializable
 import java.time.Instant
 
 /**
@@ -45,6 +49,19 @@ object ApiResponseUtil {
         }.let {
             ResponseEntity.status(it.retrieveHttpStatusCode()).body(it)
         }
+
+    @JvmStatic
+    fun createAndSendResponse(
+        request: ServletWebRequest,
+        attributeName: String,
+        data: Serializable,
+        statusCode: HttpStatusCode = HttpStatus.OK,
+    ): ResponseEntity<ApiResponse> {
+        val response = createResponse()
+        response.addData(attributeName, data)
+        response.addStatusCode(statusCode)
+        return sendResponse(response, request)
+    }
 
     /**
      * Transforms an [ApiErrorResponse] from the error-handling library into a custom API response format.

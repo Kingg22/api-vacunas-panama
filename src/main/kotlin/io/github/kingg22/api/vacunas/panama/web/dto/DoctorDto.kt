@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.web.dto
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -14,19 +15,26 @@ import java.util.UUID
 /** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor] */
 @JvmRecord
 data class DoctorDto @JvmOverloads constructor(
-    val persona: PersonaDto,
-    @Size(max = 20)
+    @field:JsonUnwrapped @param:JsonUnwrapped val persona: PersonaDto,
+
+    @field:Size(max = 20)
+    @param:Size(max = 20)
     val idoneidad: String? = null,
 
-    @Size(max = 100)
+    @field:Size(max = 100)
+    @param:Size(max = 100)
     val categoria: String? = null,
 
-    @JsonProperty(value = "created_at")
-    @PastOrPresent
+    @field:JsonProperty(value = "created_at")
+    @param:JsonProperty(value = "created_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val createdAt: LocalDateTime? = null,
 
-    @JsonProperty(value = "updated_at")
-    @PastOrPresent
+    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,
 ) : Serializable {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

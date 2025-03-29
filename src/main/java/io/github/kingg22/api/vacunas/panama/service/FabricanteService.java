@@ -14,10 +14,12 @@ import org.springframework.stereotype.Service;
 public class FabricanteService implements IFabricanteService {
     private final FabricanteRepository fabricanteRepository;
 
+    @org.jetbrains.annotations.NotNull
     public Optional<Fabricante> getFabricante(@org.jetbrains.annotations.NotNull @NotNull String licencia) {
         return fabricanteRepository.findByLicencia(licencia);
     }
 
+    @org.jetbrains.annotations.NotNull
     public Optional<Fabricante> getFabricanteByUserID(@org.jetbrains.annotations.NotNull @NotNull UUID idUser) {
         return this.fabricanteRepository.findByUsuario_Id(idUser);
     }

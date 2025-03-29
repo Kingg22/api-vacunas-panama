@@ -11,7 +11,12 @@ import java.io.Serializable
 @KonvertTo(Provincia::class)
 data class ProvinciaDto @JvmOverloads constructor(
     val id: Short? = null,
-    @JsonProperty(defaultValue = DEFAULT_PROVINCIA) @Size(max = 30) val nombre: String = DEFAULT_PROVINCIA,
+
+    @field:JsonProperty(defaultValue = DEFAULT_PROVINCIA)
+    @param:JsonProperty(defaultValue = DEFAULT_PROVINCIA)
+    @field:Size(max = 30)
+    @param:Size(max = 30)
+    val nombre: String = DEFAULT_PROVINCIA,
 ) : Serializable {
     companion object {
         const val DEFAULT_PROVINCIA = "Por registrar"

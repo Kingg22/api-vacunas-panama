@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class PersonaService implements IPersonaService {
     private final PersonaRepository personaRepository;
 
+    @org.jetbrains.annotations.NotNull
     public Optional<Persona> getPersona(@org.jetbrains.annotations.NotNull @NotNull String identifier) {
         FormatterUtil.FormatterResult result = FormatterUtil.formatToSearch(identifier);
         log.debug(
@@ -34,6 +35,7 @@ public class PersonaService implements IPersonaService {
         return persona;
     }
 
+    @org.jetbrains.annotations.NotNull
     public Optional<Persona> getPersonaByUserID(@org.jetbrains.annotations.NotNull UUID idUser) {
         return this.personaRepository.findByUsuario_Id(idUser);
     }

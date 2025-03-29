@@ -15,65 +15,64 @@ import java.util.UUID
 data class PersonaDto @JvmOverloads constructor(
     val id: UUID? = null,
 
-    @Size(max = 15)
+    @field:Size(max = 15)
+    @param:Size(max = 15)
     @Pattern(
         regexp = "^(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$",
-        flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
+        flags = [Pattern.Flag.CASE_INSENSITIVE],
         message = "El formato de la cédula no es válido",
     )
     val cedula: String? = null,
 
-    @Size(max = 20)
-    @Pattern(
+    @field:Size(max = 20)
+    @field:Pattern(
         regexp = "^[A-Z0-9]{5,20}$",
-        flags = [Pattern.Flag.CASE_INSENSITIVE, Pattern.Flag.MULTILINE],
+        flags = [Pattern.Flag.CASE_INSENSITIVE],
+        message = "El formato del pasaporte no es válido",
+    )
+    @param:Size(max = 20)
+    @param:Pattern(
+        regexp = "^[A-Z0-9]{5,20}$",
+        flags = [Pattern.Flag.CASE_INSENSITIVE],
         message = "El formato del pasaporte no es válido",
     )
     val pasaporte: String? = null,
 
-    @Size(max = 100)
-    val nombre: String? = null,
+    @field:Size(max = 100) @param:Size(max = 100) val nombre: String? = null,
 
-    @Size(max = 100)
-    val nombre2: String? = null,
+    @field:Size(max = 100) @param:Size(max = 100) val nombre2: String? = null,
 
-    @Size(max = 100)
-    val apellido1: String? = null,
+    @field:Size(max = 100) @param:Size(max = 100) val apellido1: String? = null,
 
-    @Size(max = 100)
-    val apellido2: String? = null,
+    @field:Size(max = 100) @param:Size(max = 100) val apellido2: String? = null,
 
-    @Size(max = 254)
-    @Email
-    val correo: String? = null,
+    @field:Size(max = 254) @param:Size(max = 254) @field:Email @param:Email val correo: String? = null,
 
-    @Size(max = 15)
-    @Pattern(
-        regexp = "^\\+\\d{1,14}$",
-        flags = [Pattern.Flag.MULTILINE],
-        message = "El formato del teléfono no es válido",
-    )
+    @field:Size(max = 15)
+    @field:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    @param:Size(max = 15)
+    @param:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
     val telefono: String? = null,
 
-    @JsonProperty(value = "fecha_nacimiento")
-    @PastOrPresent
+    @field:JsonProperty(value = "fecha_nacimiento")
+    @param:JsonProperty(value = "fecha_nacimiento")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val fechaNacimiento: LocalDateTime? = null,
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @param:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val edad: Short? = null,
 
     val sexo: Char? = null,
 
-    @Size(max = 50)
-    val estado: String? = null,
+    @field:Size(max = 50) @param:Size(max = 50) val estado: String? = null,
 
     val disabled: Boolean = false,
 
-    @Valid
-    val direccion: DireccionDto? = null,
+    @field:Valid @param:Valid val direccion: DireccionDto? = null,
 
-    @Valid
-    val usuario: UsuarioDto? = null,
+    @field:Valid @param:Valid val usuario: UsuarioDto? = null,
 ) : Serializable {
     @JvmOverloads
     fun changeCedulaOrID(nuevaCedula: String, nuevoId: UUID? = this.id): PersonaDto =

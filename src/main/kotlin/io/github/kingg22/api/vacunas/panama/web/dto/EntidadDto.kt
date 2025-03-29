@@ -13,26 +13,21 @@ import java.util.UUID
 data class EntidadDto @JvmOverloads constructor(
     val id: UUID? = null,
 
-    @Size(max = 100)
-    val nombre: String? = null,
+    @field:Size(max = 100) @param:Size(max = 100) val nombre: String? = null,
 
-    @Size(max = 254)
-    @Email
-    val correo: String? = null,
+    @field:Size(max = 254) @param:Size(max = 254) @field:Email @param:Email val correo: String? = null,
 
-    @Size(max = 15)
-    @Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    @field:Size(max = 15)
+    @param:Size(max = 15)
+    @field:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    @param:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
     val telefono: String? = null,
 
-    @Size(max = 13)
-    val dependencia: String? = null,
+    @field:Size(max = 13) @param:Size(max = 13) val dependencia: String? = null,
 
-    @Size(max = 50)
-    @NotBlank
-    val estado: String? = null,
+    @field:Size(max = 50) @param:Size(max = 50) @field:NotBlank @param:NotBlank val estado: String? = null,
 
     val disabled: Boolean = false,
 
-    @Valid
-    val direccion: DireccionDto? = null,
+    @field:Valid @param:Valid val direccion: DireccionDto? = null,
 ) : Serializable
