@@ -12,6 +12,7 @@ konvert = "4.0.1"
 spotless = "7.0.2"
 gradle-license-report = "2.9"
 kover = "0.9.1"
+apache-commons-pool2 = "2.12.1"
 
 [libraries]
 # Spring
@@ -22,6 +23,9 @@ spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-s
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+
+# Missing in spring boot
+apache-commons-pool2 = { module = "org.apache.commons:commons-pool2", version.ref = "apache-commons-pool2" }
 
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
 
@@ -81,7 +85,8 @@ implementation = [
     "konvert-api",
     "kotlinx-coroutines",
     "kotlinx-coroutines-reactor",
-    "reactor-kotlin"
+    "reactor-kotlin",
+    "apache-commons-pool2"
 ]
 
 runtimeOnly = [
