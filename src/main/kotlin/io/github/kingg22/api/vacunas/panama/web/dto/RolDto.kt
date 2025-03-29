@@ -12,10 +12,26 @@ import java.time.LocalDateTime
 @JvmRecord
 data class RolDto @JvmOverloads constructor(
     val id: Short? = null,
-    @Size(max = 100) @Pattern(regexp = "\\s*|\\S.*", message = "El nombre del rol es requerido")
+
+    @param:Size(max = 100)
+    @field:Size(max = 100)
+    @param:Pattern(regexp = "\\s*|\\S.*", message = "El nombre del rol es requerido")
+    @field:Pattern(regexp = "\\s*|\\S.*", message = "El nombre del rol es requerido")
     val nombre: String? = null,
-    @Size(max = 100) val descripcion: String? = null,
-    @Valid val permisos: Set<PermisoDto>? = emptySet(),
-    @JsonProperty(value = "created_at") @PastOrPresent val createdAt: LocalDateTime? = null,
-    @JsonProperty(value = "updated_at") @PastOrPresent val updatedAt: LocalDateTime? = null,
+
+    @param:Size(max = 100) @field:Size(max = 100) val descripcion: String? = null,
+
+    @param:Valid @field:Valid val permisos: Set<PermisoDto>? = emptySet(),
+
+    @param:JsonProperty(value = "created_at")
+    @field:JsonProperty(value = "created_at")
+    @param:PastOrPresent(message = "La fecha de creación no puede ser futura")
+    @field:PastOrPresent(message = "La fecha de creación no puede ser futura")
+    val createdAt: LocalDateTime? = null,
+
+    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at")
+    @param:PastOrPresent(message = "La fecha de actualización no puede ser futura")
+    @field:PastOrPresent(message = "La fecha de actualización no puede ser futura")
+    val updatedAt: LocalDateTime? = null,
 ) : Serializable
