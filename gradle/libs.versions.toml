@@ -12,6 +12,7 @@ konvert = "4.0.1"
 spotless = "7.0.2"
 gradle-license-report = "2.9"
 kover = "0.9.1"
+kotlinx-coroutines = "1.10.1"
 
 [libraries]
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
@@ -25,6 +26,8 @@ jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-dat
 # Kotlin
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
 
 # Annotations
 lombok = { module = "org.projectlombok:lombok" }
@@ -70,7 +73,9 @@ implementation = [
     "html2pdf",
     "dotenv-java",
     "spring-dotenv",
-    "konvert-api"
+    "konvert-api",
+    "kotlinx-coroutines",
+    "kotlinx-coroutines-reactor"
 ]
 
 runtimeOnly = [
