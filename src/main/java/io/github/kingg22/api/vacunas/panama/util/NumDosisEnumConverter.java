@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.util;
 
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.NumDosisEnum;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

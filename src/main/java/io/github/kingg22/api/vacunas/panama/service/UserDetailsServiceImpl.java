@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;

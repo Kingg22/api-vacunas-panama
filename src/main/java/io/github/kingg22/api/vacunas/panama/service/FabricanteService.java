@@ -1,7 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.FabricanteRepository;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.repository.FabricanteRepository;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
 import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;

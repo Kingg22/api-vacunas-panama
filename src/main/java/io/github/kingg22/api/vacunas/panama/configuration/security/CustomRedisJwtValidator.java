@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security;
 
-import io.github.kingg22.api.vacunas.panama.service.ITokenService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /** Default implementation of [ApiResponse] with a fluent builder pattern. */
-@JsonPropertyOrder("status", "data", "errors", "warnings", "metadata")
+@JsonPropertyOrder(value = ["status", "data", "errors", "warnings", "metadata"])
 class DefaultApiResponse(
     override val status: MutableMap<String, Serializable> = mutableMapOf(),
     override val data: MutableMap<String, Serializable> = mutableMapOf(),

@@ -1,7 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.PersonaRepository;
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
+import io.github.kingg22.api.vacunas.panama.modules.persona.repository.PersonaRepository;
+import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import jakarta.validation.constraints.NotNull;
 import java.util.Optional;

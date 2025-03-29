@@ -1,13 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Rol;
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.RolRepository;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
-import io.github.kingg22.api.vacunas.panama.web.dto.RolDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante;
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.RolRepository;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;

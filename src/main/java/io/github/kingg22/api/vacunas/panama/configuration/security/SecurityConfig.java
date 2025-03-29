@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.configuration.security;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import io.github.kingg22.api.vacunas.panama.service.ITokenService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import io.github.kingg22.api.vacunas.panama.service.UserDetailsServiceImpl;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;

@@ -1,8 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Sede;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.SedeRepository;
-import io.github.kingg22.api.vacunas.panama.web.dto.UUIDNombreDto;
+import io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto;
+import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede;
+import io.github.kingg22.api.vacunas.panama.modules.sede.repository.SedeRepository;
+import io.github.kingg22.api.vacunas.panama.modules.sede.service.ISedeService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
