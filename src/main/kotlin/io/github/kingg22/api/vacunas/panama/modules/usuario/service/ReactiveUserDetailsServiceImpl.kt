@@ -24,22 +24,21 @@ class ReactiveUserDetailsServiceImpl(private val usuarioManagementService: IUsua
             }
             .switchIfEmpty(Mono.error { UsernameNotFoundException("User not found") })
             .flatMap { user ->
-                Flux.fromIterable(user.roles)
-                    .flatMap<SimpleGrantedAuthority> { role ->
-                        val roleAuthorities = Mono.just(SimpleGrantedAuthority("ROLE_" + role.nombre.uppercase()))
-                        val permisoAuthorities = Flux.fromIterable(role.permisos)
-                            .map { permiso -> SimpleGrantedAuthority(permiso.nombre.uppercase()) }
-                        Flux.concat(roleAuthorities, permisoAuthorities)
-                    }
+                val roles = user.roles.map { it.nombre.uppercase() }.toTypedArray()
+                Flux.fromIterable(user.roles).flatMap { Flux.fromIterable(it.permisos) }
+                    .flatMap { Mono.just(SimpleGrantedAuthority(it.nombre.uppercase())) }
                     .collectList()
-                    .map { authorities ->
-                        User.withUsername(user.id.toString())
-                            .password(user.password)
-                            .authorities(authorities)
-                            .accountExpired(false)
-                            .accountLocked(false)
-                            .disabled(user.isDisabled())
-                            .build()
+                    .flatMap { permisoAuthorities: List<SimpleGrantedAuthority> ->
+                        Mono.just(
+                            User.withUsername(user.id.toString())
+                                .password(user.password)
+                                .roles(*roles)
+                                .authorities(permisoAuthorities)
+                                .accountExpired(false)
+                                .accountLocked(false)
+                                .disabled(user.isDisabled())
+                                .build(),
+                        )
                     }
             }
 }
