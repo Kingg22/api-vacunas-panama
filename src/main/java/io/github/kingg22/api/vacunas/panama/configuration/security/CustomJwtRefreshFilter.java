@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security;
 
-import io.github.kingg22.api.vacunas.panama.service.ITokenService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,13 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
-import io.github.kingg22.api.vacunas.panama.service.IPacienteService
-import io.github.kingg22.api.vacunas.panama.service.IUsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.util.logger
-import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto
-import io.github.kingg22.api.vacunas.panama.web.dto.RegisterUser
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.ServletWebRequest
 
+/** TODO to split in modules controllers */
 @RestController
 @RequestMapping(path = ["/vacunacion/v1/bulk"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class BulkController(

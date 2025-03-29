@@ -1,12 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import com.itextpdf.html2pdf.HtmlConverter;
-import io.github.kingg22.api.vacunas.panama.web.dto.DosisDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.EntidadDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.FabricanteDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.PacienteDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.PdfDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.PersonaDto;
+import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto;
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto;
+import io.github.kingg22.api.vacunas.panama.modules.pdf.dto.PdfDto;
+import io.github.kingg22.api.vacunas.panama.modules.pdf.service.IPdfService;
+import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto;
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto;
 import jakarta.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,8 +34,7 @@ public class PdfService implements IPdfService {
     private final ResourceLoader resourceLoader;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @org.jetbrains.annotations.NotNull
-    public byte[] generatePdf(
+    public byte @org.jetbrains.annotations.NotNull [] generatePdf(
             @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
             @org.jetbrains.annotations.NotNull List<DosisDto> dosisDtos,
             @org.jetbrains.annotations.NotNull UUID idCertificate)
@@ -60,8 +60,8 @@ public class PdfService implements IPdfService {
      * @return byte[] con el PDF
      * @throws IOException Al buscar una imagen en classpath resources
      */
-    @org.jetbrains.annotations.NotNull
-    private byte[] generatePdf(UUID idCertificado, PdfDto pdfDto) throws IOException {
+    private byte @org.jetbrains.annotations.NotNull [] generatePdf(UUID idCertificado, PdfDto pdfDto)
+            throws IOException {
         log.debug("Generando PDF con ID: {}", idCertificado);
         String template = generateHtmlTemplate(idCertificado, pdfDto);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

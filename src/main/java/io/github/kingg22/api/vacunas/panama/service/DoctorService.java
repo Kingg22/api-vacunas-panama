@@ -1,7 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.DoctorRepository;
+import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor;
+import io.github.kingg22.api.vacunas.panama.modules.doctor.repository.DoctorRepository;
+import io.github.kingg22.api.vacunas.panama.modules.doctor.service.IDoctorService;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

@@ -1,21 +1,22 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.persistence.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.persistence.repository.UsuarioRepository;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
+import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository;
 import io.github.kingg22.api.vacunas.panama.response.ApiError;
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
 import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
-import io.github.kingg22.api.vacunas.panama.util.RolesEnum;
-import io.github.kingg22.api.vacunas.panama.web.dto.RegisterUser;
-import io.github.kingg22.api.vacunas.panama.web.dto.RolDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +37,7 @@ class UsuarioValidationService {
     @org.jetbrains.annotations.NotNull
     List<ApiError> validateWarningsRegistrarion(
             @org.jetbrains.annotations.NotNull @NotNull final UsuarioDto usuarioDto) {
-        val apiContentResponse = new ArrayList<ApiError>();
+        var apiContentResponse = new ArrayList<ApiError>();
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
                         .anyMatch(rolDto ->

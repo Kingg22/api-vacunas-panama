@@ -1,7 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.web.dto.PermisoDto;
-import io.github.kingg22.api.vacunas.panama.web.dto.UsuarioDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.PermisoDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Duration;

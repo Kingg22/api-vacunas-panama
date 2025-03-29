@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 import java.io.Serializable
 
 /** Default implementation of [ApiError] with a fluent builder pattern. */
-@JsonPropertyOrder("code", "property", "message")
+@JsonPropertyOrder(value = ["code", "property", "message"])
 data class DefaultApiError(
     @field:NotBlank(message = "Error code cannot be blank")
     @param:NotBlank(message = "Error code cannot be blank")

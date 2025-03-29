@@ -1,10 +1,10 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
+import io.github.kingg22.api.vacunas.panama.modules.direccion.service.IDireccionService
+import io.github.kingg22.api.vacunas.panama.modules.sede.service.ISedeService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.IVacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createAndSendResponse
-import io.github.kingg22.api.vacunas.panama.service.IDireccionService
-import io.github.kingg22.api.vacunas.panama.service.ISedeService
-import io.github.kingg22.api.vacunas.panama.service.IUsuarioManagementService
-import io.github.kingg22.api.vacunas.panama.service.IVacunaService
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.ServletWebRequest
 
+/** TODO move to specific module controller in default '/' get */
 @RestController
 @RequestMapping(path = ["/vacunacion/v1/public"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class PublicResourcesController(
