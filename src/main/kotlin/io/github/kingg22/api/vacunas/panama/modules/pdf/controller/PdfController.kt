@@ -76,8 +76,8 @@ class PdfController(
                 log.debug(dosisDtos.toString())
                 apiResponse.addError(
                     DefaultApiError(
-                        ApiResponseCode.NOT_FOUND,
-                        "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF",
+                        code = ApiResponseCode.NOT_FOUND,
+                        message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF",
                     ),
                 )
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)

@@ -35,7 +35,7 @@ class PacienteController(private val pacienteService: IPacienteService) {
         apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedadDtoList)
         if (viewPacienteVacunaEnfermedadDtoList.isEmpty()) {
             apiResponse.addError(
-                DefaultApiError(ApiResponseCode.NOT_FOUND, "El paciente no tiene dosis registradas"),
+                DefaultApiError(code = ApiResponseCode.NOT_FOUND, message = "El paciente no tiene dosis registradas"),
             )
             apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
         } else {

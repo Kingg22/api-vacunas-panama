@@ -57,7 +57,7 @@ object ApiResponseUtil {
         data: Serializable,
         statusCode: HttpStatusCode = HttpStatus.OK,
     ): Mono<ResponseEntity<ApiResponse>> = sendResponse(
-        DefaultApiResponse.builder {
+        ApiResponseFactory.createResponseBuilder {
             withData(attributeName, data)
             withStatusCode(statusCode)
         },
@@ -74,7 +74,7 @@ object ApiResponseUtil {
      */
     @JvmStatic
     fun transformApiErrorResponse(apiErrorResponse: ApiErrorResponse, request: ServerHttpRequest): ApiResponse =
-        DefaultApiResponse.builder {
+        ApiResponseFactory.createResponseBuilder {
             withStatusCode(apiErrorResponse.httpStatus)
 
             val errorMessage = if (
@@ -86,24 +86,18 @@ object ApiResponseUtil {
                 apiErrorResponse.message
             }
 
-            withError(DefaultApiError(code = apiErrorResponse.code, property = null, message = errorMessage))
+            withError(code = apiErrorResponse.code, property = null, message = errorMessage)
 
             apiErrorResponse.fieldErrors.forEach {
-                withError(
-                    DefaultApiError.builder {
-                        withCode(it.code)
-                        withMessage(it.message)
-                        withProperties(it.property)
-                    },
-                )
+                withError(code = it.code, message = it.message, property = it.property)
             }
 
             apiErrorResponse.globalErrors.forEach {
-                withError(DefaultApiError(code = it.code, message = it.message))
+                withError(code = it.code, message = it.message)
             }
 
             apiErrorResponse.parameterErrors.forEach {
-                withError(DefaultApiError(code = it.code, property = it.parameter, message = it.message))
+                withError(code = it.code, property = it.parameter, message = it.message)
             }
 
             setMetadata(build(), request)

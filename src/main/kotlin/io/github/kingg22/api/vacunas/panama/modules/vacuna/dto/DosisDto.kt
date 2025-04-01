@@ -11,7 +11,7 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Dosis]  */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis]  */
 @JvmRecord
 data class DosisDto @JvmOverloads constructor(
     val id: UUID? = null,

@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.NumDosisEnum
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Size
 import org.springframework.format.annotation.DateTimeFormat
@@ -9,7 +8,7 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for insert new [io.github.kingg22.api.vacunas.panama.persistence.entity.Dosis]  */
+/** DTO for insert new [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis]  */
 @JvmRecord
 data class InsertDosisDto @JvmOverloads constructor(
     @field:JsonProperty(value = "paciente_id") @param:JsonProperty(value = "paciente_id") val pacienteId: UUID,

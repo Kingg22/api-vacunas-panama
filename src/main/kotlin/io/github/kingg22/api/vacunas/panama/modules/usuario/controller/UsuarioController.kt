@@ -115,8 +115,8 @@ class UsuarioController(
         ) {
             apiResponse.addError(
                 DefaultApiError(
-                    ApiResponseCode.MISSING_ROLE_OR_PERMISSION,
-                    "Solo pacientes pueden registrarse sin autenticación",
+                    code = ApiResponseCode.MISSING_ROLE_OR_PERMISSION,
+                    message = "Solo pacientes pueden registrarse sin autenticación",
                 ),
             )
         }
