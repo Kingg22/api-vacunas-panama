@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import org.jetbrains.annotations.Contract
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Lazy
 
 /**
  * Factory for creating standardized API responses.
@@ -19,6 +21,8 @@ object ApiResponseFactory {
      *
      * @return A new [DefaultApiResponse] instance ready for population
      */
+    @Lazy
+    @Bean
     @JvmStatic
     @Contract(" -> new")
     fun createResponse(): ApiResponse = DefaultApiResponse()
@@ -28,7 +32,35 @@ object ApiResponseFactory {
      *
      * @return A [DefaultApiResponse] for fluent response construction
      */
+    @Lazy
+    @Bean
     @JvmStatic
     @Contract(" -> new")
     fun createContentResponse(): ApiContentResponse = DefaultApiResponse()
+
+    /** Creates a new builder for [ApiResponse] */
+    @Lazy
+    @Bean
+    @JvmStatic
+    @Contract(" -> new")
+    fun createResponseBuilder(response: ApiResponse = DefaultApiResponse()) = ApiResponseBuilder(response)
+
+    /** Creates a new builder for [ApiError] */
+    @Lazy
+    @Bean
+    @JvmStatic
+    @Contract(" -> new")
+    fun createApiErrorBuilder() = ApiResponseBuilder.ApiErrorBuilder()
+
+    /** Create a new [ApiResponse] with DSL of [ApiResponseBuilder] */
+    @JvmStatic
+    @Contract(" -> new")
+    fun createResponseBuilder(response: ApiResponse = DefaultApiResponse(), block: ApiResponseBuilder.() -> Unit) =
+        ApiResponseBuilder(response).apply(block).build()
+
+    /** Create a new [ApiError] with DSL of [ApiResponseBuilder.ApiErrorBuilder] */
+    @JvmStatic
+    @Contract(" -> new")
+    fun createApiErrorBuilder(block: ApiResponseBuilder.ApiErrorBuilder.() -> Unit) =
+        ApiResponseBuilder.ApiErrorBuilder().apply(block).build()
 }
