@@ -235,9 +235,9 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          * @throws IllegalStateException if the required `message` or `code` field is not initialized.
          */
         fun build(): ApiError {
-            check(::message.isInitialized) { "The 'message' field is required." }
+            check(::message.isInitialized && message.isNotBlank()) { "The 'message' field is required." }
             val finalCode = code?.toString() ?: codeString
-            require(!finalCode.isNullOrEmpty()) { "The 'code' field is required." }
+            check(!finalCode.isNullOrBlank()) { "The 'code' field is required." }
 
             return DefaultApiError(code = finalCode, property = property, message = message)
         }
