@@ -13,7 +13,7 @@ object FormatterUtil {
     private val CORRECT_PATTERN_RI =
         "^(RN(\\d{1,2}?)?)-(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
     private val CORREO_REGEX =
-        @Suppress("ktlint:standard:max-line-length")
+        @Suppress("ktlint:standard:max-line-length", "kotlin:S5843")
         "^[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\$".toRegex()
 
     @JvmStatic
@@ -70,8 +70,8 @@ object FormatterUtil {
 
         try {
             cedula = formatCedula(identifier)
-        } catch (exception: IllegalArgumentException) {
-            log.debug("identifier is not a cedula")
+        } catch (e: IllegalArgumentException) {
+            log.debug("identifier is not a cedula", e)
         }
         log.debug(
             "Results: (Cédula: {}, pasaporte: {}, correo: {})",
@@ -111,17 +111,25 @@ object FormatterUtil {
         val pasaporte: String? = null,
         val correo: String? = null,
     ) {
+        init {
+            val filledCount = listOf(cedula, pasaporte, correo).count { !it.isNullOrBlank() }
+
+            require(filledCount <= 1) {
+                "Solo uno de los campos (cedula, pasaporte, correo) puede estar lleno."
+            }
+        }
+
         fun getIdentifier() = when {
-            cedula != null -> cedula
-            pasaporte != null -> pasaporte
-            correo != null -> correo
+            !cedula.isNullOrBlank() -> cedula
+            !pasaporte.isNullOrBlank() -> pasaporte
+            !correo.isNullOrBlank() -> correo
             else -> throw IllegalArgumentException("Unknown identifier")
         }
 
         fun getTypeIdentifier() = when {
-            pasaporte != null -> ResultType.PASAPORTE
-            correo != null -> ResultType.CORREO
-            cedula != null -> ResultType.CEDULA
+            !pasaporte.isNullOrBlank() -> ResultType.PASAPORTE
+            !correo.isNullOrBlank() -> ResultType.CORREO
+            !cedula.isNullOrBlank() -> ResultType.CEDULA
             else -> throw IllegalArgumentException("Unknown identifier type")
         }
 
