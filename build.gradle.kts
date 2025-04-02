@@ -42,6 +42,9 @@ dependencies {
     ksp(libs.konvert)
 
     testImplementation(libs.bundles.testImplementation)
+    testImplementation(libs.spring.boot.starter.test) {
+        exclude(module = "mockito-core")
+    }
 
     testRuntimeOnly(libs.junit.platform.launcher)
 }
