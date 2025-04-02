@@ -1,21 +1,41 @@
 package io.github.kingg22.api.vacunas.panama.configuration
 
 import org.springframework.data.redis.cache.RedisCacheConfiguration
-import java.time.Duration
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 enum class CacheDuration(private val ttl: Duration) {
-    TINY(Duration.ofSeconds(30)),
-    SHORT(Duration.ofMinutes(1)),
-    CACHE(Duration.ofMinutes(5)),
-    MEDIUM(Duration.ofMinutes(30)),
-    LARGE(Duration.ofHours(1)),
-    EXTRA_LARGE(Duration.ofHours(2)),
-    HUGE(Duration.ofDays(1)),
-    MASSIVE(Duration.ofDays(30)),
+    /** With 30 seconds */
+    TINY(30.seconds),
+
+    /** With 1 minute */
+    SHORT(1.minutes),
+
+    /** With 5 minutos */
+    CACHE(5.minutes),
+
+    /** With 30 minutes */
+    MEDIUM(30.minutes),
+
+    /** With 1 hour */
+    LARGE(1.hours),
+
+    /** With 2 hours */
+    EXTRA_LARGE(2.hours),
+
+    /** With 1 day */
+    HUGE(1.days),
+
+    /** With 30 days */
+    MASSIVE(30.days),
     ;
 
     /** Obtener la configuración de caché con TTL */
-    fun getCacheConfig(defaultCacheConfig: RedisCacheConfiguration) = defaultCacheConfig.entryTtl(ttl)
+    fun getCacheConfig(defaultCacheConfig: RedisCacheConfiguration) = defaultCacheConfig.entryTtl(ttl.toJavaDuration())
 
     companion object {
         /**
@@ -24,8 +44,12 @@ enum class CacheDuration(private val ttl: Duration) {
          * Listo para [org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder.withInitialCacheConfigurations]
          */
         internal fun asMapKeyRedisCacheConfig(redisCacheConfiguration: RedisCacheConfiguration) =
-            entries.associate { Pair(it.name, it.getCacheConfig(redisCacheConfiguration)) }
+            entries.associate { it.name to it.getCacheConfig(redisCacheConfiguration) }
 
-        fun asMap() = entries.associate { Pair(it.name, it.ttl) }
+        fun asMap() = entries.associate { it.name to it.ttl }
+
+        fun retriveMaxCache() = entries.maxBy { it.ttl }
+
+        fun retriveMinCache() = entries.minBy { it.ttl }
     }
 }

@@ -18,7 +18,7 @@ import org.hibernate.annotations.Nationalized
 class Provincia @JvmOverloads constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "tinyint not null")
+    @Column(name = "id")
     var id: Short? = null,
 
     @Nationalized

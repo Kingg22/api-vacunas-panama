@@ -82,7 +82,7 @@ class Persona @JvmOverloads constructor(
     @Column(name = "fecha_nacimiento")
     var fechaNacimiento: LocalDateTime? = null,
 
-    @Column(name = "edad", columnDefinition = "tinyint")
+    @Column(name = "edad")
     var edad: Short? = null,
 
     @Column(name = "sexo")
