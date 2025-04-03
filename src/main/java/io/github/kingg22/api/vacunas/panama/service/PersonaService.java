@@ -7,16 +7,19 @@ import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /** Service for {@link Persona}. */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class PersonaService implements IPersonaService {
     private final PersonaRepository personaRepository;
+    private static final Logger log = LoggerFactory.getLogger(PdfService.class);
+
+    public PersonaService(PersonaRepository personaRepository) {
+        this.personaRepository = personaRepository;
+    }
 
     @org.jetbrains.annotations.NotNull
     public Optional<Persona> getPersona(@org.jetbrains.annotations.NotNull @NotNull String identifier) {

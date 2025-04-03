@@ -15,17 +15,14 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /** Service for {@link UsuarioManagementService} validations. */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
     private final ReactiveCompromisedPasswordChecker compromisedPasswordChecker;
@@ -33,6 +30,20 @@ class UsuarioValidationService {
     private final IPersonaService personaService;
     private final IFabricanteService fabricanteService;
     private static final String NEW_PASSWORD = "new_password";
+    private static final Logger log = LoggerFactory.getLogger(UsuarioValidationService.class);
+
+    public UsuarioValidationService(
+            PasswordEncoder passwordEncoder,
+            ReactiveCompromisedPasswordChecker compromisedPasswordChecker,
+            UsuarioRepository usuarioRepository,
+            IPersonaService personaService,
+            IFabricanteService fabricanteService) {
+        this.passwordEncoder = passwordEncoder;
+        this.compromisedPasswordChecker = compromisedPasswordChecker;
+        this.usuarioRepository = usuarioRepository;
+        this.personaService = personaService;
+        this.fabricanteService = fabricanteService;
+    }
 
     @org.jetbrains.annotations.NotNull
     List<ApiError> validateWarningsRegistrarion(
@@ -217,16 +228,18 @@ class UsuarioValidationService {
 
     public sealed interface RegistrationResult permits RegistrationSuccess, RegistrationError {}
 
-    @Getter
     public static final class RegistrationSuccess implements RegistrationResult {
         private final Object outcome;
 
         public RegistrationSuccess(final Object outcome) {
             this.outcome = outcome;
         }
+
+        public Object getOutcome() {
+            return outcome;
+        }
     }
 
-    @Getter
     public static final class RegistrationError implements RegistrationResult {
         private final List<ApiError> errors;
 
@@ -236,6 +249,10 @@ class UsuarioValidationService {
 
         public RegistrationError(final ApiError error) {
             this.errors = List.of(error);
+        }
+
+        public List<ApiError> getErrors() {
+            return errors;
         }
     }
 }

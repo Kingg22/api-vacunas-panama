@@ -34,11 +34,8 @@ configurations {
 dependencies {
     implementation(libs.bundles.implementation)
 
-    compileOnly(libs.lombok)
-
     runtimeOnly(libs.bundles.runtimeOnly)
 
-    annotationProcessor(libs.lombok)
     ksp(libs.konvert)
 
     testImplementation(libs.bundles.testImplementation)
@@ -83,7 +80,7 @@ spotless {
         ktlint()
     }
     sql {
-        target("src/main/resources/**/*.sql", "*.sql")
+        target("src/main/resources/**/*.sql", "*.sql", "containers/database/*.sql")
     }
 }
 

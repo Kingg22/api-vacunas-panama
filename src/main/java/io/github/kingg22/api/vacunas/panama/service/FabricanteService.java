@@ -6,14 +6,16 @@ import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabrican
 import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /** Service for {@link Fabricante}. */
 @Service
-@RequiredArgsConstructor
 public class FabricanteService implements IFabricanteService {
     private final FabricanteRepository fabricanteRepository;
+
+    public FabricanteService(FabricanteRepository fabricanteRepository) {
+        this.fabricanteRepository = fabricanteRepository;
+    }
 
     @org.jetbrains.annotations.NotNull
     public Optional<Fabricante> getFabricante(@org.jetbrains.annotations.NotNull @NotNull String licencia) {

@@ -27,21 +27,33 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /** Service for {@link Vacuna} and {@link Dosis} */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class VacunaService implements IVacunaService {
     private final VacunaRepository vacunaRepository;
     private final DosisRepository dosisRepository;
     private final IPacienteService pacienteService;
     private final ISedeService sedeService;
     private final IDoctorService doctorService;
+    private static final Logger log = LoggerFactory.getLogger(VacunaService.class);
+
+    public VacunaService(
+            VacunaRepository vacunaRepository,
+            DosisRepository dosisRepository,
+            IPacienteService pacienteService,
+            ISedeService sedeService,
+            IDoctorService doctorService) {
+        this.vacunaRepository = vacunaRepository;
+        this.dosisRepository = dosisRepository;
+        this.pacienteService = pacienteService;
+        this.sedeService = sedeService;
+        this.doctorService = doctorService;
+    }
 
     @org.jetbrains.annotations.NotNull
     @Cacheable(cacheNames = "huge", key = "'vacunas'")

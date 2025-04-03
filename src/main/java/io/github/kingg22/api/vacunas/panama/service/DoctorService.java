@@ -5,14 +5,16 @@ import io.github.kingg22.api.vacunas.panama.modules.doctor.repository.DoctorRepo
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.IDoctorService;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
+
+    public DoctorService(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
 
     @NotNull
     public Optional<Doctor> getDoctorByUserID(@NotNull UUID idUser) {

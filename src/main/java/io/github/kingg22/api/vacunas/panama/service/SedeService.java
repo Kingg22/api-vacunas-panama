@@ -7,16 +7,18 @@ import io.github.kingg22.api.vacunas.panama.modules.sede.service.ISedeService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /** Service for {@link Sede}. */
 @Service
-@RequiredArgsConstructor
 public class SedeService implements ISedeService {
     private final SedeRepository sedeRepository;
+
+    public SedeService(SedeRepository sedeRepository) {
+        this.sedeRepository = sedeRepository;
+    }
 
     @NotNull
     @Cacheable(cacheNames = "massive", key = "'sedesNombre'")

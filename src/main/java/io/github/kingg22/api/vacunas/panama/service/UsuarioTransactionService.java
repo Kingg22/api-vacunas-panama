@@ -16,21 +16,24 @@ import java.time.ZoneOffset;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Service for {@link UsuarioManagementService} transaction. Public methods required by {@link Transactional} */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 class UsuarioTransactionService {
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
+
+    public UsuarioTransactionService(
+            PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository, RolRepository rolRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioRepository = usuarioRepository;
+        this.rolRepository = rolRepository;
+    }
 
     @Transactional
     public Usuario createUser(

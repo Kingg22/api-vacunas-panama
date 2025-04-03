@@ -26,25 +26,15 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.RolReposi
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService;
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse;
-import io.github.kingg22.api.vacunas.panama.response.ApiError;
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode;
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory;
-import io.github.kingg22.api.vacunas.panama.response.DefaultApiError;
+import io.github.kingg22.api.vacunas.panama.response.*;
 import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationError;
 import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationSuccess;
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,9 +45,7 @@ import org.springframework.stereotype.Service;
  * {@link PacienteService}, {@link DoctorService} and {@link FabricanteService} inheriting methods that involve
  * {@link Usuario} in relation to these services.
  */
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class UsuarioManagementService implements IUsuarioManagementService {
     private final UsuarioRepository usuarioRepository;
     private final PermisoRepository permisoRepository;
@@ -73,6 +61,30 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     private static final String PACIENTE = "paciente";
     private static final String FABRICANTE = "fabricante";
     private static final String DOCTOR = "doctor";
+    private static final Logger log = LoggerFactory.getLogger(UsuarioManagementService.class);
+
+    public UsuarioManagementService(
+            UsuarioRepository usuarioRepository,
+            PermisoRepository permisoRepository,
+            RolRepository rolRepository,
+            IPacienteService pacienteService,
+            IDoctorService doctorService,
+            ITokenService tokenService,
+            IPersonaService personaService,
+            IFabricanteService fabricanteService,
+            UsuarioValidationService validationService,
+            UsuarioTransactionService transactionService) {
+        this.usuarioRepository = usuarioRepository;
+        this.permisoRepository = permisoRepository;
+        this.rolRepository = rolRepository;
+        this.pacienteService = pacienteService;
+        this.doctorService = doctorService;
+        this.tokenService = tokenService;
+        this.personaService = personaService;
+        this.fabricanteService = fabricanteService;
+        this.validationService = validationService;
+        this.transactionService = transactionService;
+    }
 
     @org.jetbrains.annotations.NotNull
     public List<ApiError> validateAuthoritiesRegister(

@@ -18,7 +18,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,11 +25,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 /** Service for {@link Direccion}, {@link Distrito} and {@link Provincia}. */
 @Service
-@RequiredArgsConstructor
 public class DireccionService implements IDireccionService {
     private final DireccionRepository direccionRepository;
     private final DistritoRepository distritoRepository;
     private final ProvinciaRepository provinciaRepository;
+
+    public DireccionService(
+            DireccionRepository direccionRepository,
+            DistritoRepository distritoRepository,
+            ProvinciaRepository provinciaRepository) {
+        this.direccionRepository = direccionRepository;
+        this.distritoRepository = distritoRepository;
+        this.provinciaRepository = provinciaRepository;
+    }
 
     List<Distrito> getDistritos() {
         return distritoRepository.findAll();
