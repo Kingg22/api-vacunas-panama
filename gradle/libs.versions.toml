@@ -15,6 +15,7 @@ kover = "0.9.1"
 apache-commons-pool2 = "2.12.1"
 mockk = "1.13.17"
 spring-mockk = "4.0.2"
+kotest = "5.9.1"
 
 [libraries]
 # Spring
@@ -47,13 +48,15 @@ liquibase = { module = "org.liquibase:liquibase-core"}
 
 # Testing
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
 reactor-test = { module = "io.projectreactor:reactor-test" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring-mockk" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
 
 # Third Party
 dotenv-java = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv-java" }
@@ -89,8 +92,7 @@ implementation = [
     "kotlinx-coroutines",
     "kotlinx-coroutines-reactor",
     "reactor-kotlin",
-    "apache-commons-pool2",
-    "liquibase"
+    "apache-commons-pool2"
 ]
 
 runtimeOnly = [
@@ -100,12 +102,14 @@ runtimeOnly = [
 ]
 
 testImplementation = [
-    "kotlin-test-junit5",
+    "kotlin-test",
     "spring-security-test",
     "reactor-test",
     "kotlinx-coroutines-test",
     "mockk",
-    "spring-mockk"
+    "spring-mockk",
+    "kotest-assertions-core",
+    "kotest-assertions-json"
 ]
 
 [plugins]
