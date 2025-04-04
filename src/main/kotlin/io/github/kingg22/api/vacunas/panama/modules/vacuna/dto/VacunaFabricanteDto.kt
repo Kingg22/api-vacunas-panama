@@ -20,11 +20,11 @@ data class VacunaFabricanteDto(
 
     @field:JsonProperty(value = "id_fabricante")
     @param:JsonProperty(value = "id_fabricante")
-    val idFabricante: UUID,
+    val idFabricante: UUID? = null,
 
     @field:Size(max = 100)
     @param:Size(max = 100)
     @field:JsonProperty(value = "nombre_fabricante")
     @param:JsonProperty(value = "nombre_fabricante")
-    val nombreFabricante: String,
+    val nombreFabricante: String? = null,
 ) : Serializable
