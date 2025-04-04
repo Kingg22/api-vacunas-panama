@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiReactivePasswordChecker
+import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
@@ -50,7 +51,7 @@ class SecurityConfig(
         reactiveJwtDecoder: ReactiveJwtDecoder,
         reactiveJwtAuthenticationConverter: ReactiveJwtAuthenticationConverterAdapter,
         jwtRefreshFilter: CustomJwtRefreshFilter,
-    ) = http
+    ): SecurityWebFilterChain = http
         .csrf {
             it.requireCsrfProtectionMatcher(PathPatternParserServerWebExchangeMatcher("/vacunacion/**"))
             it.disable()
@@ -70,6 +71,12 @@ class SecurityConfig(
                 "/public/**",
                 "/bulk/**",
                 "/pdf/**",
+                "/direccion/provincias",
+                "/direccion/distritos",
+                "/sedes",
+                "/vaccines",
+                "/roles",
+                "/roles/permisos",
             ).permitAll()
                 .pathMatchers("/patient/**").hasAnyAuthority("PACIENTE_READ")
                 .pathMatchers("/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
