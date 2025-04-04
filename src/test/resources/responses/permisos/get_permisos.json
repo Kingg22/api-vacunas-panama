@@ -1,0 +1,62 @@
+{
+  "status": {
+    "code": "OK"
+  },
+  "data": {
+    "permisos": [
+      {
+        "id": 8,
+        "nombre": "ADMINISTRATIVO_WRITE"
+      },
+      {
+        "id": 9,
+        "nombre": "AUTORIDAD_READ"
+      },
+      {
+        "id": 10,
+        "nombre": "AUTORIDAD_WRITE"
+      },
+      {
+        "id": 11,
+        "nombre": "DEV_DB_ADMIN"
+      },
+      {
+        "id": 6,
+        "nombre": "FABRICANTE_READ"
+      },
+      {
+        "id": 7,
+        "nombre": "FABRICANTE_WRITE"
+      },
+      {
+        "id": 12,
+        "nombre": "GUEST_READ"
+      },
+      {
+        "id": 2,
+        "nombre": "MED_READ"
+      },
+      {
+        "id": 3,
+        "nombre": "MED_WRITE"
+      },
+      {
+        "id": 1,
+        "nombre": "PACIENTE_READ"
+      },
+      {
+        "id": 5,
+        "nombre": "USER_MANAGER_READ"
+      },
+      {
+        "id": 4,
+        "nombre": "USER_MANAGER_WRITE"
+      }
+    ]
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/roles/permisos"
+  }
+}

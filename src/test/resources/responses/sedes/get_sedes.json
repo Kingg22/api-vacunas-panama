@@ -1,0 +1,86 @@
+{
+  "status": {
+    "code": "OK"
+  },
+  "data": {
+    "sedes": [
+      {
+        "id": "aac0eade-4404-4a5d-b515-30806782788e",
+        "nombre": "Hospital Regional de Changuinola Raul Dávila Mena"
+      },
+      {
+        "id": "011d99b5-0f6f-4848-aaa4-56c10446e032",
+        "nombre": "MINSA CAPSI FINCA 30 CHANGINOLA"
+      },
+      {
+        "id": "67e2cd07-cb84-4672-85a3-107f7bf3256b",
+        "nombre": "Hospital Dr. Rafael Hernández"
+      },
+      {
+        "id": "1c9925bc-1722-4b01-9f35-6ce7b6dac7f5",
+        "nombre": "Hospital Aquilino Tejeira"
+      },
+      {
+        "id": "b0ca448c-453b-4dca-a282-9fc4910ec1c3",
+        "nombre": "Complejo Hospitalario Dr. Manuel Amador Guerrero"
+      },
+      {
+        "id": "347281e5-7592-4c0d-89fb-b5fa2835746b",
+        "nombre": "CENTRO DE SALUD METETÍ"
+      },
+      {
+        "id": "5881d308-e0c0-454c-88dd-1fa021808162",
+        "nombre": "CSS Complejo Metropolitano"
+      },
+      {
+        "id": "4bd0f5d4-e53c-4100-bb5b-27485f532cc8",
+        "nombre": "Centro de salud Pacora"
+      },
+      {
+        "id": "3aa47a53-9d54-4e14-8d6b-61fbd8c91bbf",
+        "nombre": "Pacífica Salud Hospital Punta Pacífica"
+      },
+      {
+        "id": "b220e543-6e37-4ac4-9833-6c66bd6186c1",
+        "nombre": "Policlínica Lic. Manuel María Valdés"
+      },
+      {
+        "id": "f435f2b6-772a-492c-ab60-85b3567cacaa",
+        "nombre": "Hospital Nacional"
+      },
+      {
+        "id": "336ae3d7-4107-4a7b-87e2-a315fe5f73cf",
+        "nombre": "POLICENTRO DE SALUD de Chepo"
+      },
+      {
+        "id": "1d785fb3-ec5f-438b-a77c-c305489d9c93",
+        "nombre": "Clínica Hospital San Fernando"
+      },
+      {
+        "id": "018de94e-b510-4e79-82a5-d6b657cb2f76",
+        "nombre": "Complejo Hospitalario Doctor Arnulfo Arias Madrid"
+      },
+      {
+        "id": "e396b9bc-d014-45c9-909f-d701a6ecf639",
+        "nombre": "Hospital de Especialidades Pediátricas Omar Torrijos Herrera"
+      },
+      {
+        "id": "f7981914-bb73-4dc0-abf0-d8cd81ccbcaf",
+        "nombre": "Hospital San Miguel Arcángel"
+      },
+      {
+        "id": "d7d103ca-b631-4a2c-abfd-dc47db202d97",
+        "nombre": "Hospital Santo Tomás"
+      },
+      {
+        "id": "49ec7fdb-4a28-4059-87a2-2460dbf2cef7",
+        "nombre": "Hospital Dr. Nicolás A. Solano"
+      }
+    ]
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/sedes"
+  }
+}

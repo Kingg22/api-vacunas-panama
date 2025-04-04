@@ -1,0 +1,42 @@
+{
+  "status": {
+    "code": "OK"
+  },
+  "data": {
+    "roles": [
+      {
+        "id": 5,
+        "nombre": "ADMINISTRATIVO"
+      },
+      {
+        "id": 7,
+        "nombre": "AUTORIDAD"
+      },
+      {
+        "id": 6,
+        "nombre": "DEVELOPER"
+      },
+      {
+        "id": 4,
+        "nombre": "DOCTOR"
+      },
+      {
+        "id": 3,
+        "nombre": "ENFERMERA"
+      },
+      {
+        "id": 2,
+        "nombre": "FABRICANTE"
+      },
+      {
+        "id": 1,
+        "nombre": "PACIENTE"
+      }
+    ]
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/roles"
+  }
+}
