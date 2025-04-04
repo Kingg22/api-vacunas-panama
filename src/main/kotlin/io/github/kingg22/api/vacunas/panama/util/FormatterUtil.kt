@@ -16,6 +16,13 @@ object FormatterUtil {
         @Suppress("ktlint:standard:max-line-length", "kotlin:S5843")
         "^[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\$".toRegex()
 
+    /**
+     * Formats a given cédula to the correct format if needed.
+     *
+     * @param cedula The cédula string to be formatted.
+     * @return The formatted cédula as a string.
+     * @throws IllegalArgumentException if the cédula does not match any expected pattern.
+     */
     @JvmStatic
     fun formatCedula(cedula: String): String {
         log.debug("Trying format cedula: {}", cedula)
@@ -38,6 +45,12 @@ object FormatterUtil {
         throw IllegalArgumentException("cedula no match to expected pattern to format")
     }
 
+    /**
+     * Formats a temporary ID if needed.
+     *
+     * @param idTemporal The temporary ID string to be formatted.
+     * @return The formatted ID as a string.
+     */
     @JvmStatic
     fun formatIdTemporal(idTemporal: String): String {
         log.debug("Check if idTemporal need format: {}", idTemporal)
@@ -56,10 +69,10 @@ object FormatterUtil {
     }
 
     /**
-     * Identifies if the data given is a cédula, pasaporte or correo
+     * Identifies if the given identifier is a cédula, pasaporte, or correo.
      *
-     * @param identifier data to be identified.
-     * @return [FormatterResult]
+     * @param identifier The string to be identified.
+     * @return [FormatterResult] containing the identified data type.
      */
     @JvmStatic
     fun formatToSearch(identifier: @NotNull String): FormatterResult {
@@ -82,6 +95,12 @@ object FormatterUtil {
         return FormatterResult(cedula, pasaporte, correo)
     }
 
+    /**
+     * Formats a maternal cédula (RI) if needed.
+     *
+     * @param idRI The maternal cédula string to be formatted.
+     * @return The formatted RI as a string.
+     */
     @JvmStatic
     private fun formatRI(idRI: String): String {
         log.info("Trying format cedula of mother: {}", idRI)
@@ -105,6 +124,15 @@ object FormatterUtil {
         }
     }
 
+    /**
+     * Data class that holds the result of a formatted identifier.
+     * Only one of the fields (cedula, pasaporte, correo) can be non-empty.
+     *
+     * @property cedula The formatted cédula, if available.
+     * @property pasaporte The formatted passport, if available.
+     * @property correo The formatted email address, if available.
+     * @throws IllegalArgumentException if more than one field is non-empty.
+     */
     @JvmRecord
     data class FormatterResult @JvmOverloads constructor(
         val cedula: String? = null,
@@ -119,6 +147,12 @@ object FormatterUtil {
             }
         }
 
+        /**
+         * Retrieves the identifier value from the available field.
+         *
+         * @return The non-null identifier.
+         * @throws IllegalArgumentException if no valid identifier is found.
+         */
         fun getIdentifier() = when {
             !cedula.isNullOrBlank() -> cedula
             !pasaporte.isNullOrBlank() -> pasaporte
@@ -126,6 +160,12 @@ object FormatterUtil {
             else -> throw IllegalArgumentException("Unknown identifier")
         }
 
+        /**
+         * Determines the type of the identifier (CÉDULA, PASAPORTE, CORREO).
+         *
+         * @return The [ResultType] corresponding to the identifier.
+         * @throws IllegalArgumentException if the identifier type is unknown.
+         */
         fun getTypeIdentifier() = when {
             !pasaporte.isNullOrBlank() -> ResultType.PASAPORTE
             !correo.isNullOrBlank() -> ResultType.CORREO
@@ -133,6 +173,7 @@ object FormatterUtil {
             else -> throw IllegalArgumentException("Unknown identifier type")
         }
 
+        /** Enumeration representing the possible types of identifiers. */
         enum class ResultType { CEDULA, PASAPORTE, CORREO }
     }
 }
