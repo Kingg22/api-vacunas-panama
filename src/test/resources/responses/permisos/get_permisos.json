@@ -5,6 +5,34 @@
   "data": {
     "permisos": [
       {
+        "id": 1,
+        "nombre": "PACIENTE_READ"
+      },
+      {
+        "id": 2,
+        "nombre": "MED_READ"
+      },
+      {
+        "id": 3,
+        "nombre": "MED_WRITE"
+      },
+      {
+        "id": 4,
+        "nombre": "USER_MANAGER_WRITE"
+      },
+      {
+        "id": 5,
+        "nombre": "USER_MANAGER_READ"
+      },
+      {
+        "id": 6,
+        "nombre": "FABRICANTE_READ"
+      },
+      {
+        "id": 7,
+        "nombre": "FABRICANTE_WRITE"
+      },
+      {
         "id": 8,
         "nombre": "ADMINISTRATIVO_WRITE"
       },
@@ -21,36 +49,8 @@
         "nombre": "DEV_DB_ADMIN"
       },
       {
-        "id": 6,
-        "nombre": "FABRICANTE_READ"
-      },
-      {
-        "id": 7,
-        "nombre": "FABRICANTE_WRITE"
-      },
-      {
         "id": 12,
         "nombre": "GUEST_READ"
-      },
-      {
-        "id": 2,
-        "nombre": "MED_READ"
-      },
-      {
-        "id": 3,
-        "nombre": "MED_WRITE"
-      },
-      {
-        "id": 1,
-        "nombre": "PACIENTE_READ"
-      },
-      {
-        "id": 5,
-        "nombre": "USER_MANAGER_READ"
-      },
-      {
-        "id": 4,
-        "nombre": "USER_MANAGER_WRITE"
       }
     ]
   },

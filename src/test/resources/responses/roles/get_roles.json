@@ -5,32 +5,32 @@
   "data": {
     "roles": [
       {
-        "id": 5,
-        "nombre": "ADMINISTRATIVO"
-      },
-      {
-        "id": 7,
-        "nombre": "AUTORIDAD"
-      },
-      {
-        "id": 6,
-        "nombre": "DEVELOPER"
-      },
-      {
-        "id": 4,
-        "nombre": "DOCTOR"
-      },
-      {
-        "id": 3,
-        "nombre": "ENFERMERA"
+        "id": 1,
+        "nombre": "PACIENTE"
       },
       {
         "id": 2,
         "nombre": "FABRICANTE"
       },
       {
-        "id": 1,
-        "nombre": "PACIENTE"
+        "id": 3,
+        "nombre": "ENFERMERA"
+      },
+      {
+        "id": 4,
+        "nombre": "DOCTOR"
+      },
+      {
+        "id": 5,
+        "nombre": "ADMINISTRATIVO"
+      },
+      {
+        "id": 6,
+        "nombre": "DEVELOPER"
+      },
+      {
+        "id": 7,
+        "nombre": "AUTORIDAD"
       }
     ]
   },
