@@ -35,6 +35,9 @@ jobs:
                   cache-overwrite-existing: true
                   validate-wrappers: true
 
+            - name: Test with Gradle
+              run: ./gradlew test --no-parallel
+
             - name: Build with Gradle Wrapper
               run: ./gradlew build
 
