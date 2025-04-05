@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotNull
 object FormatterUtil {
     private val log = logger()
     private val INCORRECT_PATTERN =
-        "^(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$".toPattern()
+        "^(PE|E|N|[2-9](?:AV|PI)?|1[0-3]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$".toPattern()
     private val CORRECT_PATTERN =
-        "^(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
+        "^(PE|E|N|[2-9](?:AV|PI)?|1[0-3]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
     private val INCORRECT_PATTERN_RI =
-        "^(RN(\\d{1,2}?)?)-(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$".toPattern()
+        "^(RN(\\d{1,2}?)?)-(PE|E|N|[2-9](?:AV|PI)?|1[0-3]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$".toPattern()
     private val CORRECT_PATTERN_RI =
-        "^(RN(\\d{1,2}?)?)-(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
+        "^(RN(\\d{1,2}?)?)-(PE|E|N|[2-9](?:AV|PI)?|1[0-3]?(?:AV|PI)?)-(\\d{4})-(\\d{6})$".toPattern()
     private val CORREO_REGEX =
         @Suppress("ktlint:standard:max-line-length", "kotlin:S5843")
         "^[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\$".toRegex()
