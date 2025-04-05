@@ -35,8 +35,10 @@ jobs:
                   cache-overwrite-existing: true
                   validate-wrappers: true
 
-            - name: Test with Gradle
-              run: ./gradlew test --no-parallel
+            - name: Setup Docker
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y docker-compose
 
             - name: Build with Gradle Wrapper
               run: ./gradlew build
