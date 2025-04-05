@@ -1,5 +1,6 @@
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import java.time.Instant
 
@@ -98,4 +99,20 @@ kover {
 tasks.named<BootBuildImage>("bootBuildImage") {
     createdDate.set(Instant.now().toString())
     tags.add("api-vacunas-panama:latest")
+}
+
+tasks.test {
+    testLogging {
+        setEvents(
+            setOf(
+                TestLogEvent.STARTED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.FAILED,
+                TestLogEvent.STANDARD_ERROR,
+                TestLogEvent.STANDARD_OUT,
+            ),
+        )
+        showStandardStreams = true
+    }
 }
