@@ -40,13 +40,11 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y docker-compose
 
-            - name: Set RSA keys as environment variables for test
-              run: |
-                  echo "JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}" >> $GITHUB_ENV
-                  echo "JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}" >> $GITHUB_ENV
-
             - name: Build with Gradle Wrapper
               run: ./gradlew build
+              env:
+                  JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
+                  JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}
 
         # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
         # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
