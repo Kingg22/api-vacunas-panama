@@ -40,7 +40,7 @@ class PdfController(
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
-                return ResponseEntity.badRequest().build()
+                return ResponseEntity.noContent().build()
             }
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()
@@ -81,6 +81,7 @@ class PdfController(
                     ),
                 )
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+                return sendResponse(apiResponse, webRequest)
             }
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()
