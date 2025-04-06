@@ -40,6 +40,11 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y docker-compose
 
+            - name: Set RSA keys as environment variables for test
+              run: |
+                  echo "JWT_PRIVATE=${{ secrets.JWT_PRIVATE }}" >> $GITHUB_ENV
+                  echo "JWT_PUBLIC=${{ secrets.JWT_PUBLIC }}" >> $GITHUB_ENV
+
             - name: Build with Gradle Wrapper
               run: ./gradlew build
 
