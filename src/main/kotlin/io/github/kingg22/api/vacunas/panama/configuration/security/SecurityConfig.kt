@@ -31,7 +31,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
-import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 
@@ -52,10 +51,6 @@ class SecurityConfig(
         reactiveJwtAuthenticationConverter: ReactiveJwtAuthenticationConverterAdapter,
         jwtRefreshFilter: CustomJwtRefreshFilter,
     ): SecurityWebFilterChain = http
-        .csrf {
-            it.requireCsrfProtectionMatcher(PathPatternParserServerWebExchangeMatcher("/vacunacion/**"))
-            it.disable()
-        }
         .headers {
             it.contentSecurityPolicy { cspc ->
                 cspc.policyDirectives(
