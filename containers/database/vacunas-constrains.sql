@@ -1,6 +1,6 @@
 ALTER TABLE distritos
     ADD CONSTRAINT ck_distritos_provincias CHECK (
-        (provincia = 0 AND nombre == 'Por registrar') OR
+        (provincia = 0 AND nombre = 'Por registrar') OR
         (provincia = 1 AND nombre IN ('Almirante', 'Bocas del Toro', 'Changuinola', 'Chiriquí Grande')) OR
         (provincia = 2 AND nombre IN ('Aguadulce', 'Antón', 'La Pintada', 'Natá', 'Olá', 'Penonomé')) OR
         (provincia = 3 AND
