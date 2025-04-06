@@ -15,7 +15,7 @@ class RolesPermisosControllerTest : BaseIntegrationTest() {
 
     @Test
     fun getRoles() {
-        val expectedJson = retrieveFileJson("responses/roles/get_roles.json")
+        val expectedJson = retrieveFileJson("responses/usuario/get_roles.json")
 
         webTestClient.get()
             .uri("/roles")
@@ -31,7 +31,7 @@ class RolesPermisosControllerTest : BaseIntegrationTest() {
 
     @Test
     fun getPermisos() {
-        val expectedJson = retrieveFileJson("responses/permisos/get_permisos.json")
+        val expectedJson = retrieveFileJson("responses/usuario/get_permisos.json")
 
         webTestClient.get()
             .uri("/roles/permisos")
