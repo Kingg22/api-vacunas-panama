@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 /**
- * This extension function for the ApiResponse class checks the object for errors.
+ * Check if this have errors.
  *
  * If the number of errors is equal to or greater than the value specified in the minErrors parameter (the default is 1),
  * it returns the object itself. Otherwise, it returns null.
@@ -10,13 +10,15 @@ package io.github.kingg22.api.vacunas.panama.response
  * ```kotlin
  * fun controller(): ApiResponse {
  *     response.returnIfErrors()?.let { return it }
+ *     // Do something without errors
+ *     response.addData("foo", "bar")
  * }
  * ```
  *
  * @param minErrors Number of errors to evaluate
- * @return [ApiResponse] if the condition is true otherwise null
+ * @return [ApiContentResponse] if the condition is true otherwise null
  */
-fun ApiResponse.returnIfErrors(minErrors: Int = 1): ApiResponse? = if (errors.size >= minErrors) this else null
+fun ApiContentResponse.returnIfErrors(minErrors: Int = 1) = if (errors.size >= minErrors) this else null
 
 /**
  * Convert an [ApiResponse] to [ApiResponseBuilder].
