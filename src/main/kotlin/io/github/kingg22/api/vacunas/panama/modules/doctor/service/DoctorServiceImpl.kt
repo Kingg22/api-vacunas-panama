@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class DoctorServiceImpl(private val doctorRepository: DoctorRepository) : IDoctorService {
+class DoctorServiceImpl(private val doctorRepository: DoctorRepository) : DoctorService {
     override fun getDoctorByUserID(idUser: UUID) = doctorRepository.findByUsuario_Id(idUser)
 
     override fun getDoctorById(idDoctor: UUID) = doctorRepository.findById(idDoctor)

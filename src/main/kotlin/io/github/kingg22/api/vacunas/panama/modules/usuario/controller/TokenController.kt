@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
@@ -23,7 +23,7 @@ import java.util.UUID
 @RequestMapping(path = ["/token"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class TokenController(
     private val redisTemplate: ReactiveRedisTemplate<String, Serializable>,
-    private val usuarioManagementService: IUsuarioManagementService,
+    private val usuarioManagementService: UsuarioManagementService,
 ) {
     private val log = logger()
 

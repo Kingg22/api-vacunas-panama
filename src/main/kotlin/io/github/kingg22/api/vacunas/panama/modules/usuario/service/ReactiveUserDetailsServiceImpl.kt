@@ -11,10 +11,10 @@ import reactor.core.publisher.Mono
 
 /**
  * Service for loading user details during JWT authentication. Extends [ReactiveUserDetailsService] and is used by Spring
- * Security to verify and authenticate JWT tokens. Delegates user operations to [IUsuarioManagementService].
+ * Security to verify and authenticate JWT tokens. Delegates user operations to [UsuarioManagementService].
  */
 @Component
-class ReactiveUserDetailsServiceImpl(private val usuarioManagementService: IUsuarioManagementService) :
+class ReactiveUserDetailsServiceImpl(private val usuarioManagementService: UsuarioManagementService) :
     ReactiveUserDetailsService {
 
     override fun findByUsername(username: String): Mono<UserDetails> =

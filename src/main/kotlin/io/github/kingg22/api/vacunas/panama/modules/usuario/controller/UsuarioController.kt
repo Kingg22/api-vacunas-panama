@@ -6,7 +6,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -58,7 +58,7 @@ import java.util.UUID
 @RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsuarioController(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
-    private val usuarioManagementService: IUsuarioManagementService,
+    private val usuarioManagementService: UsuarioManagementService,
 ) {
     private val log = logger()
 

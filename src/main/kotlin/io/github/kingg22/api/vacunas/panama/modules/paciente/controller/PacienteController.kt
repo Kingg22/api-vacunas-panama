@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.controller
 
-import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -21,7 +21,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["/patient"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class PacienteController(private val pacienteService: IPacienteService) {
+class PacienteController(private val pacienteService: PacienteService) {
     private val log = logger()
 
     @GetMapping

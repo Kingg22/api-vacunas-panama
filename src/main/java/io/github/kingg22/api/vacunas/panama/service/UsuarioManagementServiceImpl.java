@@ -3,16 +3,16 @@ package io.github.kingg22.api.vacunas.panama.service;
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto;
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor;
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.DoctorKonverterKt;
-import io.github.kingg22.api.vacunas.panama.modules.doctor.service.IDoctorService;
+import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService;
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante;
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.FabricanteKonverterKt;
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService;
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente;
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.PacienteKonverterKt;
-import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService;
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.PersonaKonverterKt;
-import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
+import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
@@ -24,8 +24,8 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.UsuarioKonver
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.PermisoRepository;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.RolRepository;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository;
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService;
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService;
 import io.github.kingg22.api.vacunas.panama.response.*;
 import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationError;
 import io.github.kingg22.api.vacunas.panama.service.UsuarioValidationService.RegistrationSuccess;
@@ -42,37 +42,37 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service for {@link Usuario}, {@link Rol} and {@link Permiso} Extends functionality from {@link IPersonaService},
- * {@link IPacienteService}, {@link IDoctorService} and {@link IFabricanteService} inheriting methods that involve
+ * Service for {@link Usuario}, {@link Rol} and {@link Permiso} Extends functionality from {@link PersonaService},
+ * {@link PacienteService}, {@link DoctorService} and {@link FabricanteService} inheriting methods that involve
  * {@link Usuario} in relation to these services.
  */
 @Service
-public class UsuarioManagementService implements IUsuarioManagementService {
+public class UsuarioManagementServiceImpl implements UsuarioManagementService {
     private final UsuarioRepository usuarioRepository;
     private final PermisoRepository permisoRepository;
     private final RolRepository rolRepository;
-    private final IPacienteService pacienteService;
-    private final IDoctorService doctorService;
-    private final ITokenService tokenService;
-    private final IPersonaService personaService;
-    private final IFabricanteService fabricanteService;
+    private final PacienteService pacienteService;
+    private final DoctorService doctorService;
+    private final TokenService tokenService;
+    private final PersonaService personaService;
+    private final FabricanteService fabricanteService;
     private final UsuarioValidationService validationService;
     private final UsuarioTransactionService transactionService;
     private static final String PERSONA = "persona";
     private static final String PACIENTE = "paciente";
     private static final String FABRICANTE = "fabricante";
     private static final String DOCTOR = "doctor";
-    private static final Logger log = LoggerFactory.getLogger(UsuarioManagementService.class);
+    private static final Logger log = LoggerFactory.getLogger(UsuarioManagementServiceImpl.class);
 
-    public UsuarioManagementService(
+    public UsuarioManagementServiceImpl(
             UsuarioRepository usuarioRepository,
             PermisoRepository permisoRepository,
             RolRepository rolRepository,
-            IPacienteService pacienteService,
-            IDoctorService doctorService,
-            ITokenService tokenService,
-            IPersonaService personaService,
-            IFabricanteService fabricanteService,
+            PacienteService pacienteService,
+            DoctorService doctorService,
+            TokenService tokenService,
+            PersonaService personaService,
+            FabricanteService fabricanteService,
             UsuarioValidationService validationService,
             UsuarioTransactionService transactionService) {
         this.usuarioRepository = usuarioRepository;

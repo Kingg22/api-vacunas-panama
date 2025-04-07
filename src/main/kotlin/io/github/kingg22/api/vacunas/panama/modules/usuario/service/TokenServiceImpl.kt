@@ -25,7 +25,7 @@ class TokenServiceImpl(
     @Value("\${security.jwt.issuer}") private val issuer: String,
     @Value("\${security.jwt.expiration-time}") private val expirationTime: Long,
     @Value("\${security.jwt.refresh-time}") private val refreshTime: Long,
-) : ITokenService {
+) : TokenService {
     // TODO make suspend fun
     override fun generateTokens(
         usuarioDto: UsuarioDto,

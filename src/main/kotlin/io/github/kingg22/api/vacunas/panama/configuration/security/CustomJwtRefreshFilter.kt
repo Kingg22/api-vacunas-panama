@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.ITokenService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -13,7 +13,7 @@ import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 
 @Component
-class CustomJwtRefreshFilter(private val tokenService: ITokenService, private val jwtDecoder: ReactiveJwtDecoder) :
+class CustomJwtRefreshFilter(private val tokenService: TokenService, private val jwtDecoder: ReactiveJwtDecoder) :
     WebFilter {
     companion object {
         private const val REFRESH_TOKEN_ENDPOINT = "/vacunacion/v1/token/refresh"

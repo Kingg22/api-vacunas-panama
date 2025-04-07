@@ -1,9 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
-import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
@@ -24,8 +24,8 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping(path = ["/bulk"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class BulkController(
-    private val usuarioManagementService: IUsuarioManagementService,
-    private val pacienteService: IPacienteService,
+    private val usuarioManagementService: UsuarioManagementService,
+    private val pacienteService: PacienteService,
 ) {
     private val log = logger()
 

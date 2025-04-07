@@ -9,7 +9,7 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
-class PersonaServiceImpl(private val personaRepository: PersonaRepository) : IPersonaService {
+class PersonaServiceImpl(private val personaRepository: PersonaRepository) : PersonaService {
     override fun getPersona(identifier: @NotNull String): Optional<Persona> {
         val result = formatToSearch(identifier)
         val personaOpt = this.personaRepository.findByCedulaOrPasaporteOrCorreo(

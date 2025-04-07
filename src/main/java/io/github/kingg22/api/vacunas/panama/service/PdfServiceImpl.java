@@ -5,7 +5,7 @@ import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto;
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto;
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto;
 import io.github.kingg22.api.vacunas.panama.modules.pdf.dto.PdfDto;
-import io.github.kingg22.api.vacunas.panama.modules.pdf.service.IPdfService;
+import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService;
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto;
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto;
 import jakarta.validation.constraints.NotNull;
@@ -26,11 +26,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PdfService implements IPdfService {
+public class PdfServiceImpl implements PdfService {
     private final ResourceLoader resourceLoader;
-    private static final Logger log = LoggerFactory.getLogger(PdfService.class);
+    private static final Logger log = LoggerFactory.getLogger(PdfServiceImpl.class);
 
-    public PdfService(ResourceLoader resourceLoader) {
+    public PdfServiceImpl(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

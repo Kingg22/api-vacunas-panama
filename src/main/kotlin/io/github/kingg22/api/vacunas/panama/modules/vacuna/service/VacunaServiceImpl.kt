@@ -1,13 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
-import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.doctor.service.IDoctorService
-import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
-import io.github.kingg22.api.vacunas.panama.modules.sede.service.ISedeService
+import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
+import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.VacunaRepository
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
@@ -27,10 +26,10 @@ import kotlin.jvm.optionals.getOrNull
 class VacunaServiceImpl(
     private val vacunaRepository: VacunaRepository,
     private val dosisRepository: DosisRepository,
-    @Lazy private val doctorService: IDoctorService,
-    @Lazy private val sedeService: ISedeService,
-    @Lazy private val pacienteService: IPacienteService,
-) : IVacunaService {
+    @Lazy private val doctorService: DoctorService,
+    @Lazy private val sedeService: SedeService,
+    @Lazy private val pacienteService: PacienteService,
+) : VacunaService {
     private val log = logger()
 
     override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
@@ -107,10 +106,8 @@ class VacunaServiceImpl(
         return contentResponse.build()
     }
 
-    // TODO change to function
-    override val vacunasFabricante: List<VacunaFabricanteDto>
-        @Cacheable(cacheNames = ["huge"], key = "'vacunas'")
-        get() = vacunaRepository.findAllIdAndNombreAndFabricante()
+    @Cacheable(cacheNames = ["huge"], key = "'vacunas'")
+    override fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
 
     override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
         dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna).toListDosisDto()

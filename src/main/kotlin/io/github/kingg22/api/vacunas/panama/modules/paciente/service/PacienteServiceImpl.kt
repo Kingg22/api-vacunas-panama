@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
-import io.github.kingg22.api.vacunas.panama.modules.direccion.service.IDireccionService
+import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
@@ -26,8 +26,8 @@ import java.util.UUID
 @Service
 class PacienteServiceImpl(
     private val pacienteRepository: PacienteRepository,
-    @Lazy private val direccionService: IDireccionService,
-) : IPacienteService {
+    @Lazy private val direccionService: DireccionService,
+) : PacienteService {
     private val log = logger()
 
     override fun validateCreatePacienteUsuario(pacienteDto: PacienteDto): ApiContentResponse = createResponseBuilder {

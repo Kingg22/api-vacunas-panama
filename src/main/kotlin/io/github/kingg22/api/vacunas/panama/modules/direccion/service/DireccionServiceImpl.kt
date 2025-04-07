@@ -1,8 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
 import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDistritoDto
@@ -23,16 +21,13 @@ class DireccionServiceImpl(
     private val direccionRepository: DireccionRepository,
     private val distritoRepository: DistritoRepository,
     private val provinciaRepository: ProvinciaRepository,
-) : IDireccionService {
-    // TODO change to functions
-    override val distritosDto: List<DistritoDto>
-        @Cacheable(cacheNames = ["massive"], key = "'distritosDto'")
-        @Transactional
-        get() = distritoRepository.findAll().toListDistritoDto()
+) : DireccionService {
+    @Cacheable(cacheNames = ["massive"], key = "'distritosDto'")
+    @Transactional
+    override fun getDistritosDto() = distritoRepository.findAll().toListDistritoDto()
 
-    override val provinciasDto: List<ProvinciaDto>
-        @Cacheable(cacheNames = ["massive"], key = "'provinciasDto'")
-        get() = provinciaRepository.findAll().toListProvinciaDto()
+    @Cacheable(cacheNames = ["massive"], key = "'provinciasDto'")
+    override fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun createDireccion(@Valid direccionDto: DireccionDto): Direccion {
@@ -49,6 +44,7 @@ class DireccionServiceImpl(
         )
     }
 
+    @Cacheable(cacheNames = ["massive"], key = "'direccionDefault'")
     override fun getDireccionDefault(): Direccion =
         direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
             .orElseThrow()

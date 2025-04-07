@@ -52,9 +52,6 @@ class Sede @JvmOverloads constructor(
     @OneToMany(mappedBy = "sede")
     val doctores: Set<Doctor> = emptySet(),
 
-    @OneToMany(mappedBy = "sede")
-    val sedesInventarios: Set<SedesInventario> = emptySet(),
-
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),

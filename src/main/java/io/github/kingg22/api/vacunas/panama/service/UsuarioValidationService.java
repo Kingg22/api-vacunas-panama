@@ -1,8 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
+import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
@@ -21,14 +21,14 @@ import org.springframework.security.authentication.password.ReactiveCompromisedP
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/** Service for {@link UsuarioManagementService} validations. */
+/** Service for {@link UsuarioManagementServiceImpl} validations. */
 @Service
 class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
     private final ReactiveCompromisedPasswordChecker compromisedPasswordChecker;
     private final UsuarioRepository usuarioRepository;
-    private final IPersonaService personaService;
-    private final IFabricanteService fabricanteService;
+    private final PersonaService personaService;
+    private final FabricanteService fabricanteService;
     private static final String NEW_PASSWORD = "new_password";
     private static final Logger log = LoggerFactory.getLogger(UsuarioValidationService.class);
 
@@ -36,8 +36,8 @@ class UsuarioValidationService {
             PasswordEncoder passwordEncoder,
             ReactiveCompromisedPasswordChecker compromisedPasswordChecker,
             UsuarioRepository usuarioRepository,
-            IPersonaService personaService,
-            IFabricanteService fabricanteService) {
+            PersonaService personaService,
+            FabricanteService fabricanteService) {
         this.passwordEncoder = passwordEncoder;
         this.compromisedPasswordChecker = compromisedPasswordChecker;
         this.usuarioRepository = usuarioRepository;

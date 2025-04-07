@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.IVacunaService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createAndSendResponse
@@ -21,10 +21,10 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(path = ["/vaccines"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class VacunaController(private val vacunaService: IVacunaService) {
+class VacunaController(private val vacunaService: VacunaService) {
     @GetMapping
     fun getVacunas(request: ServerHttpRequest) =
-        createAndSendResponse(request, "vacunas", vacunaService.vacunasFabricante.toArrayList())
+        createAndSendResponse(request, "vacunas", vacunaService.getVacunasFabricante().toArrayList())
 
     @PostMapping("/create-dosis")
     fun createDosis(
