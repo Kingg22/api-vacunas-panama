@@ -1,13 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.response
 
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ApiErrorResponse
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
-import org.springframework.web.context.request.ServletWebRequest
+import org.springframework.http.server.reactive.ServerHttpRequest
+import reactor.core.publisher.Mono
 import java.io.Serializable
 import java.time.Instant
 
@@ -22,14 +21,13 @@ object ApiResponseUtil {
      * Adds metadata information to the provided API response.
      *
      * @param apiResponse [ApiResponse] object to which metadata will be added.
-     * @param servletWebRequest [ServletWebRequest] request data used to extract information.
+     * @param serverHttpRequest [ServerHttpRequest] request data used to extract information.
      */
     @JvmStatic
-    fun setMetadata(apiResponse: ApiResponse, servletWebRequest: ServletWebRequest) {
-        log.debug("servletWebRequest: {}", servletWebRequest)
-        log.debug("locale: {}", servletWebRequest.locale)
+    fun setMetadata(apiResponse: ApiResponse, serverHttpRequest: ServerHttpRequest) {
         apiResponse.apply {
-            addMetadata("path", servletWebRequest.request.requestURI)
+            log.debug("servletWebRequest: {}", serverHttpRequest.toString())
+            addMetadata("path", serverHttpRequest.uri.path)
             addMetadata("timestamp", Instant.now().toString())
         }
     }
@@ -38,30 +36,33 @@ object ApiResponseUtil {
      * Creates a standardized HTTP response from the API response.
      *
      * @param apiResponse [ApiResponse] object containing the response with status.
-     * @param webRequest [ServletWebRequest] used to set metadata in the response.
+     * @param serverHttpRequest [ServerHttpRequest] used to set metadata in the response.
      * @return A [ResponseEntity] with the status code and body set to the API response object.
      */
     @JvmStatic
-    fun sendResponse(apiResponse: ApiResponse, webRequest: ServletWebRequest): ResponseEntity<ApiResponse> =
-        apiResponse.apply {
-            setMetadata(this, webRequest)
-            log.debug(toString())
-        }.let {
-            ResponseEntity.status(it.retrieveHttpStatusCode()).body(it)
-        }
+    fun sendResponse(
+        apiResponse: ApiResponse,
+        serverHttpRequest: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> = apiResponse.apply {
+        setMetadata(this, serverHttpRequest)
+        log.debug(toString())
+    }.let {
+        Mono.just(ResponseEntity.status(it.retrieveHttpStatusCode()).body(it))
+    }
 
     @JvmStatic
     fun createAndSendResponse(
-        request: ServletWebRequest,
+        request: ServerHttpRequest,
         attributeName: String,
         data: Serializable,
         statusCode: HttpStatusCode = HttpStatus.OK,
-    ): ResponseEntity<ApiResponse> {
-        val response = createResponse()
-        response.addData(attributeName, data)
-        response.addStatusCode(statusCode)
-        return sendResponse(response, request)
-    }
+    ): Mono<ResponseEntity<ApiResponse>> = sendResponse(
+        ApiResponseFactory.createResponseBuilder {
+            withData(attributeName, data)
+            withStatusCode(statusCode)
+        },
+        request,
+    )
 
     /**
      * Transforms an [ApiErrorResponse] from the error-handling library into a custom API response format.
@@ -72,8 +73,8 @@ object ApiResponseUtil {
      * @return A new [ApiResponse] object.
      */
     @JvmStatic
-    fun transformApiErrorResponse(apiErrorResponse: ApiErrorResponse, request: Any): ApiResponse =
-        DefaultApiResponse.builder {
+    fun transformApiErrorResponse(apiErrorResponse: ApiErrorResponse, request: ServerHttpRequest): ApiResponse =
+        ApiResponseFactory.createResponseBuilder {
             withStatusCode(apiErrorResponse.httpStatus)
 
             val errorMessage = if (
@@ -85,31 +86,21 @@ object ApiResponseUtil {
                 apiErrorResponse.message
             }
 
-            withError(DefaultApiError(code = apiErrorResponse.code, property = null, message = errorMessage))
+            withError(code = apiErrorResponse.code, property = null, message = errorMessage)
 
             apiErrorResponse.fieldErrors.forEach {
-                withError(
-                    DefaultApiError.builder {
-                        withCode(it.code)
-                        withMessage(it.message)
-                        withProperties(it.property)
-                    },
-                )
+                withError(code = it.code, message = it.message, property = it.property)
             }
 
             apiErrorResponse.globalErrors.forEach {
-                withError(DefaultApiError(code = it.code, message = it.message))
+                withError(code = it.code, message = it.message)
             }
 
             apiErrorResponse.parameterErrors.forEach {
-                withError(DefaultApiError(code = it.code, property = it.parameter, message = it.message))
+                withError(code = it.code, property = it.parameter, message = it.message)
             }
 
-            when (request) {
-                is ServletWebRequest -> setMetadata(this.build(), request)
-                is HttpServletRequest -> setMetadata(this.build(), ServletWebRequest(request))
-                else -> withMetadata("timestamp", Instant.now().toString())
-            }
+            setMetadata(build(), request)
 
             log.debug(
                 "ErrorResponse(code: {}, message: {}, properties: {})",

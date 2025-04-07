@@ -1,8 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.pdf.controller
 
-import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
-import io.github.kingg22.api.vacunas.panama.modules.pdf.service.IPdfService
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.IVacunaService
+import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
+import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -13,20 +13,21 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 import java.io.IOException
 import java.util.UUID
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/pdf"])
+@RequestMapping(path = ["/pdf"])
 class PdfController(
-    private val pdfService: IPdfService,
-    private val pacienteService: IPacienteService,
-    private val vacunaService: IVacunaService,
+    private val pdfService: PdfService,
+    private val pacienteService: PacienteService,
+    private val vacunaService: VacunaService,
 ) {
     private val log = logger()
 
@@ -39,7 +40,7 @@ class PdfController(
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
-                return ResponseEntity.badRequest().build()
+                return ResponseEntity.noContent().build()
             }
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()
@@ -66,8 +67,8 @@ class PdfController(
     fun getPdfBase64(
         @RequestParam("idPaciente") idPaciente: UUID,
         @RequestParam("idVacuna") idVacuna: UUID,
-        webRequest: ServletWebRequest,
-    ): ResponseEntity<ApiResponse> {
+        webRequest: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         try {
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
@@ -75,11 +76,12 @@ class PdfController(
                 log.debug(dosisDtos.toString())
                 apiResponse.addError(
                     DefaultApiError(
-                        ApiResponseCode.NOT_FOUND,
-                        "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF",
+                        code = ApiResponseCode.NOT_FOUND,
+                        message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF",
                     ),
                 )
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+                return sendResponse(apiResponse, webRequest)
             }
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()

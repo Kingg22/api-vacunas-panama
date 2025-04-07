@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
-import io.github.kingg22.api.vacunas.panama.modules.sede.entity.SedesInventario
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.NumDosisEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaDto
 import io.mcarle.konvert.api.KonvertTo
@@ -56,7 +55,4 @@ class Vacuna @JvmOverloads constructor(
 
     @ManyToMany(mappedBy = "vacunas")
     val fabricantes: Set<Fabricante> = emptySet(),
-
-    @OneToMany(mappedBy = "vacuna")
-    val sedesInventarios: Set<SedesInventario> = emptySet(),
 )

@@ -1,28 +1,36 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.IVacunaService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createAndSendResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
+import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/vaccines/"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class VacunaController(private val vacunaService: IVacunaService) {
+@RequestMapping(path = ["/vaccines"], produces = [MediaType.APPLICATION_JSON_VALUE])
+class VacunaController(private val vacunaService: VacunaService) {
+    @GetMapping
+    fun getVacunas(request: ServerHttpRequest) =
+        createAndSendResponse(request, "vacunas", vacunaService.getVacunasFabricante().toArrayList())
+
     @PostMapping("/create-dosis")
     fun createDosis(
         @RequestBody @Valid insertDosisDto: InsertDosisDto,
-        servletWebRequest: ServletWebRequest,
-    ): ResponseEntity<ApiResponse> {
+        servletWebRequest: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {

@@ -1,9 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
-import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser;
+import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
@@ -15,24 +15,35 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/** Service for {@link UsuarioManagementService} validations. */
-@Slf4j
+/** Service for {@link UsuarioManagementServiceImpl} validations. */
 @Service
-@RequiredArgsConstructor
 class UsuarioValidationService {
     private final PasswordEncoder passwordEncoder;
-    private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final ReactiveCompromisedPasswordChecker compromisedPasswordChecker;
     private final UsuarioRepository usuarioRepository;
-    private final IPersonaService personaService;
-    private final IFabricanteService fabricanteService;
+    private final PersonaService personaService;
+    private final FabricanteService fabricanteService;
     private static final String NEW_PASSWORD = "new_password";
+    private static final Logger log = LoggerFactory.getLogger(UsuarioValidationService.class);
+
+    public UsuarioValidationService(
+            PasswordEncoder passwordEncoder,
+            ReactiveCompromisedPasswordChecker compromisedPasswordChecker,
+            UsuarioRepository usuarioRepository,
+            PersonaService personaService,
+            FabricanteService fabricanteService) {
+        this.passwordEncoder = passwordEncoder;
+        this.compromisedPasswordChecker = compromisedPasswordChecker;
+        this.usuarioRepository = usuarioRepository;
+        this.personaService = personaService;
+        this.fabricanteService = fabricanteService;
+    }
 
     @org.jetbrains.annotations.NotNull
     List<ApiError> validateWarningsRegistrarion(
@@ -60,16 +71,16 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistration(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
         var errors = new ArrayList<ApiError>();
-        var usuarioDto = registerUser.usuario();
+        var usuarioDto = registerUserDto.usuario();
 
         if (this.isUsernameRegistered(usuarioDto.username())) {
             errors.add(new DefaultApiError(
                     ApiResponseCode.ALREADY_TAKEN, "username", "El nombre de usuario ya está en uso"));
         }
 
-        if (this.compromisedPasswordChecker.check(usuarioDto.password()).isCompromised()) {
+        if (this.compromisedPasswordChecker.check(usuarioDto.password()).block().isCompromised()) {
             errors.add(new DefaultApiError(
                     ApiResponseCode.COMPROMISED_PASSWORD,
                     "password",
@@ -81,8 +92,8 @@ class UsuarioValidationService {
         }
 
         // validation is delegated to other specific methods depending on the role to be registered
-        if (registerUser.cedula() != null || registerUser.pasaporte() != null) {
-            return this.validateRegistrationPersona(registerUser);
+        if (registerUserDto.cedula() != null || registerUserDto.pasaporte() != null) {
+            return this.validateRegistrationPersona(registerUserDto);
         }
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
@@ -90,8 +101,8 @@ class UsuarioValidationService {
                                 && rolDto.nombre() != null
                                 && !rolDto.nombre().isBlank()
                                 && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
-            if (registerUser.licenciaFabricante() != null) {
-                return this.validateRegistrationFabricante(registerUser);
+            if (registerUserDto.licenciaFabricante() != null) {
+                return this.validateRegistrationFabricante(registerUserDto);
             } else {
                 errors.add(
                         new DefaultApiError(
@@ -108,8 +119,8 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistrationPersona(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
-        var identifier = registerUser.cedula() != null ? registerUser.cedula() : registerUser.pasaporte();
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
+        var identifier = registerUserDto.cedula() != null ? registerUserDto.cedula() : registerUserDto.pasaporte();
         assert identifier != null;
 
         return this.personaService
@@ -136,9 +147,9 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistrationFabricante(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
         return this.fabricanteService
-                .getFabricante(registerUser.licenciaFabricante())
+                .getFabricante(registerUserDto.licenciaFabricante())
                 .map(fabricante -> {
                     if (!fabricante.getDisabled()) {
                         var user = fabricante.getUsuario();
@@ -184,7 +195,7 @@ class UsuarioValidationService {
                     "La nueva contraseña no puede ser igual a su username"));
         }
 
-        if (this.compromisedPasswordChecker.check(newPassword).isCompromised()) {
+        if (this.compromisedPasswordChecker.check(newPassword).block().isCompromised()) {
             errores.add(new DefaultApiError(
                     ApiResponseCode.VALIDATION_FAILED,
                     NEW_PASSWORD,
@@ -217,16 +228,18 @@ class UsuarioValidationService {
 
     public sealed interface RegistrationResult permits RegistrationSuccess, RegistrationError {}
 
-    @Getter
     public static final class RegistrationSuccess implements RegistrationResult {
         private final Object outcome;
 
         public RegistrationSuccess(final Object outcome) {
             this.outcome = outcome;
         }
+
+        public Object getOutcome() {
+            return outcome;
+        }
     }
 
-    @Getter
     public static final class RegistrationError implements RegistrationResult {
         private final List<ApiError> errors;
 
@@ -236,6 +249,10 @@ class UsuarioValidationService {
 
         public RegistrationError(final ApiError error) {
             this.errors = List.of(error);
+        }
+
+        public List<ApiError> getErrors() {
+            return errors;
         }
     }
 }

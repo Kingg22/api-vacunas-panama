@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.10.1"
+version = "0.11.0"
 
 java {
     toolchain {
@@ -34,14 +34,14 @@ configurations {
 dependencies {
     implementation(libs.bundles.implementation)
 
-    compileOnly(libs.lombok)
-
     runtimeOnly(libs.bundles.runtimeOnly)
 
-    annotationProcessor(libs.lombok)
     ksp(libs.konvert)
 
     testImplementation(libs.bundles.testImplementation)
+    testImplementation(libs.spring.boot.starter.test) {
+        exclude(module = "mockito-core")
+    }
 
     testRuntimeOnly(libs.junit.platform.launcher)
 }
@@ -80,7 +80,7 @@ spotless {
         ktlint()
     }
     sql {
-        target("src/main/resources/**/*.sql", "*.sql")
+        target("src/main/resources/**/*.sql", "*.sql", "containers/database/*.sql")
     }
 }
 
@@ -98,4 +98,10 @@ kover {
 tasks.named<BootBuildImage>("bootBuildImage") {
     createdDate.set(Instant.now().toString())
     tags.add("api-vacunas-panama:latest")
+}
+
+tasks.test {
+    testLogging {
+        showStandardStreams = true
+    }
 }

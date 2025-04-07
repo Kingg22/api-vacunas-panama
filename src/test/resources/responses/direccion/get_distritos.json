@@ -1,0 +1,702 @@
+{
+  "status": {
+    "code": "OK"
+  },
+  "data": {
+    "distritos": [
+      {
+        "id": 0,
+        "nombre": "Por registrar",
+        "provincia": {
+          "id": 0,
+          "nombre": "Por registrar"
+        }
+      },
+      {
+        "id": 1,
+        "nombre": "Aguadulce",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 2,
+        "nombre": "Alanje",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 3,
+        "nombre": "Almirante",
+        "provincia": {
+          "id": 1,
+          "nombre": "Bocas del Toro"
+        }
+      },
+      {
+        "id": 4,
+        "nombre": "Antón",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 5,
+        "nombre": "Arraiján",
+        "provincia": {
+          "id": 13,
+          "nombre": "Panamá Oeste"
+        }
+      },
+      {
+        "id": 6,
+        "nombre": "Atalaya",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 7,
+        "nombre": "Balboa",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 8,
+        "nombre": "Barú",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 9,
+        "nombre": "Besikó",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 10,
+        "nombre": "Bocas del Toro",
+        "provincia": {
+          "id": 1,
+          "nombre": "Bocas del Toro"
+        }
+      },
+      {
+        "id": 11,
+        "nombre": "Boquerón",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 12,
+        "nombre": "Boquete",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 13,
+        "nombre": "Bugaba",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 14,
+        "nombre": "Calobre",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 15,
+        "nombre": "Calovébora",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 16,
+        "nombre": "Cañazas",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 17,
+        "nombre": "Capira",
+        "provincia": {
+          "id": 13,
+          "nombre": "Panamá Oeste"
+        }
+      },
+      {
+        "id": 18,
+        "nombre": "Chagres",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 19,
+        "nombre": "Chame",
+        "provincia": {
+          "id": 13,
+          "nombre": "Panamá Oeste"
+        }
+      },
+      {
+        "id": 20,
+        "nombre": "Changuinola",
+        "provincia": {
+          "id": 1,
+          "nombre": "Bocas del Toro"
+        }
+      },
+      {
+        "id": 21,
+        "nombre": "Chepigana",
+        "provincia": {
+          "id": 5,
+          "nombre": "Darién"
+        }
+      },
+      {
+        "id": 22,
+        "nombre": "Chepo",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 23,
+        "nombre": "Chimán",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 24,
+        "nombre": "Chiriquí Grande",
+        "provincia": {
+          "id": 1,
+          "nombre": "Bocas del Toro"
+        }
+      },
+      {
+        "id": 25,
+        "nombre": "Chitré",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 26,
+        "nombre": "Colón",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 27,
+        "nombre": "Cémaco",
+        "provincia": {
+          "id": 11,
+          "nombre": "Emberá-Wounaan"
+        }
+      },
+      {
+        "id": 28,
+        "nombre": "David",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 29,
+        "nombre": "Donoso",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 30,
+        "nombre": "Dolega",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 31,
+        "nombre": "Gualaca",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 32,
+        "nombre": "Guararé",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 33,
+        "nombre": "Guna de Wargandí",
+        "provincia": {
+          "id": 5,
+          "nombre": "Darién"
+        }
+      },
+      {
+        "id": 34,
+        "nombre": "Jirondai",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 35,
+        "nombre": "Kankintú",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 36,
+        "nombre": "Kusapín",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 37,
+        "nombre": "La Chorrera",
+        "provincia": {
+          "id": 13,
+          "nombre": "Panamá Oeste"
+        }
+      },
+      {
+        "id": 38,
+        "nombre": "La Mesa",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 39,
+        "nombre": "La Pintada",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 40,
+        "nombre": "Las Minas",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 41,
+        "nombre": "Las Palmas",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 42,
+        "nombre": "Las Tablas",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 43,
+        "nombre": "Los Pozos",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 44,
+        "nombre": "Los Santos",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 45,
+        "nombre": "Macaracas",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 46,
+        "nombre": "Mariato",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 47,
+        "nombre": "Mironó",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 48,
+        "nombre": "Montijo",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 49,
+        "nombre": "Müna",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 50,
+        "nombre": "Natá",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 51,
+        "nombre": "Nole Duima",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 52,
+        "nombre": "Ñürüm",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 53,
+        "nombre": "Ocú",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 54,
+        "nombre": "Olá",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 55,
+        "nombre": "Omar Torrijos Herrera",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 56,
+        "nombre": "Panamá",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 57,
+        "nombre": "Parita",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 58,
+        "nombre": "Pedasí",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 59,
+        "nombre": "Penonomé",
+        "provincia": {
+          "id": 2,
+          "nombre": "Coclé"
+        }
+      },
+      {
+        "id": 60,
+        "nombre": "Pesé",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 61,
+        "nombre": "Pinogana",
+        "provincia": {
+          "id": 5,
+          "nombre": "Darién"
+        }
+      },
+      {
+        "id": 62,
+        "nombre": "Pocrí",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 63,
+        "nombre": "Portobelo",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 64,
+        "nombre": "Remedios",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 65,
+        "nombre": "Renacimiento",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 66,
+        "nombre": "Río de Jesús",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 67,
+        "nombre": "Sambú",
+        "provincia": {
+          "id": 11,
+          "nombre": "Emberá-Wounaan"
+        }
+      },
+      {
+        "id": 68,
+        "nombre": "San Carlos",
+        "provincia": {
+          "id": 13,
+          "nombre": "Panamá Oeste"
+        }
+      },
+      {
+        "id": 69,
+        "nombre": "San Félix",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 70,
+        "nombre": "San Francisco",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 71,
+        "nombre": "San Lorenzo",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 72,
+        "nombre": "San Miguelito",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 73,
+        "nombre": "Santa Catalina",
+        "provincia": {
+          "id": 12,
+          "nombre": "Ngäbe-Buglé"
+        }
+      },
+      {
+        "id": 74,
+        "nombre": "Santa Fe",
+        "provincia": {
+          "id": 5,
+          "nombre": "Darién"
+        }
+      },
+      {
+        "id": 75,
+        "nombre": "Santa Fe",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 76,
+        "nombre": "Santa Isabel",
+        "provincia": {
+          "id": 3,
+          "nombre": "Colón"
+        }
+      },
+      {
+        "id": 77,
+        "nombre": "Santa María",
+        "provincia": {
+          "id": 6,
+          "nombre": "Herrera"
+        }
+      },
+      {
+        "id": 78,
+        "nombre": "Santiago",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 79,
+        "nombre": "Soná",
+        "provincia": {
+          "id": 9,
+          "nombre": "Veraguas"
+        }
+      },
+      {
+        "id": 80,
+        "nombre": "Taboga",
+        "provincia": {
+          "id": 8,
+          "nombre": "Panamá"
+        }
+      },
+      {
+        "id": 81,
+        "nombre": "Tierras Altas",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 82,
+        "nombre": "Tolé",
+        "provincia": {
+          "id": 4,
+          "nombre": "Chiriquí"
+        }
+      },
+      {
+        "id": 83,
+        "nombre": "Tonosí",
+        "provincia": {
+          "id": 7,
+          "nombre": "Los Santos"
+        }
+      },
+      {
+        "id": 84,
+        "nombre": "Naso Tjër Di",
+        "provincia": {
+          "id": 14,
+          "nombre": "Naso Tjër Di"
+        }
+      },
+      {
+        "id": 85,
+        "nombre": "Extranjero",
+        "provincia": {
+          "id": 17,
+          "nombre": "Extranjero"
+        }
+      }
+    ]
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/public/distritos"
+  }
+}

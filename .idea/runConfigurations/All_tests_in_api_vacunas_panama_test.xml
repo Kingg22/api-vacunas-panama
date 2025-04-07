@@ -1,9 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All tests in api-vacunas-panama.test" type="JUnit" factoryName="JUnit">
     <module name="api-vacunas-panama.test" />
+    <shortenClasspath name="ARGS_FILE" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="io.github.kingg22.api_vacunas_panama.*" />
+        <option name="PATTERN" value="io.github.kingg22.api.vacunas.panama.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

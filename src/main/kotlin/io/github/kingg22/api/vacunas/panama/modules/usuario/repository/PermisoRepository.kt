@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface PermisoRepository : JpaRepository<Permiso, Short> {
     @Query(
-        "SELECT new io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto(p.id, p.nombre) FROM Permiso p",
+        "SELECT new io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto(p.id, p.nombre) FROM Permiso p ORDER BY p.id",
     )
     fun findAllIdNombre(): List<IdNombreDto>
 }

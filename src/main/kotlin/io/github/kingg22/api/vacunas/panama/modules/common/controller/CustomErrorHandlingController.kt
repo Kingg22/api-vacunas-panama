@@ -6,18 +6,17 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.transformAp
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ErrorHandlingFacade
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ControllerAdvice
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import org.springframework.web.bind.annotation.RestControllerAdvice
+import reactor.core.publisher.Mono
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ControllerAdvice(annotations = [RestController::class])
+@RestControllerAdvice
 class CustomErrorHandlingController(private val errorHandlingFacade: ErrorHandlingFacade) {
-    @ExceptionHandler
-    fun handleException(exception: Throwable?, webRequest: ServletWebRequest): ResponseEntity<ApiResponse> {
-        val errorResponse = errorHandlingFacade.handle(exception)
-        return sendResponse(transformApiErrorResponse(errorResponse, webRequest), webRequest)
-    }
+    @ExceptionHandler(produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun handleException(exception: Throwable?, webRequest: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> =
+        sendResponse(transformApiErrorResponse(errorHandlingFacade.handle(exception), webRequest), webRequest)
 }

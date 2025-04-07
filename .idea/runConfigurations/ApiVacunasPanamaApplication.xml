@@ -2,7 +2,11 @@
   <configuration default="false" name="ApiVacunasPanamaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="api-vacunas-panama.main" />
+    <selectedOptions>
+      <option name="spring.boot.profiles" visible="false" />
+    </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="io.github.kingg22.api.vacunas.panama.ApiVacunasPanamaApplication" />
+    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

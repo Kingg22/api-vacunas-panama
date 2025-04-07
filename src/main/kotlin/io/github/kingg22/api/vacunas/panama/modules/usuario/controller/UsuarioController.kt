@@ -1,12 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.LoginDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -17,8 +17,9 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.password.CompromisedPasswordException
 import org.springframework.security.core.Authentication
@@ -28,31 +29,36 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import reactor.core.publisher.Mono
 import java.util.UUID
 
 /**
- * Controller for [io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario] registration and management, [io.github.kingg22.api.vacunas.panama.persistence.entity.Rol] and [io.github.kingg22.api.vacunas.panama.persistence.entity.Permiso].
- *
+ * Controller for `Usuario` registration and management, `Rol` and `Permiso`.
  *
  * This controller handles operations related to registering users and managing their roles and associated entities
- * (e.g., [io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente], [io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor], [io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante]). It ensures that users are linked to an existing
- * [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] or [io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] and properly assigned roles.
- *
+ * (e.g., `Paciente`, `Doctor`, `Fabricante`). It ensures that users are linked to an existing
+ * `Persona` or `Entidad` and properly assigned roles.
  *
  * **Response Format:** The response for registration and related endpoints typically includes:
  *
- *
  *  * User details (e.g., username, roles, etc.).
- *  * Associated [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] or [io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] information (e.g., [io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente], [io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor],
- * [io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante]) if applicable.
+ *  * Associated `Persona` or `Entidad` information (e.g., `Paciente`, `Doctor`, `Fabricante`) if applicable.
  *  * A JWT token, which is only generated if the associated persona or entity has an active (validated) status.
+ *
+ * @see io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
+ * @see io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
+ * @see io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Permiso
+ * @see io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+ * @see io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
+ * @see io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
+ * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
+ * @see io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
  */
 @RestController
-@RequestMapping(path = ["/vacunacion/v1/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsuarioController(
-    private val authenticationManager: AuthenticationManager,
-    private val usuarioManagementService: IUsuarioManagementService,
+    private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
+    private val usuarioManagementService: UsuarioManagementService,
 ) {
     private val log = logger()
 
@@ -61,32 +67,38 @@ class UsuarioController(
      *
      *
      * First, it checks if the current [Authentication] is for an authenticated user with sufficient
-     * permissions to create users with lower [io.github.kingg22.api.vacunas.panama.persistence.entity.Rol]. If not authenticated, it allows registering a
-     * [io.github.kingg22.api.vacunas.panama.persistence.entity.Paciente]. It also validates tha data to be registered (e.g., username, email) is not currently in use.
+     * permissions to create users with lower `Rol`. If not authenticated, it allows registering a
+     * `Paciente`. It also validates tha data to be registered (e.g., username, email) is not currently in use.
      *
      *
-     * If all validations pass, the [io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario] is created.
+     * If all validations pass, the `Usuario` is created.
      *
      *
      * **Note:** The user must be assigned roles, and empty roles are not allowed. If the associated entities is
-     * not created, the request will be rejected. For cases where both the [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona]/[io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] and the
-     * [io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario] need to created in a single request, a different endpoint should be used.
+     * not created, the request will be rejected. For cases where both the `Persona` / `Entidad` and the
+     * `Usuario` need to created in a single request, a different endpoint should be used.
      *
-     * @param registerUser The [RegisterUser] containing the user registration details.
+     * @param registerUserDto The [RegisterUserDto] containing the user registration details.
      * @param authentication The [Authentication] representing the current user (if any).
-     * @param request The [ServletWebRequest] used for building the response.
+     * @param request The [ServerHttpRequest] used for building the response.
      * @return [ApiResponse] containing the registration result, including user details, associated
-     * [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] or [io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] information and a token if the [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] or [io.github.kingg22.api.vacunas.panama.persistence.entity.Entidad] is
+     * `Persona` or `Entidad` information and a token if the `Persona` or `Entidad` is
      * validated and active.
+     *
+     * @see io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
+     * @see io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
+     * @see io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+     * @see io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
+     * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
      */
     @PostMapping("/register")
     fun register(
-        @RequestBody @Valid registerUser: RegisterUser,
+        @RequestBody @Valid registerUserDto: RegisterUserDto,
         authentication: Authentication?,
-        request: ServletWebRequest,
-    ): ResponseEntity<ApiResponse> {
+        request: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
-        val usuarioDto = registerUser.usuario
+        val usuarioDto = registerUserDto.usuario
         if (authentication != null &&
             authentication.isAuthenticated &&
             authentication !is AnonymousAuthenticationToken
@@ -103,8 +115,8 @@ class UsuarioController(
         ) {
             apiResponse.addError(
                 DefaultApiError(
-                    ApiResponseCode.MISSING_ROLE_OR_PERMISSION,
-                    "Solo pacientes pueden registrarse sin autenticación",
+                    code = ApiResponseCode.MISSING_ROLE_OR_PERMISSION,
+                    message = "Solo pacientes pueden registrarse sin autenticación",
                 ),
             )
         }
@@ -115,7 +127,7 @@ class UsuarioController(
             return sendResponse(apiResponse, request)
         }
 
-        val apiContentResponse = usuarioManagementService.createUser(registerUser)
+        val apiContentResponse = usuarioManagementService.createUser(registerUserDto)
         apiResponse.mergeContentResponse(apiContentResponse)
         if (apiContentResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
@@ -126,25 +138,21 @@ class UsuarioController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid loginDto: LoginDto, request: ServletWebRequest): ResponseEntity<ApiResponse> {
+    fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
-
-        try {
-            val authentication = authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
-            )
+        return reactiveAuthenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
+        ).flatMap { authentication ->
             if (authentication.isAuthenticated) {
                 apiResponse.addData(usuarioManagementService.setLoginData(UUID.fromString(authentication.name)))
                 apiResponse.addStatusCode(HttpStatus.OK)
                 apiResponse.addStatus("message", "Login successful")
             }
-        } catch (exception: CompromisedPasswordException) {
+            Mono.just(apiResponse)
+        }.onErrorResume(CompromisedPasswordException::class.java) { exception ->
             log.debug("CompromisedPassword: {}", exception.message)
             apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT)
-            apiResponse.addStatus(
-                "Please reset your password in the given uri",
-                "/vacunacion/v1/account/restore",
-            )
+            apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
                 DefaultApiError(
                     ApiResponseCode.COMPROMISED_PASSWORD,
@@ -152,12 +160,17 @@ class UsuarioController(
                     "Su contraseña está comprometida, por favor cambiarla lo más pronto posible",
                 ),
             )
+            Mono.just(apiResponse)
+        }.flatMap { response ->
+            sendResponse(response, request)
         }
-        return sendResponse(apiResponse, request)
     }
 
     @PatchMapping("/restore")
-    fun restore(@RequestBody @Valid restoreDto: RestoreDto, request: ServletWebRequest): ResponseEntity<ApiResponse> {
+    fun restore(
+        @RequestBody @Valid restoreDto: RestoreDto,
+        request: ServerHttpRequest,
+    ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioManagementService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
@@ -169,7 +182,7 @@ class UsuarioController(
     }
 
     @GetMapping
-    fun profile(authentication: Authentication, request: ServletWebRequest): ResponseEntity<ApiResponse> {
+    fun profile(authentication: Authentication, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         try {
             apiResponse.addData(usuarioManagementService.getProfile(UUID.fromString(authentication.name)))

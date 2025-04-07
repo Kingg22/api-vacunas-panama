@@ -1,0 +1,73 @@
+{
+  "status": {
+    "code": "OK",
+    "message": "Login successful"
+  },
+  "data": {
+    "paciente": {
+      "identificacion_temporal": null,
+      "created_at": "2025-03-26T17:43:14.573",
+      "updated_at": null,
+      "id": "04f291e0-c977-4f48-b0bd-50614db9b5e0",
+      "cedula": "1-2345-000123",
+      "pasaporte": null,
+      "nombre": "Rey",
+      "nombre2": null,
+      "apellido1": null,
+      "apellido2": "Pruebas",
+      "correo": null,
+      "telefono": null,
+      "fecha_nacimiento": "2000-12-12T00:00:00",
+      "edad": null,
+      "sexo": "M",
+      "estado": "ACTIVO",
+      "disabled": false,
+      "direccion": {
+        "id": "380f4355-43b8-44fb-a738-38234d40211e",
+        "direccion": "9 de enero",
+        "distrito": {
+          "id": 0,
+          "nombre": "Por registrar",
+          "provincia": {
+            "id": 0,
+            "nombre": "Por registrar"
+          }
+        },
+        "created_at": "2025-03-26T17:25:31.867",
+        "updated_at": null
+      },
+      "usuario": {
+        "id": "f087b04c-02de-4d13-acdb-3e837d21538b",
+        "username": null,
+        "created_at": "2025-03-26T17:43:15.28",
+        "updated_at": "2025-03-29T02:36:25.65",
+        "last_used": "2025-03-29T02:36:25.647",
+        "roles": [
+          {
+            "id": 1,
+            "nombre": "PACIENTE",
+            "descripcion": "Usuario que recibe tratamiento y consulta información médica.",
+            "permisos": [
+              {
+                "id": 1,
+                "nombre": "PACIENTE_READ",
+                "descripcion": "Permite leer datos básicos de pacientes y sus referencias médicas.",
+                "created_at": "2025-03-26T16:41:52.833",
+                "updated_at": null
+              }
+            ],
+            "created_at": "2025-03-26T16:41:52.827",
+            "updated_at": null
+          }
+        ]
+      }
+    },
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmMDg3YjA0Yy0wMmRlLTRkMTMtYWNkYi0zZTgzN2QyMTUzOGIiLCJuYmYiOjE3NDM4OTcyNDUsInBlcnNvbmEiOiIwNGYyOTFlMC1jOTc3LTRmNDgtYjBiZC01MDYxNGRiOWI1ZTAiLCJzY29wZSI6WyJST0xFX1BBQ0lFTlRFIiwiUEFDSUVOVEVfUkVBRCJdLCJpc3MiOiJBUElfVkFDVU5BU19QQU5BTUEiLCJleHAiOjE3NDM5MDA4NDUsImlhdCI6MTc0Mzg5NzI0NSwianRpIjoiMDQ5OTc4ZDctNDFiOS00Mjg4LWEwMTctZjNiNWUxMTgxM2Y5In0.OXTpqt63QfLhBV89wc008qvIQT1JJKhpp4CcvajrQN9WmKBgemb0FpJPQ0tK51oOhgczfYh-KD495C5CZE5AnZhUfdZKuTHKPAhwcqAluxm5tIezUg5Ioi3xbsft4FSAihxuUg3oAoMgb30aZxLIWEXd-gputkhmRosJ0G8ISOte4hZiS-WEVG-cniC0wDTql4GUjUWv4-V0S2ggnMXMZa0ycDcqfSX_yqORfHFe1pJLWVvM_TOgpLltHbDHYyr7uD8zpQfokvXMmtbUxBrbkkHeJnU0qlEsIXY7n9VXsp3SDgDpz-5uhlw27FGJ_wAvnZVL_mvc3b3qNAkv8cPlzt0cbJscHUx5Qe7Z47UIEzirRsST5LkrMikIxGCGRUBcZ2UWmZ_HOLmmq6ujwXP728xNGPDodQupTUpC3zNQjF6rt_uSCaeI9OwbntLMOP39-IjJ0SBMT065GpBdCil3tdkVgBugdFctGQrwJpMB4MBPDjuS1Nl-Nk2Cc9hXHdCvCCUD3i-FfuBO_fCbIrd-7cW6LXw2cjh01_nv5FOynYVjQ05Ik3vHJmYsk_lmWmKlSPvibBw6EKdg7zGYOoJpGVeOjUXe09kAbXBfHDwoFJl0LYDDhBpYPZ53KBnf9nnMt3A5W7S1UX9shKQ6FQsdm0C5FpE-a35Blp9JnWdt0aY",
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJBUElfVkFDVU5BU19QQU5BTUEiLCJzdWIiOiJmMDg3YjA0Yy0wMmRlLTRkMTMtYWNkYi0zZTgzN2QyMTUzOGIiLCJuYmYiOjE3NDM4OTcyNDUsImV4cCI6MTc0NDUwMjA0NSwiaWF0IjoxNzQzODk3MjQ1LCJqdGkiOiI0ZTUyNDk0Mi0wYWMwLTQzMTQtYTdkZC1jYjJlNjA5ODczOTAifQ.Zz3LioXOXdu4XPndZ_EUFPFNXrIVnEbdtAMa_OuBHRayMJYjXYbD9eqy1EREfyxvLvBGeMtJLKHjXVFlGjMS39NI96bCMMo3bAZKUvMX8NuBKKQmAW9kf9QkgujYSPR_Ywn76SS5hivaefGE59nMrToLLlYgEWEw8on_8yUBpN2XVM32Q_f0jy2_UEfKzDWTHWF1xauekMCNN5KRv5x1-klsJlXw0n7v9dRxhxqUSIMTg0cxPfEOgS5Kdyg-91rpWkUzNSGwxgomAupWnYsiqqfM5gJr9hBiiTiksQcH6GsB51H7bZwDMZTaZGACdXIAQcXFjGEijSjGaFs1oz5n12Mq1pXU0WZb95sXGPI6YnsDfQSwIiSXgKwevBZVyBM7hdUU2igfV9isyJL-nf3pSEk2JDfKVBLKz0N5bdibgwDLKthAUWX0aeueqhyQe8u0M9g1zYWoEDTEFMrrePtETBoINfC5sTNlRAst1kQK1BUdg35iC72WhpL1nJNjRMhz4AR_-BTuS_vv5k2mT6sKHFzanuRMOIYRxidD2CRQFb7wIw00IZ7HzussNXeKr_GGSi5sRYfgvnT2gdrcEIuiVyxDfBtJGN8VzmYgrdcnmO-pOsNUPLp4xJP2T2zE-2qp1VS0sWC1_zOhkYr4CAq-iRfAEFClD5Fq28d0jmmxbkY"
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/account/login"
+  }
+}

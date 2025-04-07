@@ -7,11 +7,7 @@
 
 name: Java CI with Gradle
 
-on:
-    push:
-        branches: [ "main" ]
-    pull_request:
-        branches: [ "main" ]
+on: [ push, pull_request ]
 
 jobs:
     build:
@@ -39,8 +35,16 @@ jobs:
                   cache-overwrite-existing: true
                   validate-wrappers: true
 
+            - name: Setup Docker
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y docker-compose
+
             - name: Build with Gradle Wrapper
               run: ./gradlew build
+              env:
+                  JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
+                  JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}
 
         # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
         # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

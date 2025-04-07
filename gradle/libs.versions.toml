@@ -12,36 +12,54 @@ konvert = "4.0.1"
 spotless = "7.0.2"
 gradle-license-report = "2.9"
 kover = "0.9.1"
-kotlinx-coroutines = "1.10.1"
+apache-commons-pool2 = "2.12.1"
+mockk = "1.13.17"
+spring-mockk = "4.0.2"
+kotest = "5.9.1"
+testcontainers = "1.19.8"
 
 [libraries]
+# Spring
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
-spring-boot-starter-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-starter-data-redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive" }
 spring-boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server" }
-spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+
+# Missing in spring boot
+apache-commons-pool2 = { module = "org.apache.commons:commons-pool2", version.ref = "apache-commons-pool2" }
+
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+
 # Kotlin
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
+kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
 
-# Annotations
-lombok = { module = "org.projectlombok:lombok" }
+reactor-kotlin = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions" }
 
 # Drivers
 mssql-jdbc = { module = "com.microsoft.sqlserver:mssql-jdbc" }
 postgresql = { module = "org.postgresql:postgresql" }
 h2 = { module = "com.h2database:h2" }
+liquibase = { module = "org.liquibase:liquibase-core"}
 
 # Testing
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
+reactor-test = { module = "io.projectreactor:reactor-test" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring-mockk" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
 
 # Third Party
 dotenv-java = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv-java" }
@@ -59,10 +77,10 @@ html2pdf = { module = "com.itextpdf:html2pdf", version.ref = "itextpdf-html" }
 [bundles]
 implementation = [
     "spring-boot-starter-data-jpa",
-    "spring-boot-starter-data-redis",
+    "spring-boot-starter-data-redis-reactive",
     "spring-boot-starter-oauth2-resource-server",
     "spring-security-oauth2-jose",
-    "spring-boot-starter-web",
+    "spring-boot-starter-webflux",
     "spring-boot-starter-security",
     "spring-boot-starter-validation",
     "jackson-datatype-jsr310",
@@ -75,7 +93,9 @@ implementation = [
     "spring-dotenv",
     "konvert-api",
     "kotlinx-coroutines",
-    "kotlinx-coroutines-reactor"
+    "kotlinx-coroutines-reactor",
+    "reactor-kotlin",
+    "apache-commons-pool2"
 ]
 
 runtimeOnly = [
@@ -85,9 +105,16 @@ runtimeOnly = [
 ]
 
 testImplementation = [
-    "spring-boot-starter-test",
-    "kotlin-test-junit5",
-    "spring-security-test"
+    "kotlin-test",
+    "spring-security-test",
+    "reactor-test",
+    "kotlinx-coroutines-test",
+    "mockk",
+    "spring-mockk",
+    "kotest-assertions-core",
+    "kotest-assertions-json",
+    "testcontainers",
+    "testcontainers-junit"
 ]
 
 [plugins]

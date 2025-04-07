@@ -1,0 +1,70 @@
+{
+  "status": {
+    "code": "OK"
+  },
+  "data": {
+    "paciente": {
+      "identificacion_temporal": null,
+      "created_at": "2025-03-26T17:43:14.573",
+      "updated_at": null,
+      "id": "04f291e0-c977-4f48-b0bd-50614db9b5e0",
+      "cedula": "1-2345-000123",
+      "pasaporte": null,
+      "nombre": "Rey",
+      "nombre2": null,
+      "apellido1": null,
+      "apellido2": "Pruebas",
+      "correo": null,
+      "telefono": null,
+      "fecha_nacimiento": "2000-12-12T00:00:00",
+      "edad": null,
+      "sexo": "M",
+      "estado": "ACTIVO",
+      "disabled": false,
+      "direccion": {
+        "id": "380f4355-43b8-44fb-a738-38234d40211e",
+        "direccion": "9 de enero",
+        "distrito": {
+          "id": 0,
+          "nombre": "Por registrar",
+          "provincia": {
+            "id": 0,
+            "nombre": "Por registrar"
+          }
+        },
+        "created_at": "2025-03-26T17:25:31.867",
+        "updated_at": null
+      },
+      "usuario": {
+        "id": "f087b04c-02de-4d13-acdb-3e837d21538b",
+        "username": null,
+        "created_at": "2025-03-26T17:43:15.28",
+        "updated_at": "2025-04-05T23:55:51.51",
+        "last_used": "2025-04-05T23:55:51.457",
+        "roles": [
+          {
+            "id": 1,
+            "nombre": "PACIENTE",
+            "descripcion": "Usuario que recibe tratamiento y consulta información médica.",
+            "permisos": [
+              {
+                "id": 1,
+                "nombre": "PACIENTE_READ",
+                "descripcion": "Permite leer datos básicos de pacientes y sus referencias médicas.",
+                "created_at": "2025-03-26T16:41:52.833",
+                "updated_at": null
+              }
+            ],
+            "created_at": "2025-03-26T16:41:52.827",
+            "updated_at": null
+          }
+        ]
+      }
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "metadata": {
+    "path": "/vacunacion/v1/account"
+  }
+}
