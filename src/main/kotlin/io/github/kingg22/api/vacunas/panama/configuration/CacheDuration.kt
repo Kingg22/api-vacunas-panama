@@ -45,11 +45,5 @@ enum class CacheDuration(private val ttl: Duration, private val cacheNames: Stri
          */
         internal fun asMapKeyRedisCacheConfig(redisCacheConfiguration: RedisCacheConfiguration) =
             entries.associate { it.cacheNames to it.getCacheConfig(redisCacheConfiguration) }
-
-        fun asMap() = entries.associate { it.name to it.ttl }
-
-        fun retriveMaxCache() = entries.maxBy { it.ttl }
-
-        fun retriveMinCache() = entries.minBy { it.ttl }
     }
 }
