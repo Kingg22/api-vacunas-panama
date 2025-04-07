@@ -171,10 +171,6 @@ class Paciente @JvmOverloads constructor(
     companion object {
         @JvmStatic
         @JvmName("builderPaciente")
-        fun builder() = Builder()
-
-        @JvmStatic
-        @JvmName("builderPaciente")
         fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
     }
 
