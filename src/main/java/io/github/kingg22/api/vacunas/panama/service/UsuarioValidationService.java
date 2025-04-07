@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.service;
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.IFabricanteService;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
@@ -71,9 +71,9 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistration(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
         var errors = new ArrayList<ApiError>();
-        var usuarioDto = registerUser.usuario();
+        var usuarioDto = registerUserDto.usuario();
 
         if (this.isUsernameRegistered(usuarioDto.username())) {
             errors.add(new DefaultApiError(
@@ -92,8 +92,8 @@ class UsuarioValidationService {
         }
 
         // validation is delegated to other specific methods depending on the role to be registered
-        if (registerUser.cedula() != null || registerUser.pasaporte() != null) {
-            return this.validateRegistrationPersona(registerUser);
+        if (registerUserDto.cedula() != null || registerUserDto.pasaporte() != null) {
+            return this.validateRegistrationPersona(registerUserDto);
         }
         if (usuarioDto.roles() != null
                 && usuarioDto.roles().stream()
@@ -101,8 +101,8 @@ class UsuarioValidationService {
                                 && rolDto.nombre() != null
                                 && !rolDto.nombre().isBlank()
                                 && rolDto.nombre().equalsIgnoreCase("FABRICANTE"))) {
-            if (registerUser.licenciaFabricante() != null) {
-                return this.validateRegistrationFabricante(registerUser);
+            if (registerUserDto.licenciaFabricante() != null) {
+                return this.validateRegistrationFabricante(registerUserDto);
             } else {
                 errors.add(
                         new DefaultApiError(
@@ -119,8 +119,8 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistrationPersona(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
-        var identifier = registerUser.cedula() != null ? registerUser.cedula() : registerUser.pasaporte();
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
+        var identifier = registerUserDto.cedula() != null ? registerUserDto.cedula() : registerUserDto.pasaporte();
         assert identifier != null;
 
         return this.personaService
@@ -147,9 +147,9 @@ class UsuarioValidationService {
     }
 
     RegistrationResult validateRegistrationFabricante(
-            @org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
         return this.fabricanteService
-                .getFabricante(registerUser.licenciaFabricante())
+                .getFabricante(registerUserDto.licenciaFabricante())
                 .map(fabricante -> {
                     if (!fabricante.getDisabled()) {
                         var user = fabricante.getUsuario();

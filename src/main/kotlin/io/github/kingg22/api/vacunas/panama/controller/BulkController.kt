@@ -2,7 +2,7 @@ package io.github.kingg22.api.vacunas.panama.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteService
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.IUsuarioManagementService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -51,12 +51,12 @@ class BulkController(
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
             return sendResponse(apiResponse, request)
         }
-        val registerUser = RegisterUser(
+        val registerUserDto = RegisterUserDto(
             pacienteDto.persona.usuario!!,
             pacienteDto.persona.cedula,
             pacienteDto.persona.pasaporte,
         )
-        val apiContentResponse = usuarioManagementService.createUser(registerUser)
+        val apiContentResponse = usuarioManagementService.createUser(registerUserDto)
         apiResponse.mergeContentResponse(apiContentResponse)
         if (apiContentResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)

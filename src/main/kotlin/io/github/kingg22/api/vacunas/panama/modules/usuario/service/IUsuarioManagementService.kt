@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
@@ -16,7 +16,7 @@ import java.util.UUID
 interface IUsuarioManagementService {
     fun getUsuario(identifier: String): Optional<Usuario>
 
-    fun createUser(registerUser: RegisterUser): ApiContentResponse
+    fun createUser(registerUserDto: RegisterUserDto): ApiContentResponse
 
     fun changePassword(restoreDto: RestoreDto): ApiContentResponse
 

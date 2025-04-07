@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.LoginDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
@@ -78,7 +78,7 @@ class UsuarioController(
      * not created, the request will be rejected. For cases where both the `Persona` / `Entidad` and the
      * `Usuario` need to created in a single request, a different endpoint should be used.
      *
-     * @param registerUser The [RegisterUser] containing the user registration details.
+     * @param registerUserDto The [RegisterUserDto] containing the user registration details.
      * @param authentication The [Authentication] representing the current user (if any).
      * @param request The [ServerHttpRequest] used for building the response.
      * @return [ApiResponse] containing the registration result, including user details, associated
@@ -93,12 +93,12 @@ class UsuarioController(
      */
     @PostMapping("/register")
     fun register(
-        @RequestBody @Valid registerUser: RegisterUser,
+        @RequestBody @Valid registerUserDto: RegisterUserDto,
         authentication: Authentication?,
         request: ServerHttpRequest,
     ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
-        val usuarioDto = registerUser.usuario
+        val usuarioDto = registerUserDto.usuario
         if (authentication != null &&
             authentication.isAuthenticated &&
             authentication !is AnonymousAuthenticationToken
@@ -127,7 +127,7 @@ class UsuarioController(
             return sendResponse(apiResponse, request)
         }
 
-        val apiContentResponse = usuarioManagementService.createUser(registerUser)
+        val apiContentResponse = usuarioManagementService.createUser(registerUserDto)
         apiResponse.mergeContentResponse(apiContentResponse)
         if (apiContentResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)

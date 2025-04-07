@@ -13,7 +13,7 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.service.IPacienteSe
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona;
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.PersonaKonverterKt;
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.IPersonaService;
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUser;
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum;
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto;
@@ -39,10 +39,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service for {@link Usuario}, {@link Rol} and {@link Permiso} Extends functionality from {@link PersonaService},
- * {@link PacienteService}, {@link DoctorService} and {@link FabricanteService} inheriting methods that involve
+ * Service for {@link Usuario}, {@link Rol} and {@link Permiso} Extends functionality from {@link IPersonaService},
+ * {@link IPacienteService}, {@link IDoctorService} and {@link IFabricanteService} inheriting methods that involve
  * {@link Usuario} in relation to these services.
  */
 @Service
@@ -87,6 +88,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Transactional
     public List<ApiError> validateAuthoritiesRegister(
             @org.jetbrains.annotations.NotNull @NotNull final UsuarioDto usuarioDto,
             @org.jetbrains.annotations.NotNull @NotNull final Authentication authentication) {
@@ -124,11 +126,13 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
-    public ApiContentResponse createUser(@org.jetbrains.annotations.NotNull @NotNull final RegisterUser registerUser) {
+    @Transactional
+    public ApiContentResponse createUser(
+            @org.jetbrains.annotations.NotNull @NotNull final RegisterUserDto registerUserDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
-        var usuarioDto = registerUser.usuario();
+        var usuarioDto = registerUserDto.usuario();
         apiContentResponse.addWarnings(this.validationService.validateWarningsRegistrarion(usuarioDto));
-        var validationResult = this.validationService.validateRegistration(registerUser);
+        var validationResult = this.validationService.validateRegistration(registerUserDto);
         if (validationResult instanceof RegistrationError error) {
             apiContentResponse.addErrors(error.getErrors());
         }
@@ -161,6 +165,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Transactional
     public ApiContentResponse changePassword(@org.jetbrains.annotations.NotNull @NotNull final RestoreDto restoreDto) {
         var apiContentResponse = ApiResponseFactory.createContentResponse();
         var opPersona = this.personaService.getPersona(restoreDto.username());
@@ -182,6 +187,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Transactional
     @Cacheable(cacheNames = "short", key = "'login:' + #idUser")
     public Map<String, Serializable> setLoginData(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
@@ -207,6 +213,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Transactional
     @Cacheable(cacheNames = "short", key = "'profile:' + #idUser")
     public Map<String, Serializable> getProfile(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Map<String, Serializable> data = new LinkedHashMap<>();
@@ -235,6 +242,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Transactional
     public Map<String, Serializable> generateTokens(@org.jetbrains.annotations.NotNull final UUID idUser) {
         Usuario usuario = usuarioRepository.findById(idUser).orElseThrow();
         Map<String, Serializable> idsAdicionales = new HashMap<>();
@@ -260,6 +268,7 @@ public class UsuarioManagementService implements IUsuarioManagementService {
      * @return an {@link Optional} containing the found {@link Usuario} or empty if no user matches the identifier.
      */
     @org.jetbrains.annotations.NotNull
+    @Transactional
     public Optional<Usuario> getUsuario(@org.jetbrains.annotations.NotNull @NotNull final String identifier) {
         log.debug("Searching by username: {}", identifier);
         var usuarioOpt = this.usuarioRepository.findByUsername(identifier);
