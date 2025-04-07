@@ -34,7 +34,7 @@ import java.util.Base64
 class RsaConfig(
     @Value("\${security.jwt.public}") private val rsaPublicKey: String?,
     @Value("\${security.jwt.private}") private val rsaPrivateKey: String?,
-    @Value("\${security.jwt.public.key}") val publicKey: RSAPublicKey?,
+    @Value("\${security.jwt.public.key}") private val publicKey: RSAPublicKey?,
     @Value("\${security.jwt.private.key}") private val privateKey: RSAPrivateKey?,
 ) {
     private val log = logger()

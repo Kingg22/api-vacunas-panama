@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.configuration.security
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -31,6 +30,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
+import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 
@@ -51,6 +52,11 @@ class SecurityConfig(
         reactiveJwtAuthenticationConverter: ReactiveJwtAuthenticationConverterAdapter,
         jwtRefreshFilter: CustomJwtRefreshFilter,
     ): SecurityWebFilterChain = http
+        .csrf {
+            it.requireCsrfProtectionMatcher(
+                NegatedServerWebExchangeMatcher(PathPatternParserServerWebExchangeMatcher("/**")),
+            )
+        }
         .headers {
             it.contentSecurityPolicy { cspc ->
                 cspc.policyDirectives(
@@ -105,12 +111,11 @@ class SecurityConfig(
     }
 
     @Bean
-    fun reactiveJwtDecoder(jwtValidator: CustomRedisJwtValidator): ReactiveJwtDecoder {
+    fun reactiveJwtDecoder(): ReactiveJwtDecoder {
         val nimbusJwtDecoder = NimbusReactiveJwtDecoder.withPublicKey(publicKey)
             .signatureAlgorithm(SignatureAlgorithm.RS256)
             .build()
         nimbusJwtDecoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer))
-        nimbusJwtDecoder.setJwtValidator(jwtValidator)
         return nimbusJwtDecoder
     }
 
@@ -118,7 +123,7 @@ class SecurityConfig(
     fun jwtEncoder(): JwtEncoder {
         val jwk =
             RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build()
-        return NimbusJwtEncoder(ImmutableJWKSet<SecurityContext?>(JWKSet(jwk)))
+        return NimbusJwtEncoder(ImmutableJWKSet(JWKSet(jwk)))
     }
 
     @Bean
@@ -131,8 +136,8 @@ class SecurityConfig(
     @Bean
     fun reactiveAuthenticationManager(
         userDetailsServiceImpl: ReactiveUserDetailsService,
-        passwordEncoder: PasswordEncoder?,
-        compromisedPasswordChecker: ReactiveCompromisedPasswordChecker?,
+        passwordEncoder: PasswordEncoder,
+        compromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
     ): ReactiveAuthenticationManager {
         val provider = UserDetailsRepositoryReactiveAuthenticationManager(userDetailsServiceImpl)
         provider.setPasswordEncoder(passwordEncoder)

@@ -19,7 +19,6 @@ class CustomJwtRefreshFilter(private val tokenService: ITokenService, private va
         private const val REFRESH_TOKEN_ENDPOINT = "/vacunacion/v1/token/refresh"
         private const val AUTHORIZATION_HEADER = "Authorization"
         private const val BEARER_PREFIX = "Bearer "
-        private val log = logger()
 
         private fun setWWWHeader(response: ServerHttpResponse, errorCode: String, description: String) {
             response.headers[HttpHeaders.WWW_AUTHENTICATE] = buildString {
@@ -31,48 +30,63 @@ class CustomJwtRefreshFilter(private val tokenService: ITokenService, private va
         }
     }
 
+    private val log = logger()
+
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         val authorization = exchange.request.headers.getFirst(AUTHORIZATION_HEADER)
         if (authorization.isNullOrBlank() || !authorization.startsWith(BEARER_PREFIX)) {
             return chain.filter(exchange)
         }
+
         val token = authorization.removePrefix(BEARER_PREFIX)
+        log.debug("Trying to decode Token: {}", token)
 
         return jwtDecoder.decode(token)
             .flatMap { jwt ->
                 val userId = jwt.subject
                 val tokenId = jwt.id
+                log.debug("Verifying token for $userId with tokenId: $tokenId")
 
-                // Comprobación de validez del token
-                val accessTokenValid = tokenService.isAccessTokenValid(userId, tokenId)
-                val refreshTokenValid = tokenService.isRefreshTokenValid(userId, tokenId)
+                Mono.zip(
+                    tokenService.isAccessTokenValid(userId, tokenId),
+                    tokenService.isRefreshTokenValid(userId, tokenId),
+                ).flatMap {
+                    val (accessTokenValid, refreshTokenValid) = it.t1 to it.t2
+                    log.debug("IsAccessTokenValid: $accessTokenValid, IsRefreshTokenValid: $refreshTokenValid")
 
-                when {
-                    !accessTokenValid &&
-                        refreshTokenValid &&
-                        exchange.request.uri.path != REFRESH_TOKEN_ENDPOINT -> {
-                        setWWWHeader(exchange.response, "invalid_token", "Refresh token is only for refresh tokens")
-                        exchange.response.statusCode = HttpStatus.FORBIDDEN
-                        exchange.response.setComplete()
+                    when {
+                        !accessTokenValid &&
+                            refreshTokenValid &&
+                            exchange.request.uri.path != REFRESH_TOKEN_ENDPOINT -> {
+                            setWWWHeader(exchange.response, "invalid_token", "Refresh token is only for refresh tokens")
+                            exchange.response.statusCode = HttpStatus.FORBIDDEN
+                            exchange.response.setComplete()
+                        }
+
+                        accessTokenValid &&
+                            !refreshTokenValid &&
+                            exchange.request.uri.path == REFRESH_TOKEN_ENDPOINT -> {
+                            setWWWHeader(
+                                exchange.response,
+                                "invalid_token",
+                                "Access token cannot be used to refresh tokens",
+                            )
+                            exchange.response.statusCode = HttpStatus.FORBIDDEN
+                            exchange.response.setComplete()
+                        }
+
+                        !accessTokenValid && !refreshTokenValid -> {
+                            setWWWHeader(exchange.response, "invalid_token", "Tokens has been revoked")
+                            exchange.response.statusCode = HttpStatus.FORBIDDEN
+                            exchange.response.setComplete()
+                        }
+
+                        else -> chain.filter(exchange)
                     }
-
-                    accessTokenValid &&
-                        !refreshTokenValid &&
-                        exchange.request.uri.path == REFRESH_TOKEN_ENDPOINT -> {
-                        setWWWHeader(
-                            exchange.response,
-                            "invalid_token",
-                            "Access token cannot be used to refresh tokens",
-                        )
-                        exchange.response.statusCode = HttpStatus.FORBIDDEN
-                        exchange.response.setComplete()
-                    }
-
-                    else -> chain.filter(exchange)
                 }
             }
-            .onErrorResume { ex ->
-                log.error("Error occurred during JWT decoding in JwtRefreshFilter", ex)
+            .onErrorResume {
+                log.error("Error occurred during JWT decoding in JwtRefreshFilter", it)
                 setWWWHeader(exchange.response, "server_error", "Token validation failed due to server issue")
                 exchange.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR
                 exchange.response.setComplete()
