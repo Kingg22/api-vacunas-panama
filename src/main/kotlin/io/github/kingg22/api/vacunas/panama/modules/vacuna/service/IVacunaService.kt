@@ -3,7 +3,9 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import java.util.Optional
 import java.util.UUID
 
 interface IVacunaService {
@@ -12,4 +14,6 @@ interface IVacunaService {
     val vacunasFabricante: List<VacunaFabricanteDto>
 
     fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID): List<DosisDto>
+
+    fun getVacunaById(id: UUID): Optional<Vacuna>
 }
