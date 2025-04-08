@@ -61,7 +61,7 @@ class Entidad @JvmOverloads constructor(
     @Column(name = "disabled", nullable = false)
     var disabled: Boolean = false,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion,
 )

@@ -64,7 +64,7 @@ class Fabricante @JvmOverloads constructor(
     @Size(max = 15)
     var contactoTelefono: String? = null,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario")
     var usuario: Usuario? = null,
 
