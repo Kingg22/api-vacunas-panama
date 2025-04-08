@@ -6,19 +6,19 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
-import io.github.kingg22.api.vacunas.panama.response.DefaultApiError
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponseSuspend
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.password.CompromisedPasswordException
@@ -39,7 +39,7 @@ import java.util.UUID
  * (e.g., `Paciente`, `Doctor`, `Fabricante`). It ensures that users are linked to an existing
  * `Persona` or `Entidad` and properly assigned roles.
  *
- * **Response Format:** The response for registration and related endpoints typically includes:
+ * **Response Format**: The response for registration and related endpoints typically includes:
  *
  *  * User details (e.g., username, roles, etc.).
  *  * Associated `Persona` or `Entidad` information (e.g., `Paciente`, `Doctor`, `Fabricante`) if applicable.
@@ -58,25 +58,22 @@ import java.util.UUID
 @RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsuarioController(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
-    private val usuarioManagementService: UsuarioManagementService,
+    private val usuarioService: UsuarioService,
 ) {
     private val log = logger()
 
     /**
      * Handles user registration.
      *
-     *
      * First, it checks if the current [Authentication] is for an authenticated user with sufficient
      * permissions to create users with lower `Rol`. If not authenticated, it allows registering a
-     * `Paciente`. It also validates tha data to be registered (e.g., username, email) is not currently in use.
-     *
+     * `Paciente`. It also validates the data to be registered (e.g., username, email) is not currently in use.
      *
      * If all validations pass, the `Usuario` is created.
      *
-     *
-     * **Note:** The user must be assigned roles, and empty roles are not allowed. If the associated entities is
+     * **Note**: The user must be assigned roles, and empty roles are not allowed. If the associated entities are
      * not created, the request will be rejected. For cases where both the `Persona` / `Entidad` and the
-     * `Usuario` need to created in a single request, a different endpoint should be used.
+     * `Usuario` need to create in a single request, a different endpoint should be used.
      *
      * @param registerUserDto The [RegisterUserDto] containing the user registration details.
      * @param authentication The [Authentication] representing the current user (if any).
@@ -92,19 +89,16 @@ class UsuarioController(
      * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
      */
     @PostMapping("/register")
-    fun register(
+    suspend fun register(
         @RequestBody @Valid registerUserDto: RegisterUserDto,
         authentication: Authentication?,
         request: ServerHttpRequest,
-    ): Mono<ResponseEntity<ApiResponse>> {
+    ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
-        if (authentication != null &&
-            authentication.isAuthenticated &&
-            authentication !is AnonymousAuthenticationToken
-        ) {
-            apiResponse.addErrors(usuarioManagementService.validateAuthoritiesRegister(usuarioDto, authentication))
-        } else if (usuarioDto.roles != null &&
+
+        if (authentication == null &&
+            usuarioDto.roles != null &&
             !usuarioDto.roles.stream()
                 .allMatch { rolDto: RolDto ->
                     rolDto.id != null &&
@@ -114,78 +108,74 @@ class UsuarioController(
                 }
         ) {
             apiResponse.addError(
-                DefaultApiError(
-                    code = ApiResponseCode.MISSING_ROLE_OR_PERMISSION,
-                    message = "Solo pacientes pueden registrarse sin autenticación",
-                ),
+                createApiErrorBuilder {
+                    withCode(ApiResponseCode.MISSING_ROLE_OR_PERMISSION)
+                    withMessage("Solo pacientes pueden registrarse sin autenticación")
+                },
             )
-        }
-
-        if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
             apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
-            return sendResponse(apiResponse, request)
+            return sendResponseSuspend(apiResponse, request)
         }
 
-        val apiContentResponse = usuarioManagementService.createUser(registerUserDto)
-        apiResponse.mergeContentResponse(apiContentResponse)
-        if (apiContentResponse.hasErrors()) {
+        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
+        if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
         } else {
             apiResponse.addStatusCode(HttpStatus.CREATED)
         }
-        return sendResponse(apiResponse, request)
+        return sendResponseSuspend(apiResponse, request)
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
-        val apiResponse = createResponse()
-        return reactiveAuthenticationManager.authenticate(
+    fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest) =
+        reactiveAuthenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
-        ).flatMap { authentication ->
-            if (authentication.isAuthenticated) {
-                apiResponse.addData(usuarioManagementService.setLoginData(UUID.fromString(authentication.name)))
+        ).flatMap {
+            val apiResponse = createResponse()
+            if (it.isAuthenticated) {
+                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(it.name)))
                 apiResponse.addStatusCode(HttpStatus.OK)
                 apiResponse.addStatus("message", "Login successful")
             }
             Mono.just(apiResponse)
         }.onErrorResume(CompromisedPasswordException::class.java) { exception ->
-            log.debug("CompromisedPassword: {}", exception.message)
+            log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
+            val apiResponse = createResponse()
             apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT)
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
-                DefaultApiError(
-                    ApiResponseCode.COMPROMISED_PASSWORD,
-                    "password",
-                    "Su contraseña está comprometida, por favor cambiarla lo más pronto posible",
-                ),
+                createApiErrorBuilder {
+                    withCode(ApiResponseCode.COMPROMISED_PASSWORD)
+                    withProperty("password")
+                    withMessage("Su contraseña está comprometida, por favor cambiarla lo más pronto posible")
+                },
             )
             Mono.just(apiResponse)
         }.flatMap { response ->
             sendResponse(response, request)
         }
-    }
 
     @PatchMapping("/restore")
-    fun restore(
+    suspend fun restore(
         @RequestBody @Valid restoreDto: RestoreDto,
         request: ServerHttpRequest,
-    ): Mono<ResponseEntity<ApiResponse>> {
+    ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
-        apiResponse.mergeContentResponse(usuarioManagementService.changePassword(restoreDto))
+        apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
         } else {
             apiResponse.addStatusCode(HttpStatus.OK)
         }
-        return sendResponse(apiResponse, request)
+        return sendResponseSuspend(apiResponse, request)
     }
 
     @GetMapping
     fun profile(authentication: Authentication, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         try {
-            apiResponse.addData(usuarioManagementService.getProfile(UUID.fromString(authentication.name)))
+            apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
             apiResponse.addStatusCode(HttpStatus.OK)
         } catch (e: IllegalArgumentException) {
             log.error("Error while user fetching the profile", e)

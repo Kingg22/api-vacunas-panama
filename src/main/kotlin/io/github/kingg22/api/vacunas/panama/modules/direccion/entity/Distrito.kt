@@ -30,7 +30,7 @@ class Distrito @JvmOverloads constructor(
     @Size(max = 100)
     var nombre: String,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "provincia", nullable = false)
     var provincia: Provincia,
 

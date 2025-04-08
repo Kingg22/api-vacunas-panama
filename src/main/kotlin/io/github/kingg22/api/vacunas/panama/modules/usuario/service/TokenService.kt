@@ -9,7 +9,7 @@ import java.io.Serializable
  * Service for managing JWT tokens, including generation and validation.
  *
  * This service is responsible for creating, storing, and validating JWT tokens used in
- * the authentication and authorization processes. It interacts with the [UsuarioManagementService]
+ * the authentication and authorization processes. It interacts with the [UsuarioService]
  * to fetch user-related data and create access or refresh tokens based on the user's profile and
  * associated data.
  *
@@ -36,7 +36,7 @@ interface TokenService {
      */
     fun generateTokens(
         @NotNull usuarioDto: UsuarioDto,
-        idsAdicionales: Map<String, Serializable>,
+        idsAdicionales: Map<String, Serializable> = emptyMap(),
     ): Map<String, Serializable>
 
     /**

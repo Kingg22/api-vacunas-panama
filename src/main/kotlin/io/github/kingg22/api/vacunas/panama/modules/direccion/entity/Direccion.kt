@@ -34,7 +34,7 @@ class Direccion @JvmOverloads constructor(
     @Size(max = 150)
     var direccion: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "distrito")
     var distrito: Distrito? = null,
 

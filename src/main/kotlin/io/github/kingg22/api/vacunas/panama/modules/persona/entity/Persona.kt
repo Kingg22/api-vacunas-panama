@@ -96,11 +96,11 @@ class Persona @JvmOverloads constructor(
     @Column(name = "disabled", nullable = false)
     var disabled: @NotNull Boolean = false,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario")
     var usuario: Usuario? = null,
 ) {

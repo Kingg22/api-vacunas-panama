@@ -26,7 +26,6 @@ object ApiResponseUtil {
     @JvmStatic
     fun setMetadata(apiResponse: ApiResponse, serverHttpRequest: ServerHttpRequest) {
         apiResponse.apply {
-            log.debug("servletWebRequest: {}", serverHttpRequest.toString())
             addMetadata("path", serverHttpRequest.uri.path)
             addMetadata("timestamp", Instant.now().toString())
         }
@@ -45,9 +44,27 @@ object ApiResponseUtil {
         serverHttpRequest: ServerHttpRequest,
     ): Mono<ResponseEntity<ApiResponse>> = apiResponse.apply {
         setMetadata(this, serverHttpRequest)
-        log.debug(toString())
+        log.trace(toString())
     }.let {
         Mono.just(ResponseEntity.status(it.retrieveHttpStatusCode()).body(it))
+    }
+
+    /**
+     * Creates a standardized HTTP response from the API response.
+     *
+     * @param apiResponse [ApiResponse] object containing the response with status.
+     * @param serverHttpRequest [ServerHttpRequest] used to set metadata in the response.
+     * @return A [ResponseEntity] with the status code and body set to the API response object.
+     */
+    @JvmStatic
+    fun sendResponseSuspend(
+        apiResponse: ApiResponse,
+        serverHttpRequest: ServerHttpRequest,
+    ): ResponseEntity<ApiResponse> = apiResponse.apply {
+        setMetadata(this, serverHttpRequest)
+        log.trace(toString())
+    }.let {
+        ResponseEntity.status(it.retrieveHttpStatusCode()).body(it)
     }
 
     @JvmStatic
@@ -102,7 +119,7 @@ object ApiResponseUtil {
 
             setMetadata(build(), request)
 
-            log.debug(
+            log.trace(
                 "ErrorResponse(code: {}, message: {}, properties: {})",
                 apiErrorResponse.code,
                 apiErrorResponse.message,
