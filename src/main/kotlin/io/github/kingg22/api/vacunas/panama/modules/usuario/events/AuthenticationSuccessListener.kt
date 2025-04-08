@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.events
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioManagementService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.context.ApplicationListener
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class AuthenticationSuccessListener(private val usuarioService: UsuarioManagementService) :
+class AuthenticationSuccessListener(private val usuarioService: UsuarioService) :
     ApplicationListener<AuthenticationSuccessEvent> {
     private val log = logger()
 
