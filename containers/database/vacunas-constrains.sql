@@ -72,7 +72,7 @@ ALTER TABLE pacientes
                 identificacion_temporal ~ '^RN([1-9][0-9]?)?-'
 
                     -- Y contener uno de los tipos válidos: -PE-, -E-, -N-, -1-, ... -13-
-                    AND identificacion_temporal ~ '-(PE|E|N|[1-13])-'
+                    AND identificacion_temporal ~ '(PE|E|N|[2-9](AV|PI)?|1[0-3]?(AV|PI)?)'
 
                     -- y tener un libro de 4 dígitos
                     AND identificacion_temporal ~ '-\d{4}-'
@@ -96,7 +96,7 @@ ALTER TABLE personas
 
     ADD CONSTRAINT ck_personas_cedula CHECK (
         cedula IS NULL OR (
-        cedula ~ '^(PE|E|N|[2-9](AV|PI)?|1[0-3](AV|PI)?)-\d{1,4}-\d{1,6}$')),
+        cedula ~ '^(PE|E|N|[2-9](AV|PI)?|1[0-3]?(AV|PI)?)-\d{1,4}-\d{1,6}$')),
 
     ADD CONSTRAINT ck_personas_pasaporte CHECK (
         pasaporte IS NULL OR (pasaporte ~ '^[A-Z0-9]{5,}$')),
