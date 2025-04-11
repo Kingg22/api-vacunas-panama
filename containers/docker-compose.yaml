@@ -1,28 +1,27 @@
 name: vacunas-app
 
 services:
-  bd-vacunas:
-    build:
-      secrets:
-        - MSSQL_SA_PASSWORD
-      dockerfile: Dockerfile
-    container_name: sql-server-vacunas
-    ports:
-      - "1440:1433"
-    secrets:
-      - MSSQL_SA_PASSWORD
+  db-vacunas:
+    image: postgres:17-alpine
+    container_name: db-pgsql-vacunas
     restart: on-failure
+    ports:
+        - "5435:5432"
+    secrets:
+        - DB_PASSWORD
+    environment:
+        POSTGRES_DB: vacunas
+        POSTGRES_PASSWORD_FILE: /run/secrets/DB_PASSWORD
     volumes:
-      - bd-data:/var/opt/mssql
+        - bd-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d vacunas -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
     networks:
       network-vacunas:
         ipv4_address: 172.22.0.2
-    healthcheck:
-      test: [ "CMD-SHELL", "/usr/src/app/test-check.sh" ]
-      interval: 10s
-      retries: 10
-      start_period: 90s
-      timeout: 10s
 
   redis-vacunas:
     image: redis/redis-stack:latest
@@ -38,38 +37,20 @@ services:
       network-vacunas:
         ipv4_address: 172.22.0.3
 
-#  rabbitmq-vacunas:
-#    image: rabbitmq:management-alpine
-#    container_name: msg-rabbitmq-vacunas
-#    restart: always
-#    ports:
-#      - "15692:15692"
-#      - "5672:5672"
-#      - "15672:15672"
-#    volumes:
-#      - msg-broker-rabbitmq:/var/lib/rabbitmq
-#      - ./rabbitmq_definitions.json:/etc/rabbitmq/definitions.json
-#      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-#    networks:
-#      network-vacunas:
-#        ipv4_address: 172.22.0.4
-
   api-vacunas:
-    image: api-vacunas-panama:0.10.1
+    image: api-vacunas-panama:0.12.0
     container_name: api-spring-vacunas
     env_file:
       - "secrets/docker.env"
     secrets:
       - JWT_PUBLIC_KEY
       - JWT_PRIVATE_KEY
-        #restart: on-failure
+    restart: on-failure
     depends_on:
-      bd-vacunas:
-        condition: service_healthy
+      db-vacunas:
+          condition: service_healthy
       redis-vacunas:
         condition: service_started
-      # rabbitmq-vacunas:
-        # condition: service_started
     ports:
       - "8080:8080"
     networks:
@@ -93,7 +74,7 @@ networks:
         - subnet: 172.22.0.0/16
 
 secrets:
-  MSSQL_SA_PASSWORD:
+  DB_PASSWORD:
     file: secrets/db.env
   JWT_PUBLIC_KEY:
     file: secrets/public.pem
