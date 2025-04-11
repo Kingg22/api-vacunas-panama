@@ -85,7 +85,7 @@ class Persona @JvmOverloads constructor(
     @Column(name = "edad")
     var edad: Short? = null,
 
-    @Column(name = "sexo")
+    @Column(name = "sexo", columnDefinition = "VARCHAR(1)")
     var sexo: Char? = null,
 
     @Nationalized
