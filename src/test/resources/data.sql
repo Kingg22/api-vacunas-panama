@@ -109,8 +109,8 @@ VALUES (0, 'Por registrar', 0),
 INSERT INTO direcciones (id, direccion, distrito, created_at)
 VALUES ('123e4567-e89b-12d3-a456-426614174000', 'Por registrar', 0, '2025-04-04 12:34:56');
 
-INSERT INTO vacunas (id, nombre, edad_minima_dias, intervalo_dosis_1_2_dias)
-VALUES ('123e4567-e89b-12d3-a456-426614174001', 'Por registrar', NULL, NULL);
+INSERT INTO vacunas (id, nombre, edad_minima_dias)
+VALUES ('123e4567-e89b-12d3-a456-426614174001', 'Por registrar', 0);
 
 INSERT INTO roles (id, nombre, descripcion, created_at)
 VALUES (1, 'PACIENTE', 'Usuario que recibe tratamiento y consulta información médica.', '2025-04-04 12:34:56'),
@@ -153,27 +153,27 @@ VALUES (1, 1, '2025-04-04 12:34:56'),
        (2, 6, '2025-04-04 12:34:56'),
        (2, 7, '2025-04-04 12:34:56');
 
-INSERT INTO vacunas (id, nombre, edad_minima_dias, intervalo_dosis_1_2_dias)
-VALUES ('123e4567-e89b-12d3-a456-426614174002', 'Adacel', 132 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174003', 'BCG', 0 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174004', 'COVID-19', 6 * 30.44, 0.92 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174005', 'Fiebre Amarilla', NULL, NULL),
-       ('123e4567-e89b-12d3-a456-426614174006', 'Hep A (Euvax) (adultos)', 240 * 30.44, 6 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174007', 'Hep A (Euvax) (infantil)', 12 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174008', 'Hep B (adultos)', 240 * 30.44, 6 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174009', 'Hep B (infantil)', 0, 1 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174010', 'Hexaxim', 2 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174011', 'Influenza (FluQuadri)', 6 * 30.44, 12 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174012', 'Meningococo', 132 * 30.44, 48 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174013', 'MMR', 12 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174014', 'MR (antisarampión, antirrubéola)', 12 * 30.44, 72 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174015', 'Neumoco conjugado (Prevenar 13 valente)', 2 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174016', 'Papiloma Humano (Gardasil)', 132 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174017', 'Pneumo23', 780 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174018', 'Pneumovax', 780 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174019', 'Priorix', 9 * 30.44, 3 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174020', 'Rotarix', 2 * 30.44, NULL),
-       ('123e4567-e89b-12d3-a456-426614174021', 'TD', 48 * 30.44, 120 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174022', 'Tetravalente', NULL, NULL),
-       ('123e4567-e89b-12d3-a456-426614174023', 'Varivax', 12 * 30.44, 69 * 30.44),
-       ('123e4567-e89b-12d3-a456-426614174024', 'Verorab', NULL, NULL);
+INSERT INTO vacunas (id, nombre, edad_minima_dias)
+VALUES ('123e4567-e89b-12d3-a456-426614174002', 'Adacel', 132 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174003', 'BCG', 0 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174004', 'COVID-19', 6 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174005', 'Fiebre Amarilla', 0),
+       ('123e4567-e89b-12d3-a456-426614174006', 'Hep A (Euvax) (adultos)', 240 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174007', 'Hep A (Euvax) (infantil)', 12 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174008', 'Hep B (adultos)', 240 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174009', 'Hep B (infantil)', 0),
+       ('123e4567-e89b-12d3-a456-426614174010', 'Hexaxim', 2 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174011', 'Influenza (FluQuadri)', 6 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174012', 'Meningococo', 132 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174013', 'MMR', 12 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174014', 'MR (antisarampión, antirrubéola)', 12 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174015', 'Neumoco conjugado (Prevenar 13 valente)', 2 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174016', 'Papiloma Humano (Gardasil)', 132 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174017', 'Pneumo23', 780 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174018', 'Pneumovax', 780 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174019', 'Priorix', 9 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174020', 'Rotarix', 2 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174021', 'TD', 48 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174022', 'Tetravalente', 0),
+       ('123e4567-e89b-12d3-a456-426614174023', 'Varivax', 12 * 30.44),
+       ('123e4567-e89b-12d3-a456-426614174024', 'Verorab', 0);

@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.11.0"
+version = "0.12.0"
 
 java {
     toolchain {
@@ -98,6 +98,9 @@ kover {
 tasks.named<BootBuildImage>("bootBuildImage") {
     createdDate.set(Instant.now().toString())
     tags.add("api-vacunas-panama:latest")
+    builder.set(
+        "paketobuildpacks/builder-jammy-java-tiny@sha256:1f2bd39426f8e462f6d6177cb1504cf01211a134d51e2674f97176a8b17d8a55",
+    )
 }
 
 tasks.test {

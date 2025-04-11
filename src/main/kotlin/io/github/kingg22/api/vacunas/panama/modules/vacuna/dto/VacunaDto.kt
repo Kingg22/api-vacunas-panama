@@ -21,10 +21,6 @@ data class VacunaDto @JvmOverloads constructor(
     @field:JsonProperty(value = "edad_minima_dias")
     val edadMinimaDias: Short? = null,
 
-    @param:JsonProperty(value = "intervalo_dosis_dias")
-    @field:JsonProperty(value = "intervalo_dosis_dias")
-    val intervaloDosisDias: Int? = null,
-
     @param:JsonProperty(value = "dosis_maxima")
     @field:JsonProperty(value = "dosis_maxima")
     val dosisMaxima: NumDosisEnum? = null,

@@ -37,9 +37,6 @@ class Vacuna @JvmOverloads constructor(
     @Column(name = "edad_minima_dias")
     var edadMinimaDias: Short? = null,
 
-    @Column(name = "intervalo_dosis_1_2_dias")
-    var intervaloDosisDias: Int? = null,
-
     @Column(name = "dosis_maxima", columnDefinition = "CHAR(2)")
     var dosisMaxima: NumDosisEnum? = null,
 
