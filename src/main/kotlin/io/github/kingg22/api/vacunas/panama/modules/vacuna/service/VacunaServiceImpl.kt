@@ -106,7 +106,7 @@ class VacunaServiceImpl(
         return contentResponse.build()
     }
 
-    @Cacheable(cacheNames = ["huge"], key = "'vacunas'")
+    @Cacheable(cacheNames = ["huge"], key = "'vacunas'", unless = "#result==null or #result.isEmpty()")
     override fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
 
     override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =

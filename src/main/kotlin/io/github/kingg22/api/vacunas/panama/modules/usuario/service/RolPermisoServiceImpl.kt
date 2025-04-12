@@ -12,10 +12,10 @@ class RolPermisoServiceImpl(
     private val rolRepository: RolRepository,
     private val permisoRepository: PermisoRepository,
 ) : RolPermisoService {
-    @Cacheable(cacheNames = ["massive"], key = "'permisos'")
+    @Cacheable(cacheNames = ["massive"], key = "'permisos'", unless = "#result==null or #result.isEmpty()")
     override fun getIdNombrePermisos() = permisoRepository.findAllIdNombre()
 
-    @Cacheable(cacheNames = ["massive"], key = "'roles'")
+    @Cacheable(cacheNames = ["massive"], key = "'roles'", unless = "#result==null or #result.isEmpty()")
     override fun getIdNombreRoles() = rolRepository.findAllIdNombre()
 
     override fun convertToRole(rolDto: RolDto): Rol? =

@@ -22,11 +22,11 @@ class DireccionServiceImpl(
     private val distritoRepository: DistritoRepository,
     private val provinciaRepository: ProvinciaRepository,
 ) : DireccionService {
-    @Cacheable(cacheNames = ["massive"], key = "'distritosDto'")
+    @Cacheable(cacheNames = ["massive"], key = "'distritosDto'", unless = "#result==null or #result.isEmpty()")
     @Transactional
     override fun getDistritosDto() = distritoRepository.findAll().toListDistritoDto()
 
-    @Cacheable(cacheNames = ["massive"], key = "'provinciasDto'")
+    @Cacheable(cacheNames = ["massive"], key = "'provinciasDto'", unless = "#result==null or #result.isEmpty()")
     override fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -45,10 +45,9 @@ class DireccionServiceImpl(
     }
 
     @Cacheable(cacheNames = ["massive"], key = "'direccionDefault'")
-    override fun getDireccionDefault(): Direccion =
-        direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
-            .orElseThrow()
-            .first()
+    override fun getDireccionDefault() = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
+        .orElseThrow()
+        .first()
 
     @Cacheable(cacheNames = ["massive"], key = "'distritoDefault'")
     override fun getDistritoDefault(): Distrito = distritoRepository.findById(0).orElseThrow()

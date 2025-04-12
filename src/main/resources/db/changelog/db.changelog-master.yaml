@@ -1,0 +1,12 @@
+databaseChangeLog:
+    - include:
+          file: db/changelog/schema/db.changelog-001-init-schema.yaml
+    - include:
+          file: db/changelog/schema/db.changelog-002-init-triggers.yaml
+    - include:
+          file: db/changelog/schema/db.changelog-003-init-indexes.yaml
+    - include:
+          file: db/changelog/data/db.changelog-004-init-data.yaml
+    - include:
+          context: test
+          file: db/changelog/test/db.changelog-005-test-data.yaml
