@@ -697,6 +697,6 @@
   "errors": [],
   "warnings": [],
   "metadata": {
-    "path": "/vacunacion/v1/public/distritos"
+    "path": "/vacunacion/v1/direccion/distritos"
   }
 }

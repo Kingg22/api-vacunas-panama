@@ -5,12 +5,12 @@
   "data": {
     "provincias": [
       {
-        "id": 1,
-        "nombre": "Bocas del Toro"
+        "id": 0,
+        "nombre": "Por registrar"
       },
       {
-        "id": 4,
-        "nombre": "Chiriquí"
+        "id": 1,
+        "nombre": "Bocas del Toro"
       },
       {
         "id": 2,
@@ -21,28 +21,12 @@
         "nombre": "Colón"
       },
       {
+        "id": 4,
+        "nombre": "Chiriquí"
+      },
+      {
         "id": 5,
         "nombre": "Darién"
-      },
-      {
-        "id": 11,
-        "nombre": "Emberá-Wounaan"
-      },
-      {
-        "id": 17,
-        "nombre": "Extranjero"
-      },
-      {
-        "id": 15,
-        "nombre": "Guna de Madugandí"
-      },
-      {
-        "id": 16,
-        "nombre": "Guna de Wargandí"
-      },
-      {
-        "id": 10,
-        "nombre": "Guna Yala"
       },
       {
         "id": 6,
@@ -53,28 +37,44 @@
         "nombre": "Los Santos"
       },
       {
-        "id": 14,
-        "nombre": "Naso Tjër Di"
+        "id": 8,
+        "nombre": "Panamá"
+      },
+      {
+        "id": 9,
+        "nombre": "Veraguas"
+      },
+      {
+        "id": 10,
+        "nombre": "Guna Yala"
+      },
+      {
+        "id": 11,
+        "nombre": "Emberá-Wounaan"
       },
       {
         "id": 12,
         "nombre": "Ngäbe-Buglé"
       },
       {
-        "id": 8,
-        "nombre": "Panamá"
-      },
-      {
         "id": 13,
         "nombre": "Panamá Oeste"
       },
       {
-        "id": 0,
-        "nombre": "Por registrar"
+        "id": 14,
+        "nombre": "Naso Tjër Di"
       },
       {
-        "id": 9,
-        "nombre": "Veraguas"
+        "id": 15,
+        "nombre": "Guna de Madugandí"
+      },
+      {
+        "id": 16,
+        "nombre": "Guna de Wargandí"
+      },
+      {
+        "id": 17,
+        "nombre": "Extranjero"
       }
     ]
   },

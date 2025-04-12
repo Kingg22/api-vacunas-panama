@@ -6,7 +6,6 @@ import io.github.kingg22.api.vacunas.panama.util.retrieveFileJson
 import io.kotest.assertions.json.shouldEqualJson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -15,7 +14,6 @@ class DireccionControllerTest : BaseIntegrationTest() {
     private lateinit var webTestClient: WebTestClient
 
     @Test
-    @Ignore("TODO order by id to match always")
     fun getProvincias() {
         val expectedJson = retrieveFileJson("responses/direccion/get_provincias.json")
 
@@ -33,6 +31,17 @@ class DireccionControllerTest : BaseIntegrationTest() {
 
     @Test
     fun getDistritos() {
-        /** TODO */
+        val expectedJson = retrieveFileJson("responses/direccion/get_distritos.json")
+
+        webTestClient.get()
+            .uri("/direccion/distritos")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .consumeWith {
+                val responseBody = it.responseBody?.toString(Charsets.UTF_8)
+                assertNotNull(responseBody)
+                responseBody.removeMetadata() shouldEqualJson expectedJson
+            }
     }
 }
