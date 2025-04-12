@@ -16,7 +16,6 @@ apache-commons-pool2 = "2.12.1"
 mockk = "1.14.0"
 spring-mockk = "4.0.2"
 kotest = "5.9.1"
-testcontainers = "1.20.6"
 
 [libraries]
 # Spring
@@ -41,10 +40,8 @@ kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 reactor-kotlin = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions" }
 
-# Drivers
-mssql-jdbc = { module = "com.microsoft.sqlserver:mssql-jdbc" }
+# Database
 postgresql = { module = "org.postgresql:postgresql" }
-h2 = { module = "com.h2database:h2" }
 liquibase = { module = "org.liquibase:liquibase-core"}
 
 # Testing
@@ -58,8 +55,8 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring-mockk" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
-testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
-testcontainers-junit = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testcontainers" }
+testcontainers-junit = { group = "org.testcontainers", name = "junit-jupiter" }
+testcontainers-postgres = { group = "org.testcontainers", name = "postgresql" }
 
 # Third Party
 dotenv-java = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv-java" }
@@ -95,14 +92,11 @@ implementation = [
     "kotlinx-coroutines",
     "kotlinx-coroutines-reactor",
     "reactor-kotlin",
-    "apache-commons-pool2"
+    "apache-commons-pool2",
+    "liquibase"
 ]
 
-runtimeOnly = [
-    "mssql-jdbc",
-    "postgresql",
-    "h2"
-]
+runtimeOnly = ["postgresql"]
 
 testImplementation = [
     "kotlin-test",
@@ -113,8 +107,8 @@ testImplementation = [
     "spring-mockk",
     "kotest-assertions-core",
     "kotest-assertions-json",
-    "testcontainers",
-    "testcontainers-junit"
+    "testcontainers-junit",
+    "testcontainers-postgres"
 ]
 
 [plugins]
