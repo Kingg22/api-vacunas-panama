@@ -9,6 +9,6 @@ import java.util.UUID
 class SedeServiceImpl(private val sedeRepository: SedeRepository) : SedeService {
     override fun getSedeById(id: UUID) = sedeRepository.findById(id)
 
-    @Cacheable(cacheNames = ["massive"], key = "'sedesNombre'")
+    @Cacheable(cacheNames = ["massive"], key = "'sedesNombre'", unless = "#result==null or #result.isEmpty()")
     override fun getIdNombreSedes() = sedeRepository.findAllIdAndNombre()
 }
