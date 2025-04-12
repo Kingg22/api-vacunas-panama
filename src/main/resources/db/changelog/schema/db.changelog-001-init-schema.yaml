@@ -1,0 +1,11 @@
+databaseChangeLog:
+    - changeSet:
+          id: 001
+          author: Rey (Kingg22)
+          changes:
+              - sqlFile:
+                    path: schema-pgsql.sql
+                    encoding: UTF-8
+                    relativeToChangelogFile: false
+                    splitStatements: false
+                    endDelimiter: ;

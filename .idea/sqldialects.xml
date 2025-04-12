@@ -7,8 +7,10 @@
     <file url="file://$PROJECT_DIR$/containers/database/vacunas-data.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/containers/database/vacunas-init-views.sql" dialect="TSQL" />
     <file url="file://$PROJECT_DIR$/containers/database/vacunas-procedures.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/changelog/schema/init-indexes.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/changelog/schema/init-triggers.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/changelog/test/test-data.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/schema-pgsql.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/vacunas-data.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/src/test/resources/data.sql" dialect="H2" />
   </component>
 </project>

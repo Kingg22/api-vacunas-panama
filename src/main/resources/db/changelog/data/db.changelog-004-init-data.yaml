@@ -1,0 +1,10 @@
+databaseChangeLog:
+    - changeSet:
+          id: 004
+          author: Rey (Kingg22)
+          changes:
+              - sqlFile:
+                    path: vacunas-data.sql
+                    encoding: UTF-8
+                    relativeToChangelogFile: false
+                    splitStatements: false
