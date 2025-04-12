@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.13.0"
+version = "0.13.1"
 
 java {
     toolchain {
@@ -80,7 +80,16 @@ spotless {
         ktlint()
     }
     sql {
-        target("src/main/resources/**/*.sql", "*.sql", "containers/database/*.sql")
+        targetExclude("build/generated/**")
+        target("src/**/*.sql", "containers/database/**/*.sql")
+    }
+    yaml {
+        targetExclude("build/generated/**")
+        target("src/**/*.yaml", "*.yaml")
+    }
+    json {
+        targetExclude("build/generated/**")
+        target("src/**/*.json")
     }
 }
 
