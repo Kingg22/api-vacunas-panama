@@ -10,3 +10,6 @@ databaseChangeLog:
     - include:
           context: test
           file: db/changelog/test/db.changelog-005-test-data.yaml
+    - include:
+          context: test
+          file: db/changelog/test/db.changelog-006-test-sedes.yaml

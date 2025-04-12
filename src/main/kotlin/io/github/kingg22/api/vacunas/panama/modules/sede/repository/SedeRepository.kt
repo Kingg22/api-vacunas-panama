@@ -10,7 +10,8 @@ interface SedeRepository : JpaRepository<Sede, UUID> {
     @Query(
         "SELECT new io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto(s.id, s.nombre) " +
             "FROM Sede s " +
-            "WHERE s.estado LIKE 'ACTIVO'",
+            "WHERE s.estado LIKE 'ACTIVO' " +
+            "ORDER BY s.nombre",
     )
     fun findAllIdAndNombre(): List<UUIDNombreDto>
 }

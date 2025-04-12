@@ -32,7 +32,7 @@ services:
       - "8001:8001"
     volumes:
       - cache-persistence:/data
-      - ./redis.conf:/redis-stack.conf
+      - "./containers/redis.conf:/redis-stack.conf"
     networks:
       network-vacunas:
         ipv4_address: 172.22.0.3
@@ -41,7 +41,7 @@ services:
     image: api-vacunas-panama:0.13.0
     container_name: api-spring-vacunas
     env_file:
-      - "secrets/docker.env"
+      - "containers/secrets/docker.env"
     secrets:
       - JWT_PUBLIC_KEY
       - JWT_PRIVATE_KEY
@@ -75,8 +75,8 @@ networks:
 
 secrets:
   DB_PASSWORD:
-    file: secrets/db.env
+    file: containers/secrets/db.env
   JWT_PUBLIC_KEY:
-    file: secrets/public.pem
+    file: containers/secrets/public.pem
   JWT_PRIVATE_KEY:
-    file: secrets/private.pem
+    file: containers/secrets/private.pem

@@ -1,4 +1,4 @@
-package io.github.kingg22.api.vacunas.panama.modules.sede.controller
+package io.github.kingg22.api.vacunas.panama.modules.vacuna.controller
 
 import io.github.kingg22.api.vacunas.panama.util.BaseIntegrationTest
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
@@ -9,16 +9,16 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class SedeControllerTest : BaseIntegrationTest() {
+class VacunaControllerTest : BaseIntegrationTest() {
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
     @Test
-    fun getSedes() {
-        val expectedJson = retrieveFileJson("responses/sedes/get_sedes.json")
+    fun getVacunas() {
+        val expectedJson = retrieveFileJson("/responses/vacunas/get_vacunas_fabricante.json")
 
         webTestClient.get()
-            .uri("/sedes")
+            .uri("/vaccines")
             .exchange()
             .expectStatus().isOk
             .expectBody()

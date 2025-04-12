@@ -1,43 +1,43 @@
-INSERT INTO roles (id, nombre, descripcion, created_at)
-VALUES (1, 'PACIENTE', 'Usuario que recibe tratamiento y consulta información médica.', '2025-04-04 12:34:56'),
-       (2, 'FABRICANTE', 'Persona o empresa que produce o distribuye vacunas.', '2025-04-04 12:34:56'),
-       (3, 'ENFERMERA', 'Especialista en cuidados y asistencia directa a pacientes.', '2025-04-04 12:34:56'),
-       (4, 'DOCTOR', 'Profesional médico que diagnostica y trata a los pacientes.', '2025-04-04 12:34:56'),
-       (5, 'ADMINISTRATIVO', 'Responsable de la atención, gestión, planificación de la institución.', '2025-04-04 12:34:56'),
-       (6, 'DEVELOPER', 'Administra y desarrolla aplicaciones, bases de datos y sistemas.', '2025-04-04 12:34:56'),
-       (7, 'AUTORIDAD', 'Persona con poderes de decisión y supervisión en la institución.', '2025-04-04 12:34:56');
+INSERT INTO roles (id, nombre, descripcion)
+VALUES (1, 'PACIENTE', 'Usuario que recibe tratamiento y consulta información médica.'),
+       (2, 'FABRICANTE', 'Persona o empresa que produce o distribuye vacunas.'),
+       (3, 'ENFERMERA', 'Especialista en cuidados y asistencia directa a pacientes.'),
+       (4, 'DOCTOR', 'Profesional médico que diagnostica y trata a los pacientes.'),
+       (5, 'ADMINISTRATIVO', 'Responsable de la atención, gestión, planificación de la institución.'),
+       (6, 'DEVELOPER', 'Administra y desarrolla aplicaciones, bases de datos y sistemas.'),
+       (7, 'AUTORIDAD', 'Persona con poderes de decisión y supervisión en la institución.');
 
-INSERT INTO permisos (id, nombre, descripcion, created_at)
-VALUES (1, 'PACIENTE_READ', 'Permite leer datos básicos de pacientes y sus referencias médicas.', '2025-04-04 12:34:56'),
-       (2, 'MED_READ', 'Permite leer datos médicos detallados de pacientes.', '2025-04-04 12:34:56'),
-       (3, 'MED_WRITE', 'Permite añadir o modificar datos médicos.', '2025-04-04 12:34:56'),
-       (4, 'USER_MANAGER_WRITE', 'Permite gestionar los usuarios, sin incluir restricciones a los mismos.', '2025-04-04 12:34:56'),
-       (5, 'USER_MANAGER_READ', 'Permite leer los datos de los usuarios.', '2025-04-04 12:34:56'),
-       (6, 'FABRICANTE_READ', 'Permite leer los datos generales del fabricante de vacunas.', '2025-04-04 12:34:56'),
+INSERT INTO permisos (id, nombre, descripcion)
+VALUES (1, 'PACIENTE_READ', 'Permite leer datos básicos de pacientes y sus referencias médicas.'),
+       (2, 'MED_READ', 'Permite leer datos médicos detallados de pacientes.'),
+       (3, 'MED_WRITE', 'Permite añadir o modificar datos médicos.'),
+       (4, 'USER_MANAGER_WRITE', 'Permite gestionar los usuarios, sin incluir restricciones a los mismos.'),
+       (5, 'USER_MANAGER_READ', 'Permite leer los datos de los usuarios.'),
+       (6, 'FABRICANTE_READ', 'Permite leer los datos generales del fabricante de vacunas.'),
        (7, 'FABRICANTE_WRITE',
-        'Permite gestionar datos relacionados a las vacunas ofrecidos y referencias médicas de las mismas.', '2025-04-04 12:34:56'),
-       (8, 'ADMINISTRATIVO_WRITE', 'Permite gestionar usuarios y configuraciones de enfermedades, síntomas y vacunas.', '2025-04-04 12:34:56'),
-       (9, 'AUTORIDAD_READ', 'Permite supervisar todos los datos.', '2025-04-04 12:34:56'),
-       (10, 'AUTORIDAD_WRITE', 'Permite modificar todos los datos sin restricciones de lógica del necio o permisos.', '2025-04-04 12:34:56'),
-       (11, 'DEV_DB_ADMIN', 'Permite administrar, configurar y desarrollar la base de datos.', '2025-04-04 12:34:56'),
-       (12, 'GUEST_READ', 'Permite leer datos generales de la base de datos. Información no sensitiva ni confidencial.', '2025-04-04 12:34:56');
+        'Permite gestionar datos relacionados a las vacunas ofrecidos y referencias médicas de las mismas.'),
+       (8, 'ADMINISTRATIVO_WRITE', 'Permite gestionar usuarios y configuraciones de enfermedades, síntomas y vacunas.'),
+       (9, 'AUTORIDAD_READ', 'Permite supervisar todos los datos.'),
+       (10, 'AUTORIDAD_WRITE', 'Permite modificar todos los datos sin restricciones de lógica del necio o permisos.'),
+       (11, 'DEV_DB_ADMIN', 'Permite administrar, configurar y desarrollar la base de datos.'),
+       (12, 'GUEST_READ', 'Permite leer datos generales de la base de datos. Información no sensitiva ni confidencial.');
 
-INSERT INTO roles_permisos (rol, permiso, created_at)
-VALUES (1, 1, '2025-04-04 12:34:56'),
-       (4, 2, '2025-04-04 12:34:56'),
-       (4, 3, '2025-04-04 12:34:56'),
-       (4, 4, '2025-04-04 12:34:56'),
-       (4, 5, '2025-04-04 12:34:56'),
-       (3, 2, '2025-04-04 12:34:56'),
-       (3, 3, '2025-04-04 12:34:56'),
-       (5, 8, '2025-04-04 12:34:56'),
-       (5, 5, '2025-04-04 12:34:56'),
-       (5, 12, '2025-04-04 12:34:56'),
-       (7, 9, '2025-04-04 12:34:56'),
-       (7, 10, '2025-04-04 12:34:56'),
-       (6, 11, '2025-04-04 12:34:56'),
-       (2, 6, '2025-04-04 12:34:56'),
-       (2, 7, '2025-04-04 12:34:56');
+INSERT INTO roles_permisos (rol, permiso)
+VALUES (1, 1),
+       (4, 2),
+       (4, 3),
+       (4, 4),
+       (4, 5),
+       (3, 2),
+       (3, 3),
+       (5, 8),
+       (5, 5),
+       (5, 12),
+       (7, 9),
+       (7, 10),
+       (6, 11),
+       (2, 6),
+       (2, 7);
 
 INSERT INTO vacunas (id, nombre, edad_minima_dias)
 VALUES ('123e4567-e89b-12d3-a456-426614174002', 'Adacel', 132 * 30.44),
