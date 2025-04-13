@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
+import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
@@ -106,7 +107,11 @@ class VacunaServiceImpl(
         return contentResponse.build()
     }
 
-    @Cacheable(cacheNames = ["huge"], key = "'vacunas'", unless = "#result==null or #result.isEmpty()")
+    @Cacheable(
+        cacheNames = [CacheDuration.HUGE_VALUE],
+        key = "'vacunas'",
+        unless = "#result==null or #result.isEmpty()",
+    )
     override fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
 
     override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
