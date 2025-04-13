@@ -15,4 +15,6 @@ interface ApiError : Serializable {
 
     /** Descriptive error message */
     val message: String?
+
+    operator fun plus(other: ApiError) = listOf(this, other)
 }

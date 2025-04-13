@@ -58,6 +58,14 @@ object ApiResponseFactory {
     fun createResponseBuilder(response: ApiResponse = DefaultApiResponse(), block: ApiResponseBuilder.() -> Unit) =
         ApiResponseBuilder(response).apply(block).build()
 
+    /** Create a new [ApiContentResponse] with DSL of [ApiResponseBuilder] */
+    @JvmStatic
+    @Contract(" -> new")
+    fun createContentResponseBuilder(
+        response: ApiContentResponse = DefaultApiResponse(),
+        block: ApiResponseBuilder.() -> Unit,
+    ): ApiContentResponse = ApiResponseBuilder(response as ApiResponse).apply(block).build()
+
     /** Create a new [ApiError] with DSL of [ApiResponseBuilder.ApiErrorBuilder] */
     @JvmStatic
     @Contract(" -> new")

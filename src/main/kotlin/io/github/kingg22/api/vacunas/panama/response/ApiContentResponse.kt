@@ -2,7 +2,7 @@ package io.github.kingg22.api.vacunas.panama.response
 
 import java.io.Serializable
 
-/** Base interface for API content responses, providing methods to add data, errors, and warnings in a flexible manner. */
+/** Base interface for API content responses, providing methods to add data, errors, and warnings flexibly. */
 interface ApiContentResponse : Serializable {
     /** Retrieve the current data map */
     val data: MutableMap<String, Serializable>
@@ -58,4 +58,10 @@ interface ApiContentResponse : Serializable {
 
     /** Merge two [ApiContentResponse] in one */
     fun mergeContentResponse(contentResponse: ApiContentResponse): ApiContentResponse
+
+    operator fun plus(other: ApiContentResponse): ApiContentResponse = mergeContentResponse(other)
+
+    operator fun plusAssign(other: ApiContentResponse) {
+        mergeContentResponse(other)
+    }
 }
