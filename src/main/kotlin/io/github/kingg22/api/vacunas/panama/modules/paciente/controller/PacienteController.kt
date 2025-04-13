@@ -3,9 +3,9 @@ package io.github.kingg22.api.vacunas.panama.modules.paciente.controller
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
-import io.github.kingg22.api.vacunas.panama.response.DefaultApiError
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -35,7 +35,10 @@ class PacienteController(private val pacienteService: PacienteService) {
         apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedadDtoList)
         if (viewPacienteVacunaEnfermedadDtoList.isEmpty()) {
             apiResponse.addError(
-                DefaultApiError(code = ApiResponseCode.NOT_FOUND, message = "El paciente no tiene dosis registradas"),
+                createApiErrorBuilder {
+                    withCode(ApiResponseCode.NOT_FOUND)
+                    message = "El paciente no tiene dosis registradas"
+                },
             )
             apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
         } else {
