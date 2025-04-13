@@ -7,7 +7,7 @@ import java.io.Serializable
 
 /** Default implementation of [ApiError]. */
 @JsonPropertyOrder(value = ["code", "property", "message"])
-data class DefaultApiError @JvmOverloads constructor(
+internal data class DefaultApiError(
     @field:NotBlank(message = "Error code cannot be blank")
     @param:NotBlank(message = "Error code cannot be blank")
     override val code: String,
@@ -21,9 +21,8 @@ data class DefaultApiError @JvmOverloads constructor(
     override val property: String? = null,
 ) : ApiError,
     Serializable {
-    @JvmOverloads
-    constructor(code: ApiResponseCode, property: String? = null, message: String) : this(
-        code = code.toString(),
+    internal constructor(code: ApiResponseCode, property: String? = null, message: String) : this(
+        code = code.name,
         message = message,
         property = property,
     )

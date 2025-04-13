@@ -7,7 +7,7 @@ import java.io.Serializable
 
 /** Default implementation of [ApiResponse] with a fluent builder pattern. */
 @JsonPropertyOrder(value = ["status", "data", "errors", "warnings", "metadata"])
-class DefaultApiResponse(
+internal data class DefaultApiResponse(
     override val status: MutableMap<String, Serializable> = mutableMapOf(),
     override val data: MutableMap<String, Serializable> = mutableMapOf(),
     override val errors: MutableList<ApiError> = mutableListOf(),
@@ -60,19 +60,17 @@ class DefaultApiResponse(
     override fun retrieveHttpStatusCode(): HttpStatusCode =
         status["code"] as? HttpStatusCode ?: HttpStatusCode.valueOf(500)
 
-    override fun mergeResponse(response: ApiResponse): ApiResponse {
+    override fun mergeResponse(response: ApiResponse): ApiResponse = this.apply {
         this.status.putAll(response.status)
         this.metadata.putAll(response.metadata)
         this.data.putAll(response.data)
         this.errors.addAll(response.errors)
         this.warnings.addAll(response.warnings)
-        return this
     }
 
-    override fun mergeContentResponse(contentResponse: ApiContentResponse): ApiContentResponse {
+    override fun mergeContentResponse(contentResponse: ApiContentResponse): ApiContentResponse = this.apply {
         this.data.putAll(contentResponse.data)
         this.errors.addAll(contentResponse.errors)
         this.warnings.addAll(contentResponse.warnings)
-        return this
     }
 }

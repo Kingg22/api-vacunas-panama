@@ -187,9 +187,8 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
      * The fields `message` and `code` are mandatory.
      * @throws IllegalStateException if the mandatory `message` or `code` field has not been initialized.
      */
-    class ApiErrorBuilder {
-        private lateinit var message: String
-        private var property: String? = null
+    data class ApiErrorBuilder(var property: String? = null) {
+        lateinit var message: String
         private var code: ApiResponseCode? = null
         private var codeString: String? = null
 
@@ -209,6 +208,15 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          */
         fun withCode(code: String) = apply {
             this.codeString = code
+        }
+
+        /**
+         * Specifies the error code directly as a string.
+         * @param code A string representing the error code.
+         * @return The builder itself for method chaining.
+         */
+        fun withCode(httpStatusCode: HttpStatusCode) = apply {
+            this.codeString = httpStatusCode.toString()
         }
 
         /**
