@@ -17,8 +17,8 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente] */
 @JvmRecord
-data class PacienteDto @JvmOverloads constructor(
-    @field:JsonUnwrapped @param:JsonUnwrapped val persona: PersonaDto,
+data class PacienteDto(
+    @field:JsonUnwrapped @param:JsonUnwrapped @field:Valid @param:Valid val persona: PersonaDto,
 
     @field:JsonProperty(value = "identificacion_temporal")
     @param:JsonProperty(value = "identificacion_temporal")
@@ -116,6 +116,4 @@ data class PacienteDto @JvmOverloads constructor(
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
-
-    fun changePersona(persona: PersonaDto): PacienteDto = this.copy(persona = persona)
 }

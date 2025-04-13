@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
+import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
@@ -29,62 +30,6 @@ class PacienteServiceImpl(
     @Lazy private val direccionService: DireccionService,
 ) : PacienteService {
     private val log = logger()
-
-    override fun validateCreatePacienteUsuario(pacienteDto: PacienteDto): ApiContentResponse = createResponseBuilder {
-        val usuario = pacienteDto.persona.usuario
-
-        if (usuario == null) {
-            withError(
-                ApiResponseCode.MISSING_INFORMATION,
-                "Esta función necesita el usuario para el paciente",
-            )
-            return@createResponseBuilder
-        }
-
-        if (usuario.id == null && usuario.roles?.any { it.nombre != null } == true) {
-            withError(
-                ApiResponseCode.NON_IDEMPOTENCE,
-                "Utilice ID para el rol Paciente en esta función",
-                "roles[]",
-            )
-        }
-
-        if (usuario.roles?.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
-            true
-        ) {
-            withError(
-                ApiResponseCode.VALIDATION_FAILED,
-                "Esta función es solo para pacientes",
-                "roles[]",
-            )
-        }
-
-        if (pacienteDto.persona.sexo?.toString()?.equals("X", ignoreCase = true) == true) {
-            withWarning(
-                ApiResponseCode.DEPRECATION_WARNING,
-                "Sexo no definido afecta reglas de vacunación",
-                "sexo",
-            )
-        }
-
-        if (pacienteDto.persona.direccion?.id == null) {
-            withWarning(
-                ApiResponseCode.NON_IDEMPOTENCE,
-                "Debe trabajar con ID",
-                "direccion",
-            )
-        }
-
-        val createdPaciente = pacienteDto.createdAt
-        val createdUsuario = usuario.createdAt
-        if (createdPaciente != null && createdUsuario != null && createdPaciente != createdUsuario) {
-            withError(
-                ApiResponseCode.VALIDATION_FAILED,
-                "created_at de Paciente y Usuario deben coincidir",
-                "created_at",
-            )
-        }
-    }
 
     @Transactional
     override fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
@@ -136,15 +81,15 @@ class PacienteServiceImpl(
 
     override fun getPacienteById(idPaciente: UUID) = pacienteRepository.findById(idPaciente)
 
-    @Cacheable(cacheNames = ["cache"], key = "'view_vacuna_enfermedad'.concat(#id)")
+    @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
     override fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
 
-    fun validatePacienteExist(pacienteDto: PacienteDto) = buildList {
+    private fun validatePacienteExist(pacienteDto: PacienteDto) = buildList {
         val persona = pacienteDto.persona
 
         persona.cedula?.let {
             val formatted = FormatterUtil.formatCedula(it)
-            pacienteDto.changePersona(persona.changeCedulaOrID(formatted))
+            pacienteDto.copy(persona = persona.copy(cedula = formatted))
             if (pacienteRepository.findByCedula(formatted).isPresent) {
                 add(
                     createApiErrorBuilder {
@@ -199,7 +144,7 @@ class PacienteServiceImpl(
         }
     }
 
-    fun validateCreatePaciente(pacienteDto: PacienteDto) = buildList {
+    private fun validateCreatePaciente(pacienteDto: PacienteDto) = buildList {
         val persona = pacienteDto.persona
 
         if (persona.nombre.isNullOrBlank() && persona.nombre2.isNullOrBlank()) {
@@ -242,6 +187,69 @@ class PacienteServiceImpl(
                     withProperty("fechaNacimiento")
                     withMessage("La fecha de nacimiento es obligatoria")
                 },
+            )
+        }
+    }
+
+    /**
+     * Validates the data required to create a new patient and linked user.
+     * Includes checks like duplicate identity, missing fields, etc.
+     *
+     * @param pacienteDto DTO containing patient data to validate.
+     * @return [ApiContentResponse] with validation results or errors.
+     */
+    private fun validateCreatePacienteUsuario(pacienteDto: PacienteDto): ApiContentResponse = createResponseBuilder {
+        val usuario = pacienteDto.persona.usuario
+
+        if (usuario == null) {
+            withError(
+                ApiResponseCode.MISSING_INFORMATION,
+                "Esta función necesita el usuario para el paciente",
+            )
+            return@createResponseBuilder
+        }
+
+        if (usuario.id == null && usuario.roles?.any { it.nombre != null } == true) {
+            withError(
+                ApiResponseCode.NON_IDEMPOTENCE,
+                "Utilice ID para el rol Paciente en esta función",
+                "roles[]",
+            )
+        }
+
+        if (usuario.roles?.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
+            true
+        ) {
+            withError(
+                ApiResponseCode.VALIDATION_FAILED,
+                "Esta función es solo para pacientes",
+                "roles[]",
+            )
+        }
+
+        if (pacienteDto.persona.sexo?.toString()?.equals("X", ignoreCase = true) == true) {
+            withWarning(
+                ApiResponseCode.DEPRECATION_WARNING,
+                "Sexo no definido afecta reglas de vacunación",
+                "sexo",
+            )
+        }
+
+        if (pacienteDto.persona.direccion?.id == null) {
+            withWarning(
+                ApiResponseCode.NON_IDEMPOTENCE,
+                "Debe trabajar con ID",
+                "direccion",
+            )
+        }
+
+        val createdPaciente = pacienteDto.createdAt
+        val createdUsuario = usuario.createdAt
+        if (createdPaciente != null && createdUsuario != null && createdPaciente != createdUsuario) {
+            withError(
+                ApiResponseCode.VALIDATION_FAILED,
+                "created_at de Paciente y Usuario deben coincidir",
+                "created_at",
             )
         }
     }

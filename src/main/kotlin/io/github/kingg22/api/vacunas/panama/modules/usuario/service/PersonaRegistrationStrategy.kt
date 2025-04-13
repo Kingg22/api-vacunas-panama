@@ -16,6 +16,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PersonaRegistrationStrategy(
@@ -59,6 +60,7 @@ class PersonaRegistrationStrategy(
         )
     }
 
+    @Transactional
     override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
         val persona = (validate(registerUserDto) as? RegistrationSuccess)?.outcome as? Persona
             ?: return createContentResponse().apply {
@@ -70,10 +72,10 @@ class PersonaRegistrationStrategy(
                 )
             }
 
-        val user = usuarioService.createUser(registerUserDto.usuario) {
+        usuarioService.createUser(registerUserDto.usuario) {
+            persona.usuario = it
             it.persona = persona
         }
-        persona.usuario = user
 
         return createContentResponse().apply {
             addData("PERSONA", persona.toPersonaDto())

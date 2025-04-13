@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 
+import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
@@ -22,11 +23,19 @@ class DireccionServiceImpl(
     private val distritoRepository: DistritoRepository,
     private val provinciaRepository: ProvinciaRepository,
 ) : DireccionService {
-    @Cacheable(cacheNames = ["massive"], key = "'distritosDto'", unless = "#result==null or #result.isEmpty()")
+    @Cacheable(
+        cacheNames = [CacheDuration.MASSIVE_VALUE],
+        key = "'distritosDto'",
+        unless = "#result==null or #result.isEmpty()",
+    )
     @Transactional
     override fun getDistritosDto() = distritoRepository.findAll().toListDistritoDto()
 
-    @Cacheable(cacheNames = ["massive"], key = "'provinciasDto'", unless = "#result==null or #result.isEmpty()")
+    @Cacheable(
+        cacheNames = [CacheDuration.MASSIVE_VALUE],
+        key = "'provinciasDto'",
+        unless = "#result==null or #result.isEmpty()",
+    )
     override fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -44,12 +53,12 @@ class DireccionServiceImpl(
         )
     }
 
-    @Cacheable(cacheNames = ["massive"], key = "'direccionDefault'")
+    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
     override fun getDireccionDefault() = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
         .orElseThrow()
         .first()
 
-    @Cacheable(cacheNames = ["massive"], key = "'distritoDefault'")
+    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
     override fun getDistritoDefault(): Distrito = distritoRepository.findById(0).orElseThrow()
 
     override fun getDireccionByDto(@Valid direccionDto: DireccionDto): Optional<Direccion> {

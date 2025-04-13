@@ -12,16 +12,6 @@ import java.util.UUID
  * creation, retrieval, and vaccine-disease view generation.
  */
 interface PacienteService {
-
-    /**
-     * Validates the data required to create a new patient and linked user.
-     * Includes checks like duplicate identity, missing fields, etc.
-     *
-     * @param pacienteDto DTO containing patient data to validate.
-     * @return [ApiContentResponse] with validation results or errors.
-     */
-    fun validateCreatePacienteUsuario(pacienteDto: PacienteDto): ApiContentResponse
-
     /**
      * Creates a new [Paciente] and associated user if validation is successful.
      *

@@ -5,9 +5,9 @@ import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
-import io.github.kingg22.api.vacunas.panama.response.DefaultApiError
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -75,10 +75,10 @@ class PdfController(
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
                 apiResponse.addError(
-                    DefaultApiError(
-                        code = ApiResponseCode.NOT_FOUND,
-                        message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF",
-                    ),
+                    createApiErrorBuilder {
+                        withCode(ApiResponseCode.NOT_FOUND)
+                        message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF"
+                    },
                 )
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
                 return sendResponse(apiResponse, webRequest)
@@ -93,20 +93,20 @@ class PdfController(
         } catch (e: RuntimeException) {
             log.debug(e.message, e)
             apiResponse.addError(
-                DefaultApiError(
-                    HttpStatus.INTERNAL_SERVER_ERROR.toString(),
-                    "Ha ocurrido un error al generar el PDF",
-                ),
+                createApiErrorBuilder {
+                    withCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                    message = "Ha ocurrido un error al generar el PDF"
+                },
             )
             apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
             return sendResponse(apiResponse, webRequest)
         } catch (e: IOException) {
             log.debug(e.message, e)
             apiResponse.addError(
-                DefaultApiError(
-                    HttpStatus.INTERNAL_SERVER_ERROR.toString(),
-                    "Ha ocurrido un error al generar el PDF",
-                ),
+                createApiErrorBuilder {
+                    withCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                    message = "Ha ocurrido un error al generar el PDF"
+                },
             )
             apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
             return sendResponse(apiResponse, webRequest)

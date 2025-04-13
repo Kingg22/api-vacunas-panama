@@ -33,17 +33,12 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
     ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         log.debug(pacienteDto.toString())
-        val validateContent = pacienteService.validateCreatePacienteUsuario(pacienteDto)
-        apiResponse.addErrors(validateContent.errors)
-        apiResponse.addWarnings(validateContent.warnings)
-        if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
-            return sendResponseSuspend(apiResponse, request)
-        }
         val pacienteContent = pacienteService.createPaciente(pacienteDto)
+        log.trace(pacienteContent.toString())
         apiResponse.addWarnings(pacienteContent.warnings)
         apiResponse.addErrors(pacienteContent.errors)
         if (pacienteContent.hasErrors()) {
+            log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
             return sendResponseSuspend(apiResponse, request)
         }
@@ -52,8 +47,10 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
             pacienteDto.persona.cedula,
             pacienteDto.persona.pasaporte,
         )
+        log.trace("RegisterUserDto: {}", registerUserDto.toString())
         val apiContentResponse = usuarioService.createUser(registerUserDto)
         apiResponse.mergeContentResponse(apiContentResponse)
+        log.trace("CreateUser return: {}", apiContentResponse.toString())
         if (apiContentResponse.hasErrors()) {
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
         } else {

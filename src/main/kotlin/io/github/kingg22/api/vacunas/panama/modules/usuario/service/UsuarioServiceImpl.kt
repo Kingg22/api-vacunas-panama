@@ -313,7 +313,7 @@ class UsuarioServiceImpl(
             }
         }
 
-        return RegistrationError(errors)
+        return if (errors.isEmpty()) RegistrationResult.RegistrationSuccess(Any()) else RegistrationError(errors)
     }
 
     fun isUsernameRegistered(username: String?) =

@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.service;
 
 import com.itextpdf.html2pdf.HtmlConverter;
+import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration;
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto;
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto;
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,10 @@ public class PdfServiceImpl implements PdfService {
         this.resourceLoader = resourceLoader;
     }
 
+    @Cacheable(
+            cacheNames = CacheDuration.MASSIVE_VALUE,
+            key = "'certificate:'.concat(#idCertificate)",
+            unless = "#result == null or #result.length == 0")
     public byte @org.jetbrains.annotations.NotNull [] generatePdf(
             @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
             @org.jetbrains.annotations.NotNull List<DosisDto> dosisDtos,
@@ -43,6 +49,10 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @org.jetbrains.annotations.NotNull
+    @Cacheable(
+            cacheNames = CacheDuration.MASSIVE_VALUE,
+            key = "'certificate64:'.concat(#idCertificate)",
+            unless = "#result == null or #result.length == 0")
     public String generatePdfBase64(
             @org.jetbrains.annotations.NotNull PacienteDto pacienteDto,
             @org.jetbrains.annotations.NotNull List<DosisDto> dosisDtos,
@@ -66,7 +76,6 @@ public class PdfServiceImpl implements PdfService {
         String template = generateHtmlTemplate(idCertificado, pdfDto);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         HtmlConverter.convertToPdf(template, outputStream);
-        this.saveCertificadoCache(idCertificado, outputStream.toString());
         return outputStream.toByteArray();
     }
 
@@ -103,7 +112,9 @@ public class PdfServiceImpl implements PdfService {
                 personaDto.id(),
                 dosisDtos);
 
-        log.debug(pdfDto.toString());
+        if (log.isDebugEnabled()) {
+            log.debug(pdfDto.toString());
+        }
         return pdfDto;
     }
 
@@ -114,10 +125,6 @@ public class PdfServiceImpl implements PdfService {
                 .or(() -> Optional.ofNullable(pacienteDto.persona().pasaporte()))
                 .or(() -> Optional.ofNullable(pacienteDto.identificacionTemporal()))
                 .orElseGet(() -> pacienteDto.persona().id().toString());
-    }
-
-    private void saveCertificadoCache(@org.jetbrains.annotations.NotNull @NotNull UUID idCertificate, String file) {
-        /* Temporal do nothing */
     }
 
     private String getIconImageBase64() throws IOException {

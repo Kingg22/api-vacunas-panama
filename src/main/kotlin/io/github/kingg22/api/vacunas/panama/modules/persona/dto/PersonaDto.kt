@@ -75,8 +75,4 @@ data class PersonaDto @JvmOverloads constructor(
     @field:Valid @param:Valid val direccion: DireccionDto? = null,
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
-) : Serializable {
-    @JvmOverloads
-    fun changeCedulaOrID(nuevaCedula: String, nuevoId: UUID? = this.id): PersonaDto =
-        this.copy(id = nuevoId, cedula = nuevaCedula)
-}
+) : Serializable
