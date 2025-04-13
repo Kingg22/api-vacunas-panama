@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS usuarios
     clave      VARCHAR(100) NOT NULL, -- NOSONAR
     PRIMARY KEY (id),
     CONSTRAINT uq_usuarios_username UNIQUE (usuario),
-    CONSTRAINT ck_usuarios_clave CHECK (clave ~ '^\\$2[ayb]\\$[0-9]{2}\\$[A-Za-z0-9./]{22}$')
+    CONSTRAINT ck_usuarios_clave CHECK (clave ~ '^\$2[ayb]\$[0-9]{2}\$[A-Za-z0-9.]{1,56}$')
 );
 
 CREATE TABLE IF NOT EXISTS usuarios_roles
