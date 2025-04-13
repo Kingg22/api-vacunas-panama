@@ -1,7 +1,7 @@
 
 # api-vacunas-panama
 ## Dependency License Report
-_2025-04-11 20:09:11 EST_
+_2025-04-13 15:13:36 EST_
 ## Apache License, Version 2.0
 
 **1** **Group:** `com.fasterxml` **Name:** `classmate` **Version:** `1.7.0`

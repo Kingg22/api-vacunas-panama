@@ -40,7 +40,7 @@ dependencies {
 
     testImplementation(libs.bundles.testImplementation)
     testImplementation(libs.spring.boot.starter.test) {
-        exclude(module = "mockito-core")
+        exclude(group = "org.mockito")
     }
 
     testRuntimeOnly(libs.junit.platform.launcher)
@@ -60,6 +60,11 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    val agentJar = configurations.testRuntimeClasspath.get().find {
+        it.name.contains("byte-buddy-agent")
+    } ?: throw GradleException("ByteBuddy agent JAR not found")
+
+    jvmArgs("-javaagent:${agentJar.absolutePath}")
 }
 
 spotless {

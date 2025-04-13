@@ -19,57 +19,57 @@ kotest = "5.9.1"
 
 [libraries]
 # Spring
-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
-spring-boot-starter-data-redis-reactive = { module = "org.springframework.boot:spring-boot-starter-data-redis-reactive" }
-spring-boot-starter-oauth2-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server" }
-spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
-spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security" }
-spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
-spring-security-oauth2-jose = { module = "org.springframework.security:spring-security-oauth2-jose" }
+spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
+spring-boot-starter-data-redis-reactive = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis-reactive" }
+spring-boot-starter-oauth2-resource-server = { group = "org.springframework.boot", name = "spring-boot-starter-oauth2-resource-server" }
+spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
+spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
+spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+spring-security-oauth2-jose = { group = "org.springframework.security", name = "spring-security-oauth2-jose" }
 
 # Missing in spring boot
-apache-commons-pool2 = { module = "org.apache.commons:commons-pool2", version.ref = "apache-commons-pool2" }
+apache-commons-pool2 = { group = "org.apache.commons", name = "commons-pool2", version.ref = "apache-commons-pool2" }
 
-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
 
 # Kotlin
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
 
-reactor-kotlin = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions" }
+reactor-kotlin = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
 
 # Database
-postgresql = { module = "org.postgresql:postgresql" }
-liquibase = { module = "org.liquibase:liquibase-core"}
+postgresql = { group = "org.postgresql", name = "postgresql" }
+liquibase = { group = "org.liquibase", name = "liquibase-core" }
 
 # Testing
-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
-spring-security-test = { module = "org.springframework.security:spring-security-test" }
-reactor-test = { module = "io.projectreactor:reactor-test" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-spring-mockk = { module = "com.ninja-squad:springmockk", version.ref = "spring-mockk" }
-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-security-test = { group = "org.springframework.security", name = "spring-security-test" }
+spring-boot-testcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers" }
 testcontainers-junit = { group = "org.testcontainers", name = "junit-jupiter" }
 testcontainers-postgres = { group = "org.testcontainers", name = "postgresql" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
+reactor-test = { group = "io.projectreactor", name = "reactor-test" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+spring-mockk = { group = "com.ninja-squad", name = "springmockk", version.ref = "spring-mockk" }
+kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotest-assertions-json = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
 
 # Third Party
-dotenv-java = { module = "io.github.cdimascio:dotenv-java", version.ref = "dotenv-java" }
-spring-dotenv = { module = "me.paulschwarz:spring-dotenv", version.ref = "spring-dotenv" }
-spring-error-handling = { module = "io.github.wimdeblauwe:error-handling-spring-boot-starter", version.ref = "spring-error-handling" }
+dotenv-java = { group = "io.github.cdimascio", name = "dotenv-java", version.ref = "dotenv-java" }
+spring-dotenv = { group = "me.paulschwarz", name = "spring-dotenv", version.ref = "spring-dotenv" }
+spring-error-handling = { group = "io.github.wimdeblauwe", name = "error-handling-spring-boot-starter", version.ref = "spring-error-handling" }
 
 # Konvert
-konvert-api = { module = "io.mcarle:konvert-api", version.ref = "konvert" }
-konvert = { module = "io.mcarle:konvert", version.ref = "konvert" }
+konvert-api = { group = "io.mcarle", name = "konvert-api", version.ref = "konvert" }
+konvert = { group = "io.mcarle", name = "konvert", version.ref = "konvert" }
 
 # PDF
-itextpdf = { module = "com.itextpdf:itext-core", version.ref = "itextpdf-core" }
-html2pdf = { module = "com.itextpdf:html2pdf", version.ref = "itextpdf-html" }
+itextpdf = { group = "com.itextpdf", name = "itext-core", version.ref = "itextpdf-core" }
+html2pdf = { group = "com.itextpdf", name = "html2pdf", version.ref = "itextpdf-html" }
 
 [bundles]
 implementation = [
@@ -89,7 +89,6 @@ implementation = [
     "dotenv-java",
     "spring-dotenv",
     "konvert-api",
-    "kotlinx-coroutines",
     "kotlinx-coroutines-reactor",
     "reactor-kotlin",
     "apache-commons-pool2",
@@ -107,6 +106,7 @@ testImplementation = [
     "spring-mockk",
     "kotest-assertions-core",
     "kotest-assertions-json",
+    "spring-boot-testcontainers",
     "testcontainers-junit",
     "testcontainers-postgres"
 ]
