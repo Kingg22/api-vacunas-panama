@@ -7,10 +7,12 @@ import io.kotest.assertions.json.shouldEqualJson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
+@ActiveProfiles("test")
 @Import(TestcontainersConfiguration::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SedeControllerTest {
