@@ -153,17 +153,17 @@ class UsuarioServiceImpl(
 
     override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit): Usuario {
         val role = usuarioDto.roles
-            ?.mapNotNull {
+            .mapNotNull {
                 rolPermisoService.convertToRole(it).also { found ->
                     if (found == null) log.warn("Rol no encontrado: ${it.nombre ?: it.id}")
                 }
             }
-            ?.toSet() ?: emptySet()
+            .toSet()
 
         val usuario = builder()
             .username(usuarioDto.username)
             .password(passwordEncoder.encode(usuarioDto.password))
-            .createdAt(usuarioDto.createdAt ?: LocalDateTime.now(UTC))
+            .createdAt(usuarioDto.createdAt)
             .roles(role)
             .build()
 
@@ -236,13 +236,11 @@ class UsuarioServiceImpl(
 
         val errors = mutableListOf<ApiError>()
 
-        usuarioDto.roles?.let { requestedRoles ->
-            if (!requestedRoles.all { canRegisterRole(it, authenticatedRoles) }) {
-                errors += createApiErrorBuilder {
-                    withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
-                    withProperty("roles[]")
-                    withMessage("No puede asignar roles superiores a su rol actual")
-                }
+        if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
+            errors += createApiErrorBuilder {
+                withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
+                withProperty("roles[]")
+                withMessage("No puede asignar roles superiores a su rol actual")
             }
         }
 
@@ -258,9 +256,7 @@ class UsuarioServiceImpl(
 
     private fun validateWarningsRegistration(usuarioDto: UsuarioDto): List<ApiError> {
         val apiErrorList = mutableListOf<ApiError>()
-        if (usuarioDto.roles != null &&
-            usuarioDto.roles.stream()
-                .anyMatch { rolDto: RolDto? -> rolDto!!.permisos != null && rolDto.permisos.isNotEmpty() }
+        if (usuarioDto.roles.any { rolDto -> rolDto.permisos.isNotEmpty() }
         ) {
             apiErrorList += createApiErrorBuilder {
                 withCode(ApiResponseCode.INFORMATION_IGNORED)
@@ -270,9 +266,7 @@ class UsuarioServiceImpl(
                 )
             }
         }
-        if (usuarioDto.roles != null &&
-            usuarioDto.roles.any { rolDto -> rolDto.id == null && rolDto.nombre != null && !rolDto.nombre.isBlank() }
-        ) {
+        if (usuarioDto.roles.any { rolDto -> rolDto.id == null && rolDto.nombre != null && !rolDto.nombre.isBlank() }) {
             apiErrorList +=
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.NON_IDEMPOTENCE)

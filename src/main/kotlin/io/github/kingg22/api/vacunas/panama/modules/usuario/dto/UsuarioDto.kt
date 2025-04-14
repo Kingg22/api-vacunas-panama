@@ -1,16 +1,20 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Usuario] */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario] */
 @JvmRecord
-data class UsuarioDto @JvmOverloads constructor(
+@KonvertTo(Usuario::class)
+data class UsuarioDto(
     val id: UUID? = null,
 
     val username: String? = null,
@@ -23,7 +27,7 @@ data class UsuarioDto @JvmOverloads constructor(
 
     @param:JsonProperty(value = "created_at")
     @field:JsonProperty(value = "created_at")
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @param:JsonProperty(value = "updated_at")
     @field:JsonProperty(value = "updated_at")
@@ -37,7 +41,7 @@ data class UsuarioDto @JvmOverloads constructor(
     @field:NotEmpty(message = "Los roles no puede estar vacíos")
     @param:Valid
     @field:Valid
-    val roles: Set<RolDto>? = null,
+    val roles: Set<RolDto>,
 ) : Serializable {
     override fun toString() = UsuarioDto::class.simpleName +
         "(id: $id, username: $username, createdAt: $createdAt, updatedAt: $updatedAt, lastUsed: $lastUsed, roles: $roles)"

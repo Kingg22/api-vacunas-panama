@@ -209,7 +209,7 @@ class PacienteServiceImpl(
             return@createResponseBuilder
         }
 
-        if (usuario.id == null && usuario.roles?.any { it.nombre != null } == true) {
+        if (usuario.id == null && usuario.roles.any { it.nombre != null } == true) {
             withError(
                 ApiResponseCode.NON_IDEMPOTENCE,
                 "Utilice ID para el rol Paciente en esta función",
@@ -217,7 +217,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (usuario.roles?.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
+        if (usuario.roles.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
             true
         ) {
             withError(
@@ -245,7 +245,7 @@ class PacienteServiceImpl(
 
         val createdPaciente = pacienteDto.createdAt
         val createdUsuario = usuario.createdAt
-        if (createdPaciente != null && createdUsuario != null && createdPaciente != createdUsuario) {
+        if (createdPaciente != null && createdPaciente != createdUsuario) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "created_at de Paciente y Usuario deben coincidir",
