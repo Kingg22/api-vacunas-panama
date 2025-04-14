@@ -79,6 +79,6 @@ class DireccionServiceImpl(
         direccionRepository.findDireccionByDireccionStartingWith(direccion.lowercase()).get()
             .firstOrNull()?.let { return Optional.of(it) }
 
-        return runCatching { Optional.of(getDireccionDefault()) }.getOrElse { empty() }
+        return empty()
     }
 }
