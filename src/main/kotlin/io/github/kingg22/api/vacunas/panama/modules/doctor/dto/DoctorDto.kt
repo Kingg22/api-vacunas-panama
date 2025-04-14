@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
+import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -15,10 +18,10 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Doctor] */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor] */
 @JvmRecord
-data class DoctorDto @JvmOverloads constructor(
-    @field:JsonUnwrapped @param:JsonUnwrapped val persona: PersonaDto,
+data class DoctorDto(
+    @field:JsonUnwrapped @param:JsonUnwrapped @field:Valid @param:Valid val persona: PersonaDto,
 
     @field:Size(max = 20)
     @param:Size(max = 20)
@@ -100,4 +103,36 @@ data class DoctorDto @JvmOverloads constructor(
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
+
+    /**
+     * _Warning_:
+     * - [Doctor.idoneidad] is required, but in DTO it's nullable.
+     * - [Doctor.direccion] is required, but in DTO it's nullable.
+     * Default value is [DireccionDto] with [DireccionDto.DEFAULT_DIRECCION].
+     * - [Doctor.estado] is required, but in DTO it's nullable.
+     * The Default value is "ACTIVO".
+     */
+    fun toDoctor() = Doctor(
+        estado = persona.estado ?: "ACTIVO",
+        direccion = persona.direccion?.toDireccion() ?: DireccionDto().toDireccion(),
+        idoneidad = idoneidad ?: "",
+        categoria = categoria,
+    ).apply {
+        if (this@DoctorDto.createdAt != null) createdAt = this@DoctorDto.createdAt
+        updatedAt = this@DoctorDto.updatedAt
+        id = this@DoctorDto.persona.id
+        cedula = this@DoctorDto.persona.cedula
+        pasaporte = this@DoctorDto.persona.pasaporte
+        nombre = this@DoctorDto.persona.nombre
+        nombre2 = this@DoctorDto.persona.nombre2
+        apellido1 = this@DoctorDto.persona.apellido1
+        apellido2 = this@DoctorDto.persona.apellido2
+        correo = this@DoctorDto.persona.correo
+        telefono = this@DoctorDto.persona.telefono
+        fechaNacimiento = this@DoctorDto.persona.fechaNacimiento
+        edad = this@DoctorDto.persona.edad
+        sexo = this@DoctorDto.persona.sexo
+        disabled = this@DoctorDto.persona.disabled
+        usuario = this@DoctorDto.persona.usuario?.toUsuario()
+    }
 }
