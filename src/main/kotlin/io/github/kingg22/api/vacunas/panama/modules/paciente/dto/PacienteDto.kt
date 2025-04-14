@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -13,10 +16,15 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente] */
 @JvmRecord
+@KonvertTo(
+    value = Paciente::class,
+    constructorArgs = [Persona::class, String::class, Set::class, LocalDateTime::class, LocalDateTime::class],
+)
 data class PacienteDto(
     @field:JsonUnwrapped @param:JsonUnwrapped @field:Valid @param:Valid val persona: PersonaDto,
 
@@ -42,7 +50,7 @@ data class PacienteDto(
     @param:JsonProperty(value = "created_at")
     @field:PastOrPresent
     @param:PastOrPresent
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @field:JsonProperty(value = "updated_at")
     @param:JsonProperty(value = "updated_at")
@@ -80,7 +88,7 @@ data class PacienteDto(
         sexo: Char? = null,
         @Size(max = 50) estado: String? = null,
         disabled: Boolean = false,
-        @Valid direccion: DireccionDto? = null,
+        @Valid direccion: DireccionDto = DireccionDto(),
         @Valid usuario: UsuarioDto? = null,
         @JsonProperty(value = "identificacion_temporal")
         @Size(max = 255)
@@ -91,7 +99,7 @@ data class PacienteDto(
             message = "El formato de id temporal no es válido",
         )
         identificacionTemporal: String? = null,
-        @JsonProperty(value = "created_at") @PastOrPresent createdAt: LocalDateTime? = null,
+        @JsonProperty(value = "created_at") @PastOrPresent createdAt: LocalDateTime = LocalDateTime.now(UTC),
         @JsonProperty(value = "updated_at") @PastOrPresent updatedAt: LocalDateTime? = null,
     ) : this(
         persona = PersonaDto(

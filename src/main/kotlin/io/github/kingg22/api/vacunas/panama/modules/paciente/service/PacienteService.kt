@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import java.util.Optional
 import java.util.UUID
@@ -13,7 +12,7 @@ import java.util.UUID
  */
 interface PacienteService {
     /**
-     * Creates a new [Paciente] and associated user if validation is successful.
+     * Creates a new `Paciente` and associated user if validation is successful.
      *
      * @param pacienteDto DTO containing the patient information to create.
      * @return [ApiContentResponse] with creation result and metadata.
@@ -29,20 +28,12 @@ interface PacienteService {
     fun getPacienteDtoById(id: UUID): PacienteDto
 
     /**
-     * Retrieves a [Paciente] entity associated with the given user ID.
-     *
-     * @param idUser UUID of the user linked to the patient.
-     * @return [Optional] of [Paciente] if found, or empty if not.
-     */
-    fun getPacienteByUserID(idUser: UUID): Optional<Paciente>
-
-    /**
-     * Retrieves a [Paciente] entity by its internal ID.
+     * Retrieves a [PacienteDto] by its unique ID.
      *
      * @param idPaciente UUID of the patient.
-     * @return [Optional] of [Paciente] if found, or empty if not.
+     * @return [Optional] of [PacienteDto] if found, or empty if not.
      */
-    fun getPacienteById(idPaciente: UUID): Optional<Paciente>
+    fun getPacienteById(idPaciente: UUID): Optional<PacienteDto>
 
     /**
      * Retrieves a list of vaccines and diseases linked to the given patient.

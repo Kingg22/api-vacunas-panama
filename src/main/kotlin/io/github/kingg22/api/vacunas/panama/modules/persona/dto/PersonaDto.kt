@@ -2,7 +2,10 @@ package io.github.kingg22.api.vacunas.panama.modules.persona.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -12,9 +15,16 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona] */
+/**
+ * DTO for [io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona]
+ * - [Persona.direccion] is required, but in DTO it's nullable.
+ * Default value is [DireccionDto] with [DireccionDto.DEFAULT_DIRECCION].
+ * - [Persona.estado] is required, but in DTO it's nullable.
+ * The Default value is [PersonaDto.DEFAULT_ESTADO].
+ */
 @JvmRecord
-data class PersonaDto @JvmOverloads constructor(
+@KonvertTo(Persona::class, mappings = [Mapping(target = "estado", expression = "estado ?: PersonaDto.DEFAULT_ESTADO")])
+data class PersonaDto(
     val id: UUID? = null,
 
     @field:Size(max = 15)
@@ -77,7 +87,11 @@ data class PersonaDto @JvmOverloads constructor(
 
     val disabled: Boolean = false,
 
-    @field:Valid @param:Valid val direccion: DireccionDto? = null,
+    @field:Valid @param:Valid val direccion: DireccionDto = DireccionDto(),
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
-) : Serializable
+) : Serializable {
+    companion object {
+        const val DEFAULT_ESTADO = "DISABLED"
+    }
+}

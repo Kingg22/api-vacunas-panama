@@ -22,7 +22,7 @@ interface UsuarioService {
      * @param identifier User identifier.
      * @return Optional containing the user if found.
      */
-    fun getUsuarioByIdentifier(identifier: String): Optional<Usuario>
+    fun getUsuarioByIdentifier(identifier: String): Optional<UsuarioDto>
 
     /**
      * Retrieves a user by a given unique ID.
@@ -30,7 +30,7 @@ interface UsuarioService {
      * @param id User ID.
      * @return Optional containing the user if found.
      */
-    fun getUsuarioById(id: UUID): Optional<Usuario>
+    fun getUsuarioById(id: UUID): Optional<UsuarioDto>
 
     /**
      * Retrieves the complete profile data for a given user.
@@ -57,7 +57,7 @@ interface UsuarioService {
      */
     suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ApiContentResponse
 
-    fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit = {}): Usuario
+    fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit = {})
 
     /**
      * Changes the password of a user using the provided restore DTO.

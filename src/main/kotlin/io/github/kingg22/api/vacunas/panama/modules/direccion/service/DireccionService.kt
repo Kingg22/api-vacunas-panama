@@ -3,8 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
 import jakarta.validation.Valid
 import java.util.Optional
 
@@ -29,34 +27,34 @@ interface DireccionService {
     fun getProvinciasDto(): List<ProvinciaDto>
 
     /**
-     * Creates and persists a new [Direccion] entity from the given [DireccionDto].
+     * Creates and persists a new `Direccion` entity from the given [DireccionDto].
      *
      * @param direccionDto DTO containing address data to persist.
-     * @return The newly created [Direccion] entity.
+     * @return The newly created [DireccionDto] entity.
      */
-    fun createDireccion(direccionDto: @Valid DireccionDto): Direccion
+    fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
 
     /**
-     * Returns the default [Direccion] used by the system.
+     * Returns the default [DireccionDto] used by the system.
      * Useful for fallback or initial reference values.
      *
-     * @return Default [Direccion] instance.
+     * @return Default [DireccionDto] instance.
      */
-    fun getDireccionDefault(): Direccion
+    fun getDireccionDefault(): DireccionDto
 
     /**
-     * Returns the default [Distrito] used by the system.
+     * Returns the default [DistritoDto] used by the system.
      * Useful for fallback or initial reference values.
      *
-     * @return Default [Distrito] instance.
+     * @return Default [DistritoDto] instance.
      */
-    fun getDistritoDefault(): Distrito
+    fun getDistritoDefault(): DistritoDto
 
     /**
      * Searches for an address entity matching the fields of the provided [DireccionDto].
      *
      * @param direccionDto DTO containing the address fields to search for.
-     * @return [Optional] of [Direccion], present if a match is found, empty otherwise.
+     * @return [Optional] of [DireccionDto], present if a match is found, empty otherwise.
      */
-    fun getDireccionByDto(direccionDto: DireccionDto): Optional<Direccion>
+    fun getDireccionByDto(direccionDto: DireccionDto): Optional<DireccionDto>
 }

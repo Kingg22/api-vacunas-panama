@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
@@ -50,7 +49,7 @@ class TokenController(
             val userOpt = usuarioService.getUsuarioById(UUID.fromString(userId))
             var delete = false
             userOpt.ifPresentOrElse({
-                apiResponse.addData(tokenService.generateTokens(userOpt.get().toUsuarioDto()))
+                apiResponse.addData(tokenService.generateTokens(userOpt.get()))
                 apiResponse.addStatusCode(HttpStatus.OK)
                 delete = true
             }) {

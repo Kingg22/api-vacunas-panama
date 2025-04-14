@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.Optional
 
 /**
  * Service for loading user details during JWT authentication. Extends [ReactiveUserDetailsService] and is used by Spring
@@ -15,15 +17,14 @@ import reactor.core.publisher.Mono
  */
 @Component
 class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService) : ReactiveUserDetailsService {
-
     override fun findByUsername(username: String): Mono<UserDetails> =
         Mono.just(usuarioService.getUsuarioByIdentifier(username))
-            .flatMap { optUser ->
+            .flatMap { optUser: Optional<UsuarioDto> ->
                 optUser.map { Mono.just(it) }.orElseGet { Mono.empty() }
             }
             .switchIfEmpty(Mono.error { UsernameNotFoundException("User not found") })
-            .flatMap { user ->
-                val roles = user.roles.map { it.nombre.uppercase() }.toTypedArray()
+            .flatMap { user: UsuarioDto ->
+                val roles = user.roles.mapNotNull { it.nombre?.uppercase() }.toTypedArray()
                 Flux.fromIterable(user.roles).flatMap { Flux.fromIterable(it.permisos) }
                     .flatMap { Mono.just(SimpleGrantedAuthority(it.nombre.uppercase())) }
                     .collectList()
@@ -35,7 +36,7 @@ class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService)
                                 .authorities(permisoAuthorities)
                                 .accountExpired(false)
                                 .accountLocked(false)
-                                .disabled(user.isDisabled())
+                                .disabled(user.disabled)
                                 .build(),
                         )
                     }

@@ -42,7 +42,9 @@ data class UsuarioDto(
     @param:Valid
     @field:Valid
     val roles: Set<RolDto>,
+    val disabled: Boolean = false,
 ) : Serializable {
+
     override fun toString() = UsuarioDto::class.simpleName +
         "(id: $id, username: $username, createdAt: $createdAt, updatedAt: $updatedAt, lastUsed: $lastUsed, roles: $roles)"
 }

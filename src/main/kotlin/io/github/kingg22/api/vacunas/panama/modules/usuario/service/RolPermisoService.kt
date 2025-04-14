@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
 
 /**
  * Service interface responsible for handling role and permission operations.
@@ -34,11 +33,11 @@ interface RolPermisoService {
     fun getIdNombreRoles(): List<IdNombreDto>
 
     /**
-     * Converts a [RolDto] data transfer object into a domain [Rol] entity.
+     * Converts a [RolDto] data transfer object into an existing entity.
      * Useful when mapping data received from the presentation layer to the domain model.
      *
-     * @param rolDto the data transfer object representing a role.
-     * @return the corresponding [Rol] entity, or null if the conversion cannot be performed.
+     * @param setRolDto the data transfer object representing a role.
+     * @return the corresponding [Set] of [RolDto] objects, or empty if the conversion cannot be performed.
      */
-    fun convertToRole(rolDto: RolDto): Rol?
+    fun convertToExistRol(setRolDto: Set<RolDto>): Set<RolDto>
 }
