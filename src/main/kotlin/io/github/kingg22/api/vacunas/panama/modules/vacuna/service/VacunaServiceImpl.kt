@@ -69,12 +69,11 @@ class VacunaServiceImpl(
             }
 
             doctor.isEmpty -> {
-                contentResponse.withError(
+                contentResponse.withWarning(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Doctor no encontrado",
                     property = "doctor_id",
                 )
-                return contentResponse.build()
             }
         }
 
@@ -99,7 +98,7 @@ class VacunaServiceImpl(
                 vacuna = vacuna.get(),
                 sede = sede.get(),
                 lote = insertDosisDto.lote,
-                doctor = doctor.getOrNull(),
+                doctor = doctor.getOrNull()?.toDoctor(),
                 createdAt = LocalDateTime.now(UTC),
             ),
         )
