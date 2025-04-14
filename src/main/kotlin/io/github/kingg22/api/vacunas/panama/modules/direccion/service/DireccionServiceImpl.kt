@@ -2,8 +2,11 @@ package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDistrito
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DireccionRepository
@@ -39,10 +42,10 @@ class DireccionServiceImpl(
     override fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    override fun createDireccion(@Valid direccionDto: DireccionDto): Direccion {
+    override fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
         val distrito = direccionDto.distrito?.id?.let {
             distritoRepository.findById(it).orElseThrow()
-        } ?: getDistritoDefault()
+        } ?: getDistritoDefault().toDistrito()
 
         return direccionRepository.save(
             Direccion(
@@ -50,35 +53,37 @@ class DireccionServiceImpl(
                 distrito = distrito,
                 createdAt = direccionDto.createdAt,
             ),
-        )
+        ).toDireccionDto()
     }
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
     override fun getDireccionDefault() = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
         .orElseThrow()
         .first()
+        .toDireccionDto()
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
-    override fun getDistritoDefault(): Distrito = distritoRepository.findById(0).orElseThrow()
+    override fun getDistritoDefault(): DistritoDto =
+        distritoRepository.findById(0).map { it.toDistritoDto() }.orElseThrow()
 
-    override fun getDireccionByDto(@Valid direccionDto: DireccionDto): Optional<Direccion> {
-        direccionDto.id?.let { return direccionRepository.findById(it) }
+    override fun getDireccionByDto(@Valid direccionDto: DireccionDto): Optional<DireccionDto> {
+        direccionDto.id?.let { return direccionRepository.findById(it).map { it.toDireccionDto() } }
 
         val direccion = direccionDto.direccion.takeIf { it.isNotBlank() } ?: return empty()
 
         direccionDto.distrito?.id?.let { distritoId ->
             direccionRepository.findDireccionByDireccionAndDistrito_Id(direccion, distritoId.toInt()).get()
-                .firstOrNull()?.let { return Optional.of(it) }
+                .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
         }
 
         direccionDto.distrito?.nombre?.let { distritoNombre ->
             direccionRepository.findDireccionByDireccionAndDistrito_Nombre(direccion, distritoNombre).get()
-                .firstOrNull()?.let { return Optional.of(it) }
+                .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
         }
 
         direccionRepository.findDireccionByDireccionStartingWith(direccion.lowercase()).get()
-            .firstOrNull()?.let { return Optional.of(it) }
+            .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
 
-        return runCatching { Optional.of(getDireccionDefault()) }.getOrElse { empty() }
+        return empty()
     }
 }

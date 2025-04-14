@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
+import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -9,6 +10,8 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario.Companion.builder
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
@@ -42,57 +45,52 @@ class UsuarioServiceImpl(
     private val reactiveCompromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
     private val passwordEncoder: PasswordEncoder,
     private val usuarioRepository: UsuarioRepository,
-    private val rolPermisoService: RolPermisoService,
-    private val registrationStrategyFactory: RegistrationStrategyFactory,
+    @Lazy private val registrationStrategyFactory: RegistrationStrategyFactory,
+    @Lazy private val rolPermisoService: RolPermisoService,
     @Lazy private val personaService: PersonaService,
     @Lazy private val fabricanteService: FabricanteService,
     @Lazy private val tokenService: TokenService,
 ) : UsuarioService {
     private val log = logger()
 
-    // TODO remove set of disabled
     @Transactional
-    override fun getUsuarioByIdentifier(identifier: String): Optional<Usuario> {
-        val formatted = formatToSearch(identifier)
-
-        val usuario = usuarioRepository.findByUsername(identifier)
+    override fun getUsuarioByIdentifier(identifier: String): Optional<UsuarioDto> =
+        usuarioRepository.findByUsername(identifier).map { it.toUsuarioDto() }
             .or {
+                val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
                     formatted.cedula,
                     formatted.pasaporte,
                     formatted.correo,
-                )
+                ).map { it.toUsuarioDto() }
             }
             .or {
-                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier).map { user ->
+                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier).map {
+                    var user = it.toUsuarioDto()
                     log.debug("Found user: {}, with credentials of Fabricante", user.id)
                     fabricanteService.getFabricanteByUserID(user.id!!).ifPresent { f ->
-                        user.disabled = f.disabled
+                        user = user.copy(disabled = f.entidad.disabled)
                     }
                     user
                 }
+            }.flatMap {
+                personaService.getPersonaByUserID(it.id!!).map { p: PersonaDto ->
+                    log.debug("Found user: {}, with credentials of Persona", it.id)
+                    it.copy(disabled = p.disabled)
+                }.or { Optional.of(it) }
             }
 
-        usuario.ifPresent {
-            personaService.getPersonaByUserID(it.id!!).ifPresent { p ->
-                log.debug("Found user: {}, with credentials of Persona", it.id)
-                it.disabled = p.disabled
-            }
-        }
-
-        return usuario
-    }
-
-    override fun getUsuarioById(id: UUID) = usuarioRepository.findById(id)
+    override fun getUsuarioById(id: UUID): Optional<UsuarioDto> =
+        usuarioRepository.findById(id).map { it.toUsuarioDto() }
 
     override fun getProfile(id: UUID): ApiContentResponse = createResponseBuilder {
         personaService
             .getPersonaByUserID(id)
-            .ifPresent { doctor -> withData("persona", doctor.toPersonaDto()) }
+            .ifPresent { persona -> withData("persona", persona) }
         fabricanteService
             .getFabricanteByUserID(id)
-            .ifPresent { fabricante -> withData("fabricante", fabricante.toFabricanteDto()) }
-    } as ApiContentResponse
+            .ifPresent { fabricante -> withData("fabricante", fabricante) }
+    }
 
     override fun getLogin(id: UUID): ApiContentResponse = createResponseBuilder {
         usuarioRepository.findById(id).ifPresentOrElse({
@@ -151,24 +149,17 @@ class UsuarioServiceImpl(
         return response
     }
 
-    override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit): Usuario {
-        val role = usuarioDto.roles
-            ?.mapNotNull {
-                rolPermisoService.convertToRole(it).also { found ->
-                    if (found == null) log.warn("Rol no encontrado: ${it.nombre ?: it.id}")
-                }
-            }
-            ?.toSet() ?: emptySet()
-
-        val usuario = builder()
-            .username(usuarioDto.username)
-            .password(passwordEncoder.encode(usuarioDto.password))
-            .createdAt(usuarioDto.createdAt ?: LocalDateTime.now(UTC))
-            .roles(role)
-            .build()
+    @Transactional
+    override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit) {
+        val usuario = builder {
+            username(usuarioDto.username)
+            password(passwordEncoder.encode(usuarioDto.password))
+            createdAt(usuarioDto.createdAt)
+            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toSet()
+        }
 
         block(usuario)
-        return usuarioRepository.save(usuario)
+        usuarioRepository.save(usuario)
     }
 
     @Transactional
@@ -179,8 +170,9 @@ class UsuarioServiceImpl(
             val usuario = usuarioOpt.get()
             response.build().addErrors(validateChangePassword(usuario, restoreDto))
             if (!response.build().hasErrors()) {
-                usuario.password = passwordEncoder.encode(restoreDto.newPassword)
-                usuarioRepository.save(usuario)
+                val persistenceUsuario =
+                    usuario.copy(password = passwordEncoder.encode(restoreDto.newPassword)).toUsuario()
+                usuarioRepository.save(persistenceUsuario)
             }
         } else {
             response.withError(
@@ -202,7 +194,7 @@ class UsuarioServiceImpl(
         }
     }
 
-    private suspend fun validateChangePassword(usuario: Usuario, restoreDto: RestoreDto): List<ApiError> {
+    private suspend fun validateChangePassword(usuario: UsuarioDto, restoreDto: RestoreDto): List<ApiError> {
         val newPassword = "new_password"
         val builder = createResponseBuilder()
         if (passwordEncoder.matches(restoreDto.newPassword, usuario.password)) {
@@ -212,7 +204,7 @@ class UsuarioServiceImpl(
                 newPassword,
             )
         }
-        if (usuario.username != null && restoreDto.newPassword.contains(usuario.username!!, true)) {
+        if (usuario.username != null && restoreDto.newPassword.contains(usuario.username, true)) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña no puede tener su username",
@@ -236,13 +228,11 @@ class UsuarioServiceImpl(
 
         val errors = mutableListOf<ApiError>()
 
-        usuarioDto.roles?.let { requestedRoles ->
-            if (!requestedRoles.all { canRegisterRole(it, authenticatedRoles) }) {
-                errors += createApiErrorBuilder {
-                    withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
-                    withProperty("roles[]")
-                    withMessage("No puede asignar roles superiores a su rol actual")
-                }
+        if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
+            errors += createApiErrorBuilder {
+                withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
+                withProperty("roles[]")
+                withMessage("No puede asignar roles superiores a su rol actual")
             }
         }
 
@@ -258,9 +248,7 @@ class UsuarioServiceImpl(
 
     private fun validateWarningsRegistration(usuarioDto: UsuarioDto): List<ApiError> {
         val apiErrorList = mutableListOf<ApiError>()
-        if (usuarioDto.roles != null &&
-            usuarioDto.roles.stream()
-                .anyMatch { rolDto: RolDto? -> rolDto!!.permisos != null && rolDto.permisos.isNotEmpty() }
+        if (usuarioDto.roles.any { rolDto -> rolDto.permisos.isNotEmpty() }
         ) {
             apiErrorList += createApiErrorBuilder {
                 withCode(ApiResponseCode.INFORMATION_IGNORED)
@@ -270,9 +258,7 @@ class UsuarioServiceImpl(
                 )
             }
         }
-        if (usuarioDto.roles != null &&
-            usuarioDto.roles.any { rolDto -> rolDto.id == null && rolDto.nombre != null && !rolDto.nombre.isBlank() }
-        ) {
+        if (usuarioDto.roles.any { rolDto -> rolDto.id == null && rolDto.nombre != null && !rolDto.nombre.isBlank() }) {
             apiErrorList +=
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.NON_IDEMPOTENCE)

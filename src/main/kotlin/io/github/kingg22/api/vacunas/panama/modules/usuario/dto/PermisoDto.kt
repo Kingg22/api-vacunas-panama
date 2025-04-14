@@ -1,15 +1,19 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Permiso
+import io.mcarle.konvert.api.KonvertTo
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.ZoneOffset.UTC
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Permiso] */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Permiso] */
 @JvmRecord
-data class PermisoDto @JvmOverloads constructor(
+@KonvertTo(Permiso::class)
+data class PermisoDto(
     val id: Short? = null,
 
     @field:Size(max = 100)
@@ -24,7 +28,7 @@ data class PermisoDto @JvmOverloads constructor(
     @param:JsonProperty(value = "created_at")
     @field:PastOrPresent
     @param:PastOrPresent
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @field:JsonProperty(value = "updated_at")
     @param:JsonProperty(value = "updated_at")

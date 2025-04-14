@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 
 @Entity
 @Table(
@@ -65,8 +65,27 @@ class Doctor @JvmOverloads constructor(
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-) : Persona(estado = estado, direccion = direccion)
+) : Persona(estado = estado, direccion = direccion) {
+    constructor(
+        persona: Persona,
+        idoneidad: String,
+        categoria: String? = null,
+        sede: Sede? = null,
+        createdAt: LocalDateTime = LocalDateTime.now(UTC),
+        updatedAt: LocalDateTime? = null,
+    ) : this(
+        estado = persona.estado,
+        direccion = persona.direccion,
+        idoneidad = idoneidad,
+        categoria = categoria,
+        sede = sede,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    ) {
+        super.applyPersona(persona)
+    }
+}

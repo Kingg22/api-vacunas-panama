@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -14,11 +15,12 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Fabricante]  */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante]  */
 @JvmRecord
-data class FabricanteDto @JvmOverloads constructor(
+data class FabricanteDto(
     @field:JsonUnwrapped @param:JsonUnwrapped val entidad: EntidadDto,
 
     @field:Size(max = 50)
@@ -85,11 +87,11 @@ data class FabricanteDto @JvmOverloads constructor(
 
         @Size(max = 13) dependencia: String? = null,
 
-        @Size(max = 50) @NotBlank estado: String? = null,
+        @Size(max = 50) @NotBlank estado: String = PersonaDto.DEFAULT_ESTADO,
 
         disabled: Boolean = false,
 
-        @Valid direccion: DireccionDto? = null,
+        @Valid direccion: DireccionDto = DireccionDto(),
 
         @Size(max = 50)
         @Pattern(
@@ -108,7 +110,7 @@ data class FabricanteDto @JvmOverloads constructor(
         @Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
         contactoTelefono: String? = null,
 
-        @JsonProperty(value = "created_at") @PastOrPresent createdAt: LocalDateTime? = null,
+        @JsonProperty(value = "created_at") @PastOrPresent createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
         @JsonProperty(value = "updated_at") @PastOrPresent updatedAt: LocalDateTime? = null,
 

@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
@@ -14,14 +15,12 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createCo
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
-import io.github.kingg22.api.vacunas.panama.util.logger
 import org.hibernate.Hibernate
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import java.time.ZoneOffset.UTC
+import java.util.Optional
 import java.util.UUID
 
 @Service
@@ -29,8 +28,6 @@ class PacienteServiceImpl(
     private val pacienteRepository: PacienteRepository,
     @Lazy private val direccionService: DireccionService,
 ) : PacienteService {
-    private val log = logger()
-
     @Transactional
     override fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
         val response = createContentResponse()
@@ -40,14 +37,15 @@ class PacienteServiceImpl(
 
         response.returnIfErrors()?.let { return it }
 
-        val direccion = pacienteDto.persona.direccion?.let {
-            direccionService.getDireccionByDto(it).orElseGet { direccionService.createDireccion(it) }
-        } ?: direccionService.getDireccionDefault()
+        val direccion = pacienteDto.persona.direccion.let {
+            direccionService.getDireccionByDto(it).map { it.toDireccion() }
+                .orElseGet { direccionService.createDireccion(it).toDireccion() }
+        } ?: direccionService.getDireccionDefault().toDireccion()
 
         val paciente = pacienteRepository.save(
             Paciente.builder {
                 identificacionTemporal(pacienteDto.identificacionTemporal)
-                createdAt(pacienteDto.createdAt ?: LocalDateTime.now(UTC))
+                createdAt(pacienteDto.createdAt)
                 nombre(pacienteDto.persona.nombre)
                 nombre2(pacienteDto.persona.nombre2)
                 apellido1(pacienteDto.persona.apellido1)
@@ -77,9 +75,8 @@ class PacienteServiceImpl(
 
     override fun getPacienteDtoById(id: UUID) = pacienteRepository.findById(id).orElseThrow().toPacienteDto()
 
-    override fun getPacienteByUserID(idUser: UUID) = pacienteRepository.findByUsuario_Id(idUser)
-
-    override fun getPacienteById(idPaciente: UUID) = pacienteRepository.findById(idPaciente)
+    override fun getPacienteById(idPaciente: UUID): Optional<PacienteDto> =
+        pacienteRepository.findById(idPaciente).map { it.toPacienteDto() }
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
     override fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
@@ -209,7 +206,7 @@ class PacienteServiceImpl(
             return@createResponseBuilder
         }
 
-        if (usuario.id == null && usuario.roles?.any { it.nombre != null } == true) {
+        if (usuario.id == null && usuario.roles.any { it.nombre != null } == true) {
             withError(
                 ApiResponseCode.NON_IDEMPOTENCE,
                 "Utilice ID para el rol Paciente en esta función",
@@ -217,7 +214,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (usuario.roles?.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
+        if (usuario.roles.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
             true
         ) {
             withError(
@@ -235,7 +232,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (pacienteDto.persona.direccion?.id == null) {
+        if (pacienteDto.persona.direccion.id == null) {
             withWarning(
                 ApiResponseCode.NON_IDEMPOTENCE,
                 "Debe trabajar con ID",
@@ -243,9 +240,7 @@ class PacienteServiceImpl(
             )
         }
 
-        val createdPaciente = pacienteDto.createdAt
-        val createdUsuario = usuario.createdAt
-        if (createdPaciente != null && createdUsuario != null && createdPaciente != createdUsuario) {
+        if (pacienteDto.createdAt != usuario.createdAt) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "created_at de Paciente y Usuario deben coincidir",

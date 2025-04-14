@@ -104,11 +104,30 @@ class Persona @JvmOverloads constructor(
     @JoinColumn(name = "usuario")
     var usuario: Usuario? = null,
 ) {
+    protected final fun applyPersona(persona: Persona) {
+        this.apply {
+            id = persona.id
+            cedula = persona.cedula
+            pasaporte = persona.pasaporte
+            nombre = persona.nombre
+            nombre2 = persona.nombre2
+            apellido1 = persona.apellido1
+            apellido2 = persona.apellido2
+            correo = persona.correo
+            this.telefono = persona.telefono
+            fechaNacimiento = persona.fechaNacimiento
+            edad = persona.edad
+            sexo = persona.sexo
+            disabled = persona.disabled
+            usuario = persona.usuario
+            estado = persona.estado
+            direccion = persona.direccion
+        }
+    }
+
     companion object {
         @JvmStatic
-        fun builder() = Builder()
-
-        @JvmStatic
+        @JvmName("builderPersona")
         fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
     }
 

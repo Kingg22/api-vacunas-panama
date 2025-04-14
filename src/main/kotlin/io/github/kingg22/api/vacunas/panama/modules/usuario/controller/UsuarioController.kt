@@ -98,14 +98,12 @@ class UsuarioController(
         val usuarioDto = registerUserDto.usuario
 
         if (authentication == null &&
-            usuarioDto.roles != null &&
-            !usuarioDto.roles.stream()
-                .allMatch { rolDto: RolDto ->
-                    rolDto.id != null &&
-                        getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
-                        rolDto.nombre != null &&
-                        rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
-                }
+            !usuarioDto.roles.all { rolDto: RolDto ->
+                rolDto.id != null &&
+                    getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
+                    rolDto.nombre != null &&
+                    rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
+            }
         ) {
             apiResponse.addError(
                 createApiErrorBuilder {

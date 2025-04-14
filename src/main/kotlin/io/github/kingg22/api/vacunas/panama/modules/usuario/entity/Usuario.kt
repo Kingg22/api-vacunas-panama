@@ -18,7 +18,6 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
-import jakarta.persistence.Transient
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.Nationalized
 import org.springframework.data.annotation.CreatedDate
@@ -48,9 +47,6 @@ class Usuario @JvmOverloads constructor(
     @Size(max = 100)
     var password: String,
 
-    @Transient
-    var disabled: Boolean = false,
-
     @Column(name = "created_at")
     @CreatedDate
     var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
@@ -79,12 +75,7 @@ class Usuario @JvmOverloads constructor(
     @OneToMany(mappedBy = "idUsuario")
     val usuariosRoles: Set<UsuariosRoles> = emptySet(),
 ) {
-    fun isDisabled() = disabled
-
     companion object {
-        @JvmStatic
-        fun builder() = Builder()
-
         @JvmStatic
         fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
     }
@@ -93,7 +84,6 @@ class Usuario @JvmOverloads constructor(
         var id: UUID? = null
         var username: String? = null
         lateinit var password: String
-        var disabled: Boolean = false
         var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
         var updatedAt: LocalDateTime? = null
         var lastUsed: LocalDateTime? = null
@@ -105,7 +95,6 @@ class Usuario @JvmOverloads constructor(
         fun id(id: UUID?) = apply { this.id = id }
         fun username(username: String?) = apply { this.username = username }
         fun password(password: String) = apply { this.password = password }
-        fun disabled(disabled: Boolean) = apply { this.disabled = disabled }
         fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
         fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
         fun lastUsed(lastUsed: LocalDateTime?) = apply { this.lastUsed = lastUsed }
@@ -118,7 +107,6 @@ class Usuario @JvmOverloads constructor(
             id = id,
             username = username,
             password = password,
-            disabled = disabled,
             createdAt = createdAt,
             updatedAt = updatedAt,
             lastUsed = lastUsed,

@@ -5,6 +5,12 @@
   "data": {
     "vacunas": [
       {
+        "id_vacuna": "123e4567-e89b-12d3-a456-426614174001",
+        "nombre_vacuna": "Por registrar",
+        "id_fabricante": null,
+        "nombre_fabricante": null
+      },
+      {
         "id_vacuna": "123e4567-e89b-12d3-a456-426614174002",
         "nombre_vacuna": "Adacel",
         "id_fabricante": null,
@@ -65,6 +71,11 @@
         "nombre_fabricante": null
       },
       {
+        "id_vacuna": "123e4567-e89b-12d3-a456-426614174012",
+        "nombre_vacuna": "Meningococo",
+        "id_fabricante": null,
+        "nombre_fabricante": null
+      },      {
         "id_vacuna": "123e4567-e89b-12d3-a456-426614174013",
         "nombre_vacuna": "MMR",
         "id_fabricante": null,
@@ -76,12 +87,7 @@
         "id_fabricante": null,
         "nombre_fabricante": null
       },
-      {
-        "id_vacuna": "123e4567-e89b-12d3-a456-426614174012",
-        "nombre_vacuna": "Meningococo",
-        "id_fabricante": null,
-        "nombre_fabricante": null
-      },
+
       {
         "id_vacuna": "123e4567-e89b-12d3-a456-426614174015",
         "nombre_vacuna": "Neumoco conjugado (Prevenar 13 valente)",
@@ -103,12 +109,6 @@
       {
         "id_vacuna": "123e4567-e89b-12d3-a456-426614174018",
         "nombre_vacuna": "Pneumovax",
-        "id_fabricante": null,
-        "nombre_fabricante": null
-      },
-      {
-        "id_vacuna": "123e4567-e89b-12d3-a456-426614174001",
-        "nombre_vacuna": "Por registrar",
         "id_fabricante": null,
         "nombre_fabricante": null
       },

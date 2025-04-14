@@ -64,4 +64,17 @@ class Entidad @JvmOverloads constructor(
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion,
-)
+) {
+    protected final fun applyEntidad(entidad: Entidad) {
+        this.apply {
+            id = entidad.id
+            nombre = entidad.nombre
+            this.correo = entidad.correo
+            telefono = entidad.telefono
+            this.dependencia = entidad.dependencia
+            estado = entidad.estado
+            disabled = entidad.disabled
+            direccion = entidad.direccion
+        }
+    }
+}

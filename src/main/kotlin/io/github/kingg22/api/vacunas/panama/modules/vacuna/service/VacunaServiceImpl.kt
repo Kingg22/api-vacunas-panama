@@ -1,11 +1,17 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
+import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.toDoctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPaciente
+import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
+import io.github.kingg22.api.vacunas.panama.modules.sede.dto.toSede
+import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
@@ -20,6 +26,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
+import java.util.Optional
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -35,9 +42,10 @@ class VacunaServiceImpl(
 
     override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
-        val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)
-        val vacuna = getVacunaById(insertDosisDto.vacunaId)
-        val sede = sedeService.getSedeById(insertDosisDto.sedeId)
+        val paciente: Optional<Paciente> =
+            pacienteService.getPacienteById(insertDosisDto.pacienteId).map { it.toPaciente() }
+        val vacuna: Optional<Vacuna> = vacunaRepository.findById(insertDosisDto.vacunaId)
+        val sede: Optional<Sede> = sedeService.getSedeById(insertDosisDto.sedeId).map { it.toSede() }
         val doctor = doctorService.getDoctorById(insertDosisDto.doctorId)
 
         when {
@@ -69,12 +77,11 @@ class VacunaServiceImpl(
             }
 
             doctor.isEmpty -> {
-                contentResponse.withError(
+                contentResponse.withWarning(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Doctor no encontrado",
                     property = "doctor_id",
                 )
-                return contentResponse.build()
             }
         }
 
@@ -99,7 +106,7 @@ class VacunaServiceImpl(
                 vacuna = vacuna.get(),
                 sede = sede.get(),
                 lote = insertDosisDto.lote,
-                doctor = doctor.getOrNull(),
+                doctor = doctor.getOrNull()?.toDoctor(),
                 createdAt = LocalDateTime.now(UTC),
             ),
         )
@@ -116,6 +123,4 @@ class VacunaServiceImpl(
 
     override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
         dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna).toListDosisDto()
-
-    override fun getVacunaById(id: UUID) = vacunaRepository.findById(id)
 }

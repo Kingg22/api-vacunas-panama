@@ -144,28 +144,7 @@ class Paciente @JvmOverloads constructor(
         createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
         updatedAt: LocalDateTime? = null,
     ) : this(persona.estado, persona.direccion, identificacionTemporal, dosis, createdAt, updatedAt) {
-        setPersona(persona)
-    }
-
-    final fun setPersona(persona: Persona) {
-        this.apply {
-            this.id = persona.id
-            this.cedula = persona.cedula
-            this.pasaporte = persona.pasaporte
-            this.nombre = persona.nombre
-            this.nombre2 = persona.nombre2
-            this.apellido1 = persona.apellido1
-            this.apellido2 = persona.apellido2
-            this.correo = persona.correo
-            this.telefono = persona.telefono
-            this.fechaNacimiento = persona.fechaNacimiento
-            this.edad = persona.edad
-            this.sexo = persona.sexo
-            this.disabled = persona.disabled
-            this.usuario = persona.usuario
-            this.estado = persona.estado
-            this.direccion = persona.direccion
-        }
+        super.applyPersona(persona)
     }
 
     companion object {

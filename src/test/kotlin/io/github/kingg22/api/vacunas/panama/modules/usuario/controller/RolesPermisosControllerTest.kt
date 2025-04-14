@@ -1,15 +1,21 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
-import io.github.kingg22.api.vacunas.panama.util.BaseIntegrationTest
+import io.github.kingg22.api.vacunas.panama.TestcontainersConfiguration
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.github.kingg22.api.vacunas.panama.util.retrieveFileJson
 import io.kotest.assertions.json.shouldEqualJson
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class RolesPermisosControllerTest : BaseIntegrationTest() {
+@ActiveProfiles("test")
+@Import(TestcontainersConfiguration::class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class RolesPermisosControllerTest {
     @Autowired
     private lateinit var webTestClient: WebTestClient
 

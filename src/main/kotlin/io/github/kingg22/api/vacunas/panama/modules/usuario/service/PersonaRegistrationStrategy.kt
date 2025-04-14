@@ -4,7 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.toDoctorDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
-import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
+import io.github.kingg22.api.vacunas.panama.modules.persona.dto.toPersona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -32,7 +33,7 @@ class PersonaRegistrationStrategy(
                 },
             )
 
-        return personaService.getPersona(identifier).map { persona ->
+        return personaService.getPersona(identifier).map { persona: PersonaDto ->
             when {
                 persona.disabled -> RegistrationError(
                     createApiErrorBuilder {
@@ -62,15 +63,17 @@ class PersonaRegistrationStrategy(
 
     @Transactional
     override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
-        val persona = (validate(registerUserDto) as? RegistrationSuccess)?.outcome as? Persona
-            ?: return createContentResponse().apply {
-                addError(
-                    createApiErrorBuilder {
-                        withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
-                        withMessage("No se puede crear persona")
-                    },
-                )
-            }
+        val persona = (
+            (validate(registerUserDto) as? RegistrationSuccess)?.outcome as? PersonaDto
+                ?: return createContentResponse().apply {
+                    addError(
+                        createApiErrorBuilder {
+                            withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
+                            withMessage("No se puede crear persona")
+                        },
+                    )
+                }
+            ).toPersona()
 
         usuarioService.createUser(registerUserDto.usuario) {
             persona.usuario = it
@@ -78,9 +81,9 @@ class PersonaRegistrationStrategy(
         }
 
         return createContentResponse().apply {
-            addData("PERSONA", persona.toPersonaDto())
-            if (persona is Paciente) addData("PACIENTE", persona.toPacienteDto())
-            if (persona is Doctor) addData("DOCTOR", persona.toDoctorDto())
+            addData("persona", persona.toPersonaDto())
+            if (persona is Paciente) addData("paciente", persona.toPacienteDto())
+            if (persona is Doctor) addData("doctor", persona.toDoctorDto())
         }
     }
 }
