@@ -59,23 +59,32 @@ class FabricanteRegistrationStrategy(
 
     @Transactional
     override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
-        val fabricante = (validate(registerUserDto) as? RegistrationSuccess)?.outcome as? Fabricante
-            ?: return createContentResponse().apply {
-                addError(
-                    createApiErrorBuilder {
-                        withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
-                        withMessage("No se puede crear fabricante")
-                    },
-                )
+        val resultValidate = validate(registerUserDto)
+        return when (resultValidate) {
+            is RegistrationError -> createContentResponse().apply {
+                addErrors(resultValidate.errors)
             }
 
-        usuarioService.createUser(registerUserDto.usuario) {
-            fabricante.usuario = it
-            it.fabricante = fabricante
-        }
+            is RegistrationSuccess -> {
+                val fabricante = resultValidate.outcome as? Fabricante
+                    ?: return createContentResponse().apply {
+                        addError(
+                            createApiErrorBuilder {
+                                withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
+                                withMessage("No se puede crear fabricante")
+                            },
+                        )
+                    }
 
-        return createContentResponse().apply {
-            addData("fabricante", fabricante.toFabricanteDto())
+                usuarioService.createUser(registerUserDto.usuario) {
+                    fabricante.usuario = it
+                    it.fabricante = fabricante
+                }
+
+                createContentResponse().apply {
+                    addData("fabricante", fabricante.toFabricanteDto())
+                }
+            }
         }
     }
 }

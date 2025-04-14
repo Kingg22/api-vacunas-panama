@@ -63,27 +63,36 @@ class PersonaRegistrationStrategy(
 
     @Transactional
     override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
-        val persona = (
-            (validate(registerUserDto) as? RegistrationSuccess)?.outcome as? PersonaDto
-                ?: return createContentResponse().apply {
-                    addError(
-                        createApiErrorBuilder {
-                            withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
-                            withMessage("No se puede crear persona")
-                        },
-                    )
+        val resultValidate = validate(registerUserDto)
+        return when (resultValidate) {
+            is RegistrationError -> createContentResponse().apply {
+                addErrors(resultValidate.errors)
+            }
+
+            is RegistrationSuccess -> {
+                val persona = (
+                    resultValidate.outcome as? PersonaDto
+                        ?: return createContentResponse().apply {
+                            addError(
+                                createApiErrorBuilder {
+                                    withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
+                                    withMessage("No se puede crear persona")
+                                },
+                            )
+                        }
+                    ).toPersona()
+
+                usuarioService.createUser(registerUserDto.usuario) {
+                    persona.usuario = it
+                    it.persona = persona
                 }
-            ).toPersona()
 
-        usuarioService.createUser(registerUserDto.usuario) {
-            persona.usuario = it
-            it.persona = persona
-        }
-
-        return createContentResponse().apply {
-            addData("persona", persona.toPersonaDto())
-            if (persona is Paciente) addData("paciente", persona.toPacienteDto())
-            if (persona is Doctor) addData("doctor", persona.toDoctorDto())
+                createContentResponse().apply {
+                    addData("persona", persona.toPersonaDto())
+                    if (persona is Paciente) addData("paciente", persona.toPacienteDto())
+                    if (persona is Doctor) addData("doctor", persona.toDoctorDto())
+                }
+            }
         }
     }
 }
