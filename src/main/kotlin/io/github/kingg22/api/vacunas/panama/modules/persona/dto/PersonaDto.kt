@@ -12,14 +12,19 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.persistence.entity.Persona] */
+/** DTO for [io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona] */
 @JvmRecord
 data class PersonaDto @JvmOverloads constructor(
     val id: UUID? = null,
 
     @field:Size(max = 15)
     @param:Size(max = 15)
-    @Pattern(
+    @field:Pattern(
+        regexp = "^(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$",
+        flags = [Pattern.Flag.CASE_INSENSITIVE],
+        message = "El formato de la cédula no es válido",
+    )
+    @param:Pattern(
         regexp = "^(PE|E|N|[23456789](?:AV|PI)?|1[0123]?(?:AV|PI)?)-(\\d{1,4})-(\\d{1,6})$",
         flags = [Pattern.Flag.CASE_INSENSITIVE],
         message = "El formato de la cédula no es válido",
