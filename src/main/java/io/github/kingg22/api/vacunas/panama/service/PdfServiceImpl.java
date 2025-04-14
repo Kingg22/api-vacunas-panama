@@ -253,7 +253,7 @@ public class PdfServiceImpl implements PdfService {
 
         // Se agrega de forma dinámica todas las dosis encontradas a la tabla HTML
         pdfDto.dosis().forEach(dosisDto -> {
-            String fabricantes = dosisDto.vacuna().fabricantes().stream()
+            String fabricantes = dosisDto.vacuna().fabricantes().parallelStream()
                     .map(FabricanteDto::entidad)
                     .map(EntidadDto::nombre)
                     .collect(Collectors.joining(", ", "N/A", ""));
