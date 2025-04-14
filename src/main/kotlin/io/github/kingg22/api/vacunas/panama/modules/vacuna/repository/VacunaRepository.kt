@@ -12,7 +12,7 @@ interface VacunaRepository : JpaRepository<Vacuna, UUID> {
             "v.id, v.nombre, f.id, f.nombre) " +
             "FROM Vacuna v " +
             "LEFT JOIN v.fabricantes f " +
-            "ORDER BY v.nombre",
+            "ORDER BY v.id",
     )
     fun findAllIdAndNombreAndFabricante(): List<VacunaFabricanteDto>
 }
