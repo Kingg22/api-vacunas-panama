@@ -12,5 +12,6 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/db/changelog/test/test-data.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/schema-pgsql.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/vacunas-data.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/kotlin/io/github/kingg22/api/vacunas/panama/modules/vacuna/controller/VacunaControllerTest.kt" dialect="PostgreSQL" />
   </component>
 </project>

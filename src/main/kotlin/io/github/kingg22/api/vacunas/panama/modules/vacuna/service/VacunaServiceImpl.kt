@@ -24,6 +24,7 @@ import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.Optional
@@ -40,13 +41,16 @@ class VacunaServiceImpl(
 ) : VacunaService {
     private val log = logger()
 
+    @Transactional
     override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
         val paciente: Optional<Paciente> =
             pacienteService.getPacienteById(insertDosisDto.pacienteId).map { it.toPaciente() }
         val vacuna: Optional<Vacuna> = vacunaRepository.findById(insertDosisDto.vacunaId)
         val sede: Optional<Sede> = sedeService.getSedeById(insertDosisDto.sedeId).map { it.toSede() }
-        val doctor = doctorService.getDoctorById(insertDosisDto.doctorId)
+        val doctor = insertDosisDto.doctorId?.let {
+            doctorService.getDoctorById(it)
+        } ?: Optional.empty()
 
         when {
             paciente.isEmpty -> {

@@ -29,7 +29,9 @@ data class InsertDosisDto @JvmOverloads constructor(
 
     @field:JsonProperty(value = "sede_id") @param:JsonProperty(value = "sede_id") val sedeId: UUID,
 
-    @field:Size(max = 50) @param:Size(max = 50) val lote: String? = null,
+    @Deprecated("This field is not needed in new version of the system")
+    @field:Size(max = 50)
+    @param:Size(max = 50) val lote: String? = null,
 
-    @field:JsonProperty(value = "doctor_id") @param:JsonProperty(value = "doctor_id") val doctorId: UUID,
+    @field:JsonProperty(value = "doctor_id") @param:JsonProperty(value = "doctor_id") val doctorId: UUID? = null,
 ) : Serializable
