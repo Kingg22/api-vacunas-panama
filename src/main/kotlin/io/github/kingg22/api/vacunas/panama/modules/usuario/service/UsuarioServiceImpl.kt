@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -74,7 +73,7 @@ class UsuarioServiceImpl(
                     user
                 }
             }.flatMap {
-                personaService.getPersonaByUserID(it.id!!).map { p: PersonaDto ->
+                personaService.getPersonaByUserID(it.id!!).map { p ->
                     log.debug("Found user: {}, with credentials of Persona", it.id)
                     it.copy(disabled = p.disabled)
                 }.or { Optional.of(it) }

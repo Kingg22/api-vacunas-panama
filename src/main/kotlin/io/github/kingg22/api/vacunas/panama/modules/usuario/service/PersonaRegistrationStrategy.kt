@@ -4,8 +4,7 @@ import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.toDoctorDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.toPersona
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -15,6 +14,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
+import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,6 +24,8 @@ class PersonaRegistrationStrategy(
     @Lazy private val personaService: PersonaService,
     @Lazy private val usuarioService: UsuarioService,
 ) : RegistrationStrategy {
+    private val log = logger()
+
     override fun validate(registerUserDto: RegisterUserDto): RegistrationResult {
         val identifier = registerUserDto.cedula ?: registerUserDto.pasaporte
             ?: return RegistrationError(
@@ -33,7 +35,7 @@ class PersonaRegistrationStrategy(
                 },
             )
 
-        return personaService.getPersona(identifier).map { persona: PersonaDto ->
+        return personaService.getPersona(identifier).map { persona ->
             when {
                 persona.disabled -> RegistrationError(
                     createApiErrorBuilder {
@@ -71,7 +73,7 @@ class PersonaRegistrationStrategy(
 
             is RegistrationSuccess -> {
                 val persona = (
-                    resultValidate.outcome as? PersonaDto
+                    resultValidate.outcome as? Persona
                         ?: return createContentResponse().apply {
                             addError(
                                 createApiErrorBuilder {
@@ -80,7 +82,9 @@ class PersonaRegistrationStrategy(
                                 },
                             )
                         }
-                    ).toPersona()
+                    )
+                log.debug("Persona validated: {}", persona)
+                log.debug("Persona ID: {}", persona.id)
 
                 usuarioService.createUser(registerUserDto.usuario) {
                     persona.usuario = it

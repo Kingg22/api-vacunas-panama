@@ -181,7 +181,7 @@ class PacienteServiceImpl(
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
-                    withProperty("fechaNacimiento")
+                    withProperty("fecha_nacimiento")
                     withMessage("La fecha de nacimiento es obligatoria")
                 },
             )
@@ -240,7 +240,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (pacienteDto.createdAt != usuario.createdAt) {
+        if (pacienteDto.createdAt.toLocalDate() != usuario.createdAt.toLocalDate()) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "created_at de Paciente y Usuario deben coincidir",
