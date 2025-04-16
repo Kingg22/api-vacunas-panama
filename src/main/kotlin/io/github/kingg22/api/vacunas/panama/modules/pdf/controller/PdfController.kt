@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -33,10 +35,11 @@ class PdfController(
 
     @GetMapping
     fun getPdfFile(
-        @RequestParam("idPaciente") idPaciente: UUID,
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
     ): ResponseEntity<ByteArray> {
         try {
+            val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
@@ -47,30 +50,28 @@ class PdfController(
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
             val headers = HttpHeaders()
-            headers.add(
-                HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=certificado_vacunas_$idCertificado.pdf",
-            )
-            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+            headers[HttpHeaders.CONTENT_DISPOSITION] = "attachment; filename=certificado_vacunas_$idCertificado.pdf"
+            headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_PDF_VALUE
 
             return ResponseEntity.ok().headers(headers).body(pdfStream)
         } catch (e: RuntimeException) {
-            log.debug(e.message, e)
+            log.error(e.message, e)
             return ResponseEntity.internalServerError().build()
         } catch (e: IOException) {
-            log.debug(e.message, e)
+            log.error(e.message, e)
             return ResponseEntity.internalServerError().build()
         }
     }
 
     @GetMapping("/base64")
     fun getPdfBase64(
-        @RequestParam("idPaciente") idPaciente: UUID,
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
         webRequest: ServerHttpRequest,
     ): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
         try {
+            val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
