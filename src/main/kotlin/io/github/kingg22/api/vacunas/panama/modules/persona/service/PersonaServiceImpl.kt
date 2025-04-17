@@ -13,6 +13,10 @@ import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PersonaServiceImpl(private val personaRepository: PersonaRepository) : PersonaService {
+    @Deprecated(
+        "This function be change to use DTO when jooq is set as ORM",
+        replaceWith = ReplaceWith("getPersonaDto(identifier)"),
+    )
     override fun getPersona(identifier: @NotNull String): Optional<Persona> {
         val result = formatToSearch(identifier)
         val personaOpt = this.personaRepository.findByCedulaOrPasaporteOrCorreo(
