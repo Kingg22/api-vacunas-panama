@@ -71,7 +71,6 @@ class SecurityConfig(
                 "/account/restore/**",
                 "/public/**",
                 "/bulk/**",
-                "/pdf/**",
                 "/direccion/provincias",
                 "/direccion/distritos",
                 "/sedes",
@@ -79,7 +78,7 @@ class SecurityConfig(
                 "/roles",
                 "/roles/permisos",
             ).permitAll()
-                .pathMatchers("/patient/**").hasAnyAuthority("PACIENTE_READ")
+                .pathMatchers("/patient/**", "/pdf/**").hasAnyAuthority("PACIENTE_READ")
                 .pathMatchers("/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
                 .anyExchange().authenticated()
         }
