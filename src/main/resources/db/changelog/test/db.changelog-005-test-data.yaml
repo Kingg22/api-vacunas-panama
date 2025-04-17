@@ -1,10 +1,10 @@
 databaseChangeLog:
-    - changeSet:
-          id: 005
-          author: Rey (Kingg22)
-          changes:
-              - sqlFile:
-                    path: db/changelog/test/test-data.sql
-                    encoding: UTF-8
-                    relativeToChangelogFile: false
-                    splitStatements: false
+  - changeSet:
+      id: 005
+      author: Rey (Kingg22)
+      changes:
+        - sqlFile:
+            path: db/changelog/test/test-data.sql
+            encoding: UTF-8
+            relativeToChangelogFile: false
+            splitStatements: false

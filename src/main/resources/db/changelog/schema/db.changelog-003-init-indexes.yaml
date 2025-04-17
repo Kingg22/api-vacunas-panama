@@ -1,9 +1,9 @@
 databaseChangeLog:
-    - changeSet:
-          id: 003
-          author: Rey (Kingg22)
-          changes:
-              - sqlFile:
-                    path: db/changelog/schema/init-indexes.sql
-                    encoding: UTF-8
-                    relativeToChangelogFile: false
+  - changeSet:
+      id: 003
+      author: Rey (Kingg22)
+      changes:
+        - sqlFile:
+            path: db/changelog/schema/init-indexes.sql
+            encoding: UTF-8
+            relativeToChangelogFile: false
