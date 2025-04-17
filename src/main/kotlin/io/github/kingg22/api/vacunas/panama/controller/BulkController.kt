@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.interceptor.TransactionAspectSupport
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -40,7 +39,6 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.addErrors(pacienteContent.errors)
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
             return sendResponseSuspend(apiResponse, request)
         }
@@ -54,7 +52,6 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.mergeContentResponse(apiContentResponse)
         log.trace("CreateUser return: {}", apiContentResponse.toString())
         if (apiContentResponse.hasErrors()) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
         } else {
             apiResponse.addStatusCode(HttpStatus.CREATED)

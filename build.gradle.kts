@@ -64,7 +64,7 @@ tasks.withType<Test> {
         it.name.contains("byte-buddy-agent")
     } ?: throw GradleException("ByteBuddy agent JAR not found")
 
-    jvmArgs("-javaagent:${agentJar.absolutePath}")
+    jvmArgs("-javaagent:${agentJar.absolutePath}", "-Duser.timezone=UTC")
 }
 
 spotless {
