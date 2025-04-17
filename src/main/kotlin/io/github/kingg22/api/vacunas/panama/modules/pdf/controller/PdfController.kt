@@ -9,7 +9,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.http.HttpHeaders
+import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
-import java.io.IOException
 import java.util.UUID
 
 @RestController
@@ -37,29 +36,37 @@ class PdfController(
     fun getPdfFile(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
-    ): ResponseEntity<ByteArray> {
+    ): Mono<ResponseEntity<ByteArray>> {
         try {
-            val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
+            val personaIdString = jwt.getClaimAsString("persona")
+            check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
+
+            val idPaciente = UUID.fromString(personaIdString)
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
+
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
-                return ResponseEntity.noContent().build()
+                return Mono.just(ResponseEntity.notFound().build())
             }
+
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
-            val headers = HttpHeaders()
-            headers[HttpHeaders.CONTENT_DISPOSITION] = "attachment; filename=certificado_vacunas_$idCertificado.pdf"
-            headers[HttpHeaders.CONTENT_TYPE] = MediaType.APPLICATION_PDF_VALUE
-
-            return ResponseEntity.ok().headers(headers).body(pdfStream)
-        } catch (e: RuntimeException) {
+            return Mono.just(
+                ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .headers {
+                        it.contentDisposition = ContentDisposition
+                            .attachment()
+                            .filename("certificado_vacunas_$idCertificado.pdf")
+                            .build()
+                    }
+                    .body(pdfStream),
+            )
+        } catch (e: Exception) {
             log.error(e.message, e)
-            return ResponseEntity.internalServerError().build()
-        } catch (e: IOException) {
-            log.error(e.message, e)
-            return ResponseEntity.internalServerError().build()
+            return Mono.just(ResponseEntity.internalServerError().build())
         }
     }
 
@@ -73,6 +80,7 @@ class PdfController(
         try {
             val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
+
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
                 apiResponse.addError(
@@ -84,24 +92,17 @@ class PdfController(
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
                 return sendResponse(apiResponse, webRequest)
             }
+
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
             val idCertificado = UUID.randomUUID()
             val pdfBase64 = pdfService.generatePdfBase64(pDetalle, dosisDtos, idCertificado)
-            apiResponse.addData("idCertificado", idCertificado.toString())
+
+            apiResponse.addData("id_certificado", idCertificado.toString())
             apiResponse.addData("pdf", pdfBase64)
             apiResponse.addStatusCode(HttpStatus.OK)
+
             return sendResponse(apiResponse, webRequest)
-        } catch (e: RuntimeException) {
-            log.debug(e.message, e)
-            apiResponse.addError(
-                createApiErrorBuilder {
-                    withCode(HttpStatus.INTERNAL_SERVER_ERROR)
-                    message = "Ha ocurrido un error al generar el PDF"
-                },
-            )
-            apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
-            return sendResponse(apiResponse, webRequest)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             log.debug(e.message, e)
             apiResponse.addError(
                 createApiErrorBuilder {

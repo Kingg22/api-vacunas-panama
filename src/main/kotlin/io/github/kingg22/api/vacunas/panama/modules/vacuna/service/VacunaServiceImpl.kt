@@ -125,6 +125,7 @@ class VacunaServiceImpl(
     )
     override fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
 
+    @Transactional
     override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
         dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna).toListDosisDto()
 }
