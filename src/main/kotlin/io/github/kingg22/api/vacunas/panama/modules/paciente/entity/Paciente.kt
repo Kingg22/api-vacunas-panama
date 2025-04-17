@@ -28,49 +28,42 @@ import java.util.UUID
     indexes = [Index(name = "ix_pacientes_id_temporal", columnList = "identificacion_temporal", unique = true)],
 )
 @NamedNativeQuery(
-    name = "Paciente.getVacunaEnfermedades",
-    query = (
-        "SELECT [Nombre Vacuna] AS nombre_vacuna," +
-            "[Número de dosis] AS numero_dosis, " +
-            "[Enfermedades Prevenidas] AS enfermedades_prevenidas, " +
-            "[Edad Mínima Recomendada en Días] AS edad_minima," +
-            "[Fecha de Aplicación] AS fecha_aplicacion," +
-            "[Intervalo Recomendado entre Dosis 1 y 2 en Días] AS intervalo_recomendado," +
-            "[Intervalo Real en Días] AS intervalo_real," +
-            "Sede AS nombre_sede," +
-            "Dependencia AS dependencia_sede," +
-            "id," +
-            "id_vacuna," +
-            "id_sede, " +
-            "id_dosis, " +
-            "ids_enfermedades " +
-            "FROM view_pacientes_vacunas_enfermedades " +
-            "WHERE id = :id " +
-            "ORDER BY fecha_aplicacion DESC"
-        ),
-    resultSetMapping = "view_paciente_vacuna_enfermedad",
-)
-@NamedNativeQuery(
-    name = "Paciente.getVacunaPaciente",
-    query = (
-        "SELECT [Nombre Vacuna] AS nombre_vacuna," +
-            "[Número de dosis] AS numero_dosis, " +
-            "[Enfermedades Prevenidas] AS enfermedades_prevenidas, " +
-            "[Edad Mínima Recomendada en Días] AS edad_minima," +
-            "[Fecha de Aplicación] AS fecha_aplicacion," +
-            "[Intervalo Recomendado entre Dosis 1 y 2 en Días] AS intervalo_recomendado," +
-            "[Intervalo Real en Días] AS intervalo_real," +
-            "Sede AS nombre_sede," +
-            "Dependencia AS dependencia_sede," +
-            "id," +
-            "id_vacuna," +
-            "id_sede, " +
-            "id_dosis, " +
-            "ids_enfermedades " +
-            "FROM view_pacientes_vacunas_enfermedades " +
-            "WHERE id = :id AND id_vacuna = :vacuna " +
-            "ORDER BY fecha_aplicacion DESC"
-        ),
+    name = "Paciente.getVacunas",
+    query = """
+        SELECT
+            v.nombre AS nombre_vacuna,
+            d.numero_dosis AS numero_dosis,
+            v.edad_minima_dias AS edad_minima,
+            d.fecha_aplicacion AS fecha_aplicacion,
+            (ev.intervalo_fin - ev.intervalo_inicio)::DOUBLE PRECISION AS intervalo_recomendado,
+            (EXTRACT(DAY FROM (
+                (SELECT MAX(d2.fecha_aplicacion)
+                 FROM dosis d2
+                 WHERE d2.paciente = p.id
+                   AND d2.vacuna = d.vacuna
+                   AND d2.numero_dosis > d.numero_dosis)
+                - d.fecha_aplicacion
+            )))::INT AS intervalo_real,
+            ee.nombre AS nombre_sede,
+            ee.dependencia AS dependencia_sede,
+            p.id AS id,
+            v.id AS id_vacuna,
+            ee.id AS id_sede,
+            d.id AS id_dosis
+        FROM pacientes p
+        JOIN dosis d ON p.id = d.paciente
+        JOIN vacunas v ON d.vacuna = v.id
+        LEFT JOIN sedes s ON d.sede = s.id
+        LEFT JOIN entidades ee ON s.id = ee.id
+        LEFT JOIN esquemas_vacunacion ev on v.id = ev.vacuna
+        WHERE p.id = :id
+          AND (:vacuna IS NULL OR v.id = :vacuna)
+        GROUP BY p.id, v.nombre, v.edad_minima_dias,
+                 ee.nombre, ee.dependencia, ee.id,
+                 v.id, d.id, d.vacuna, d.fecha_aplicacion, d.numero_dosis,
+                 ev.intervalo_inicio, ev.intervalo_fin
+        ORDER BY d.fecha_aplicacion DESC
+    """,
     resultSetMapping = "view_paciente_vacuna_enfermedad",
 )
 @SqlResultSetMapping(
@@ -81,7 +74,6 @@ import java.util.UUID
             columns = [
                 ColumnResult(name = "nombre_vacuna", type = String::class),
                 ColumnResult(name = "numero_dosis", type = String::class),
-                ColumnResult(name = "enfermedades_prevenidas", type = String::class),
                 ColumnResult(name = "edad_minima", type = Short::class),
                 ColumnResult(name = "fecha_aplicacion", type = LocalDateTime::class),
                 ColumnResult(name = "intervalo_recomendado", type = Double::class),
@@ -92,7 +84,6 @@ import java.util.UUID
                 ColumnResult(name = "id_vacuna", type = UUID::class),
                 ColumnResult(name = "id_sede", type = UUID::class),
                 ColumnResult(name = "id_dosis", type = UUID::class),
-                ColumnResult(name = "ids_enfermedades", type = String::class),
             ],
         ),
     ],

@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -27,13 +28,13 @@ class PacienteController(private val pacienteService: PacienteService) {
     @GetMapping
     fun getPaciente(@AuthenticationPrincipal jwt: Jwt, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
         val apiResponse = createResponse()
-        val idPersona = UUID.fromString(jwt.getClaimAsString("persona"))
+        val personaIdString = jwt.getClaimAsString("persona")
+        check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
+        val idPersona = UUID.fromString(personaIdString)
         log.debug("Received a query of Paciente: {}", idPersona)
-        val viewPacienteVacunaEnfermedadDtoList = ArrayList(
-            pacienteService.getViewVacunaEnfermedad(idPersona),
-        )
-        apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedadDtoList)
-        if (viewPacienteVacunaEnfermedadDtoList.isEmpty()) {
+        val viewPacienteVacunaEnfermedad = pacienteService.getViewVacunaEnfermedad(idPersona).toArrayList()
+        apiResponse.addData("view_vacuna_enfermedad", viewPacienteVacunaEnfermedad)
+        if (viewPacienteVacunaEnfermedad.isEmpty()) {
             apiResponse.addError(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.NOT_FOUND)
