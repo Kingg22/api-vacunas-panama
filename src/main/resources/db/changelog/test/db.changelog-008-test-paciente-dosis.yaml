@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008
+      author: Rey (Kingg22)
+      changes:
+        - insert:
+            tableName: dosis
+            columns:
+              - column:
+                  name: id
+                  value: "747824a7-65da-4507-9e93-381a0828bede"
+              - column:
+                  name: numero_dosis
+                  value: "1"
+              - column:
+                  name: sede
+                  value: "e2ff1bb7-0031-40b8-9c45-71efb79fa14e"
+                  # H Santo Tomás
+              - column:
+                  name: paciente
+                  value: "901e153d-4c1a-46bf-906b-eee22007c835"
+              - column:
+                  name: vacuna
+                  value: "123e4567-e89b-12d3-a456-426614174004"
+                  # COVID

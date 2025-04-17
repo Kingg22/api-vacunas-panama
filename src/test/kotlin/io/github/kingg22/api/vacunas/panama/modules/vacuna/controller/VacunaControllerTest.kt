@@ -10,7 +10,6 @@ import io.kotest.matchers.string.shouldContain
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -22,10 +21,7 @@ import kotlin.test.assertNotNull
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class VacunaControllerTest @Autowired constructor(
-    private val webTestClient: WebTestClient,
-    private val jdbcTemplate: JdbcTemplate,
-) {
+class VacunaControllerTest @Autowired constructor(private val webTestClient: WebTestClient) {
     @Test
     fun getVacunas() {
         val expectedJson = retrieveFileJson("/responses/vacunas/get_vacunas_fabricante.json")
@@ -49,17 +45,7 @@ class VacunaControllerTest @Autowired constructor(
         roles = ["DOCTOR", "ENFERMERA"],
     )
     fun createDosis() {
-        // 1. Insertar paciente
-        val pacienteId = UUID.fromString("f087b04c-02de-4d13-acdb-3e837d21538b")
-        val direccionPorRegistrar = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
-        jdbcTemplate.update(
-            """INSERT INTO personas (id, nombre, cedula, fecha_nacimiento, sexo, direccion)
-           VALUES (?, 'Test Paciente', '1-123-456', '1990-01-01', 'M', ?)""",
-            pacienteId,
-            direccionPorRegistrar,
-        )
-        jdbcTemplate.update("""INSERT INTO pacientes (id) VALUES (?)""", pacienteId)
-
+        val pacienteId = UUID.fromString("901e153d-4c1a-46bf-906b-eee22007c835") // Paciente Test
         val vacunaId = UUID.fromString("123e4567-e89b-12d3-a456-426614174004") // Id vacuna existente (COVID)
         val sedeId = UUID.fromString("e2ff1bb7-0031-40b8-9c45-71efb79fa14e") // Id sede existente (H Santo Tomás)
         val doctorId = null // Id doctor existente
@@ -67,7 +53,7 @@ class VacunaControllerTest @Autowired constructor(
         val insertDto = InsertDosisDto(
             pacienteId = pacienteId,
             fechaAplicacion = LocalDateTime.now(),
-            numeroDosis = NumDosisEnum.PRIMERA_DOSIS,
+            numeroDosis = NumDosisEnum.SEGUNDA_DOSIS, // Primera dosis ya insertada en la base de datos
             vacunaId = vacunaId,
             sedeId = sedeId,
             lote = null,
