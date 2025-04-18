@@ -77,7 +77,7 @@ class UsuarioServiceImpl(
                 personaService.getPersonaByUserID(it.id!!)?.let { p ->
                     log.debug("Found user: {}, with credentials of Persona", it.id)
                     it.copy(disabled = p.disabled)
-                }.or(it)
+                } ?: it
             }
 
     override fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findById(id).getOrNull()?.toUsuarioDto()

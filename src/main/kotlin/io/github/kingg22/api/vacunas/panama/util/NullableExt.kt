@@ -12,20 +12,6 @@ import kotlin.contracts.contract
  * @return The receiver object if it is not null, otherwise the alternative value.
  */
 @OptIn(ExperimentalContracts::class)
-infix fun <T> T?.or(other: T?): T? {
-    contract {
-        returnsNotNull() implies (this@or != null || other != null)
-    }
-    return this ?: other
-}
-
-/**
- * Returns the receiver object if it is not null; otherwise, returns the provided alternative.
- *
- * @param other The alternative value to return if the receiver object is null.
- * @return The receiver object if it is not null, otherwise the alternative value.
- */
-@OptIn(ExperimentalContracts::class)
 infix fun <T> T?.or(other: () -> T?): T? {
     contract {
         returnsNotNull() implies (this@or != null)
@@ -33,14 +19,6 @@ infix fun <T> T?.or(other: () -> T?): T? {
     }
     return this ?: other()
 }
-
-/**
- * Returns the receiver if it is not null; otherwise, returns the specified alternative value.
- *
- * @param other The alternative value to return if the receiver is null.
- * @return The receiver if not null, otherwise the specified alternative value _non null_.
- */
-infix fun <T> T?.orElse(other: T) = this ?: other
 
 /**
  * Returns the receiver if it is not null; otherwise, returns the specified alternative value.
@@ -65,6 +43,22 @@ infix fun <T> T?.orElse(other: () -> T): T {
  */
 @OptIn(ExperimentalContracts::class)
 fun <T> T?.ifPresentOrElse(presentConsumer: (T) -> Unit, missingAction: () -> Unit) {
+    contract {
+        callsInPlace(presentConsumer, InvocationKind.AT_MOST_ONCE)
+        callsInPlace(missingAction, InvocationKind.AT_MOST_ONCE)
+    }
+    if (this != null) presentConsumer(this) else missingAction()
+}
+
+/**
+ * Executes suspended the given `presentConsumer` function if the nullable receiver is not null.
+ * Otherwise, executes the `missingAction` function if the receiver is null.
+ *
+ * @param presentConsumer a function to be executed if the receiver is not null.
+ * @param missingAction a function to be executed if the receiver is null.
+ */
+@OptIn(ExperimentalContracts::class)
+suspend fun <T> T?.ifPresentOrElseSuspend(presentConsumer: suspend (T) -> Unit, missingAction: suspend () -> Unit) {
     contract {
         callsInPlace(presentConsumer, InvocationKind.AT_MOST_ONCE)
         callsInPlace(missingAction, InvocationKind.AT_MOST_ONCE)
