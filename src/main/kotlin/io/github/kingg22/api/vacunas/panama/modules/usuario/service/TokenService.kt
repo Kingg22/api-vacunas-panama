@@ -34,7 +34,7 @@ interface TokenService {
      * @return A map containing the generated tokens (access and refresh) as key-value pairs where the key
      *         is the token type (e.g., "access_token", "refresh_token") and the value is the encoded token string.
      */
-    fun generateTokens(
+    suspend fun generateTokens(
         @NotNull usuarioDto: UsuarioDto,
         idsAdicionales: Map<String, Serializable> = emptyMap(),
     ): Map<String, Serializable>

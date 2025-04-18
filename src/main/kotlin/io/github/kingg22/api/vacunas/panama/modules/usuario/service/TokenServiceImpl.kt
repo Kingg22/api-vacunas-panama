@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.data.redis.core.setAndAwait
@@ -27,19 +26,17 @@ class TokenServiceImpl(
     @Value("\${security.jwt.refresh-time}") private val refreshTime: Long,
 ) : TokenService {
     // TODO make suspend fun
-    override fun generateTokens(
+    override suspend fun generateTokens(
         usuarioDto: UsuarioDto,
         idsAdicionales: Map<String, Serializable>,
-    ): Map<String, Serializable> = runBlocking {
-        mapOf(
-            "access_token" to createToken(
-                subject = usuarioDto.id.toString(),
-                rolesPermisos = getRolesPermisos(usuarioDto),
-                claims = idsAdicionales,
-            ),
-            "refresh_token" to createRefreshToken(usuarioDto.id.toString()),
-        )
-    }
+    ): Map<String, Serializable> = mapOf(
+        "access_token" to createToken(
+            subject = usuarioDto.id.toString(),
+            rolesPermisos = getRolesPermisos(usuarioDto),
+            claims = idsAdicionales,
+        ),
+        "refresh_token" to createRefreshToken(usuarioDto.id.toString()),
+    )
 
     override fun isAccessTokenValid(userId: String, tokenId: String): Mono<Boolean> =
         reactiveRedisTemplate.hasKey(generateKey("access", userId, tokenId))

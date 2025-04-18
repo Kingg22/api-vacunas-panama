@@ -46,7 +46,7 @@ interface UsuarioService {
      * @param id UUID of the user.
      * @return [ApiContentResponse] with Map containing login-related data (e.g., tokens, roles).
      */
-    fun getLogin(id: UUID): ApiContentResponse
+    suspend fun getLogin(id: UUID): ApiContentResponse
 
     /**
      * Registers a new user using the provided DTO.

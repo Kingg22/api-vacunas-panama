@@ -15,6 +15,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendRespons
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponseSuspend
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
+import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -126,20 +127,19 @@ class UsuarioController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest) =
-        reactiveAuthenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
-        ).flatMap {
-            val apiResponse = createResponse()
-            if (it.isAuthenticated) {
-                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(it.name)))
+    suspend fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest): ResponseEntity<ApiResponse> {
+        val apiResponse = createResponse()
+        try {
+            val authentication = reactiveAuthenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
+            ).awaitSingle()
+            if (authentication.isAuthenticated) {
+                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(authentication.name)))
                 apiResponse.addStatusCode(HttpStatus.OK)
                 apiResponse.addStatus("message", "Login successful")
             }
-            Mono.just(apiResponse)
-        }.onErrorResume(CompromisedPasswordException::class.java) { exception ->
+        } catch (exception: CompromisedPasswordException) {
             log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
-            val apiResponse = createResponse()
             apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT)
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
@@ -149,10 +149,9 @@ class UsuarioController(
                     withMessage("Su contraseña está comprometida, por favor cambiarla lo más pronto posible")
                 },
             )
-            Mono.just(apiResponse)
-        }.flatMap { response ->
-            sendResponse(response, request)
         }
+        return sendResponseSuspend(apiResponse, request)
+    }
 
     @PatchMapping("/restore")
     suspend fun restore(
