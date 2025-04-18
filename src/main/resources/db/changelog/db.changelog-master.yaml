@@ -22,3 +22,6 @@ databaseChangeLog:
   - include:
       context: test
       file: db/changelog/test/db.changelog-009-test-usuario.yaml
+  - include:
+      context: test
+      file: db/changelog/test/db.changelog-010-test-paciente-2.yaml

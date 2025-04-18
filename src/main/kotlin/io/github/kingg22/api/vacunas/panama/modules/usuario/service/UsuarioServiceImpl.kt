@@ -38,6 +38,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.Optional
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UsuarioServiceImpl(
@@ -91,21 +92,24 @@ class UsuarioServiceImpl(
             .ifPresent { fabricante -> withData("fabricante", fabricante) }
     }
 
-    override fun getLogin(id: UUID): ApiContentResponse = createResponseBuilder {
-        usuarioRepository.findById(id).ifPresentOrElse({
+    override suspend fun getLogin(id: UUID): ApiContentResponse {
+        val response = createResponseBuilder()
+        val usuario = usuarioRepository.findById(id).getOrNull()
+        usuario?.let {
             if (it.persona != null) {
-                withData("persona", it.persona!!.toPersonaDto())
+                response.withData("persona", it.persona!!.toPersonaDto())
             }
             if (it.fabricante != null) {
-                withData("fabricante", it.fabricante!!.toFabricanteDto())
+                response.withData("fabricante", it.fabricante!!.toFabricanteDto())
             }
-            withData(tokenService.generateTokens(it.toUsuarioDto()))
-        }) {
-            withError(
+            response.withData(tokenService.generateTokens(it.toUsuarioDto()))
+        } ?: {
+            response.withError(
                 ApiResponseCode.NOT_FOUND,
                 "El usuario no ha sido encontrado, intente nuevamente.",
             )
         }
+        return response.build()
     }
 
     @Transactional
@@ -116,11 +120,11 @@ class UsuarioServiceImpl(
         val response = createContentResponse()
         val usuarioDto = registerUserDto.usuario
 
-        authentication?.let {
+        authentication?.let { authentication ->
             if (authentication.isAuthenticated &&
                 authentication !is AnonymousAuthenticationToken
             ) {
-                response.addErrors(validateAuthoritiesRegister(usuarioDto, it))
+                response.addErrors(validateAuthoritiesRegister(usuarioDto, authentication))
                 response.returnIfErrors()?.let { return it }
             }
         }
@@ -138,7 +142,7 @@ class UsuarioServiceImpl(
                 addError(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
-                        withMessage("No se encontró estrategia válida")
+                        withMessage("No se encontró estrategia válida para registrarse")
                     },
                 )
             }
@@ -165,21 +169,39 @@ class UsuarioServiceImpl(
     override suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse {
         val response = createResponseBuilder()
         val usuarioOpt = getUsuarioByIdentifier(restoreDto.username)
-        if (usuarioOpt.isPresent) {
-            val usuario = usuarioOpt.get()
-            response.build().addErrors(validateChangePassword(usuario, restoreDto))
-            if (!response.build().hasErrors()) {
-                val persistenceUsuario =
-                    usuario.copy(password = passwordEncoder.encode(restoreDto.newPassword)).toUsuario()
-                usuarioRepository.save(persistenceUsuario)
-            }
-        } else {
+
+        if (!usuarioOpt.isPresent) {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
                 "La persona con la identificación dada no fue encontrada",
                 "username",
             )
+            return response.build()
         }
+
+        val usuario = usuarioOpt.get()
+        response.withError(validateChangePassword(usuario, restoreDto))
+
+        val persona = personaService.getPersonaByUserID(usuario.id!!).getOrNull()
+        persona?.let {
+            if (it.fechaNacimiento!!.toLocalDate() != restoreDto.fechaNacimiento) {
+                response.withError(
+                    ApiResponseCode.VALIDATION_FAILED,
+                    "La fecha de nacimiento no coincide con la registrada",
+                    "fecha_nacimiento",
+                )
+            }
+        } ?: response.withError(
+            ApiResponseCode.VALIDATION_FAILED,
+            "No se pudo encontrar la persona asociada al usuario",
+        )
+
+        if (!response.hasErrors()) {
+            val persistenceUsuario = usuario.copy(password = passwordEncoder.encode(restoreDto.newPassword))
+                .toUsuario()
+            usuarioRepository.save(persistenceUsuario)
+        }
+
         return response.build()
     }
 
