@@ -10,6 +10,11 @@ import java.io.Serializable
  * @property response The underlying [ApiResponse] object being constructed.
  */
 data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResponse()) {
+    /** Check if any errors exist */
+    fun hasErrors() = response.hasErrors()
+
+    /** Check if any warnings exist */
+    fun hasWarnings() = response.hasWarnings()
 
     /**
      * Add a single data entry to the response.
@@ -40,6 +45,16 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
      */
     fun withError(vararg errors: ApiError) = apply {
         response.addErrors(errors.toList())
+    }
+
+    /**
+     * Add multiple errors at once.
+     *
+     * @param errors List of error objects to add.
+     * @return The current builder instance for chaining.
+     */
+    fun withError(errors: List<ApiError>) = apply {
+        response.addErrors(errors)
     }
 
     /**

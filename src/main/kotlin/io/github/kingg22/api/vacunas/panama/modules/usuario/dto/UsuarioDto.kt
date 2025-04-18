@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertTo
@@ -42,7 +43,8 @@ data class UsuarioDto(
     @param:Valid
     @field:Valid
     val roles: Set<RolDto>,
-    val disabled: Boolean = false,
+
+    @field:JsonIgnore val disabled: Boolean = false,
 ) : Serializable {
 
     override fun toString() = UsuarioDto::class.simpleName +

@@ -1,11 +1,11 @@
 databaseChangeLog:
-    - changeSet:
-          id: 002
-          author: Rey (Kingg22)
-          changes:
-              - sqlFile:
-                    path: db/changelog/schema/init-triggers.sql
-                    encoding: UTF-8
-                    relativeToChangelogFile: false
-                    splitStatements: false
-                    endDelimiter: ;
+  - changeSet:
+      id: 002
+      author: Rey (Kingg22)
+      changes:
+        - sqlFile:
+            path: db/changelog/schema/init-triggers.sql
+            encoding: UTF-8
+            relativeToChangelogFile: false
+            splitStatements: false
+            endDelimiter: ;

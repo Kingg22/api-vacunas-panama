@@ -47,10 +47,6 @@
       {
         "id": 11,
         "nombre": "DEV_DB_ADMIN"
-      },
-      {
-        "id": 12,
-        "nombre": "GUEST_READ"
       }
     ]
   },

@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010
+      author: Rey (Kingg22)
+      changes:
+        # 1. Insertar persona
+        - insert:
+            tableName: personas
+            columns:
+              - column:
+                  name: id
+                  value: "0b15bee3-55c0-44a0-ac43-bdd5c3580b2f"
+              - column:
+                  name: nombre
+                  value: "Persona"
+              - column:
+                  name: apellido1
+                  value: "Test"
+              - column:
+                  name: cedula
+                  value: "1-132-652"
+              - column:
+                  name: fecha_nacimiento
+                  value: "2000-01-01"
+              - column:
+                  name: sexo
+                  value: "F"
+              - column:
+                  name: direccion
+                  value: "123e4567-e89b-12d3-a456-426614174000"
+                  # Dirección por registrar
+
+        # 2. Insertar paciente
+        - insert:
+            tableName: pacientes
+            columns:
+              - column:
+                  name: id
+                  value: "0b15bee3-55c0-44a0-ac43-bdd5c3580b2f"

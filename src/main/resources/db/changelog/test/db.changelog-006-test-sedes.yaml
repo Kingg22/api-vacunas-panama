@@ -1,57 +1,57 @@
 databaseChangeLog:
-    -   changeSet:
-            id: 006
-            author: Rey (Kingg22)
-            changes:
+  - changeSet:
+      id: 006
+      author: Rey (Kingg22)
+      changes:
 
-                # Dirección 1: Hospital Santo Tomás
-                -   insert:
-                        tableName: direcciones
-                        columns:
-                            -   column: { name: id, value: "db4de61b-8238-4df5-a902-bf91f18d8a65" }
-                            -   column: { name: direccion, value: "Avenida Balboa y Calle 37 Este" }
-                            -   column: { name: distrito, value: "56" }
+        # Dirección 1: Hospital Santo Tomás
+        - insert:
+            tableName: direcciones
+            columns:
+              - column: { name: id, value: "db4de61b-8238-4df5-a902-bf91f18d8a65" }
+              - column: { name: direccion, value: "Avenida Balboa y Calle 37 Este" }
+              - column: { name: distrito, value: "56" }
 
-                # Entidad 1
-                -   insert:
-                        tableName: entidades
-                        columns:
-                            -   column: { name: id, value: "e2ff1bb7-0031-40b8-9c45-71efb79fa14e" }
-                            -   column: { name: nombre, value: "Hospital Santo Tomás" }
-                            -   column: { name: dependencia, value: "MINSA" }
-                            -   column: { name: correo, value: null }
-                            -   column: { name: telefono, value: "+5075075830" }
-                            -   column: { name: direccion, value: "db4de61b-8238-4df5-a902-bf91f18d8a65" }
-                            -   column: { name: estado, value: "ACTIVO" }
+        # Entidad 1
+        - insert:
+            tableName: entidades
+            columns:
+              - column: { name: id, value: "e2ff1bb7-0031-40b8-9c45-71efb79fa14e" }
+              - column: { name: nombre, value: "Hospital Santo Tomás" }
+              - column: { name: dependencia, value: "MINSA" }
+              - column: { name: correo, value: null }
+              - column: { name: telefono, value: "+5075075830" }
+              - column: { name: direccion, value: "db4de61b-8238-4df5-a902-bf91f18d8a65" }
+              - column: { name: estado, value: "ACTIVO" }
 
-                # Sede 1
-                -   insert:
-                        tableName: sedes
-                        columns:
-                            -   column: { name: id, value: "e2ff1bb7-0031-40b8-9c45-71efb79fa14e" }
+        # Sede 1
+        - insert:
+            tableName: sedes
+            columns:
+              - column: { name: id, value: "e2ff1bb7-0031-40b8-9c45-71efb79fa14e" }
 
-                # Dirección 2: CSS Complejo Metropolitano
-                -   insert:
-                        tableName: direcciones
-                        columns:
-                            -   column: { name: id, value: "b10267a9-3e88-4d4c-a7cc-87190e2558b4" }
-                            -   column: { name: direccion, value: "Vía España, Ciudad de Panamá" }
-                            -   column: { name: distrito, value: "56" }
+        # Dirección 2: CSS Complejo Metropolitano
+        - insert:
+            tableName: direcciones
+            columns:
+              - column: { name: id, value: "b10267a9-3e88-4d4c-a7cc-87190e2558b4" }
+              - column: { name: direccion, value: "Vía España, Ciudad de Panamá" }
+              - column: { name: distrito, value: "56" }
 
-                # Entidad 2
-                -   insert:
-                        tableName: entidades
-                        columns:
-                            -   column: { name: id, value: "93cc179e-bda2-4eb0-8709-c8e6e250780e" }
-                            -   column: { name: nombre, value: "CSS Complejo Metropolitano" }
-                            -   column: { name: dependencia, value: "CSS" }
-                            -   column: { name: correo, value: null }
-                            -   column: { name: telefono, value: "+5075064000" }
-                            -   column: { name: direccion, value: "b10267a9-3e88-4d4c-a7cc-87190e2558b4" }
-                            -   column: { name: estado, value: "ACTIVO" }
+        # Entidad 2
+        - insert:
+            tableName: entidades
+            columns:
+              - column: { name: id, value: "93cc179e-bda2-4eb0-8709-c8e6e250780e" }
+              - column: { name: nombre, value: "CSS Complejo Metropolitano" }
+              - column: { name: dependencia, value: "CSS" }
+              - column: { name: correo, value: null }
+              - column: { name: telefono, value: "+5075064000" }
+              - column: { name: direccion, value: "b10267a9-3e88-4d4c-a7cc-87190e2558b4" }
+              - column: { name: estado, value: "ACTIVO" }
 
-                # Sede 2
-                -   insert:
-                        tableName: sedes
-                        columns:
-                            -   column: { name: id, value: "93cc179e-bda2-4eb0-8709-c8e6e250780e" }
+        # Sede 2
+        - insert:
+            tableName: sedes
+            columns:
+              - column: { name: id, value: "93cc179e-bda2-4eb0-8709-c8e6e250780e" }

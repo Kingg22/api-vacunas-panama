@@ -19,8 +19,7 @@ VALUES (1, 'PACIENTE_READ', 'Permite leer datos básicos de pacientes y sus refe
        (8, 'ADMINISTRATIVO_WRITE', 'Permite gestionar usuarios y configuraciones de enfermedades, síntomas y vacunas.'),
        (9, 'AUTORIDAD_READ', 'Permite supervisar todos los datos.'),
        (10, 'AUTORIDAD_WRITE', 'Permite modificar todos los datos sin restricciones de lógica del necio o permisos.'),
-       (11, 'DEV_DB_ADMIN', 'Permite administrar, configurar y desarrollar la base de datos.'),
-       (12, 'GUEST_READ', 'Permite leer datos generales de la base de datos. Información no sensitiva ni confidencial.');
+       (11, 'DEV_DB_ADMIN', 'Permite administrar, configurar y desarrollar la base de datos.');
 
 INSERT INTO roles_permisos (rol, permiso)
 VALUES (1, 1),
@@ -32,7 +31,6 @@ VALUES (1, 1),
        (3, 3),
        (5, 8),
        (5, 5),
-       (5, 12),
        (7, 9),
        (7, 10),
        (6, 11),

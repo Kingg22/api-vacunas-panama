@@ -1,4 +1,3 @@
-
 -- indexes
 CREATE INDEX IF NOT EXISTS ix_direcciones_direccion ON direcciones (direccion);
 
