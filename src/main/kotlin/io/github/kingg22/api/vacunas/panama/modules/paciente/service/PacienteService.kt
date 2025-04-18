@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
-import java.util.Optional
 import java.util.UUID
 
 /**
@@ -31,9 +30,9 @@ interface PacienteService {
      * Retrieves a [PacienteDto] by its unique ID.
      *
      * @param idPaciente UUID of the patient.
-     * @return [Optional] of [PacienteDto] if found, or empty if not.
+     * @return [PacienteDto] if found, or null if not.
      */
-    fun getPacienteById(idPaciente: UUID): Optional<PacienteDto>
+    fun getPacienteById(idPaciente: UUID): PacienteDto?
 
     /**
      * Retrieves a list of vaccines and diseases linked to the given patient.

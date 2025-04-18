@@ -35,7 +35,7 @@ class PersonaRegistrationStrategy(
                 },
             )
 
-        return personaService.getPersona(identifier).map { persona ->
+        return personaService.getPersona(identifier)?.let { persona ->
             when {
                 persona.disabled -> RegistrationError(
                     createApiErrorBuilder {
@@ -53,13 +53,11 @@ class PersonaRegistrationStrategy(
 
                 else -> RegistrationSuccess(persona)
             }
-        }.orElse(
-            RegistrationError(
-                createApiErrorBuilder {
-                    withCode(ApiResponseCode.NOT_FOUND)
-                    withMessage("Persona no encontrada")
-                },
-            ),
+        } ?: RegistrationError(
+            createApiErrorBuilder {
+                withCode(ApiResponseCode.NOT_FOUND)
+                withMessage("Persona no encontrada")
+            },
         )
     }
 

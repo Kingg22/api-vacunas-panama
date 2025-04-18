@@ -25,6 +25,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.github.kingg22.api.vacunas.panama.util.or
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.jpa.repository.Modifying
@@ -36,7 +37,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
-import java.util.Optional
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -54,42 +54,37 @@ class UsuarioServiceImpl(
     private val log = logger()
 
     @Transactional
-    override fun getUsuarioByIdentifier(identifier: String): Optional<UsuarioDto> =
-        usuarioRepository.findByUsername(identifier).map { it.toUsuarioDto() }
+    override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
+        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()
             .or {
                 val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
                     formatted.cedula,
                     formatted.pasaporte,
                     formatted.correo,
-                ).map { it.toUsuarioDto() }
+                )?.toUsuarioDto()
             }
             .or {
-                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier).map {
+                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.let {
                     var user = it.toUsuarioDto()
                     log.debug("Found user: {}, with credentials of Fabricante", user.id)
-                    fabricanteService.getFabricanteByUserID(user.id!!).ifPresent { f ->
+                    fabricanteService.getFabricanteByUserID(user.id!!)?.let { f ->
                         user = user.copy(disabled = f.entidad.disabled)
                     }
                     user
                 }
-            }.flatMap {
-                personaService.getPersonaByUserID(it.id!!).map { p ->
+            }?.let {
+                personaService.getPersonaByUserID(it.id!!)?.let { p ->
                     log.debug("Found user: {}, with credentials of Persona", it.id)
                     it.copy(disabled = p.disabled)
-                }.or { Optional.of(it) }
+                }.or(it)
             }
 
-    override fun getUsuarioById(id: UUID): Optional<UsuarioDto> =
-        usuarioRepository.findById(id).map { it.toUsuarioDto() }
+    override fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findById(id).getOrNull()?.toUsuarioDto()
 
     override fun getProfile(id: UUID): ApiContentResponse = createResponseBuilder {
-        personaService
-            .getPersonaByUserID(id)
-            .ifPresent { persona -> withData("persona", persona) }
-        fabricanteService
-            .getFabricanteByUserID(id)
-            .ifPresent { fabricante -> withData("fabricante", fabricante) }
+        personaService.getPersonaByUserID(id)?.let { persona -> withData("persona", persona) }
+        fabricanteService.getFabricanteByUserID(id)?.let { fabricante -> withData("fabricante", fabricante) }
     }
 
     override suspend fun getLogin(id: UUID): ApiContentResponse {
@@ -170,7 +165,7 @@ class UsuarioServiceImpl(
         val response = createResponseBuilder()
         val usuarioOpt = getUsuarioByIdentifier(restoreDto.username)
 
-        if (!usuarioOpt.isPresent) {
+        if (usuarioOpt == null) {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
                 "La persona con la identificación dada no fue encontrada",
@@ -179,11 +174,10 @@ class UsuarioServiceImpl(
             return response.build()
         }
 
-        val usuario = usuarioOpt.get()
+        val usuario = usuarioOpt
         response.withError(validateChangePassword(usuario, restoreDto))
 
-        val persona = personaService.getPersonaByUserID(usuario.id!!).getOrNull()
-        persona?.let {
+        personaService.getPersonaByUserID(usuario.id!!)?.let {
             if (it.fechaNacimiento!!.toLocalDate() != restoreDto.fechaNacimiento) {
                 response.withError(
                     ApiResponseCode.VALIDATION_FAILED,
@@ -323,6 +317,5 @@ class UsuarioServiceImpl(
         return if (errors.isEmpty()) RegistrationResult.RegistrationSuccess(Any()) else RegistrationError(errors)
     }
 
-    fun isUsernameRegistered(username: String?) =
-        username != null && usuarioRepository.findByUsername(username).isPresent
+    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsername(username) != null
 }

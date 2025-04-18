@@ -29,7 +29,7 @@ class FabricanteRegistrationStrategy(
                 },
             )
 
-        return fabricanteService.getFabricante(licencia).map { fabricante ->
+        return fabricanteService.getFabricante(licencia)?.let { fabricante ->
             when {
                 fabricante.entidad.disabled -> RegistrationError(
                     createApiErrorBuilder {
@@ -47,13 +47,11 @@ class FabricanteRegistrationStrategy(
 
                 else -> RegistrationSuccess(fabricante)
             }
-        }.orElse(
-            RegistrationError(
-                createApiErrorBuilder {
-                    withCode(ApiResponseCode.NOT_FOUND)
-                    withMessage("Fabricante no encontrado")
-                },
-            ),
+        } ?: RegistrationError(
+            createApiErrorBuilder {
+                withCode(ApiResponseCode.NOT_FOUND)
+                withMessage("Fabricante no encontrado")
+            },
         )
     }
 

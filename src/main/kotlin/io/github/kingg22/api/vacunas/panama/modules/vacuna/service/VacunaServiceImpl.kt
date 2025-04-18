@@ -4,14 +4,11 @@ import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.toDoctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPaciente
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.sede.dto.toSede
-import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
@@ -20,6 +17,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
+import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
-import java.util.Optional
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
@@ -44,16 +41,15 @@ class VacunaServiceImpl(
     @Transactional
     override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
-        val paciente: Optional<Paciente> =
-            pacienteService.getPacienteById(insertDosisDto.pacienteId).map { it.toPaciente() }
-        val vacuna: Optional<Vacuna> = vacunaRepository.findById(insertDosisDto.vacunaId)
-        val sede: Optional<Sede> = sedeService.getSedeById(insertDosisDto.sedeId).map { it.toSede() }
+        val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)?.toPaciente()
+        val vacuna = vacunaRepository.findById(insertDosisDto.vacunaId).getOrNull()
+        val sede = sedeService.getSedeById(insertDosisDto.sedeId)?.toSede()
         val doctor = insertDosisDto.doctorId?.let {
             doctorService.getDoctorById(it)
-        } ?: Optional.empty()
+        }
 
         when {
-            paciente.isEmpty -> {
+            paciente == null -> {
                 contentResponse.withError(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Paciente no encontrado",
@@ -62,7 +58,7 @@ class VacunaServiceImpl(
                 return contentResponse.build()
             }
 
-            vacuna.isEmpty -> {
+            vacuna == null -> {
                 contentResponse.withError(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Vacuna no encontrada",
@@ -71,7 +67,7 @@ class VacunaServiceImpl(
                 return contentResponse.build()
             }
 
-            sede.isEmpty -> {
+            sede == null -> {
                 contentResponse.withError(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Sede no encontrada",
@@ -80,7 +76,7 @@ class VacunaServiceImpl(
                 return contentResponse.build()
             }
 
-            doctor.isEmpty -> {
+            doctor == null -> {
                 contentResponse.withWarning(
                     code = ApiResponseCode.NOT_FOUND,
                     message = "Doctor no encontrado",
@@ -89,7 +85,7 @@ class VacunaServiceImpl(
             }
         }
 
-        dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente.get(), vacuna.get()).ifPresentOrElse({
+        dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente, vacuna).ifPresentOrElse({
             log.debug("Última dosis encontrada, ID: {}", it.id)
             if (!it.numeroDosis.isValidNew(insertDosisDto.numeroDosis)) {
                 contentResponse.withError(
@@ -105,12 +101,12 @@ class VacunaServiceImpl(
 
         val dosis = dosisRepository.save(
             Dosis(
-                paciente = paciente.get(),
+                paciente = paciente,
                 numeroDosis = insertDosisDto.numeroDosis,
-                vacuna = vacuna.get(),
-                sede = sede.get(),
+                vacuna = vacuna,
+                sede = sede,
                 lote = insertDosisDto.lote,
-                doctor = doctor.getOrNull()?.toDoctor(),
+                doctor = doctor?.toDoctor(),
                 createdAt = LocalDateTime.now(UTC),
             ),
         )

@@ -32,7 +32,7 @@ class RolPermisoServiceImpl(
 
     override fun convertToExistRol(setRolDto: Set<RolDto>): Set<RolDto> = setRolDto
         .mapNotNull {
-            rolRepository.findByNombreOrId(it.nombre, it.id).map { it.toRolDto() }.orElse(null).also { found ->
+            rolRepository.findByNombreOrId(it.nombre, it.id)?.toRolDto().also { found ->
                 if (found == null) log.warn("Rol no encontrado: ${it.nombre ?: it.id}")
             }
         }
