@@ -4,10 +4,9 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
 import jakarta.validation.Valid
-import java.util.Optional
 
 /**
- * Service interface for managing address-related operations such as creating, retrieving and searching for provinces,
+ * Service interface for managing address-related operations such as creating, retrieving, and searching for provinces,
  * districts, and specific addresses.
  */
 interface DireccionService {
@@ -54,7 +53,7 @@ interface DireccionService {
      * Searches for an address entity matching the fields of the provided [DireccionDto].
      *
      * @param direccionDto DTO containing the address fields to search for.
-     * @return [Optional] of [DireccionDto], present if a match is found, empty otherwise.
+     * @return [DireccionDto], present if a match is found, null otherwise.
      */
-    fun getDireccionByDto(direccionDto: DireccionDto): Optional<DireccionDto>
+    fun getDireccionByDto(direccionDto: DireccionDto): DireccionDto?
 }

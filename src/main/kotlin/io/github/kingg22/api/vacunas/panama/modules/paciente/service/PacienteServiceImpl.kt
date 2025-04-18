@@ -20,8 +20,8 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.Optional
 import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PacienteServiceImpl(
@@ -38,9 +38,9 @@ class PacienteServiceImpl(
         response.returnIfErrors()?.let { return it }
 
         val direccion = pacienteDto.persona.direccion.let {
-            direccionService.getDireccionByDto(it).map { it.toDireccion() }
-                .orElseGet { direccionService.createDireccion(it).toDireccion() }
-        } ?: direccionService.getDireccionDefault().toDireccion()
+            direccionService.getDireccionByDto(it)?.toDireccion()
+                ?: direccionService.createDireccion(it).toDireccion()
+        }
 
         val paciente = pacienteRepository.save(
             Paciente.builder {
@@ -75,8 +75,8 @@ class PacienteServiceImpl(
 
     override fun getPacienteDtoById(id: UUID) = pacienteRepository.findById(id).orElseThrow().toPacienteDto()
 
-    override fun getPacienteById(idPaciente: UUID): Optional<PacienteDto> =
-        pacienteRepository.findById(idPaciente).map { it.toPacienteDto() }
+    override fun getPacienteById(idPaciente: UUID) =
+        pacienteRepository.findById(idPaciente).getOrNull()?.toPacienteDto()
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
     override fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
@@ -87,7 +87,7 @@ class PacienteServiceImpl(
         persona.cedula?.let {
             val formatted = FormatterUtil.formatCedula(it)
             pacienteDto.copy(persona = persona.copy(cedula = formatted))
-            if (pacienteRepository.findByCedula(formatted).isPresent) {
+            if (pacienteRepository.findByCedula(formatted) != null) {
                 add(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -98,7 +98,7 @@ class PacienteServiceImpl(
             }
         }
 
-        if (!persona.pasaporte.isNullOrBlank() && pacienteRepository.findByPasaporte(persona.pasaporte).isPresent) {
+        if (!persona.pasaporte.isNullOrBlank() && pacienteRepository.findByPasaporte(persona.pasaporte) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -109,7 +109,7 @@ class PacienteServiceImpl(
         }
 
         if (!pacienteDto.identificacionTemporal.isNullOrBlank() &&
-            pacienteRepository.findByIdentificacionTemporal(pacienteDto.identificacionTemporal).isPresent
+            pacienteRepository.findByIdentificacionTemporal(pacienteDto.identificacionTemporal) != null
         ) {
             add(
                 createApiErrorBuilder {
@@ -120,7 +120,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.correo.isNullOrBlank() && pacienteRepository.findByCorreo(persona.correo).isPresent) {
+        if (!persona.correo.isNullOrBlank() && pacienteRepository.findByCorreo(persona.correo) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -130,7 +130,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.telefono.isNullOrBlank() && pacienteRepository.findByTelefono(persona.telefono).isPresent) {
+        if (!persona.telefono.isNullOrBlank() && pacienteRepository.findByTelefono(persona.telefono) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -206,7 +206,7 @@ class PacienteServiceImpl(
             return@createResponseBuilder
         }
 
-        if (usuario.id == null && usuario.roles.any { it.nombre != null } == true) {
+        if (usuario.id == null && usuario.roles.any { it.nombre != null }) {
             withError(
                 ApiResponseCode.NON_IDEMPOTENCE,
                 "Utilice ID para el rol Paciente en esta función",
@@ -214,9 +214,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (usuario.roles.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true } ==
-            true
-        ) {
+        if (usuario.roles.any { it.id?.let { id -> RolesEnum.getByPriority(id) != RolesEnum.PACIENTE } == true }) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "Esta función es solo para pacientes",

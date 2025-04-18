@@ -4,11 +4,10 @@ package io.github.kingg22.api.vacunas.panama.modules.fabricante.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.Optional
 import java.util.UUID
 
 interface FabricanteRepository : JpaRepository<Fabricante, UUID> {
-    fun findByLicencia(licencia: String): Optional<Fabricante>
+    fun findByLicencia(licencia: String): Fabricante?
 
-    fun findByUsuario_Id(idUsuario: UUID): Optional<Fabricante>
+    fun findByUsuario_Id(idUsuario: UUID): Fabricante?
 }

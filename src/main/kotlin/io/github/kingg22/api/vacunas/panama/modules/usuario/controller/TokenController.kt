@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.io.Serializable
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @RestController
 @RequestMapping(path = ["/token"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -50,10 +49,9 @@ class TokenController(
         log.debug("Receive a request to refresh token for user with id: {}", userId)
 
         try {
-            val userOpt = usuarioService.getUsuarioById(UUID.fromString(userId)).getOrNull()
-            userOpt?.let {
+            usuarioService.getUsuarioById(UUID.fromString(userId))?.let {
                 log.trace("User found, refreshing token for user with id: {}", userId)
-                apiResponse.addData(tokenService.generateTokens(userOpt))
+                apiResponse.addData(tokenService.generateTokens(it))
                 apiResponse.addStatusCode(HttpStatus.OK)
                 log.debug("Deleting refresh token for user with id: {}", userId)
                 redisTemplate.delete("token:refresh:$userId:${jwt.id}").awaitSingle()

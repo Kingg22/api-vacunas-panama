@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.persona.service
 
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
-import java.util.Optional
 import java.util.UUID
 
 /** Service interface for managing and retrieving persona-related information. */
@@ -12,14 +11,14 @@ interface PersonaService {
      * (maybe can be [PersonaDto.cedula], [PersonaDto.pasaporte], [PersonaDto.correo] or `PersonaDto.usuario.username`).
      *
      * @param identifier UUID of the persona to retrieve.
-     * @return [Optional] containing the persona if found, or empty if not.
+     * @return The persona if found, or null if not.
      * @see io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto.username
      */
     @Deprecated(
         message = "This function be change to use DTO when jooq is set as ORM",
         replaceWith = ReplaceWith("getPersonaDto(identifier)"),
     )
-    fun getPersona(identifier: String): Optional<Persona>
+    fun getPersona(identifier: String): Persona?
 
     /**
      * Retrieves a [PersonaDto] entity by an identifier
@@ -35,7 +34,7 @@ interface PersonaService {
      * Retrieves a [PersonaDto] associated with the specified user ID.
      *
      * @param idUser UUID of the user linked to the persona.
-     * @return [Optional] containing the persona if found, or empty if not.
+     * @return The persona if found, or null if not.
      */
-    fun getPersonaByUserID(idUser: UUID): Optional<PersonaDto>
+    fun getPersonaByUserID(idUser: UUID): PersonaDto?
 }

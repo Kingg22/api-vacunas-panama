@@ -17,8 +17,7 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.Optional
-import java.util.Optional.empty
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class DireccionServiceImpl(
@@ -57,33 +56,41 @@ class DireccionServiceImpl(
     }
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
-    override fun getDireccionDefault() = direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)
-        .orElseThrow()
-        .first()
-        .toDireccionDto()
+    override fun getDireccionDefault() =
+        direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)?.first()?.toDireccionDto()
+            ?: throw IllegalStateException("Dirección default not found")
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
     override fun getDistritoDefault(): DistritoDto =
         distritoRepository.findById(0).map { it.toDistritoDto() }.orElseThrow()
 
-    override fun getDireccionByDto(@Valid direccionDto: DireccionDto): Optional<DireccionDto> {
-        direccionDto.id?.let { return direccionRepository.findById(it).map { it.toDireccionDto() } }
+    override fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {
+        direccionDto.id?.let { return direccionRepository.findById(it).getOrNull()?.toDireccionDto() }
 
-        val direccion = direccionDto.direccion.takeIf { it.isNotBlank() } ?: return empty()
+        val direccion = direccionDto.direccion.takeIf { it.isNotBlank() } ?: return null
 
         direccionDto.distrito?.id?.let { distritoId ->
-            direccionRepository.findDireccionByDireccionAndDistrito_Id(direccion, distritoId.toInt()).get()
-                .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
+            direccionRepository.findDireccionByDireccionAndDistrito_Id(
+                direccion,
+                distritoId.toInt(),
+            )?.firstOrNull()?.let {
+                return it.toDireccionDto()
+            }
         }
 
         direccionDto.distrito?.nombre?.let { distritoNombre ->
-            direccionRepository.findDireccionByDireccionAndDistrito_Nombre(direccion, distritoNombre).get()
-                .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
+            direccionRepository.findDireccionByDireccionAndDistrito_Nombre(
+                direccion,
+                distritoNombre,
+            )?.firstOrNull()?.let {
+                return it.toDireccionDto()
+            }
         }
 
-        direccionRepository.findDireccionByDireccionStartingWith(direccion.lowercase()).get()
-            .firstOrNull()?.let { return Optional.of(it.toDireccionDto()) }
+        direccionRepository.findDireccionByDireccionStartingWith(direccion.lowercase())?.firstOrNull()?.let {
+            return it.toDireccionDto()
+        }
 
-        return empty()
+        return null
     }
 }

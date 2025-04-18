@@ -6,7 +6,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import org.springframework.security.core.Authentication
-import java.util.Optional
 import java.util.UUID
 
 /**
@@ -20,17 +19,17 @@ interface UsuarioService {
      * Retrieves a user by a given identifier (could be username, email, or ID depending on logic).
      *
      * @param identifier User identifier.
-     * @return Optional containing the user if found.
+     * @return The user if found, otherwise null.
      */
-    fun getUsuarioByIdentifier(identifier: String): Optional<UsuarioDto>
+    fun getUsuarioByIdentifier(identifier: String): UsuarioDto?
 
     /**
      * Retrieves a user by a given unique ID.
      *
      * @param id User ID.
-     * @return Optional containing the user if found.
+     * @return The user if found, otherwise null.
      */
-    fun getUsuarioById(id: UUID): Optional<UsuarioDto>
+    fun getUsuarioById(id: UUID): UsuarioDto?
 
     /**
      * Retrieves the complete profile data for a given user.

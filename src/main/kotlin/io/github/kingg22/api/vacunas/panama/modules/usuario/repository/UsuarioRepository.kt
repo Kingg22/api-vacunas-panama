@@ -4,11 +4,10 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
-import java.util.Optional
 import java.util.UUID
 
 interface UsuarioRepository : JpaRepository<Usuario, UUID> {
-    fun findByUsername(username: String?): Optional<Usuario>
+    fun findByUsername(username: String?): Usuario?
 
     @Query(
         "SELECT p.usuario " + "FROM Persona p " +
@@ -21,7 +20,7 @@ interface UsuarioRepository : JpaRepository<Usuario, UUID> {
         @Param("cedula") cedula: String?,
         @Param("pasaporte") pasaporte: String?,
         @Param("correo") correo: String?,
-    ): Optional<Usuario>
+    ): Usuario?
 
     @Query(
         "SELECT f.usuario FROM Fabricante f " + "LEFT JOIN Entidad e ON f.id = e.id " +
@@ -29,8 +28,5 @@ interface UsuarioRepository : JpaRepository<Usuario, UUID> {
             "(:licencia IS NULL OR f.licencia = :licencia) AND " +
             "(:correo IS NULL OR f.correo = :correo)",
     )
-    fun findByLicenciaOrCorreo(
-        @Param("licencia") licencia: String?,
-        @Param("correo") correo: String?,
-    ): Optional<Usuario>
+    fun findByLicenciaOrCorreo(@Param("licencia") licencia: String?, @Param("correo") correo: String?): Usuario?
 }

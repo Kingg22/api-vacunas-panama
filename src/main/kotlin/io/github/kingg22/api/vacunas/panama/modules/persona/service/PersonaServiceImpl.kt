@@ -7,9 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.persona.repository.PersonaRe
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import jakarta.validation.constraints.NotNull
 import org.springframework.stereotype.Service
-import java.util.Optional
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PersonaServiceImpl(private val personaRepository: PersonaRepository) : PersonaService {
@@ -17,22 +15,18 @@ class PersonaServiceImpl(private val personaRepository: PersonaRepository) : Per
         "This function be change to use DTO when jooq is set as ORM",
         replaceWith = ReplaceWith("getPersonaDto(identifier)"),
     )
-    override fun getPersona(identifier: @NotNull String): Optional<Persona> {
+    override fun getPersona(identifier: @NotNull String): Persona? {
         val result = formatToSearch(identifier)
         val personaOpt = this.personaRepository.findByCedulaOrPasaporteOrCorreo(
             result.cedula,
             result.pasaporte,
             result.correo,
         )
-        return if (personaOpt.isPresent) {
-            personaOpt
-        } else {
-            personaRepository.findByUsuario_Username(identifier)
-        }
+        return personaOpt ?: personaRepository.findByUsuario_Username(identifier)
     }
 
-    override fun getPersonaDto(identifier: String): PersonaDto? = getPersona(identifier).getOrNull()?.toPersonaDto()
+    override fun getPersonaDto(identifier: String): PersonaDto? = getPersona(identifier)?.toPersonaDto()
 
-    override fun getPersonaByUserID(idUser: @NotNull UUID): Optional<PersonaDto> =
-        personaRepository.findByUsuario_Id(idUser).map { it.toPersonaDto() }
+    override fun getPersonaByUserID(idUser: @NotNull UUID): PersonaDto? =
+        personaRepository.findByUsuario_Id(idUser)?.toPersonaDto()
 }
