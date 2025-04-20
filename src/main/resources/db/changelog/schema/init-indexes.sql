@@ -1,5 +1,5 @@
 -- indexes
-CREATE INDEX IF NOT EXISTS ix_direcciones_direccion ON direcciones (direccion);
+CREATE INDEX IF NOT EXISTS ix_direcciones_descripcion ON direcciones (descripcion);
 
 CREATE INDEX IF NOT EXISTS ix_distritos_nombre ON distritos (nombre);
 

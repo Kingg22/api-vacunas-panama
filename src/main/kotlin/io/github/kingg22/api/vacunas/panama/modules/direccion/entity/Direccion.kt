@@ -36,7 +36,7 @@ class Direccion(
 
     @Size(max = 150)
     @NotNull
-    @Column(name = "direccion", nullable = false, length = 150)
+    @Column(name = "descripcion", nullable = false, length = 150)
     var descripcion: String,
 
     @NotNull
