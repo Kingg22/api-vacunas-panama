@@ -1,6 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
-import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteInputDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
@@ -28,10 +28,12 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
     @Transactional
     @PostMapping("/paciente-usuario-direccion")
     suspend fun createPacienteUsuario(
-        @RequestBody @Valid pacienteDto: PacienteDto,
+        @RequestBody @Valid pacienteInputDto: PacienteInputDto,
         request: ServerHttpRequest,
     ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
+        log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())
+        val pacienteDto = pacienteInputDto.toPacienteDto()
         log.debug(pacienteDto.toString())
         val pacienteContent = pacienteService.createPaciente(pacienteDto)
         log.trace(pacienteContent.toString())
