@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID
 
 interface DireccionRepository : JpaRepository<Direccion, UUID> {
-    fun findDireccionByDireccionAndDistrito_Id(direccion: String?, idDistrito: Int): List<Direccion>?
+    fun findDireccionByDescripcionAndDistrito_Id(descripcion: String? = null, idDistrito: Int): List<Direccion>
 
-    fun findDireccionByDireccionStartingWith(direccion: String?): List<Direccion>?
+    fun findDireccionByDescripcionStartingWith(descripcion: String? = null): List<Direccion>
 
-    fun findDireccionByDireccionAndDistrito_Nombre(direccion: String, distrito: String?): List<Direccion>?
+    fun findDireccionByDescripcionAndDistrito_Nombre(descripcion: String, distrito: String?): List<Direccion>
 }
