@@ -22,7 +22,7 @@ class PersonaServiceImpl(private val personaRepository: PersonaRepository) : Per
             result.pasaporte,
             result.correo,
         )
-        return personaOpt ?: personaRepository.findByUsuario_Username(identifier)
+        return personaOpt ?: personaRepository.findByUsuario_Usuario(identifier)
     }
 
     override fun getPersonaDto(identifier: String): PersonaDto? = getPersona(identifier)?.toPersonaDto()

@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import java.util.UUID
 
@@ -24,7 +25,7 @@ interface PacienteService {
      * @param id UUID of the patient.
      * @return [PacienteDto] containing patient information.
      */
-    fun getPacienteDtoById(id: UUID): PacienteDto
+    fun getPacienteDtoById(id: UUID): PacienteDto?
 
     /**
      * Retrieves a [PacienteDto] by its unique ID.
@@ -32,7 +33,8 @@ interface PacienteService {
      * @param idPaciente UUID of the patient.
      * @return [PacienteDto] if found, or null if not.
      */
-    fun getPacienteById(idPaciente: UUID): PacienteDto?
+    @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
+    fun getPacienteById(idPaciente: UUID): Paciente?
 
     /**
      * Retrieves a list of vaccines and diseases linked to the given patient.

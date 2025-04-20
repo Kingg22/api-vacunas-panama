@@ -14,10 +14,10 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.Distrit
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.ProvinciaRepository
 import jakarta.validation.Valid
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class DireccionServiceImpl(
@@ -42,13 +42,13 @@ class DireccionServiceImpl(
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
-        val distrito = direccionDto.distrito?.id?.let {
+        val distrito = direccionDto.distrito.id?.let {
             distritoRepository.findById(it).orElseThrow()
         } ?: getDistritoDefault().toDistrito()
 
         return direccionRepository.save(
             Direccion(
-                direccion = direccionDto.direccion,
+                descripcion = direccionDto.descripcion,
                 distrito = distrito,
                 createdAt = direccionDto.createdAt,
             ),
@@ -57,37 +57,37 @@ class DireccionServiceImpl(
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
     override fun getDireccionDefault() =
-        direccionRepository.findDireccionByDireccionAndDistrito_Id("Por registrar", 0)?.first()?.toDireccionDto()
+        direccionRepository.findDireccionByDescripcionAndDistrito_Id("Por registrar", 0).firstOrNull()?.toDireccionDto()
             ?: throw IllegalStateException("Dirección default not found")
 
     @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
-    override fun getDistritoDefault(): DistritoDto =
-        distritoRepository.findById(0).map { it.toDistritoDto() }.orElseThrow()
+    override fun getDistritoDefault(): DistritoDto = distritoRepository.findByIdOrNull(0)?.toDistritoDto()
+        ?: throw IllegalStateException("Distrito default not found")
 
     override fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {
-        direccionDto.id?.let { return direccionRepository.findById(it).getOrNull()?.toDireccionDto() }
+        direccionDto.id?.let { return direccionRepository.findByIdOrNull(it)?.toDireccionDto() }
 
-        val direccion = direccionDto.direccion.takeIf { it.isNotBlank() } ?: return null
+        val direccion = direccionDto.descripcion.takeIf { it.isNotBlank() } ?: return null
 
-        direccionDto.distrito?.id?.let { distritoId ->
-            direccionRepository.findDireccionByDireccionAndDistrito_Id(
+        direccionDto.distrito.id?.let { distritoId ->
+            direccionRepository.findDireccionByDescripcionAndDistrito_Id(
                 direccion,
                 distritoId.toInt(),
-            )?.firstOrNull()?.let {
+            ).firstOrNull()?.let {
                 return it.toDireccionDto()
             }
         }
 
-        direccionDto.distrito?.nombre?.let { distritoNombre ->
-            direccionRepository.findDireccionByDireccionAndDistrito_Nombre(
+        direccionDto.distrito.nombre.let { distritoNombre ->
+            direccionRepository.findDireccionByDescripcionAndDistrito_Nombre(
                 direccion,
                 distritoNombre,
-            )?.firstOrNull()?.let {
+            ).firstOrNull()?.let {
                 return it.toDireccionDto()
             }
         }
 
-        direccionRepository.findDireccionByDireccionStartingWith(direccion.lowercase())?.firstOrNull()?.let {
+        direccionRepository.findDireccionByDescripcionStartingWith(direccion.lowercase()).firstOrNull()?.let {
             return it.toDireccionDto()
         }
 

@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.sede.service
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto
 import io.github.kingg22.api.vacunas.panama.modules.sede.dto.SedeDto
+import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import java.util.UUID
 
 /**
@@ -22,5 +23,14 @@ interface SedeService {
      * @param id the unique identifier of the `Sede` to retrieve
      * @return a [SedeDto] containing the details of the `Sede`, or null if no found.
      */
-    fun getSedeById(id: UUID): SedeDto?
+    @Deprecated("Use DTO instead", ReplaceWith("getSedeDtoById(id)"))
+    fun getSedeById(id: UUID): Sede?
+
+    /**
+     * Retrieves the details of a `Sede` entity based on its unique identifier.
+     *
+     * @param id the unique identifier of the `Sede` to retrieve
+     * @return a [SedeDto] containing the details of the `Sede`, or null if no found.
+     */
+    fun getSedeDtoById(id: UUID): SedeDto?
 }

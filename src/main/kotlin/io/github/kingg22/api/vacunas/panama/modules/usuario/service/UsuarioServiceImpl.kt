@@ -12,7 +12,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario.Companion.builder
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
@@ -55,7 +54,7 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
-        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()
+        usuarioRepository.findByUsuario(identifier)?.toUsuarioDto()
             .or {
                 val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
@@ -149,12 +148,12 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit) {
-        val usuario = builder {
-            username(usuarioDto.username)
-            password(passwordEncoder.encode(usuarioDto.password))
-            createdAt(usuarioDto.createdAt)
-            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toSet()
-        }
+        val usuario = Usuario(
+            usuario = usuarioDto.username,
+            clave = passwordEncoder.encode(usuarioDto.password),
+            createdAt = usuarioDto.createdAt,
+            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet(),
+        )
 
         block(usuario)
         usuarioRepository.save(usuario)
@@ -317,5 +316,5 @@ class UsuarioServiceImpl(
         return if (errors.isEmpty()) RegistrationResult.RegistrationSuccess(Any()) else RegistrationError(errors)
     }
 
-    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsername(username) != null
+    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsuario(username) != null
 }
