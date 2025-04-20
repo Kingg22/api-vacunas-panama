@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Provincia
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import org.assertj.core.api.Assertions.assertThat
@@ -10,19 +12,24 @@ import java.time.LocalDateTime
 class PacienteBuilderTests {
     @Test
     fun build() {
-        val direccion = Direccion(direccion = "prueba")
+        val direccion = Direccion(
+            descripcion = "prueba",
+            distrito = Distrito(0, provincia = Provincia(0, "Por registrar"), nombre = "Por registrar"),
+        )
 
         val fecha = LocalDateTime.MIN
-        val persona = Persona.builder {
-            estado = "prueba"
-            this.direccion = direccion
-        }
-        val paciente = Paciente(persona, createdAt = fecha)
-        val pacienteBuilder = Paciente.builder {
-            estado = persona.estado
-            this.direccion = direccion
-            createdAt = fecha
-        }
+        val persona = Persona(
+            estado = "prueba",
+            direccion = direccion,
+        )
+        val paciente = Paciente(persona = persona, createdAt = fecha)
+        val pacienteBuilder = Paciente(
+            persona = Persona(
+                estado = persona.estado,
+                direccion = direccion,
+            ),
+            createdAt = fecha,
+        )
         assertThat(paciente).usingRecursiveComparison().isEqualTo(pacienteBuilder)
     }
 }
