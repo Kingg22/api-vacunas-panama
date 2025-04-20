@@ -4,7 +4,7 @@ import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.NumDosisEnum
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
@@ -25,7 +25,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "dosis")
-@KonvertTo(DosisDto::class, mappings = [Mapping("numeroDosis", expression = "getNumeroDosisAsEnum()")])
+@KonvertTo(DosisDto::class, mappings = [Mapping("numeroDosis", constant = "getNumeroDosisAsEnum()")])
 class Dosis(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -74,10 +74,6 @@ class Dosis(
     @Column(name = "lote", length = 50)
     var lote: String? = null,
 ) {
-    final fun getNumeroDosisAsEnum() = NumDosisEnum.fromValue(
-        numeroDosis.trim().uppercase()
-            .also {
-                require(!it.isBlank())
-            },
-    )
+    /** Only for [KonvertTo], use [String.getNumeroDosisAsEnum] */
+    final fun getNumeroDosisAsEnum() = numeroDosis.getNumeroDosisAsEnum()
 }
