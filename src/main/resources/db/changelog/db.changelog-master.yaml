@@ -12,16 +12,16 @@ databaseChangeLog:
       file: db/changelog/test/db.changelog-005-test-data.yaml
   - include:
       context: test
-      file: db/changelog/test/db.changelog-006-test-sedes.yaml
+      file: db/changelog/test/db.changelog-006-test-sedes.xml
   - include:
       context: test
-      file: db/changelog/test/db.changelog-007-test-paciente.yaml
+      file: db/changelog/test/db.changelog-007-test-paciente.xml
   - include:
       context: test
-      file: db/changelog/test/db.changelog-008-test-paciente-dosis.yaml
+      file: db/changelog/test/db.changelog-008-test-paciente-dosis.xml
   - include:
       context: test
-      file: db/changelog/test/db.changelog-009-test-usuario.yaml
+      file: db/changelog/test/db.changelog-009-test-usuario.xml
   - include:
       context: test
-      file: db/changelog/test/db.changelog-010-test-paciente-2.yaml
+      file: db/changelog/test/db.changelog-010-test-paciente-2.xml
