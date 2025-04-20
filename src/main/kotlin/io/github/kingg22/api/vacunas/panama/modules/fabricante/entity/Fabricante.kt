@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.fabricante.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertTo
@@ -73,26 +72,4 @@ class Fabricante(
     @Size(max = 254)
     @Column(name = "contacto_correo", length = 254)
     var contactoCorreo: String? = null,
-) {
-    constructor(
-        nombre: String,
-        estado: String,
-        direccion: Direccion,
-        @Size(max = 50) licencia: String,
-        @Size(max = 100) contactoNombre: String? = null,
-        @Size(max = 254) contactoCorreo: String? = null,
-        @Size(max = 15) contactoTelefono: String? = null,
-        usuario: Usuario? = null,
-        createdAt: LocalDateTime = LocalDateTime.now(UTC),
-        updatedAt: LocalDateTime? = null,
-    ) : this(
-        entidad = Entidad(nombre = nombre, estado = estado, direccion = direccion),
-        contactoNombre = contactoNombre,
-        licencia = licencia,
-        contactoCorreo = contactoCorreo,
-        contactoTelefono = contactoTelefono,
-        usuario = usuario,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-    )
-}
+)
