@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
-import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -21,10 +21,7 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente] */
 @JvmRecord
-@KonvertTo(
-    value = Paciente::class,
-    constructorArgs = [Persona::class, String::class, Set::class, LocalDateTime::class, LocalDateTime::class],
-)
+@KonvertTo(value = Paciente::class, mappings = [Mapping("id", ignore = true)])
 data class PacienteDto(
     @field:JsonUnwrapped @param:JsonUnwrapped @field:Valid @param:Valid val persona: PersonaDto,
 
@@ -85,7 +82,7 @@ data class PacienteDto(
         telefono: String? = null,
         @JsonProperty(value = "fecha_nacimiento") @PastOrPresent fechaNacimiento: LocalDateTime? = null,
         @JsonProperty(access = JsonProperty.Access.READ_ONLY) edad: Short? = null,
-        sexo: Char? = null,
+        @Size(max = 1) sexo: String? = null,
         @Size(max = 50) estado: String? = null,
         disabled: Boolean = false,
         @Valid direccion: DireccionDto = DireccionDto(),

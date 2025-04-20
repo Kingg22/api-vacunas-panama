@@ -10,7 +10,7 @@ import java.util.UUID
 
 /** DTO for insert new [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis]  */
 @JvmRecord
-data class InsertDosisDto @JvmOverloads constructor(
+data class InsertDosisDto(
     @field:JsonProperty(value = "paciente_id") @param:JsonProperty(value = "paciente_id") val pacienteId: UUID,
 
     @field:DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

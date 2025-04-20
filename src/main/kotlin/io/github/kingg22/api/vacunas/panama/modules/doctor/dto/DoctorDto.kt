@@ -24,19 +24,17 @@ import java.util.UUID
  *
  * _Warning_:
  * - [Doctor.idoneidad] is required, but in DTO it's nullable.
- * Set is empty string if it's null.
+ * Set is an empty string if it's null.
 */
 @JvmRecord
 @KonvertTo(
-    value = Doctor::class,
+    Doctor::class,
     mappings = [
-        Mapping(target = "idoneidad", expression = "idoneidad ?: \"\""),
-        Mapping(target = "sede", constant = "null"),
-    ],
-    constructorArgs = [
-        io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona::class, String::class, String::class,
-        io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede::class, LocalDateTime::class,
-        LocalDateTime::class,
+        Mapping(
+            "id",
+            ignore = true,
+        ),
+        Mapping("sede", ignore = true), Mapping(target = "idoneidad", expression = "idoneidad ?: \"\""),
     ],
 )
 data class DoctorDto(
@@ -89,7 +87,7 @@ data class DoctorDto(
         telefono: String? = null,
         @JsonProperty(value = "fecha_nacimiento") @PastOrPresent fechaNacimiento: LocalDateTime? = null,
         @JsonProperty(access = JsonProperty.Access.READ_ONLY) edad: Short? = null,
-        sexo: Char? = null,
+        @Size(max = 1) sexo: String? = null,
         @Size(max = 50) estado: String? = null,
         disabled: Boolean = false,
         @Valid direccion: DireccionDto = DireccionDto(),

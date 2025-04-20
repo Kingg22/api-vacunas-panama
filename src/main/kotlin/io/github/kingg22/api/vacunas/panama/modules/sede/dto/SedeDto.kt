@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.annotation.Nullable
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -21,13 +22,7 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede] */
 @JvmRecord
-@KonvertTo(
-    value = Sede::class,
-    constructorArgs = [
-        io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad::class, String::class, LocalDateTime::class,
-        LocalDateTime::class,
-    ],
-)
+@KonvertTo(Sede::class, mappings = [Mapping("id", ignore = true)])
 data class SedeDto(
     @field:JsonUnwrapped @param:JsonUnwrapped val entidad: EntidadDto,
 

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size
 import java.io.Serializable
 
 @JvmRecord
-data class RegisterUserDto @JvmOverloads constructor(
+data class RegisterUserDto(
     @param:Valid @field:Valid val usuario: UsuarioDto,
 
     @param:JsonProperty(access = WRITE_ONLY)

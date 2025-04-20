@@ -12,7 +12,7 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna] */
 @JvmRecord
-data class VacunaDto @JvmOverloads constructor(
+data class VacunaDto(
     val id: UUID? = null,
 
     @param:Size(max = 100) @field:Size(max = 100) @param:NotBlank @field:NotBlank val nombre: String,

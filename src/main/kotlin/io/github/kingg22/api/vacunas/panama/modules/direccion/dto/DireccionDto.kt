@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.dto
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.mcarle.konvert.api.KonvertTo
@@ -14,7 +15,7 @@ import java.util.UUID
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion] */
 @JvmRecord
 @KonvertTo(Direccion::class)
-data class DireccionDto @JvmOverloads constructor(
+data class DireccionDto(
     val id: UUID? = null,
 
     @field:JsonProperty(defaultValue = DEFAULT_DIRECCION)
@@ -27,9 +28,11 @@ data class DireccionDto @JvmOverloads constructor(
         max = 150,
         message = "La indicaciones de la dirección es muy larga, no incluya la provincia y distrito",
     )
-    val direccion: String = DEFAULT_DIRECCION,
+    @field:JsonAlias("direccion")
+    @param:JsonAlias("direccion")
+    val descripcion: String = DEFAULT_DIRECCION,
 
-    @field:Valid @param:Valid val distrito: DistritoDto? = null,
+    @field:Valid @param:Valid val distrito: DistritoDto = DistritoDto(id = 0),
 
     @field:JsonProperty(value = "created_at")
     @param:JsonProperty(value = "created_at")

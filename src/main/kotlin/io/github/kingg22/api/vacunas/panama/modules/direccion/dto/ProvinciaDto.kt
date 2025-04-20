@@ -9,7 +9,7 @@ import java.io.Serializable
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Provincia] */
 @JvmRecord
 @KonvertTo(Provincia::class)
-data class ProvinciaDto @JvmOverloads constructor(
+data class ProvinciaDto(
     val id: Short? = null,
 
     @field:JsonProperty(defaultValue = DEFAULT_PROVINCIA)
