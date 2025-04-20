@@ -54,7 +54,7 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
-        usuarioRepository.findByUsuario(identifier)?.toUsuarioDto()
+        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()
             .or {
                 val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
@@ -149,7 +149,7 @@ class UsuarioServiceImpl(
     @Transactional
     override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit) {
         val usuario = Usuario(
-            usuario = usuarioDto.username,
+            username = usuarioDto.username,
             clave = passwordEncoder.encode(usuarioDto.password),
             createdAt = usuarioDto.createdAt,
             roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet(),
@@ -316,5 +316,5 @@ class UsuarioServiceImpl(
         return if (errors.isEmpty()) RegistrationResult.RegistrationSuccess(Any()) else RegistrationError(errors)
     }
 
-    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsuario(username) != null
+    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsername(username) != null
 }

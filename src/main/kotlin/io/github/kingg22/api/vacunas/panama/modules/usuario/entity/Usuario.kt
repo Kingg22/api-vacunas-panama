@@ -30,10 +30,10 @@ import java.util.UUID
 @Table(
     name = "usuarios",
     indexes = [
-        Index(name = "ix_usuarios_username", columnList = "usuario"),
+        Index(name = "ix_usuarios_username", columnList = "username"),
     ],
     uniqueConstraints = [
-        UniqueConstraint(name = "uq_usuarios_username", columnNames = ["usuario"]),
+        UniqueConstraint(name = "uq_usuarios_username", columnNames = ["username"]),
     ],
 )
 @KonvertTo(
@@ -59,8 +59,8 @@ class Usuario(
     var updatedAt: LocalDateTime? = null,
 
     @Size(max = 50)
-    @Column(name = "usuario", length = 50)
-    var usuario: String? = null,
+    @Column(name = "username", length = 50)
+    var username: String? = null,
 
     @Size(max = 100)
     @NotNull

@@ -114,10 +114,10 @@ CREATE TABLE IF NOT EXISTS usuarios
     last_used  TIMESTAMP(0),
     updated_at TIMESTAMP(0),
     id         UUID         NOT NULL DEFAULT gen_random_uuid(),
-    usuario    VARCHAR(50),
+    username VARCHAR(50),
     clave      VARCHAR(100) NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT uq_usuarios_username UNIQUE (usuario),
+    CONSTRAINT uq_usuarios_username UNIQUE (username),
     CONSTRAINT ck_usuarios_clave CHECK (clave ~ '^\$2[ayb]\$[0-9]{2}\$.{1,56}$')
 );
 

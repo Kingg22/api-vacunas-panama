@@ -33,6 +33,6 @@ CREATE INDEX IF NOT EXISTS ix_provincias_nombre ON provincias (nombre);
 
 CREATE INDEX IF NOT EXISTS ix_sedes_region ON sedes (region) WHERE region IS NOT NULL;
 
-CREATE INDEX IF NOT EXISTS ix_usuarios_username ON usuarios (usuario);
+CREATE INDEX IF NOT EXISTS ix_usuarios_username ON usuarios (username);
 
 CREATE INDEX IF NOT EXISTS ix_vacunas_nombre ON vacunas (nombre);

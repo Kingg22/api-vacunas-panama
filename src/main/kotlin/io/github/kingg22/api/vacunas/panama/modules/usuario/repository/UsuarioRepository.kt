@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param
 import java.util.UUID
 
 interface UsuarioRepository : JpaRepository<Usuario, UUID> {
-    fun findByUsuario(username: String?): Usuario?
+    fun findByUsername(username: String?): Usuario?
 
     @Query(
         """

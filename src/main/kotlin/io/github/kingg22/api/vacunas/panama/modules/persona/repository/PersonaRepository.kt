@@ -28,5 +28,5 @@ interface PersonaRepository : JpaRepository<Persona, UUID> {
 
     fun findByUsuario_Id(id: @NotNull UUID): Persona?
 
-    fun findByUsuario_Usuario(username: @NotNull String): Persona?
+    fun findByUsuario_Username(username: @NotNull String): Persona?
 }

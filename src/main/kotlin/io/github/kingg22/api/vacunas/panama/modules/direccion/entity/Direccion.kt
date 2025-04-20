@@ -23,7 +23,7 @@ import java.util.UUID
 @Table(
     name = "direcciones",
     indexes = [
-        Index(name = "ix_direcciones_direccion", columnList = "direccion"),
+        Index(name = "ix_direcciones_descripcion", columnList = "descripcion"),
     ],
 )
 @KonvertTo(DireccionDto::class)
