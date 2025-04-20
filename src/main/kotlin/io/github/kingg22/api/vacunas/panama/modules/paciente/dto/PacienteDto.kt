@@ -84,7 +84,6 @@ data class PacienteDto(
         @JsonProperty(access = JsonProperty.Access.READ_ONLY) edad: Short? = null,
         @Size(max = 1) sexo: String? = null,
         @Size(max = 50) estado: String? = null,
-        disabled: Boolean = false,
         @Valid direccion: DireccionDto = DireccionDto(),
         @Valid usuario: UsuarioDto? = null,
         @JsonProperty(value = "identificacion_temporal")
@@ -113,7 +112,6 @@ data class PacienteDto(
             edad = edad,
             sexo = sexo,
             estado = estado,
-            disabled = disabled,
             direccion = direccion,
             usuario = usuario,
         ),

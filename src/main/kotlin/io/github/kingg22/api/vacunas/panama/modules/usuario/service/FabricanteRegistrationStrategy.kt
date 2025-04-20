@@ -31,7 +31,7 @@ class FabricanteRegistrationStrategy(
 
         return fabricanteService.getFabricante(licencia)?.let { fabricante ->
             when {
-                fabricante.entidad.disabled -> RegistrationError(
+                fabricante.usuario?.disabled == true -> RegistrationError(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.PERMISSION_DENIED)
                         withMessage("No puede registrarse")

@@ -49,7 +49,6 @@ class FabricanteTests {
         assertEquals(fabricante.entidad.telefono, dto.entidad.telefono)
         assertEquals(fabricante.entidad.dependencia, dto.entidad.dependencia)
         assertEquals(fabricante.entidad.estado, dto.entidad.estado)
-        assertEquals(fabricante.entidad.disabled, dto.entidad.disabled)
         assertEquals(fabricante.licencia, dto.licencia)
         assertEquals(fabricante.contactoNombre, dto.contactoNombre)
         assertEquals(fabricante.contactoCorreo, dto.contactoCorreo)

@@ -33,8 +33,6 @@ data class EntidadDto(
 
     @field:Size(max = 50) @param:Size(max = 50) @field:NotBlank @param:NotBlank val estado: String = DEFAULT_ESTADO,
 
-    val disabled: Boolean = false,
-
     @field:Valid @param:Valid val direccion: DireccionDto = DireccionDto(),
 ) : Serializable {
     companion object {

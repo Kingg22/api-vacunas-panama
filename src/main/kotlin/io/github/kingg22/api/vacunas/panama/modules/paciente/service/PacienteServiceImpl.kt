@@ -60,7 +60,6 @@ class PacienteServiceImpl(
                     sexo = pacienteDto.persona.sexo,
                     direccion = direccion,
                     estado = pacienteDto.persona.estado ?: "ACTIVO",
-                    disabled = pacienteDto.persona.disabled,
                 ),
             ),
         )

@@ -48,7 +48,6 @@ class SedeTests {
         assertEquals(sede.entidad.telefono, dto.entidad.telefono)
         assertEquals(sede.entidad.dependencia, dto.entidad.dependencia)
         assertEquals(sede.entidad.estado, dto.entidad.estado)
-        assertEquals(sede.entidad.disabled, dto.entidad.disabled)
         assertEquals(sede.region, dto.region)
         assertEquals(sede.createdAt, dto.createdAt)
         assertEquals(sede.updatedAt, dto.updatedAt)

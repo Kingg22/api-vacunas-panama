@@ -37,7 +37,7 @@ class PersonaRegistrationStrategy(
 
         return personaService.getPersona(identifier)?.let { persona ->
             when {
-                persona.disabled -> RegistrationError(
+                persona.usuario?.disabled == true -> RegistrationError(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.PERMISSION_DENIED)
                         withMessage("No puede registrarse")

@@ -52,6 +52,11 @@ class Usuario(
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "disabled", nullable = false)
+    var disabled: Boolean = true,
+
     @Column(name = "last_used")
     var lastUsed: LocalDateTime? = null,
 

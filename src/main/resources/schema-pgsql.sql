@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS roles_permisos
 CREATE TABLE IF NOT EXISTS usuarios
 (
     created_at TIMESTAMP(0) NOT NULL DEFAULT now(),
+    disabled BOOLEAN NOT NULL DEFAULT TRUE,
     last_used  TIMESTAMP(0),
     updated_at TIMESTAMP(0),
     id         UUID         NOT NULL DEFAULT gen_random_uuid(),
@@ -134,7 +135,6 @@ CREATE TABLE IF NOT EXISTS usuarios_roles
 
 CREATE TABLE IF NOT EXISTS personas
 (
-    disabled         BOOLEAN     NOT NULL DEFAULT FALSE,
     edad             SMALLINT,
     sexo             VARCHAR(1),
     fecha_nacimiento TIMESTAMP(0),
@@ -178,7 +178,6 @@ CREATE TABLE IF NOT EXISTS personas
 
 CREATE TABLE IF NOT EXISTS entidades
 (
-    disabled    BOOLEAN      NOT NULL DEFAULT FALSE,
     dependencia VARCHAR(13),
     telefono    VARCHAR(15),
     direccion   UUID         NOT NULL,

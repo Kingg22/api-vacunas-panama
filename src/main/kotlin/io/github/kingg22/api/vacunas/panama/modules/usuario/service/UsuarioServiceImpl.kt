@@ -54,29 +54,23 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
-        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()
+        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()?.also {
+            log.debug("Found user by username: {}", it.id)
+        }
             .or {
                 val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
                     formatted.cedula,
                     formatted.pasaporte,
                     formatted.correo,
-                )?.toUsuarioDto()
+                )?.toUsuarioDto()?.also {
+                    log.debug("Found user: {}, with credentials of Persona", it.id)
+                }
             }
             .or {
-                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.let {
-                    var user = it.toUsuarioDto()
-                    log.debug("Found user: {}, with credentials of Fabricante", user.id)
-                    fabricanteService.getFabricanteByUserID(user.id!!)?.let { f ->
-                        user = user.copy(disabled = f.entidad.disabled)
-                    }
-                    user
+                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.toUsuarioDto()?.also {
+                    log.debug("Found user: {}, with credentials of Fabricante", it.id)
                 }
-            }?.let {
-                personaService.getPersonaByUserID(it.id!!)?.let { p ->
-                    log.debug("Found user: {}, with credentials of Persona", it.id)
-                    it.copy(disabled = p.disabled)
-                } ?: it
             }
 
     override fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findById(id).getOrNull()?.toUsuarioDto()

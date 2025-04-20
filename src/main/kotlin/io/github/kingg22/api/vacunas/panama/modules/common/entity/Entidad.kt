@@ -34,11 +34,6 @@ class Entidad(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @NotNull
-    @ColumnDefault("false")
-    @Column(name = "disabled", nullable = false)
-    var disabled: Boolean = false,
-
     @Size(max = 13)
     @Column(name = "dependencia", length = 13)
     var dependencia: String? = null,

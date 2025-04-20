@@ -51,7 +51,7 @@ data class UsuarioDto(
     @field:Valid
     val roles: Set<RolDto>,
 
-    @field:JsonIgnore val disabled: Boolean = false,
+    @field:JsonIgnore val disabled: Boolean = true,
 ) : Serializable {
 
     override fun toString() = UsuarioDto::class.simpleName +

@@ -11,10 +11,11 @@
             <column name="id" value="577ff96c-533d-4b14-a0e3-04bd03f0e830"/>
             <column name="clave" value="$2a$10$kW4tL15IdZgRadMTBww6TOrm/ap0D483frobfhJd6O1tYUcK3PWRC"/>
             <!-- ONLY FOR TESTING: prue2*test -->
+            <column name="disabled" valueBoolean="false"/>
         </insert>
         <!-- 2. Insert usuarios_roles -->
         <insert tableName="usuarios_roles">
-            <column name="rol" value="1"/>
+            <column name="rol" valueNumeric="1"/>
             <column name="usuario" value="577ff96c-533d-4b14-a0e3-04bd03f0e830"/>
         </insert>
         <!-- 3. Update persona with usuario -->

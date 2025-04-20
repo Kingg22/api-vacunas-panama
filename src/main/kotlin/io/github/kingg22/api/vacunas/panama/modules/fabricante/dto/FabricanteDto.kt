@@ -89,8 +89,6 @@ data class FabricanteDto(
 
         @Size(max = 50) @NotBlank estado: String = PersonaDto.DEFAULT_ESTADO,
 
-        disabled: Boolean = false,
-
         @Valid direccion: DireccionDto = DireccionDto(),
 
         @Size(max = 50)
@@ -123,7 +121,6 @@ data class FabricanteDto(
             telefono = telefono,
             dependencia = dependencia,
             estado = estado,
-            disabled = disabled,
             direccion = direccion,
         ),
         licencia = licencia,

@@ -41,11 +41,6 @@ class Persona(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @NotNull
-    @ColumnDefault("false")
-    @Column(name = "disabled", nullable = false)
-    var disabled: Boolean = false,
-
     @Column(name = "edad")
     var edad: Short? = null,
 

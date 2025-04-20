@@ -89,8 +89,6 @@ data class PersonaDto(
 
     @field:Size(max = 50) @param:Size(max = 50) val estado: String? = null,
 
-    val disabled: Boolean = false,
-
     @field:Valid @param:Valid val direccion: DireccionDto = DireccionDto(),
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
