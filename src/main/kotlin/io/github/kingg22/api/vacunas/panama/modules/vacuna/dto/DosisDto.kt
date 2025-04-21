@@ -13,7 +13,7 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis]  */
 @JvmRecord
-data class DosisDto @JvmOverloads constructor(
+data class DosisDto(
     val id: UUID? = null,
 
     @field:Valid @param:Valid val paciente: PacienteDto,

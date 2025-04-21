@@ -17,6 +17,8 @@ import java.util.UUID
 
 /**
  * DTO for [io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona]
+ *
+ * _Warning_:
  * - [Persona.direccion] is required, but in DTO it's nullable.
  * Default value is [DireccionDto] with [DireccionDto.DEFAULT_DIRECCION].
  * - [Persona.estado] is required, but in DTO it's nullable.
@@ -81,17 +83,17 @@ data class PersonaDto(
     @param:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val edad: Short? = null,
 
-    val sexo: Char? = null,
+    @field:Size(max = 1)
+    @param:Size(max = 1)
+    val sexo: String? = null,
 
     @field:Size(max = 50) @param:Size(max = 50) val estado: String? = null,
-
-    val disabled: Boolean = false,
 
     @field:Valid @param:Valid val direccion: DireccionDto = DireccionDto(),
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
 ) : Serializable {
     companion object {
-        const val DEFAULT_ESTADO = "DISABLED"
+        const val DEFAULT_ESTADO = "NO_VALIDADO"
     }
 }

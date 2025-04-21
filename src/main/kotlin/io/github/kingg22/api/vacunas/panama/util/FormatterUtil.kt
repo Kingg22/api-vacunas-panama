@@ -134,11 +134,7 @@ object FormatterUtil {
      * @throws IllegalArgumentException if more than one field is non-empty.
      */
     @JvmRecord
-    data class FormatterResult @JvmOverloads constructor(
-        val cedula: String? = null,
-        val pasaporte: String? = null,
-        val correo: String? = null,
-    ) {
+    data class FormatterResult(val cedula: String? = null, val pasaporte: String? = null, val correo: String? = null) {
         init {
             val filledCount = listOf(cedula, pasaporte, correo).count { !it.isNullOrBlank() }
 

@@ -3,13 +3,12 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.toDoctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
-import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPaciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
-import io.github.kingg22.api.vacunas.panama.modules.sede.dto.toSede
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.VacunaRepository
@@ -21,12 +20,12 @@ import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class VacunaServiceImpl(
@@ -41,9 +40,9 @@ class VacunaServiceImpl(
     @Transactional
     override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
-        val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)?.toPaciente()
-        val vacuna = vacunaRepository.findById(insertDosisDto.vacunaId).getOrNull()
-        val sede = sedeService.getSedeById(insertDosisDto.sedeId)?.toSede()
+        val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)
+        val vacuna = vacunaRepository.findByIdOrNull(insertDosisDto.vacunaId)
+        val sede = sedeService.getSedeById(insertDosisDto.sedeId)
         val doctor = insertDosisDto.doctorId?.let {
             doctorService.getDoctorById(it)
         }
@@ -87,10 +86,11 @@ class VacunaServiceImpl(
 
         dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente, vacuna).ifPresentOrElse({
             log.debug("Última dosis encontrada, ID: {}", it.id)
-            if (!it.numeroDosis.isValidNew(insertDosisDto.numeroDosis)) {
+            val numeroDosis = it.numeroDosis.getNumeroDosisAsEnum()
+            if (!numeroDosis.isValidNew(insertDosisDto.numeroDosis)) {
                 contentResponse.withError(
                     ApiResponseCode.VALIDATION_FAILED,
-                    "La dosis ${insertDosisDto.numeroDosis} no es válida. Último número de dosis ${it.numeroDosis}",
+                    "La dosis ${insertDosisDto.numeroDosis} no es válida. Último número de dosis $numeroDosis",
                     "numero_dosis",
                 )
                 return@ifPresentOrElse
@@ -102,7 +102,7 @@ class VacunaServiceImpl(
         val dosis = dosisRepository.save(
             Dosis(
                 paciente = paciente,
-                numeroDosis = insertDosisDto.numeroDosis,
+                numeroDosis = insertDosisDto.numeroDosis.value,
                 vacuna = vacuna,
                 sede = sede,
                 lote = insertDosisDto.lote,

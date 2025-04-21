@@ -8,11 +8,18 @@ import java.util.UUID
 
 interface VacunaRepository : JpaRepository<Vacuna, UUID> {
     @Query(
-        "SELECT new io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto(" +
-            "v.id, v.nombre, f.id, f.nombre) " +
-            "FROM Vacuna v " +
-            "LEFT JOIN v.fabricantes f " +
-            "ORDER BY v.id",
+        """
+        SELECT new io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto(
+            v.id,
+            v.nombre,
+            f.id,
+            f.entidad.nombre
+        )
+        FROM Vacuna v
+        LEFT JOIN v.fabricantes f
+        LEFT JOIN f.entidad e
+        ORDER BY v.id
+        """,
     )
     fun findAllIdAndNombreAndFabricante(): List<VacunaFabricanteDto>
 }

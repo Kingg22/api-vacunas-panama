@@ -50,6 +50,11 @@ class PdfController(
             }
 
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
+
+            if (pacienteDto == null) {
+                return Mono.just(ResponseEntity.notFound().build())
+            }
+
             val idCertificado = UUID.randomUUID()
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
@@ -94,6 +99,17 @@ class PdfController(
             }
 
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
+
+            if (pDetalle == null) {
+                apiResponse.addError(
+                    createApiErrorBuilder {
+                        withCode(ApiResponseCode.NOT_FOUND)
+                        message = "El paciente no fue encontrado, intente nuevamente."
+                    },
+                )
+                return sendResponse(apiResponse, webRequest)
+            }
+
             val idCertificado = UUID.randomUUID()
             val pdfBase64 = pdfService.generatePdfBase64(pDetalle, dosisDtos, idCertificado)
 

@@ -106,7 +106,7 @@ VALUES (0, 'Por registrar', 0),
        (84, 'Naso Tjër Di', 14),
        (85, 'Extranjero', 17);
 
-INSERT INTO direcciones (id, direccion, distrito, created_at)
+INSERT INTO direcciones (id, descripcion, distrito, created_at)
 VALUES ('123e4567-e89b-12d3-a456-426614174000', 'Por registrar', 0, '2025-04-04 12:34:56');
 
 INSERT INTO vacunas (id, nombre, edad_minima_dias)

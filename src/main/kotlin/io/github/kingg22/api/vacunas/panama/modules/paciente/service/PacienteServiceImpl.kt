@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.repository.PacienteRepository
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
@@ -18,10 +19,10 @@ import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
 import org.hibernate.Hibernate
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PacienteServiceImpl(
@@ -43,28 +44,29 @@ class PacienteServiceImpl(
         }
 
         val paciente = pacienteRepository.save(
-            Paciente.builder {
-                identificacionTemporal(pacienteDto.identificacionTemporal)
-                createdAt(pacienteDto.createdAt)
-                nombre(pacienteDto.persona.nombre)
-                nombre2(pacienteDto.persona.nombre2)
-                apellido1(pacienteDto.persona.apellido1)
-                apellido2(pacienteDto.persona.apellido2)
-                fechaNacimiento(pacienteDto.persona.fechaNacimiento)
-                cedula(pacienteDto.persona.cedula)
-                pasaporte(pacienteDto.persona.pasaporte)
-                telefono(pacienteDto.persona.telefono)
-                correo(pacienteDto.persona.correo)
-                sexo(pacienteDto.persona.sexo)
-                direccion(direccion)
-                estado(pacienteDto.persona.estado ?: "ACTIVO")
-                disabled(pacienteDto.persona.disabled)
-            },
+            Paciente(
+                identificacionTemporal = pacienteDto.identificacionTemporal,
+                createdAt = pacienteDto.createdAt,
+                persona = Persona(
+                    nombre = pacienteDto.persona.nombre,
+                    nombre2 = pacienteDto.persona.nombre2,
+                    apellido1 = pacienteDto.persona.apellido1,
+                    apellido2 = pacienteDto.persona.apellido2,
+                    fechaNacimiento = pacienteDto.persona.fechaNacimiento,
+                    cedula = pacienteDto.persona.cedula,
+                    pasaporte = pacienteDto.persona.pasaporte,
+                    telefono = pacienteDto.persona.telefono,
+                    correo = pacienteDto.persona.correo,
+                    sexo = pacienteDto.persona.sexo,
+                    direccion = direccion,
+                    estado = pacienteDto.persona.estado ?: "ACTIVO",
+                ),
+            ),
         )
 
-        Hibernate.initialize(paciente.usuario)
-        Hibernate.initialize(paciente.direccion)
-        paciente.direccion.distrito?.let {
+        Hibernate.initialize(paciente.persona.usuario)
+        Hibernate.initialize(paciente.persona.direccion)
+        paciente.persona.direccion.distrito.let {
             Hibernate.initialize(it)
             Hibernate.initialize(it.provincia)
         }
@@ -73,10 +75,10 @@ class PacienteServiceImpl(
         return response
     }
 
-    override fun getPacienteDtoById(id: UUID) = pacienteRepository.findById(id).orElseThrow().toPacienteDto()
+    override fun getPacienteDtoById(id: UUID) = pacienteRepository.findByIdOrNull(id)?.toPacienteDto()
 
-    override fun getPacienteById(idPaciente: UUID) =
-        pacienteRepository.findById(idPaciente).getOrNull()?.toPacienteDto()
+    @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
+    override fun getPacienteById(idPaciente: UUID) = pacienteRepository.findByIdOrNull(idPaciente)
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
     override fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
@@ -87,7 +89,7 @@ class PacienteServiceImpl(
         persona.cedula?.let {
             val formatted = FormatterUtil.formatCedula(it)
             pacienteDto.copy(persona = persona.copy(cedula = formatted))
-            if (pacienteRepository.findByCedula(formatted) != null) {
+            if (pacienteRepository.findByPersonaCedula(formatted) != null) {
                 add(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -98,7 +100,9 @@ class PacienteServiceImpl(
             }
         }
 
-        if (!persona.pasaporte.isNullOrBlank() && pacienteRepository.findByPasaporte(persona.pasaporte) != null) {
+        if (!persona.pasaporte.isNullOrBlank() &&
+            pacienteRepository.findByPersonaPasaporte(persona.pasaporte) != null
+        ) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -120,7 +124,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.correo.isNullOrBlank() && pacienteRepository.findByCorreo(persona.correo) != null) {
+        if (!persona.correo.isNullOrBlank() && pacienteRepository.findByPersonaCorreo(persona.correo) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -130,7 +134,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.telefono.isNullOrBlank() && pacienteRepository.findByTelefono(persona.telefono) != null) {
+        if (!persona.telefono.isNullOrBlank() && pacienteRepository.findByPersonaTelefono(persona.telefono) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)

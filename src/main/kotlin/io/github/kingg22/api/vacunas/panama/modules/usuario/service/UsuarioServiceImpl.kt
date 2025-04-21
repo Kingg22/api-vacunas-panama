@@ -12,7 +12,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario.Companion.builder
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
@@ -55,29 +54,23 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
-        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()
+        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()?.also {
+            log.debug("Found user by username: {}", it.id)
+        }
             .or {
                 val formatted = formatToSearch(identifier)
                 usuarioRepository.findByCedulaOrPasaporteOrCorreo(
                     formatted.cedula,
                     formatted.pasaporte,
                     formatted.correo,
-                )?.toUsuarioDto()
+                )?.toUsuarioDto()?.also {
+                    log.debug("Found user: {}, with credentials of Persona", it.id)
+                }
             }
             .or {
-                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.let {
-                    var user = it.toUsuarioDto()
-                    log.debug("Found user: {}, with credentials of Fabricante", user.id)
-                    fabricanteService.getFabricanteByUserID(user.id!!)?.let { f ->
-                        user = user.copy(disabled = f.entidad.disabled)
-                    }
-                    user
+                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.toUsuarioDto()?.also {
+                    log.debug("Found user: {}, with credentials of Fabricante", it.id)
                 }
-            }?.let {
-                personaService.getPersonaByUserID(it.id!!)?.let { p ->
-                    log.debug("Found user: {}, with credentials of Persona", it.id)
-                    it.copy(disabled = p.disabled)
-                }.or(it)
             }
 
     override fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findById(id).getOrNull()?.toUsuarioDto()
@@ -149,12 +142,12 @@ class UsuarioServiceImpl(
 
     @Transactional
     override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit) {
-        val usuario = builder {
-            username(usuarioDto.username)
-            password(passwordEncoder.encode(usuarioDto.password))
-            createdAt(usuarioDto.createdAt)
-            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toSet()
-        }
+        val usuario = Usuario(
+            username = usuarioDto.username,
+            clave = passwordEncoder.encode(usuarioDto.password),
+            createdAt = usuarioDto.createdAt,
+            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet(),
+        )
 
         block(usuario)
         usuarioRepository.save(usuario)

@@ -1,31 +1,37 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.entity
 
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.mcarle.konvert.api.KonvertTo
-import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.ColumnResult
 import jakarta.persistence.ConstructorResult
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 import jakarta.persistence.Index
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.MapsId
 import jakarta.persistence.NamedNativeQuery
-import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.SqlResultSetMapping
 import jakarta.persistence.Table
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.springframework.data.annotation.CreatedDate
+import org.hibernate.annotations.ColumnDefault
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Entity
 @Table(
     name = "pacientes",
-    indexes = [Index(name = "ix_pacientes_id_temporal", columnList = "identificacion_temporal", unique = true)],
+    indexes = [
+        Index(name = "uq_pacientes_id_temporal", columnList = "identificacion_temporal", unique = true),
+    ],
 )
 @NamedNativeQuery(
     name = "Paciente.getVacunas",
@@ -88,84 +94,29 @@ import java.util.UUID
         ),
     ],
 )
-@KonvertTo(
-    PacienteDto::class,
-    mappings = [
-        Mapping(target = "id", source = "id"),
-        Mapping(target = "cedula", source = "cedula"),
-        Mapping(target = "pasaporte", source = "pasaporte"),
-        Mapping(target = "nombre", source = "nombre"),
-        Mapping(target = "nombre2", source = "nombre2"),
-        Mapping(target = "apellido1", source = "apellido1"),
-        Mapping(target = "apellido2", source = "apellido2"),
-        Mapping(target = "correo", source = "correo"),
-        Mapping(target = "telefono", source = "telefono"),
-        Mapping(target = "fechaNacimiento", source = "fechaNacimiento"),
-        Mapping(target = "edad", source = "edad"),
-        Mapping(target = "sexo", source = "sexo"),
-        Mapping(target = "estado", source = "estado"),
-        Mapping(target = "disabled", source = "disabled"),
-        Mapping(target = "direccion", source = "direccion"),
-        Mapping(target = "usuario", source = "usuario"),
-    ],
-)
-class Paciente @JvmOverloads constructor(
-    estado: String,
-    direccion: Direccion,
+@KonvertTo(PacienteDto::class)
+class Paciente(
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @ColumnDefault("gen_random_uuid()")
+    @Column(name = "id", nullable = false)
+    var id: UUID? = null,
 
-    @Column(name = "identificacion_temporal")
-    @Size(max = 255)
-    var identificacionTemporal: String? = null,
+    @MapsId
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @ColumnDefault("gen_random_uuid()")
+    @JoinColumn(name = "id", nullable = false)
+    var persona: Persona,
 
-    @OneToMany(mappedBy = "paciente")
-    val dosis: Set<Dosis> = emptySet(),
-
-    @CreatedDate
+    @NotNull
+    @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-) : Persona(estado = estado, direccion = direccion) {
-    @JvmOverloads
-    constructor(
-        persona: Persona,
-        identificacionTemporal: String? = null,
-        dosis: Set<Dosis> = emptySet(),
-        createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
-        updatedAt: LocalDateTime? = null,
-    ) : this(persona.estado, persona.direccion, identificacionTemporal, dosis, createdAt, updatedAt) {
-        super.applyPersona(persona)
-    }
 
-    companion object {
-        @JvmStatic
-        @JvmName("builderPaciente")
-        fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
-    }
-
-    class Builder : Persona.Builder() {
-        var identificacionTemporal: String? = null
-        var dosis: Set<Dosis> = emptySet()
-        var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
-        var updatedAt: LocalDateTime? = null
-
-        fun identificacionTemporal(identificacionTemporal: String?) =
-            apply { this.identificacionTemporal = identificacionTemporal }
-
-        fun dosis(dosis: Set<Dosis>) = apply { this.dosis = dosis }
-        fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
-        fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
-
-        override fun build(): Paciente {
-            val persona = super.build()
-            return Paciente(
-                persona = persona,
-                identificacionTemporal = identificacionTemporal,
-                dosis = dosis,
-                createdAt = createdAt,
-                updatedAt = updatedAt,
-            )
-        }
-    }
-}
+    @Size(max = 255)
+    @Column(name = "identificacion_temporal")
+    var identificacionTemporal: String? = null,
+)

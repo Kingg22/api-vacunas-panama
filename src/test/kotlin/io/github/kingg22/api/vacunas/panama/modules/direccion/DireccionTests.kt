@@ -22,7 +22,7 @@ class DireccionTests {
     fun `test entity to DTO mapping`() {
         val entity = Direccion(
             id = UUID.randomUUID(),
-            direccion = "Calle 123",
+            descripcion = "Calle 123",
             distrito = Distrito(nombre = "Panama", provincia = Provincia(nombre = "Panama")),
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now(),
@@ -31,21 +31,21 @@ class DireccionTests {
         val dto = entity.toDireccionDto()
 
         assertEquals(entity.id, dto.id)
-        assertEquals(entity.direccion, dto.direccion)
+        assertEquals(entity.descripcion, dto.descripcion)
         assertEquals(entity.createdAt, dto.createdAt)
         assertEquals(entity.updatedAt, dto.updatedAt)
         assertNotNull(dto.distrito)
-        assertEquals(entity.distrito?.nombre, dto.distrito.nombre)
-        assertEquals(entity.distrito?.id, dto.distrito.id)
-        assertEquals(entity.distrito?.provincia?.id, dto.distrito.provincia.id)
-        assertEquals(entity.distrito?.provincia?.nombre, dto.distrito.provincia.nombre)
+        assertEquals(entity.distrito.nombre, dto.distrito.nombre)
+        assertEquals(entity.distrito.id, dto.distrito.id)
+        assertEquals(entity.distrito.provincia.id, dto.distrito.provincia.id)
+        assertEquals(entity.distrito.provincia.nombre, dto.distrito.provincia.nombre)
     }
 
     @Test
     fun `test DTO to entity mapping`() {
         val dto = DireccionDto(
             id = UUID.randomUUID(),
-            direccion = "Calle 123",
+            descripcion = "Calle 123",
             distrito = DistritoDto(nombre = "Panama", provincia = ProvinciaDto(nombre = "Panama")),
             createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now(),
@@ -54,14 +54,14 @@ class DireccionTests {
         val entity = dto.toDireccion()
 
         assertEquals(dto.id, entity.id)
-        assertEquals(dto.direccion, entity.direccion)
+        assertEquals(dto.descripcion, entity.descripcion)
         assertEquals(dto.createdAt, entity.createdAt)
         assertEquals(dto.updatedAt, entity.updatedAt)
         assertNotNull(dto.distrito)
-        assertEquals(dto.distrito.nombre, entity.distrito?.nombre)
-        assertEquals(dto.distrito.id, entity.distrito?.id)
-        assertEquals(dto.distrito.provincia.id, entity.distrito?.provincia?.id)
-        assertEquals(dto.distrito.provincia.nombre, entity.distrito?.provincia?.nombre)
+        assertEquals(dto.distrito.nombre, entity.distrito.nombre)
+        assertEquals(dto.distrito.id, entity.distrito.id)
+        assertEquals(dto.distrito.provincia.id, entity.distrito.provincia.id)
+        assertEquals(dto.distrito.provincia.nombre, entity.distrito.provincia.nombre)
     }
 
     @Test
@@ -72,13 +72,18 @@ class DireccionTests {
 
         assertNull(entity.id)
         assertEquals(dto.id, entity.id)
-        assertNotNull(entity.direccion)
-        assertEquals(dto.direccion, entity.direccion)
-        assertEquals(entity.direccion, DireccionDto.Companion.DEFAULT_DIRECCION)
+        assertNotNull(entity.descripcion)
+        assertEquals(dto.descripcion, entity.descripcion)
+        assertEquals(entity.descripcion, DireccionDto.Companion.DEFAULT_DIRECCION)
         assertEquals(dto.createdAt, entity.createdAt)
         assertNull(entity.updatedAt)
         assertEquals(dto.updatedAt, entity.updatedAt)
-        assertNull(entity.distrito)
+        assertNotNull(entity.distrito.id)
+        assertEquals(0, entity.distrito.id)
+        assertEquals(DistritoDto.DEFAULT_DISTRITO, entity.distrito.nombre)
+        assertNotNull(entity.distrito.provincia.id)
+        assertEquals(0, entity.distrito.provincia.id)
+        assertEquals(ProvinciaDto.DEFAULT_PROVINCIA, entity.distrito.provincia.nombre)
     }
 
     @Test
@@ -91,7 +96,8 @@ class DireccionTests {
         assertEquals(dto.id, entity.id)
         assertEquals(dto.nombre, entity.nombre)
         assertEquals(entity.nombre, DistritoDto.Companion.DEFAULT_DISTRITO)
-        assertNull(entity.provincia.id)
+        assertNotNull(entity.provincia.id)
+        assertEquals(0, entity.provincia.id)
         assertEquals(entity.provincia.id, dto.provincia.id)
         assertEquals(entity.provincia.nombre, dto.provincia.nombre)
         assertEquals(entity.provincia.nombre, ProvinciaDto.Companion.DEFAULT_PROVINCIA)

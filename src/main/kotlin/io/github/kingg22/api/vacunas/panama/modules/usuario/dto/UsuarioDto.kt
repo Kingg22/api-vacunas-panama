@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
@@ -14,7 +15,13 @@ import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario] */
 @JvmRecord
-@KonvertTo(Usuario::class)
+@KonvertTo(
+    Usuario::class,
+    mappings = [
+        Mapping("usuario", "username"), Mapping("clave", "password"),
+        Mapping("fabricante", ignore = true), Mapping("persona", ignore = true),
+    ],
+)
 data class UsuarioDto(
     val id: UUID? = null,
 
@@ -44,7 +51,7 @@ data class UsuarioDto(
     @field:Valid
     val roles: Set<RolDto>,
 
-    @field:JsonIgnore val disabled: Boolean = false,
+    @field:JsonIgnore val disabled: Boolean = true,
 ) : Serializable {
 
     override fun toString() = UsuarioDto::class.simpleName +

@@ -10,7 +10,7 @@ import java.util.UUID
 
 /** DTO for generate PDF with basic information  */
 @JvmRecord
-data class PdfDto @JvmOverloads constructor(
+data class PdfDto(
     @field:NotBlank @param:NotBlank val nombres: String,
 
     @field:NotBlank @param:NotBlank val apellidos: String,

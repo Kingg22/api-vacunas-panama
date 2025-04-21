@@ -1,9 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
-import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
-import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.toDoctorDto
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
@@ -37,7 +33,7 @@ class PersonaRegistrationStrategy(
 
         return personaService.getPersona(identifier)?.let { persona ->
             when {
-                persona.disabled -> RegistrationError(
+                persona.usuario?.disabled == true -> RegistrationError(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.PERMISSION_DENIED)
                         withMessage("No puede registrarse")
@@ -91,8 +87,6 @@ class PersonaRegistrationStrategy(
 
                 createContentResponse().apply {
                     addData("persona", persona.toPersonaDto())
-                    if (persona is Paciente) addData("paciente", persona.toPacienteDto())
-                    if (persona is Doctor) addData("doctor", persona.toDoctorDto())
                 }
             }
         }

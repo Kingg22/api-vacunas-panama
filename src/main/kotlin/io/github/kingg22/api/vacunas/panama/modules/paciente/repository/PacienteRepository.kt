@@ -16,11 +16,11 @@ interface PacienteRepository : JpaRepository<Paciente, UUID> {
 
     fun findByIdentificacionTemporal(idTemporal: String?): Paciente?
 
-    fun findByCedula(cedula: String?): Paciente?
+    fun findByPersonaCedula(cedula: String?): Paciente?
 
-    fun findByPasaporte(pasaporte: String?): Paciente?
+    fun findByPersonaPasaporte(pasaporte: String?): Paciente?
 
-    fun findByCorreo(correo: String?): Paciente?
+    fun findByPersonaCorreo(correo: String?): Paciente?
 
-    fun findByTelefono(telefono: String?): Paciente?
+    fun findByPersonaTelefono(telefono: String?): Paciente?
 }

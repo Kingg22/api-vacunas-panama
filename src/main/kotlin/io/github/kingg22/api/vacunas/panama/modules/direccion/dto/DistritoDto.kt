@@ -10,7 +10,7 @@ import java.io.Serializable
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito] */
 @JvmRecord
 @KonvertTo(Distrito::class)
-data class DistritoDto @JvmOverloads constructor(
+data class DistritoDto(
     val id: Short? = null,
 
     @field:JsonProperty(defaultValue = DEFAULT_DISTRITO)
@@ -19,7 +19,7 @@ data class DistritoDto @JvmOverloads constructor(
     @param:Size(max = 100)
     val nombre: String = DEFAULT_DISTRITO,
 
-    @field:Valid @param:Valid val provincia: ProvinciaDto = ProvinciaDto(),
+    @field:Valid @param:Valid val provincia: ProvinciaDto = ProvinciaDto(id = 0),
 ) : Serializable {
     companion object {
         const val DEFAULT_DISTRITO = "Por registrar"

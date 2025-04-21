@@ -11,11 +11,14 @@ import java.util.UUID
 
 interface PersonaRepository : JpaRepository<Persona, UUID> {
     @Query(
-        "SELECT p " + "FROM Persona p " +
-            "WHERE (:cedula IS NOT NULL OR :pasaporte IS NOT NULL OR :correo IS NOT NULL) AND" +
-            "(:cedula IS NULL OR p.cedula = :cedula) AND " +
-            "(:pasaporte IS NULL OR p.pasaporte = :pasaporte) AND " +
-            "(:correo IS NULL OR p.correo = :correo)",
+        """
+            SELECT p
+            FROM Persona p
+            WHERE (:cedula IS NOT NULL OR :pasaporte IS NOT NULL OR :correo IS NOT NULL) AND
+            (:cedula IS NULL OR p.cedula = :cedula) AND
+            (:pasaporte IS NULL OR p.pasaporte = :pasaporte) AND
+            (:correo IS NULL OR p.correo = :correo)
+            """,
     )
     fun findByCedulaOrPasaporteOrCorreo(
         @Param("cedula") cedula: String?,

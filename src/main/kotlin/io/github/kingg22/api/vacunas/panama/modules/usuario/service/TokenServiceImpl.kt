@@ -25,7 +25,6 @@ class TokenServiceImpl(
     @Value("\${security.jwt.expiration-time}") private val expirationTime: Long,
     @Value("\${security.jwt.refresh-time}") private val refreshTime: Long,
 ) : TokenService {
-    // TODO make suspend fun
     override suspend fun generateTokens(
         usuarioDto: UsuarioDto,
         idsAdicionales: Map<String, Serializable>,
@@ -95,9 +94,8 @@ class TokenServiceImpl(
     private fun generateKey(type: String, subject: String, id: String) = "token:$type:$subject:$id"
 
     private fun getRolesPermisos(usuarioDto: UsuarioDto) = usuarioDto.roles
-        ?.filterNotNull()
-        ?.flatMap { role ->
-            val permisos = role.permisos?.mapNotNull { it.nombre } ?: emptyList()
+        .flatMap { role ->
+            val permisos = role.permisos.map { it.nombre }
             listOf("ROLE_${role.nombre?.uppercase()}") + permisos
-        }.orEmpty()
+        }
 }

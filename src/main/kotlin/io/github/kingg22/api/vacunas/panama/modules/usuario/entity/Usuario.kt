@@ -5,6 +5,7 @@ import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -15,47 +16,61 @@ import jakarta.persistence.Index
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
-import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import jakarta.persistence.UniqueConstraint
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.hibernate.annotations.Nationalized
-import org.springframework.data.annotation.CreatedDate
+import org.hibernate.annotations.ColumnDefault
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Entity
 @Table(
     name = "usuarios",
-    indexes = [Index(name = "ix_usuarios_username", columnList = "usuario", unique = true)],
+    indexes = [
+        Index(name = "ix_usuarios_username", columnList = "username"),
+    ],
+    uniqueConstraints = [
+        UniqueConstraint(name = "uq_usuarios_username", columnNames = ["username"]),
+    ],
 )
-@KonvertTo(UsuarioDto::class)
-class Usuario @JvmOverloads constructor(
+@KonvertTo(
+    UsuarioDto::class,
+    mappings = [Mapping("username", "usuario"), Mapping("password", "clave")],
+)
+class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @ColumnDefault("gen_random_uuid()")
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @Nationalized
-    @Column(name = "usuario", length = 50)
-    @Size(max = 50)
-    var username: String? = null,
+    @NotNull
+    @ColumnDefault("now()")
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @Nationalized
-    @Column(name = "clave", nullable = false, length = 100)
-    @Size(max = 100)
-    var password: String,
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "disabled", nullable = false)
+    var disabled: Boolean = true,
 
-    @Column(name = "created_at")
-    @CreatedDate
-    var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+    @Column(name = "last_used")
+    var lastUsed: LocalDateTime? = null,
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
 
-    @Column(name = "last_used")
-    var lastUsed: LocalDateTime? = null,
+    @Size(max = 50)
+    @Column(name = "username", length = 50)
+    var username: String? = null,
+
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "clave", nullable = false, length = 100)
+    var clave: String,
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -64,56 +79,11 @@ class Usuario @JvmOverloads constructor(
         inverseJoinColumns = [JoinColumn(name = "rol")],
     )
     @JsonManagedReference
-    val roles: Set<Rol> = emptySet(),
+    var roles: MutableSet<Rol> = mutableSetOf(),
 
     @OneToOne(mappedBy = "usuario")
     var fabricante: Fabricante? = null,
 
     @OneToOne(mappedBy = "usuario")
     var persona: Persona? = null,
-
-    @OneToMany(mappedBy = "idUsuario")
-    val usuariosRoles: Set<UsuariosRoles> = emptySet(),
-) {
-    companion object {
-        @JvmStatic
-        fun builder(block: Builder.() -> Unit) = Builder().apply(block).build()
-    }
-
-    class Builder {
-        var id: UUID? = null
-        var username: String? = null
-        lateinit var password: String
-        var createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
-        var updatedAt: LocalDateTime? = null
-        var lastUsed: LocalDateTime? = null
-        var roles: Set<Rol> = emptySet()
-        var fabricante: Fabricante? = null
-        var persona: Persona? = null
-        var usuariosRoles: Set<UsuariosRoles> = emptySet()
-
-        fun id(id: UUID?) = apply { this.id = id }
-        fun username(username: String?) = apply { this.username = username }
-        fun password(password: String) = apply { this.password = password }
-        fun createdAt(createdAt: LocalDateTime) = apply { this.createdAt = createdAt }
-        fun updatedAt(updatedAt: LocalDateTime?) = apply { this.updatedAt = updatedAt }
-        fun lastUsed(lastUsed: LocalDateTime?) = apply { this.lastUsed = lastUsed }
-        fun roles(roles: Set<Rol>) = apply { this.roles = roles }
-        fun fabricante(fabricante: Fabricante?) = apply { this.fabricante = fabricante }
-        fun persona(persona: Persona?) = apply { this.persona = persona }
-        fun usuariosRoles(usuariosRoles: Set<UsuariosRoles>) = apply { this.usuariosRoles = usuariosRoles }
-
-        fun build() = Usuario(
-            id = id,
-            username = username,
-            password = password,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
-            lastUsed = lastUsed,
-            roles = roles,
-            fabricante = fabricante,
-            persona = persona,
-            usuariosRoles = usuariosRoles,
-        )
-    }
-}
+)

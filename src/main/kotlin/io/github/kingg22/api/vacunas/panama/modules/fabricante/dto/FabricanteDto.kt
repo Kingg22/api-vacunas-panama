@@ -1,27 +1,20 @@
 package io.github.kingg22.api.vacunas.panama.modules.fabricante.dto
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.time.ZoneOffset.UTC
-import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante]  */
 @JvmRecord
 data class FabricanteDto(
-    @field:JsonUnwrapped @param:JsonUnwrapped val entidad: EntidadDto,
+    @field:Valid @param:Valid val entidad: EntidadDto,
 
     @field:Size(max = 50)
     @param:Size(max = 50)
@@ -72,66 +65,4 @@ data class FabricanteDto(
     val updatedAt: LocalDateTime? = null,
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
-) : Serializable {
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    constructor(
-        id: UUID? = null,
-
-        @Size(max = 100) nombre: String? = null,
-
-        @Size(max = 254) @Email correo: String? = null,
-
-        @Size(max = 15)
-        @Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-        telefono: String? = null,
-
-        @Size(max = 13) dependencia: String? = null,
-
-        @Size(max = 50) @NotBlank estado: String = PersonaDto.DEFAULT_ESTADO,
-
-        disabled: Boolean = false,
-
-        @Valid direccion: DireccionDto = DireccionDto(),
-
-        @Size(max = 50)
-        @Pattern(
-            regexp = "^.+/DNFD$",
-            flags = [Pattern.Flag.CASE_INSENSITIVE],
-            message = "La licencia_fabricante no es válida",
-        )
-        licencia: String? = null,
-
-        @JsonProperty(value = "contacto_nombre") @Size(max = 100) contactoNombre: String? = null,
-
-        @JsonProperty(value = "contacto_correo") @Size(max = 254) @Email contactoCorreo: String? = null,
-
-        @JsonProperty(value = "contacto_telefono")
-        @Size(max = 15)
-        @Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-        contactoTelefono: String? = null,
-
-        @JsonProperty(value = "created_at") @PastOrPresent createdAt: LocalDateTime = LocalDateTime.now(UTC),
-
-        @JsonProperty(value = "updated_at") @PastOrPresent updatedAt: LocalDateTime? = null,
-
-        @Valid usuario: UsuarioDto? = null,
-    ) : this(
-        entidad = EntidadDto(
-            id = id,
-            nombre = nombre,
-            correo = correo,
-            telefono = telefono,
-            dependencia = dependencia,
-            estado = estado,
-            disabled = disabled,
-            direccion = direccion,
-        ),
-        licencia = licencia,
-        contactoNombre = contactoNombre,
-        contactoCorreo = contactoCorreo,
-        contactoTelefono = contactoTelefono,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        usuario = usuario,
-    )
-}
+) : Serializable

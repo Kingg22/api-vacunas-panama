@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="009" author="Rey">
+        <!-- 1. Insert Usuario -->
+        <insert tableName="usuarios">
+            <column name="id" value="577ff96c-533d-4b14-a0e3-04bd03f0e830"/>
+            <column name="clave" value="$2a$10$kW4tL15IdZgRadMTBww6TOrm/ap0D483frobfhJd6O1tYUcK3PWRC"/>
+            <!-- ONLY FOR TESTING: prue2*test -->
+            <column name="disabled" valueBoolean="false"/>
+        </insert>
+        <!-- 2. Insert usuarios_roles -->
+        <insert tableName="usuarios_roles">
+            <column name="rol" valueNumeric="1"/>
+            <column name="usuario" value="577ff96c-533d-4b14-a0e3-04bd03f0e830"/>
+        </insert>
+        <!-- 3. Update persona with usuario -->
+        <update tableName="personas">
+            <column name="usuario" value="577ff96c-533d-4b14-a0e3-04bd03f0e830"/>
+            <where>id='901e153d-4c1a-46bf-906b-eee22007c835'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

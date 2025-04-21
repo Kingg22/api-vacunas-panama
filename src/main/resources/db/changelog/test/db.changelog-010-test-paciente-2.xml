@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="010" author="Rey (Kingg22)">
+        <!-- 1. Insertar persona -->
+        <insert tableName="personas">
+            <column name="id" value="0b15bee3-55c0-44a0-ac43-bdd5c3580b2f"/>
+            <column name="nombre" value="Persona"/>
+            <column name="apellido1" value="Test"/>
+            <column name="cedula" value="1-132-652"/>
+            <column name="fecha_nacimiento" value="2000-01-01"/>
+            <column name="sexo" value="F"/>
+            <column name="direccion" value="123e4567-e89b-12d3-a456-426614174000"/>
+            <!-- Dirección por registrar -->
+        </insert>
+
+        <!-- 2. Insertar paciente -->
+        <insert tableName="pacientes">
+            <column name="id" value="0b15bee3-55c0-44a0-ac43-bdd5c3580b2f"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
