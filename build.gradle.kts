@@ -1,5 +1,6 @@
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
+import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import java.time.Instant
 
@@ -7,7 +8,6 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
     kotlin("plugin.spring") version libs.versions.kotlin.get()
     kotlin("plugin.jpa") version libs.versions.kotlin.get()
-    java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.ksp)
@@ -25,9 +25,10 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 
@@ -44,12 +45,6 @@ dependencies {
     }
 
     testRuntimeOnly(libs.junit.platform.launcher)
-}
-
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
-    }
 }
 
 allOpen {
@@ -69,13 +64,6 @@ tasks.withType<Test> {
 
 spotless {
     encoding("UTF-8")
-    java {
-        target("src/*/java/**/*.java")
-        encoding("Cp1252")
-        palantirJavaFormat("2.61.0").formatJavadoc(true)
-        importOrder().semanticSort()
-        removeUnusedImports()
-    }
     kotlin {
         target("src/*/kotlin/**/*.kt")
         ktlint()
@@ -104,8 +92,18 @@ licenseReport {
 }
 
 kover {
-    reports.filters.excludes {
-        annotatedBy("io.mcarle.konvert.api.GeneratedKonverter")
+    reports {
+        total.verify {
+            rule("Basic Line Coverage") {
+                minBound(60, CoverageUnit.LINE)
+            }
+            rule("Basic Branch Coverage") {
+                minBound(20, CoverageUnit.BRANCH)
+            }
+        }
+        filters.excludes {
+            annotatedBy("io.mcarle.konvert.api.GeneratedKonverter")
+        }
     }
 }
 
