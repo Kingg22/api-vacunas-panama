@@ -26,14 +26,6 @@ class Rol(
     @Column(name = "id", nullable = false)
     var id: Short? = null,
 
-    @NotNull
-    @ColumnDefault("now()")
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
-
-    @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null,
-
     @Size(max = 100)
     @Column(name = "descripcion", length = 100)
     var descripcion: String? = null,
@@ -42,4 +34,12 @@ class Rol(
     @NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
+
+    @NotNull
+    @ColumnDefault("now()")
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 )

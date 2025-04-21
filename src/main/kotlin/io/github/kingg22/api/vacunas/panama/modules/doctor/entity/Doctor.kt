@@ -41,14 +41,6 @@ class Doctor(
     @JoinColumn(name = "id", nullable = false)
     var persona: Persona,
 
-    @NotNull
-    @ColumnDefault("now()")
-    @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
-
-    @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null,
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sede")
     var sede: Sede? = null,
@@ -61,4 +53,12 @@ class Doctor(
     @Size(max = 100)
     @Column(name = "categoria", length = 100)
     var categoria: String? = null,
+
+    @NotNull
+    @ColumnDefault("now()")
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now(UTC),
+
+    @Column(name = "updated_at")
+    var updatedAt: LocalDateTime? = null,
 )

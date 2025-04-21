@@ -42,6 +42,10 @@ class Sede(
     @JoinColumn(name = "id", nullable = false)
     var entidad: Entidad,
 
+    @Size(max = 50)
+    @Column(name = "region", length = 50)
+    var region: String? = null,
+
     @NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
@@ -49,8 +53,4 @@ class Sede(
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-
-    @Size(max = 50)
-    @Column(name = "region", length = 50)
-    var region: String? = null,
 )

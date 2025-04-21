@@ -16,6 +16,10 @@ import java.util.UUID
 
 @JvmRecord
 data class PacienteInputDto(
+    @field:Size(max = 100) @param:Size(max = 100) val nombre: String? = null,
+
+    @field:Size(max = 100) @param:Size(max = 100) val nombre2: String? = null,
+
     val id: UUID? = null,
 
     @field:Size(max = 15)
@@ -32,6 +36,18 @@ data class PacienteInputDto(
     )
     val cedula: String? = null,
 
+    @field:Size(max = 15)
+    @field:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    @param:Size(max = 15)
+    @param:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    val telefono: String? = null,
+
+    @field:JsonProperty(value = "fecha_nacimiento")
+    @param:JsonProperty(value = "fecha_nacimiento")
+    @field:PastOrPresent
+    @param:PastOrPresent
+    val fechaNacimiento: LocalDateTime? = null,
+
     @field:Size(max = 20)
     @field:Pattern(
         regexp = "^[A-Z0-9]{5,20}$",
@@ -46,28 +62,6 @@ data class PacienteInputDto(
     )
     val pasaporte: String? = null,
 
-    @field:Size(max = 100) @param:Size(max = 100) val nombre: String? = null,
-
-    @field:Size(max = 100) @param:Size(max = 100) val nombre2: String? = null,
-
-    @field:Size(max = 100) @param:Size(max = 100) val apellido1: String? = null,
-
-    @field:Size(max = 100) @param:Size(max = 100) val apellido2: String? = null,
-
-    @field:Size(max = 254) @param:Size(max = 254) @field:Email @param:Email val correo: String? = null,
-
-    @field:Size(max = 15)
-    @field:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-    @param:Size(max = 15)
-    @param:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-    val telefono: String? = null,
-
-    @field:JsonProperty(value = "fecha_nacimiento")
-    @param:JsonProperty(value = "fecha_nacimiento")
-    @field:PastOrPresent
-    @param:PastOrPresent
-    val fechaNacimiento: LocalDateTime? = null,
-
     @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @param:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val edad: Short? = null,
@@ -78,9 +72,27 @@ data class PacienteInputDto(
 
     @field:Size(max = 50) @param:Size(max = 50) val estado: String? = null,
 
+    @field:Size(max = 100) @param:Size(max = 100) val apellido1: String? = null,
+
+    @field:Size(max = 100) @param:Size(max = 100) val apellido2: String? = null,
+
+    @field:Size(max = 254) @param:Size(max = 254) @field:Email @param:Email val correo: String? = null,
+
     @field:Valid @param:Valid val direccion: DireccionDto = DireccionDto(),
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
+
+    @field:JsonProperty(value = "created_at")
+    @param:JsonProperty(value = "created_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
+
+    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
+    val updatedAt: LocalDateTime? = null,
 
     @field:JsonProperty(value = "identificacion_temporal")
     @param:JsonProperty(value = "identificacion_temporal")
@@ -100,17 +112,6 @@ data class PacienteInputDto(
     )
     val identificacionTemporal: String? = null,
 
-    @field:JsonProperty(value = "created_at")
-    @param:JsonProperty(value = "created_at")
-    @field:PastOrPresent
-    @param:PastOrPresent
-    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
-
-    @field:JsonProperty(value = "updated_at")
-    @param:JsonProperty(value = "updated_at")
-    @field:PastOrPresent
-    @param:PastOrPresent
-    val updatedAt: LocalDateTime? = null,
 ) : Serializable {
     fun toPacienteDto() = PacienteDto(
         persona = PersonaDto(
