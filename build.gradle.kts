@@ -1,3 +1,4 @@
+import com.diffplug.spotless.LineEnding
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
@@ -5,9 +6,9 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import java.time.Instant
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin.get()
-    kotlin("plugin.spring") version libs.versions.kotlin.get()
-    kotlin("plugin.jpa") version libs.versions.kotlin.get()
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("plugin.spring") version libs.versions.kotlin
+    kotlin("plugin.jpa") version libs.versions.kotlin
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.ksp)
@@ -64,6 +65,7 @@ tasks.withType<Test> {
 
 spotless {
     encoding("UTF-8")
+    lineEndings = LineEnding.PRESERVE
     kotlin {
         target("src/*/kotlin/**/*.kt")
         ktlint()
