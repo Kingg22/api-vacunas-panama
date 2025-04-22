@@ -6,7 +6,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponseSuspend
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.redis.core.ReactiveRedisTemplate
@@ -70,6 +70,6 @@ class TokenController(
             apiResponse.addStatus("message", "Invalid token")
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
         }
-        return sendResponseSuspend(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 }

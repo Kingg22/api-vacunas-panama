@@ -5,7 +5,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import org.springframework.http.HttpStatus
@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 import java.util.UUID
 
 @RestController
@@ -26,7 +25,10 @@ class PacienteController(private val pacienteService: PacienteService) {
     private val log = logger()
 
     @GetMapping
-    fun getPaciente(@AuthenticationPrincipal jwt: Jwt, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
+    suspend fun getPaciente(
+        @AuthenticationPrincipal jwt: Jwt,
+        request: ServerHttpRequest,
+    ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         val personaIdString = jwt.getClaimAsString("persona")
         check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
@@ -45,6 +47,6 @@ class PacienteController(private val pacienteService: PacienteService) {
         } else {
             apiResponse.addStatusCode(HttpStatus.OK)
         }
-        return sendResponse(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 }

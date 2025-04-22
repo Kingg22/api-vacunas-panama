@@ -11,8 +11,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponseSuspend
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
 import kotlinx.coroutines.reactive.awaitSingle
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 import java.util.UUID
 
 /**
@@ -114,7 +112,7 @@ class UsuarioController(
             )
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
             apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
-            return sendResponseSuspend(apiResponse, request)
+            return createResponseEntity(apiResponse, request)
         }
 
         apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
@@ -123,7 +121,7 @@ class UsuarioController(
         } else {
             apiResponse.addStatusCode(HttpStatus.CREATED)
         }
-        return sendResponseSuspend(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 
     @PostMapping("/login")
@@ -150,7 +148,7 @@ class UsuarioController(
                 },
             )
         }
-        return sendResponseSuspend(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 
     @PatchMapping("/restore")
@@ -165,11 +163,11 @@ class UsuarioController(
         } else {
             apiResponse.addStatusCode(HttpStatus.OK)
         }
-        return sendResponseSuspend(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 
     @GetMapping
-    fun profile(authentication: Authentication, request: ServerHttpRequest): Mono<ResponseEntity<ApiResponse>> {
+    suspend fun profile(authentication: Authentication, request: ServerHttpRequest): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         try {
             apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
@@ -178,6 +176,6 @@ class UsuarioController(
             log.error("Error while user fetching the profile", e)
             apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
         }
-        return sendResponse(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 }

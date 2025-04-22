@@ -4,8 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createAndSendResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAndResponseEntity
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -17,20 +17,19 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping(path = ["/vaccines"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class VacunaController(private val vacunaService: VacunaService) {
     @GetMapping
-    fun getVacunas(request: ServerHttpRequest) =
-        createAndSendResponse(request, "vacunas", vacunaService.getVacunasFabricante().toArrayList())
+    suspend fun getVacunas(request: ServerHttpRequest) =
+        createApiAndResponseEntity(request, mapOf("vacunas" to vacunaService.getVacunasFabricante().toArrayList()))
 
     @PostMapping("/create-dosis")
-    fun createDosis(
+    suspend fun createDosis(
         @RequestBody @Valid insertDosisDto: InsertDosisDto,
         servletWebRequest: ServerHttpRequest,
-    ): Mono<ResponseEntity<ApiResponse>> {
+    ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {
@@ -38,6 +37,6 @@ class VacunaController(private val vacunaService: VacunaService) {
         } else {
             apiResponse.addStatusCode(HttpStatus.CREATED)
         }
-        return sendResponse(apiResponse, servletWebRequest)
+        return createResponseEntity(apiResponse, servletWebRequest)
     }
 }
