@@ -7,9 +7,10 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponse
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 import java.util.UUID
 
 @RestController
@@ -33,10 +33,10 @@ class PdfController(
     private val log = logger()
 
     @GetMapping
-    fun getPdfFile(
+    suspend fun getPdfFile(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
-    ): Mono<ResponseEntity<ByteArray>> {
+    ): ResponseEntity<ByteArray> {
         try {
             val personaIdString = jwt.getClaimAsString("persona")
             check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
@@ -46,41 +46,39 @@ class PdfController(
 
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
-                return Mono.just(ResponseEntity.notFound().build())
+                return ResponseEntity.notFound().build()
             }
 
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
 
             if (pacienteDto == null) {
-                return Mono.just(ResponseEntity.notFound().build())
+                return ResponseEntity.notFound().build()
             }
 
             val idCertificado = UUID.randomUUID()
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
-            return Mono.just(
-                ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .headers {
-                        it.contentDisposition = ContentDisposition
-                            .attachment()
-                            .filename("certificado_vacunas_$idCertificado.pdf")
-                            .build()
-                    }
-                    .body(pdfStream),
-            )
+            return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .headers { it: HttpHeaders ->
+                    it.contentDisposition = ContentDisposition
+                        .attachment()
+                        .filename("certificado_vacunas_$idCertificado.pdf")
+                        .build()
+                }
+                .body(pdfStream)
         } catch (e: Exception) {
             log.error(e.message, e)
-            return Mono.just(ResponseEntity.internalServerError().build())
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
         }
     }
 
     @GetMapping("/base64")
-    fun getPdfBase64(
+    suspend fun getPdfBase64(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
         webRequest: ServerHttpRequest,
-    ): Mono<ResponseEntity<ApiResponse>> {
+    ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         try {
             val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
@@ -95,7 +93,7 @@ class PdfController(
                     },
                 )
                 apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
-                return sendResponse(apiResponse, webRequest)
+                return createResponseEntity(apiResponse, webRequest)
             }
 
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
@@ -107,7 +105,7 @@ class PdfController(
                         message = "El paciente no fue encontrado, intente nuevamente."
                     },
                 )
-                return sendResponse(apiResponse, webRequest)
+                return createResponseEntity(apiResponse, webRequest)
             }
 
             val idCertificado = UUID.randomUUID()
@@ -116,8 +114,6 @@ class PdfController(
             apiResponse.addData("id_certificado", idCertificado.toString())
             apiResponse.addData("pdf", pdfBase64)
             apiResponse.addStatusCode(HttpStatus.OK)
-
-            return sendResponse(apiResponse, webRequest)
         } catch (e: Exception) {
             log.debug(e.message, e)
             apiResponse.addError(
@@ -127,7 +123,7 @@ class PdfController(
                 },
             )
             apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
-            return sendResponse(apiResponse, webRequest)
         }
+        return createResponseEntity(apiResponse, webRequest)
     }
 }

@@ -6,7 +6,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
-import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.sendResponseSuspend
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -42,7 +42,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
             apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
-            return sendResponseSuspend(apiResponse, request)
+            return createResponseEntity(apiResponse, request)
         }
         val registerUserDto = RegisterUserDto(
             pacienteDto.persona.usuario!!,
@@ -58,6 +58,6 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         } else {
             apiResponse.addStatusCode(HttpStatus.CREATED)
         }
-        return sendResponseSuspend(apiResponse, request)
+        return createResponseEntity(apiResponse, request)
     }
 }

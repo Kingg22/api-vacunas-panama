@@ -75,3 +75,26 @@ suspend fun <T> T?.ifPresentOrElseSuspend(presentConsumer: suspend (T) -> Unit, 
  * @return A Mono containing the value if non-null, or an empty Mono if the value is null.
  */
 fun <T> monoFromNullable(nullable: T?): Mono<T> = if (nullable != null) Mono.just(nullable) else Mono.empty()
+
+/**
+ * Returns `true` if this char sequence is not null,
+ * not empty and contains some characters except whitespace characters.
+ */
+@OptIn(ExperimentalContracts::class)
+fun CharSequence?.isNotNullOrBlank(): Boolean {
+    contract {
+        returns(false) implies (this@isNotNullOrBlank != null)
+    }
+
+    return this != null && this.isNotBlank()
+}
+
+/** Returns `true` if this char sequence is not null and not empty */
+@OptIn(ExperimentalContracts::class)
+fun CharSequence?.isNotNullOrEmpty(): Boolean {
+    contract {
+        returns(false) implies (this@isNotNullOrEmpty != null)
+    }
+
+    return this != null && this.isNotEmpty()
+}

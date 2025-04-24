@@ -41,5 +41,5 @@ indent_size = 2
 [*.properties]
 ij_properties_keep_blank_lines = true
 
-[{*.yaml,yml}]
+[*{.yaml,yml}]
 indent_size = 2

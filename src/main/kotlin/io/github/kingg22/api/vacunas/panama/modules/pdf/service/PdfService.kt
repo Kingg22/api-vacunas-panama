@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.pdf.service
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
-import java.io.IOException
 import java.util.UUID
 
 /**
@@ -18,9 +17,7 @@ interface PdfService {
      * @param dosisDtos List of DTOs representing applied doses.
      * @param idCertificate UUID of the certificate being generated (for tracking or registry).
      * @return A [ByteArray] representing the raw PDF content.
-     * @throws IOException If there is an issue during PDF generation or file operations.
      */
-    @Throws(IOException::class)
     fun generatePdf(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): ByteArray
 
     /**
@@ -31,8 +28,6 @@ interface PdfService {
      * @param dosisDtos List of DTOs representing applied doses.
      * @param idCertificate UUID of the certificate being generated.
      * @return A [String] representing the PDF content encoded in Base64.
-     * @throws IOException If there is an issue during PDF generation or encoding.
      */
-    @Throws(IOException::class)
     fun generatePdfBase64(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): String
 }

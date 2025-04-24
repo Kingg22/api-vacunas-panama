@@ -1,49 +1,35 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
-import org.springframework.http.HttpStatus
+import io.github.kingg22.api.vacunas.panama.util.toUri
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
-import java.net.URI
+import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.buildAndAwait
 
 @Deprecated(message = "For compatibility in v1. Redirect to specific controller in modules.")
 @RestController
 @RequestMapping(path = ["/public"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class PublicResourcesController {
     @GetMapping("/distritos")
-    fun getDistritos() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/direccion/distritos"))
-            .build<Void>(),
-    )
+    suspend fun getDistritos() =
+        ServerResponse.permanentRedirect("/vacunacion/v1/direccion/distritos".toUri()).buildAndAwait()
 
     @GetMapping("/provincias")
-    fun getProvincias() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/direccion/provincias"))
-            .build<Void>(),
-    )
+    suspend fun getProvincias() =
+        ServerResponse.permanentRedirect("/vacunacion/v1/direccion/provincias".toUri()).buildAndAwait()
 
     @GetMapping("/sedes")
-    fun getSedes() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/sedes")).build<Void>(),
-    )
+    suspend fun getSedes() = ServerResponse.permanentRedirect("/vacunacion/v1/sedes".toUri()).buildAndAwait()
 
     @GetMapping("/vacunas", "/vaccines")
-    fun getVacunas() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/vaccines"))
-            .build<Void>(),
-    )
+    suspend fun getVacunas() = ServerResponse.permanentRedirect("/vacunacion/v1/vaccines".toUri()).buildAndAwait()
 
     @GetMapping("/roles")
-    fun getRoles() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/roles")).build<Void>(),
-    )
+    suspend fun getRoles() = ServerResponse.permanentRedirect("/vacunacion/v1/roles".toUri()).buildAndAwait()
 
     @GetMapping("/roles/permisos")
-    fun getPermisos() = Mono.just(
-        ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/vacunacion/v1/roles/permisos"))
-            .build<Void>(),
-    )
+    suspend fun getPermisos() =
+        ServerResponse.permanentRedirect("/vacunacion/v1/roles/permisos".toUri()).buildAndAwait()
 }
