@@ -25,3 +25,5 @@ databaseChangeLog:
   - include:
       context: test
       file: db/changelog/test/db.changelog-010-test-paciente-2.xml
+  - include:
+      file: db/changelog/schema/db.changelog-011-scope-functions.xml

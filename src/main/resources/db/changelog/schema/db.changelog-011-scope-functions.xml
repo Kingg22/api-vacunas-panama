@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="011-a" author="Rey (Kingg22)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM pg_proc
+                WHERE proname = 'tr_sedes_insert_region_fn';
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="false" endDelimiter=";">
+            ALTER FUNCTION public.tr_sedes_insert_region_fn()
+                SET search_path = public, pg_temp;
+        </sql>
+    </changeSet>
+
+    <changeSet id="011-b" author="Rey (Kingg22)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM pg_proc
+                WHERE proname = 'fn_pacientes_format_insert';
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="false" endDelimiter=";">
+            ALTER FUNCTION public.fn_pacientes_format_insert()
+                SET search_path = public, pg_temp;
+        </sql>
+    </changeSet>
+
+    <changeSet id="011-c" author="Rey (Kingg22)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM pg_proc
+                WHERE proname = 'trg_validate_dosis_sequence';
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="false" endDelimiter=";">
+            ALTER FUNCTION public.trg_validate_dosis_sequence()
+                SET search_path = public, pg_temp;
+        </sql>
+    </changeSet>
+
+    <changeSet id="011-d" author="Rey (Kingg22)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM pg_proc
+                WHERE proname = 'set_updated_at';
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="false" endDelimiter=";">
+            ALTER FUNCTION public.set_updated_at()
+                SET search_path = pg_catalog, public, pg_temp;
+        </sql>
+    </changeSet>
+
+    <changeSet id="011-e" author="Rey (Kingg22)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM pg_proc
+                WHERE proname = 'fn_personas_format_insert';
+            </sqlCheck>
+        </preConditions>
+        <sql splitStatements="false" endDelimiter=";">
+            ALTER FUNCTION public.fn_personas_format_insert()
+                SET search_path = public, pg_temp;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
