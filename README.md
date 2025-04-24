@@ -15,13 +15,13 @@ clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad
 
 :construction: Proyecto mejorado lentamente en los tiempos libres :construction:
 
-:sparkling_heart: Repositorio Fronted en Astro del proyecto [aquí](https://github.com/kingg22/astro-vacunas-panama) :
-sparkling_heart:
+:sparkling_heart: Repositorio Fronted en Astro del proyecto [aquí](https://github.com/kingg22/astro-vacunas-panama)
+:sparkling_heart:
 
 O :boom: la página web: https://kingg22.github.io/astro-vacunas-panama/ :boom:
 
-:sparkles: Repositorio Fronted en Flet del proyecto [aquí](https://github.com/patrickvillarroel/flet-vacunas-panama) (
-Not maintained) :dizzy:
+:sparkles: Repositorio Fronted en Flet del proyecto [aquí](https://github.com/patrickvillarroel/flet-vacunas-panama)
+(Not maintained) :dizzy:
 
 ### :pushpin: Objetivo del Proyecto
 
