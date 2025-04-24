@@ -47,8 +47,10 @@ jobs:
 
       - name: Publish to Docker Hub
         run: |
-          docker push ${{ github.repository }}:${{ github.ref_name }}
-          docker push ${{ github.repository }}:latest
+          REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+          TAG_WITHOUT_V=$(echo ${{ github.ref_name }} | sed 's/^v//')
+          docker push $REPO_LOWER:$TAG_WITHOUT_V
+          docker push $REPO_LOWER:latest
 
   create_release:
     runs-on: ubuntu-latest
