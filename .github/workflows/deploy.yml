@@ -92,16 +92,3 @@ jobs:
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy_render:
-    needs: build_and_push
-    runs-on: ubuntu-latest
-    permissions:
-      contents: none
-
-    steps:
-      - name: Deploy
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        run: |
-          curl "$deploy_url"
