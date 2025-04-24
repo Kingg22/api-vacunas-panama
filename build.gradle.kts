@@ -110,11 +110,13 @@ kover {
 }
 
 tasks.named<BootBuildImage>("bootBuildImage") {
+    imageName.set("kingg22/api-vacunas-panama:${project.version}")
     createdDate.set(Instant.now().toString())
-    tags.add("api-vacunas-panama:latest")
+    tags.add("kingg22/api-vacunas-panama:latest")
     builder.set(
         "paketobuildpacks/builder-jammy-java-tiny@sha256:1f2bd39426f8e462f6d6177cb1504cf01211a134d51e2674f97176a8b17d8a55",
     )
+    publish.set(true)
 }
 
 tasks.test {

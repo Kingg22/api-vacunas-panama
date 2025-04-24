@@ -1,0 +1,59 @@
+name: Publish Spring Boot Image with Boot Build Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'jetbrains'
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build image using Boot Build Image
+        run: ./gradlew bootBuildImage
+
+  create_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Release (stable)
+        uses: softprops/action-gh-release@v2
+        if: ${{ !contains(github.ref_name, '-') }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release (prerelease)
+        uses: softprops/action-gh-release@v2
+        if: ${{ contains(github.ref_name, '-') }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Pre-release ${{ github.ref_name }}
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
