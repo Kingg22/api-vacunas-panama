@@ -1,0 +1,39 @@
+previews:
+  generation: automatic
+
+# List all services *except* PostgreSQL databases here
+services:
+  # Docker image instance
+  - type: web
+    name: api-vacunas-panama
+    runtime: image
+    plan: free
+    region: ohio
+    image:
+      url: docker.io/kingg22/api-vacunas-panama:latest
+    envVars:
+      # Prompts for a value in the Render Dashboard on creation
+      # (useful for secrets)
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: REDIS_HOST
+        sync: false
+      - key: JWT_PRIVATE
+        sync: false
+      - key: JWT_PUBLIC
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+
+  # A Key Value instance
+  - type: redis
+    name: lightning
+    region: ohio
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    plan: free

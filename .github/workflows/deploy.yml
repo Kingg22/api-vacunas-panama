@@ -50,9 +50,17 @@ jobs:
           REPO_LOWER=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           TAG_WITHOUT_V=$(echo ${{ github.ref_name }} | sed 's/^v//')
           docker push $REPO_LOWER:$TAG_WITHOUT_V
-          docker push $REPO_LOWER:latest
+
+          # Only push the latest tag if this is not a prerelease (doesn't contain a hyphen)
+          if [[ ! "${{ github.ref_name }}" == *-* ]]; then
+            echo "Pushing latest tag for stable release"
+            docker push $REPO_LOWER:latest
+          else
+            echo "Skipping latest tag for prerelease"
+          fi
 
   create_release:
+    needs: build_and_push
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -67,6 +75,8 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
+          body: "Go to https://hub.docker.com/r/kingg22/api-vacunas-panama to see the latest image"
+          append_body: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,6 +87,21 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Pre-release ${{ github.ref_name }}
+          body: "Go to https://hub.docker.com/r/kingg22/api-vacunas-panama to see the prerelease image"
+          append_body: true
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy_render:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+
+    steps:
+      - name: Deploy
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"

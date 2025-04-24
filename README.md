@@ -1,6 +1,6 @@
 # :syringe: Proyecto de Gestión de Información sobre Vacunación en Panamá - Backend API
 
-![Imagen logo del proyecto](https://github.com/Kingg22/api-vacunas-panama/blob/main/src/main/resources/images/icon.png?raw=true)
+![Imagen logo del proyecto](https://github.com/kingg22/api-vacunas-panama/blob/main/src/main/resources/images/icon.png?raw=true)
 
 ## Descripción
 
@@ -15,7 +15,13 @@ clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad
 
 :construction: Proyecto mejorado lentamente en los tiempos libres :construction:
 
-:sparkles: Repositorio Fronted en Flet del proyecto [aquí](https://github.com/patrickvillarroel/flet-vacunas-panama) :dizzy:
+:sparkling_heart: Repositorio Fronted en Astro del proyecto [aquí](https://github.com/kingg22/astro-vacunas-panama) :
+sparkling_heart:
+
+O :boom: la página web: https://kingg22.github.io/astro-vacunas-panama/ :boom:
+
+:sparkles: Repositorio Fronted en Flet del proyecto [aquí](https://github.com/patrickvillarroel/flet-vacunas-panama) (
+Not maintained) :dizzy:
 
 ### :pushpin: Objetivo del Proyecto
 
@@ -31,29 +37,25 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
 
 ## :hammer_and_wrench:Tecnologías Utilizadas
 
-- [Java](https://www.java.com/es/) - Lenguaje de programación inicial para el desarrollo de la API.
 - [Kotlin](https://kotlinlang.org/) – Lenguaje de programación principal del API.
-- [SQL Server](https://www.microsoft.com/es-mx/sql-server) - Para la gestión de la base de datos.
-- [Spring Boot](https://spring.io/) - Framework de Java, módulos utilizados: web, data, security, OAuth resource server,
-  validations, amqp (mensajería), redis cache, testing.
+- [PostgreSQL](https://www.postgresql.org/) - Gestor de base de datos.
+- [Spring Boot](https://spring.io/) - Framework de JVM, módulos utilizados: web, data, security, OAuth resource server,
+  validations, cache, testing.
 - [Spring Dotenv](https://github.com/paulschwarz/spring-dotenv) - Librería para cargar las variables de entornos para
   Spring.
-- [JDBC SQL Driver](https://learn.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver16) -
-  Driver para conectar con la base de datos SQL Server en Java.
-- [MapStruct](https://mapstruct.org/) - Librería para generar mappers entre DTO y Entities.
-- [Lombok](https://projectlombok.org/) - Librería para reducir código con anotaciones.
-- [Jackson](https://github.com/FasterXML/jackson) - Librería para parsear a JSON.
+- [Jackson](https://github.com/FasterXML/jackson) - JSON parser for JVM.
 - [Error handling Spring Boot](https://github.com/wimdeblauwe/error-handling-spring-boot-starter/) - Librería para
   Spring Boot utilizada para dar Error Response uniformes y Logger de los mismos.
 - [Redis](https://redis.io/) - Base de datos en memoria para almacenar datos de forma rápida.
-- [RabbitMQ](https://www.rabbitmq.com/) - Broker de mensajería entre microservicios.
+- Y más... Detalles
+  en [libs.versions.toml](https://github.com/kingg22/api-vacunas-panama/blob/main/gradle/libs.versions.toml)
 
 Puede encontrar más detalles de las licencias
-en [THIRD-PARTY](https://github.com/Kingg22/api-vacunas-panama/blob/main/THIRD-PARTY.md).
+en [THIRD-PARTY](https://github.com/kingg22/api-vacunas-panama/blob/main/THIRD-PARTY.md).
 
 ## :pencil: Autores
 
-- **Rey Acosta** – _Java_, _Kotlin_ – [Kingg22](https://github.com/Kingg22)
+- **Rey Acosta** – _Java_, _Kotlin_ – [Kingg22](https://github.com/kingg22)
 - **Allisson Ortega** – _Java PDF module_ – [Applepie2005](https://github.com/Applepie2005)
 
 ## Conclusión

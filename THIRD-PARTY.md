@@ -1,7 +1,8 @@
 
 # api-vacunas-panama
 ## Dependency License Report
-_2025-04-13 15:13:36 EST_
+
+_2025-04-24 15:33:04 EST_
 ## Apache License, Version 2.0
 
 **1** **Group:** `com.fasterxml` **Name:** `classmate` **Version:** `1.7.0`
@@ -96,28 +97,30 @@ _2025-04-13 15:13:36 EST_
 > - **POM Project URL**: [https://github.com/cdimascio/dotenv-java](https://github.com/cdimascio/dotenv-java)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**16** **Group:** `io.github.wimdeblauwe` **Name:** `error-handling-spring-boot-starter` **Version:** `4.5.0`
+**16** **Group:** `io.github.wimdeblauwe` **Name:** `error-handling-spring-boot-starter` **Version:** `4.6.0`
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**17** **Group:** `io.mcarle` **Name:** `konvert-annotations` **Version:** `4.0.1`
+**17** **Group:** `io.mcarle` **Name:** `konvert-annotations` **Version:** `4.1.0`
 > - **POM Project URL**: [https://github.com/mcarleio/konvert](https://github.com/mcarleio/konvert)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**18** **Group:** `io.mcarle` **Name:** `konvert-api` **Version:** `4.0.1`
+**18** **Group:** `io.mcarle` **Name:** `konvert-api` **Version:** `4.1.0`
 > - **POM Project URL**: [https://github.com/mcarleio/konvert](https://github.com/mcarleio/konvert)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**19** **Group:** `io.micrometer` **Name:** `micrometer-commons` **Version:** `1.14.5`
+**19** **Group:** `io.micrometer` **Name:** `micrometer-commons` **Version:** `1.14.6`
 > - **POM Project URL**: [https://github.com/micrometer-metrics/micrometer](https://github.com/micrometer-metrics/micrometer)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [micrometer-commons-1.14.5.jar/META-INF/LICENSE](build/reports/dependency-license/micrometer-commons-1.14.5.jar/META-INF/LICENSE)
-    - [micrometer-commons-1.14.5.jar/META-INF/NOTICE](build/reports/dependency-license/micrometer-commons-1.14.5.jar/META-INF/NOTICE)
+> - **Embedded license files
+    **: [micrometer-commons-1.14.6.jar/META-INF/LICENSE](build/reports/dependency-license/micrometer-commons-1.14.6.jar/META-INF/LICENSE)
+    - [micrometer-commons-1.14.6.jar/META-INF/NOTICE](build/reports/dependency-license/micrometer-commons-1.14.6.jar/META-INF/NOTICE)
 
-**20** **Group:** `io.micrometer` **Name:** `micrometer-observation` **Version:** `1.14.5`
+**20** **Group:** `io.micrometer` **Name:** `micrometer-observation` **Version:** `1.14.6`
 > - **POM Project URL**: [https://github.com/micrometer-metrics/micrometer](https://github.com/micrometer-metrics/micrometer)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [micrometer-observation-1.14.5.jar/META-INF/LICENSE](build/reports/dependency-license/micrometer-observation-1.14.5.jar/META-INF/LICENSE)
-    - [micrometer-observation-1.14.5.jar/META-INF/NOTICE](build/reports/dependency-license/micrometer-observation-1.14.5.jar/META-INF/NOTICE)
+> - **Embedded license files
+    **: [micrometer-observation-1.14.6.jar/META-INF/LICENSE](build/reports/dependency-license/micrometer-observation-1.14.6.jar/META-INF/LICENSE)
+    - [micrometer-observation-1.14.6.jar/META-INF/NOTICE](build/reports/dependency-license/micrometer-observation-1.14.6.jar/META-INF/NOTICE)
 
 **21** **Group:** `io.netty` **Name:** `netty-buffer` **Version:** `4.1.119.Final`
 > - **Manifest Project URL**: [https://netty.io/](https://netty.io/)
@@ -204,7 +207,7 @@ _2025-04-13 15:13:36 EST_
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**38** **Group:** `io.projectreactor` **Name:** `reactor-core` **Version:** `3.7.4`
+**38** **Group:** `io.projectreactor` **Name:** `reactor-core` **Version:** `3.7.5`
 > - **POM Project URL**: [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -212,11 +215,11 @@ _2025-04-13 15:13:36 EST_
 > - **POM Project URL**: [https://github.com/reactor/reactor-kotlin-extensions](https://github.com/reactor/reactor-kotlin-extensions)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**40** **Group:** `io.projectreactor.netty` **Name:** `reactor-netty-core` **Version:** `1.2.4`
+**40** **Group:** `io.projectreactor.netty` **Name:** `reactor-netty-core` **Version:** `1.2.5`
 > - **POM Project URL**: [https://github.com/reactor/reactor-netty](https://github.com/reactor/reactor-netty)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**41** **Group:** `io.projectreactor.netty` **Name:** `reactor-netty-http` **Version:** `1.2.4`
+**41** **Group:** `io.projectreactor.netty` **Name:** `reactor-netty-http` **Version:** `1.2.5`
 > - **POM Project URL**: [https://github.com/reactor/reactor-netty](https://github.com/reactor/reactor-netty)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -288,12 +291,13 @@ _2025-04-13 15:13:36 EST_
 > - **Embedded license files**: [log4j-to-slf4j-2.24.3.jar/META-INF/LICENSE](build/reports/dependency-license/log4j-to-slf4j-2.24.3.jar/META-INF/LICENSE)
     - [log4j-to-slf4j-2.24.3.jar/META-INF/NOTICE](build/reports/dependency-license/log4j-to-slf4j-2.24.3.jar/META-INF/NOTICE)
 
-**52** **Group:** `org.apache.tomcat.embed` **Name:** `tomcat-embed-el` **Version:** `10.1.39`
+**52** **Group:** `org.apache.tomcat.embed` **Name:** `tomcat-embed-el` **Version:** `10.1.40`
 > - **Manifest License**: Apache License, Version 2.0 (Not Packaged)
 > - **POM Project URL**: [https://tomcat.apache.org/](https://tomcat.apache.org/)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [tomcat-embed-el-10.1.39.jar/META-INF/LICENSE](build/reports/dependency-license/tomcat-embed-el-10.1.39.jar/META-INF/LICENSE)
-    - [tomcat-embed-el-10.1.39.jar/META-INF/NOTICE](build/reports/dependency-license/tomcat-embed-el-10.1.39.jar/META-INF/NOTICE)
+> - **Embedded license files
+    **: [tomcat-embed-el-10.1.40.jar/META-INF/LICENSE](build/reports/dependency-license/tomcat-embed-el-10.1.40.jar/META-INF/LICENSE)
+    - [tomcat-embed-el-10.1.40.jar/META-INF/NOTICE](build/reports/dependency-license/tomcat-embed-el-10.1.40.jar/META-INF/NOTICE)
 
 **53** **Group:** `org.hibernate.common` **Name:** `hibernate-commons-annotations` **Version:** `7.0.3.Final`
 > - **POM Project URL**: [http://hibernate.org](http://hibernate.org)
@@ -353,217 +357,249 @@ _2025-04-13 15:13:36 EST_
 > - **POM Project URL**: [http://www.liquibase.com](http://www.liquibase.com)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**67** **Group:** `org.springframework` **Name:** `spring-aop` **Version:** `6.2.5`
+**67** **Group:** `org.springframework` **Name:** `spring-aop` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-aop-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-aop-6.2.5.jar/META-INF/license.txt)
-    - [spring-aop-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-aop-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-aop-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-aop-6.2.6.jar/META-INF/license.txt)
+    - [spring-aop-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-aop-6.2.6.jar/META-INF/notice.txt)
 
-**68** **Group:** `org.springframework` **Name:** `spring-aspects` **Version:** `6.2.5`
+**68** **Group:** `org.springframework` **Name:** `spring-aspects` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-aspects-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-aspects-6.2.5.jar/META-INF/license.txt)
-    - [spring-aspects-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-aspects-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-aspects-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-aspects-6.2.6.jar/META-INF/license.txt)
+    - [spring-aspects-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-aspects-6.2.6.jar/META-INF/notice.txt)
 
-**69** **Group:** `org.springframework` **Name:** `spring-beans` **Version:** `6.2.5`
+**69** **Group:** `org.springframework` **Name:** `spring-beans` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-beans-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-beans-6.2.5.jar/META-INF/license.txt)
-    - [spring-beans-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-beans-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-beans-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-beans-6.2.6.jar/META-INF/license.txt)
+    - [spring-beans-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-beans-6.2.6.jar/META-INF/notice.txt)
 
-**70** **Group:** `org.springframework` **Name:** `spring-context` **Version:** `6.2.5`
+**70** **Group:** `org.springframework` **Name:** `spring-context` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-context-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-context-6.2.5.jar/META-INF/license.txt)
-    - [spring-context-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-context-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-context-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-context-6.2.6.jar/META-INF/license.txt)
+    - [spring-context-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-context-6.2.6.jar/META-INF/notice.txt)
 
-**71** **Group:** `org.springframework` **Name:** `spring-context-support` **Version:** `6.2.5`
+**71** **Group:** `org.springframework` **Name:** `spring-context-support` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-context-support-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-context-support-6.2.5.jar/META-INF/license.txt)
-    - [spring-context-support-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-context-support-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-context-support-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-context-support-6.2.6.jar/META-INF/license.txt)
+    - [spring-context-support-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-context-support-6.2.6.jar/META-INF/notice.txt)
 
-**72** **Group:** `org.springframework` **Name:** `spring-core` **Version:** `6.2.5`
+**72** **Group:** `org.springframework` **Name:** `spring-core` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-core-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-core-6.2.5.jar/META-INF/license.txt)
-    - [spring-core-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-core-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-core-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-core-6.2.6.jar/META-INF/license.txt)
+    - [spring-core-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-core-6.2.6.jar/META-INF/notice.txt)
 
-**73** **Group:** `org.springframework` **Name:** `spring-expression` **Version:** `6.2.5`
+**73** **Group:** `org.springframework` **Name:** `spring-expression` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-expression-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-expression-6.2.5.jar/META-INF/license.txt)
-    - [spring-expression-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-expression-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-expression-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-expression-6.2.6.jar/META-INF/license.txt)
+    - [spring-expression-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-expression-6.2.6.jar/META-INF/notice.txt)
 
-**74** **Group:** `org.springframework` **Name:** `spring-jcl` **Version:** `6.2.5`
+**74** **Group:** `org.springframework` **Name:** `spring-jcl` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-jcl-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-jcl-6.2.5.jar/META-INF/license.txt)
-    - [spring-jcl-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-jcl-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-jcl-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-jcl-6.2.6.jar/META-INF/license.txt)
+    - [spring-jcl-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-jcl-6.2.6.jar/META-INF/notice.txt)
 
-**75** **Group:** `org.springframework` **Name:** `spring-jdbc` **Version:** `6.2.5`
+**75** **Group:** `org.springframework` **Name:** `spring-jdbc` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-jdbc-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-jdbc-6.2.5.jar/META-INF/license.txt)
-    - [spring-jdbc-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-jdbc-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-jdbc-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-jdbc-6.2.6.jar/META-INF/license.txt)
+    - [spring-jdbc-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-jdbc-6.2.6.jar/META-INF/notice.txt)
 
-**76** **Group:** `org.springframework` **Name:** `spring-orm` **Version:** `6.2.5`
+**76** **Group:** `org.springframework` **Name:** `spring-orm` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-orm-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-orm-6.2.5.jar/META-INF/license.txt)
-    - [spring-orm-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-orm-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-orm-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-orm-6.2.6.jar/META-INF/license.txt)
+    - [spring-orm-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-orm-6.2.6.jar/META-INF/notice.txt)
 
-**77** **Group:** `org.springframework` **Name:** `spring-oxm` **Version:** `6.2.5`
+**77** **Group:** `org.springframework` **Name:** `spring-oxm` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-oxm-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-oxm-6.2.5.jar/META-INF/license.txt)
-    - [spring-oxm-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-oxm-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-oxm-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-oxm-6.2.6.jar/META-INF/license.txt)
+    - [spring-oxm-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-oxm-6.2.6.jar/META-INF/notice.txt)
 
-**78** **Group:** `org.springframework` **Name:** `spring-tx` **Version:** `6.2.5`
+**78** **Group:** `org.springframework` **Name:** `spring-tx` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-tx-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-tx-6.2.5.jar/META-INF/license.txt)
-    - [spring-tx-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-tx-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-tx-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-tx-6.2.6.jar/META-INF/license.txt)
+    - [spring-tx-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-tx-6.2.6.jar/META-INF/notice.txt)
 
-**79** **Group:** `org.springframework` **Name:** `spring-web` **Version:** `6.2.5`
+**79** **Group:** `org.springframework` **Name:** `spring-web` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-web-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-web-6.2.5.jar/META-INF/license.txt)
-    - [spring-web-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-web-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-web-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-web-6.2.6.jar/META-INF/license.txt)
+    - [spring-web-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-web-6.2.6.jar/META-INF/notice.txt)
 
-**80** **Group:** `org.springframework` **Name:** `spring-webflux` **Version:** `6.2.5`
+**80** **Group:** `org.springframework` **Name:** `spring-webflux` **Version:** `6.2.6`
 > - **POM Project URL**: [https://github.com/spring-projects/spring-framework](https://github.com/spring-projects/spring-framework)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-webflux-6.2.5.jar/META-INF/license.txt](build/reports/dependency-license/spring-webflux-6.2.5.jar/META-INF/license.txt)
-    - [spring-webflux-6.2.5.jar/META-INF/notice.txt](build/reports/dependency-license/spring-webflux-6.2.5.jar/META-INF/notice.txt)
+> - **Embedded license files
+    **: [spring-webflux-6.2.6.jar/META-INF/license.txt](build/reports/dependency-license/spring-webflux-6.2.6.jar/META-INF/license.txt)
+    - [spring-webflux-6.2.6.jar/META-INF/notice.txt](build/reports/dependency-license/spring-webflux-6.2.6.jar/META-INF/notice.txt)
 
-**81** **Group:** `org.springframework.boot` **Name:** `spring-boot` **Version:** `3.4.4`
+**81** **Group:** `org.springframework.boot` **Name:** `spring-boot` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-3.4.5.jar/META-INF/NOTICE.txt)
 
-**82** **Group:** `org.springframework.boot` **Name:** `spring-boot-autoconfigure` **Version:** `3.4.4`
+**82** **Group:** `org.springframework.boot` **Name:** `spring-boot-autoconfigure` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-autoconfigure-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-autoconfigure-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-autoconfigure-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-autoconfigure-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-autoconfigure-3.4.5.jar/META-INF/NOTICE.txt)
 
-**83** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter` **Version:** `3.4.4`
+**83** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-3.4.5.jar/META-INF/NOTICE.txt)
 
-**84** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-jpa` **Version:** `3.4.4`
+**84** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-jpa` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-data-jpa-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-data-jpa-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-data-jpa-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-data-jpa-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-jpa-3.4.5.jar/META-INF/NOTICE.txt)
 
-**85** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-redis-reactive` **Version:** `3.4.4`
+**85** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-data-redis-reactive` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-data-redis-reactive-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-reactive-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-data-redis-reactive-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-reactive-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-data-redis-reactive-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-reactive-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-data-redis-reactive-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-data-redis-reactive-3.4.5.jar/META-INF/NOTICE.txt)
 
-**86** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-jdbc` **Version:** `3.4.4`
+**86** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-jdbc` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-jdbc-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-jdbc-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-jdbc-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-jdbc-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-jdbc-3.4.5.jar/META-INF/NOTICE.txt)
 
-**87** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-json` **Version:** `3.4.4`
+**87** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-json` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-json-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-json-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-json-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-json-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-json-3.4.5.jar/META-INF/NOTICE.txt)
 
-**88** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-logging` **Version:** `3.4.4`
+**88** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-logging` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-logging-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-logging-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-logging-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-logging-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-logging-3.4.5.jar/META-INF/NOTICE.txt)
 
-**89** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-oauth2-resource-server` **Version:** `3.4.4`
+**89** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-oauth2-resource-server` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-oauth2-resource-server-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-oauth2-resource-server-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-oauth2-resource-server-3.4.5.jar/META-INF/NOTICE.txt)
 
-**90** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-reactor-netty` **Version:** `3.4.4`
+**90** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-reactor-netty` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-reactor-netty-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-reactor-netty-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-reactor-netty-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-reactor-netty-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-reactor-netty-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-reactor-netty-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-reactor-netty-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-reactor-netty-3.4.5.jar/META-INF/NOTICE.txt)
 
-**91** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-security` **Version:** `3.4.4`
+**91** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-security` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-security-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-security-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-security-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-security-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-security-3.4.5.jar/META-INF/NOTICE.txt)
 
-**92** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-validation` **Version:** `3.4.4`
+**92** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-validation` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-validation-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-validation-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-validation-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-validation-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-validation-3.4.5.jar/META-INF/NOTICE.txt)
 
-**93** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-webflux` **Version:** `3.4.4`
+**93** **Group:** `org.springframework.boot` **Name:** `spring-boot-starter-webflux` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-boot-starter-webflux-3.4.4.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-webflux-3.4.4.jar/META-INF/LICENSE.txt)
-    - [spring-boot-starter-webflux-3.4.4.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-webflux-3.4.4.jar/META-INF/NOTICE.txt)
+> - **Embedded license files
+    **: [spring-boot-starter-webflux-3.4.5.jar/META-INF/LICENSE.txt](build/reports/dependency-license/spring-boot-starter-webflux-3.4.5.jar/META-INF/LICENSE.txt)
+    - [spring-boot-starter-webflux-3.4.5.jar/META-INF/NOTICE.txt](build/reports/dependency-license/spring-boot-starter-webflux-3.4.5.jar/META-INF/NOTICE.txt)
 
-**94** **Group:** `org.springframework.data` **Name:** `spring-data-commons` **Version:** `3.4.4`
+**94** **Group:** `org.springframework.data` **Name:** `spring-data-commons` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-data](https://spring.io/projects/spring-data)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-data-commons-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-commons-3.4.4.jar/license.txt)
-    - [spring-data-commons-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-commons-3.4.4.jar/notice.txt)
+> - **Embedded license files
+    **: [spring-data-commons-3.4.5.jar/license.txt](build/reports/dependency-license/spring-data-commons-3.4.5.jar/license.txt)
+    - [spring-data-commons-3.4.5.jar/notice.txt](build/reports/dependency-license/spring-data-commons-3.4.5.jar/notice.txt)
 
-**95** **Group:** `org.springframework.data` **Name:** `spring-data-jpa` **Version:** `3.4.4`
+**95** **Group:** `org.springframework.data` **Name:** `spring-data-jpa` **Version:** `3.4.5`
 > - **POM Project URL**: [https://projects.spring.io/spring-data-jpa](https://projects.spring.io/spring-data-jpa)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-data-jpa-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/license.txt)
-    - [spring-data-jpa-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/notice.txt)
-    - [spring-data-jpa-3.4.4.jar/readme.txt](build/reports/dependency-license/spring-data-jpa-3.4.4.jar/readme.txt)
+> - **Embedded license files
+    **: [spring-data-jpa-3.4.5.jar/license.txt](build/reports/dependency-license/spring-data-jpa-3.4.5.jar/license.txt)
+    - [spring-data-jpa-3.4.5.jar/notice.txt](build/reports/dependency-license/spring-data-jpa-3.4.5.jar/notice.txt)
+    - [spring-data-jpa-3.4.5.jar/readme.txt](build/reports/dependency-license/spring-data-jpa-3.4.5.jar/readme.txt)
 
-**96** **Group:** `org.springframework.data` **Name:** `spring-data-keyvalue` **Version:** `3.4.4`
+**96** **Group:** `org.springframework.data` **Name:** `spring-data-keyvalue` **Version:** `3.4.5`
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-data-keyvalue-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.4.jar/license.txt)
-    - [spring-data-keyvalue-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.4.jar/notice.txt)
+> - **Embedded license files
+    **: [spring-data-keyvalue-3.4.5.jar/license.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.5.jar/license.txt)
+    - [spring-data-keyvalue-3.4.5.jar/notice.txt](build/reports/dependency-license/spring-data-keyvalue-3.4.5.jar/notice.txt)
 
-**97** **Group:** `org.springframework.data` **Name:** `spring-data-redis` **Version:** `3.4.4`
+**97** **Group:** `org.springframework.data` **Name:** `spring-data-redis` **Version:** `3.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-data-redis](https://spring.io/projects/spring-data-redis)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-> - **Embedded license files**: [spring-data-redis-3.4.4.jar/license.txt](build/reports/dependency-license/spring-data-redis-3.4.4.jar/license.txt)
-    - [spring-data-redis-3.4.4.jar/notice.txt](build/reports/dependency-license/spring-data-redis-3.4.4.jar/notice.txt)
+> - **Embedded license files
+    **: [spring-data-redis-3.4.5.jar/license.txt](build/reports/dependency-license/spring-data-redis-3.4.5.jar/license.txt)
+    - [spring-data-redis-3.4.5.jar/notice.txt](build/reports/dependency-license/spring-data-redis-3.4.5.jar/notice.txt)
 
-**98** **Group:** `org.springframework.security` **Name:** `spring-security-config` **Version:** `6.4.4`
+**98** **Group:** `org.springframework.security` **Name:** `spring-security-config` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**99** **Group:** `org.springframework.security` **Name:** `spring-security-core` **Version:** `6.4.4`
+**99** **Group:** `org.springframework.security` **Name:** `spring-security-core` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**100** **Group:** `org.springframework.security` **Name:** `spring-security-crypto` **Version:** `6.4.4`
+**100** **Group:** `org.springframework.security` **Name:** `spring-security-crypto` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**101** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-core` **Version:** `6.4.4`
+**101** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-core` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**102** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-jose` **Version:** `6.4.4`
+**102** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-jose` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**103** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-resource-server` **Version:** `6.4.4`
+**103** **Group:** `org.springframework.security` **Name:** `spring-security-oauth2-resource-server` **Version:**
+`6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-**104** **Group:** `org.springframework.security` **Name:** `spring-security-web` **Version:** `6.4.4`
+**104** **Group:** `org.springframework.security` **Name:** `spring-security-web` **Version:** `6.4.5`
 > - **POM Project URL**: [https://spring.io/projects/spring-security](https://spring.io/projects/spring-security)
 > - **POM License**: Apache License, Version 2.0 - [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -744,7 +780,7 @@ _2025-04-13 15:13:36 EST_
 > - **Embedded license files**: [jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/LICENSE.md)
     - [jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md](build/reports/dependency-license/jakarta.xml.bind-api-4.0.2.jar/META-INF/NOTICE.md)
 
-**125** **Group:** `org.aspectj` **Name:** `aspectjweaver` **Version:** `1.9.23`
+**125** **Group:** `org.aspectj` **Name:** `aspectjweaver` **Version:** `1.9.24`
 > - **POM Project URL**: [https://www.eclipse.org/aspectj/](https://www.eclipse.org/aspectj/)
 > - **POM License**: Eclipse Public License - v 2.0 - [https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt](https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt)
 
@@ -985,7 +1021,7 @@ _2025-04-13 15:13:36 EST_
 > - **POM License**: Eclipse Public License - v 1.0 - [http://www.eclipse.org/legal/epl-v10.html](http://www.eclipse.org/legal/epl-v10.html)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
 
-**161** **Group:** `org.hibernate.orm` **Name:** `hibernate-core` **Version:** `6.6.11.Final`
+**161** **Group:** `org.hibernate.orm` **Name:** `hibernate-core` **Version:** `6.6.13.Final`
 > - **Manifest Project URL**: [https://www.hibernate.org/orm/6.6](https://www.hibernate.org/orm/6.6)
 > - **POM Project URL**: [https://hibernate.org/orm](https://hibernate.org/orm)
 > - **POM License**: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - [https://www.gnu.org/licenses/lgpl-2.1](https://www.gnu.org/licenses/lgpl-2.1)
@@ -1056,5 +1092,3 @@ _2025-04-13 15:13:36 EST_
 > - **POM License**: GNU Affero General Public License v3 - [http://www.fsf.org/licensing/licenses/agpl-3.0.html](http://www.fsf.org/licensing/licenses/agpl-3.0.html)
 > - **POM License**: Various licenses (see individual files)
 > - **Embedded license files**: [hyph-9.1.0.jar/com/itextpdf/hyph/readme.txt](build/reports/dependency-license/hyph-9.1.0.jar/com/itextpdf/hyph/readme.txt)
-
-
