@@ -1,5 +1,15 @@
 # List all services *except* PostgreSQL databases here
 services:
+
+  # A Key Value instance
+  - type: redis
+    name: lightning-cache
+    region: ohio
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    plan: free
+
   # Docker image instance
   - type: web
     name: api-vacunas-panama
@@ -18,19 +28,10 @@ services:
       - key: DB_PASSWORD
         sync: false
       - key: REDIS_HOST
-        sync: false
+        fromService:
+          name: lightning-cache
+          property: connectionString
       - key: JWT_PRIVATE
         sync: false
       - key: JWT_PUBLIC
         sync: false
-      - key: REDIS_PORT
-        sync: false
-
-  # A Key Value instance
-  - type: redis
-    name: lightning
-    region: ohio
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: everywhere
-    plan: free
