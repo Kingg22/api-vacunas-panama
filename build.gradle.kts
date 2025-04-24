@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.14.2"
+version = "0.14.3"
 
 java {
     toolchain {
@@ -117,7 +117,6 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     builder.set(
         "paketobuildpacks/builder-jammy-java-tiny@sha256:1f2bd39426f8e462f6d6177cb1504cf01211a134d51e2674f97176a8b17d8a55",
     )
-    publish.set(true)
 }
 
 tasks.test {
