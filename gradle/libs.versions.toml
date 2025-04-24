@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.1.20"
 ksp = "2.1.20-2.0.0"
-spring = "3.4.4"
+spring = "3.4.5"
 spring-dependency = "1.1.7"
 spring-error-handling = "4.5.0"
 itextpdf-core = "9.1.0"
