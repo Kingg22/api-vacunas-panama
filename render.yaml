@@ -1,6 +1,3 @@
-previews:
-  generation: automatic
-
 # List all services *except* PostgreSQL databases here
 services:
   # Docker image instance
