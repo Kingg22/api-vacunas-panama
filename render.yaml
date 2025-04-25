@@ -27,7 +27,7 @@ services:
         sync: false
       - key: DB_PASSWORD
         sync: false
-      - key: REDIS_HOST
+      - key: REDIS_URL
         fromService:
           name: lightning-cache
           type: redis
