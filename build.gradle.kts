@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.14.4"
+version = "0.14.5"
 
 java {
     toolchain {

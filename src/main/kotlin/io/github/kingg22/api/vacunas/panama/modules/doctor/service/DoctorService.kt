@@ -12,5 +12,5 @@ fun interface DoctorService {
      * @param idDoctor UUID of the doctor to retrieve.
      * @return The doctor if found, or null if not.
      */
-    fun getDoctorById(idDoctor: UUID): DoctorDto?
+    suspend fun getDoctorById(idDoctor: UUID): DoctorDto?
 }

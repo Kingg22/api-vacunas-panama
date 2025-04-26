@@ -6,6 +6,7 @@ import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -57,7 +58,7 @@ class Vacuna(
     @Column(name = "dosis_maxima", length = 2)
     var dosisMaxima: String? = null,
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "fabricantes_vacunas",
         joinColumns = [JoinColumn(name = "vacuna")],

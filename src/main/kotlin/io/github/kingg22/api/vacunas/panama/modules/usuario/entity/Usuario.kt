@@ -81,9 +81,9 @@ class Usuario(
     @JsonManagedReference
     var roles: MutableSet<Rol> = mutableSetOf(),
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
     var fabricante: Fabricante? = null,
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
     var persona: Persona? = null,
 )

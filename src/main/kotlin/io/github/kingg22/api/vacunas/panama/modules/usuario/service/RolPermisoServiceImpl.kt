@@ -21,16 +21,16 @@ class RolPermisoServiceImpl(
         key = "'permisos'",
         unless = "#result==null or #result.isEmpty()",
     )
-    override fun getIdNombrePermisos() = permisoRepository.findAllIdNombre()
+    override suspend fun getIdNombrePermisos() = permisoRepository.findAllIdNombre()
 
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'roles'",
         unless = "#result==null or #result.isEmpty()",
     )
-    override fun getIdNombreRoles() = rolRepository.findAllIdNombre()
+    override suspend fun getIdNombreRoles() = rolRepository.findAllIdNombre()
 
-    override fun convertToExistRol(setRolDto: Set<RolDto>): Set<RolDto> = setRolDto
+    override suspend fun convertToExistRol(setRolDto: Set<RolDto>) = setRolDto
         .mapNotNull {
             rolRepository.findByNombreOrId(it.nombre, it.id)?.toRolDto().also { found ->
                 if (found == null) log.warn("Rol no encontrado: ${it.nombre ?: it.id}")

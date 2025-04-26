@@ -58,10 +58,4 @@ interface ApiContentResponse : Serializable {
 
     /** Merge two [ApiContentResponse] in one */
     fun mergeContentResponse(contentResponse: ApiContentResponse): ApiContentResponse
-
-    operator fun plus(other: ApiContentResponse): ApiContentResponse = mergeContentResponse(other)
-
-    operator fun plusAssign(other: ApiContentResponse) {
-        mergeContentResponse(other)
-    }
 }

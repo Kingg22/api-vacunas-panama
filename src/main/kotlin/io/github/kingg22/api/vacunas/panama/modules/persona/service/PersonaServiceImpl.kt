@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.persona.service
 
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.repository.PersonaRepository
@@ -15,7 +14,7 @@ class PersonaServiceImpl(private val personaRepository: PersonaRepository) : Per
         "This function be change to use DTO when jooq is set as ORM",
         replaceWith = ReplaceWith("getPersonaDto(identifier)"),
     )
-    override fun getPersona(identifier: @NotNull String): Persona? {
+    override suspend fun getPersona(identifier: @NotNull String): Persona? {
         val result = formatToSearch(identifier)
         val personaOpt = this.personaRepository.findByCedulaOrPasaporteOrCorreo(
             result.cedula,
@@ -25,8 +24,6 @@ class PersonaServiceImpl(private val personaRepository: PersonaRepository) : Per
         return personaOpt ?: personaRepository.findByUsuario_Username(identifier)
     }
 
-    override fun getPersonaDto(identifier: String): PersonaDto? = getPersona(identifier)?.toPersonaDto()
-
-    override fun getPersonaByUserID(idUser: @NotNull UUID): PersonaDto? =
+    override suspend fun getPersonaByUserID(idUser: @NotNull UUID) =
         personaRepository.findByUsuario_Id(idUser)?.toPersonaDto()
 }

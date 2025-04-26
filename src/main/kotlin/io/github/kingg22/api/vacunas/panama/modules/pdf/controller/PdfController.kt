@@ -41,7 +41,7 @@ class PdfController(
             val personaIdString = jwt.getClaimAsString("persona")
             check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
 
-            val idPaciente = UUID.fromString(personaIdString)
+            val idPaciente: UUID = UUID.fromString(personaIdString)
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
 
             if (dosisDtos.isEmpty()) {
@@ -55,7 +55,7 @@ class PdfController(
                 return ResponseEntity.notFound().build()
             }
 
-            val idCertificado = UUID.randomUUID()
+            val idCertificado: UUID = UUID.randomUUID()
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
             return ResponseEntity.ok()
@@ -81,7 +81,10 @@ class PdfController(
     ): ResponseEntity<ApiResponse> {
         val apiResponse = createResponse()
         try {
-            val idPaciente = UUID.fromString(jwt.getClaimAsString("persona"))
+            val personaIdString = jwt.getClaimAsString("persona")
+            check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
+
+            val idPaciente: UUID = UUID.fromString(personaIdString)
             val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
 
             if (dosisDtos.isEmpty()) {
@@ -108,7 +111,7 @@ class PdfController(
                 return createResponseEntity(apiResponse, webRequest)
             }
 
-            val idCertificado = UUID.randomUUID()
+            val idCertificado: UUID = UUID.randomUUID()
             val pdfBase64 = pdfService.generatePdfBase64(pDetalle, dosisDtos, idCertificado)
 
             apiResponse.addData("id_certificado", idCertificado.toString())

@@ -23,14 +23,14 @@ interface RolPermisoService {
      *
      * @return List of ID-name DTOs representing permissions.
      */
-    fun getIdNombrePermisos(): List<IdNombreDto>
+    suspend fun getIdNombrePermisos(): List<IdNombreDto>
 
     /**
      * Retrieves all defined roles within the system, returning their IDs and names.
      *
      * @return List of ID-name DTOs representing roles.
      */
-    fun getIdNombreRoles(): List<IdNombreDto>
+    suspend fun getIdNombreRoles(): List<IdNombreDto>
 
     /**
      * Converts a [RolDto] data transfer object into an existing entity.
@@ -39,5 +39,5 @@ interface RolPermisoService {
      * @param setRolDto the data transfer object representing a role.
      * @return the corresponding [Set] of [RolDto] objects, or empty if the conversion cannot be performed.
      */
-    fun convertToExistRol(setRolDto: Set<RolDto>): Set<RolDto>
+    suspend fun convertToExistRol(setRolDto: Set<RolDto>): Set<RolDto>
 }

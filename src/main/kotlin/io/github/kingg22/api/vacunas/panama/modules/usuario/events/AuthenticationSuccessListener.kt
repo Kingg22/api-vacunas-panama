@@ -2,6 +2,9 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.events
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.util.logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.springframework.context.ApplicationListener
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent
 import org.springframework.stereotype.Component
@@ -17,11 +20,13 @@ class AuthenticationSuccessListener(private val usuarioService: UsuarioService) 
         if (event.authentication != null && event.authentication.isAuthenticated) {
             val userId = event.authentication.name
             log.debug("User ID for update last used: {}", userId)
-            if (userId.isNotBlank()) {
+            if (!userId.isNullOrBlank()) {
                 try {
-                    val uuid = UUID.fromString(userId)
-                    usuarioService.updateLastUsed(uuid)
-                    log.debug("User updated successfully for usuario: {}", userId)
+                    val uuid: UUID = UUID.fromString(userId)
+                    CoroutineScope(Dispatchers.Default).launch {
+                        usuarioService.updateLastUsed(uuid)
+                        log.debug("User updated successfully for usuario: {}", userId)
+                    }
                 } catch (e: IllegalArgumentException) {
                     log.error("Invalid user ID: {} is not a valid UUID", userId, e)
                 }

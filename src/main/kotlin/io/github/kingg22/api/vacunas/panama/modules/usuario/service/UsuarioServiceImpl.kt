@@ -1,7 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -25,22 +27,26 @@ import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.or
+import jakarta.persistence.EntityManager
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.jpa.repository.Modifying
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UsuarioServiceImpl(
+    private val entityManager: EntityManager,
+    private val transactionTemplate: TransactionTemplate,
     private val reactiveCompromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
     private val passwordEncoder: PasswordEncoder,
     private val usuarioRepository: UsuarioRepository,
@@ -53,7 +59,7 @@ class UsuarioServiceImpl(
     private val log = logger()
 
     @Transactional
-    override fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
+    override suspend fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
         usuarioRepository.findByUsername(identifier)?.toUsuarioDto()?.also {
             log.debug("Found user by username: {}", it.id)
         }
@@ -73,16 +79,18 @@ class UsuarioServiceImpl(
                 }
             }
 
-    override fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findById(id).getOrNull()?.toUsuarioDto()
+    override suspend fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findByIdOrNull(id)?.toUsuarioDto()
 
-    override fun getProfile(id: UUID): ApiContentResponse = createResponseBuilder {
-        personaService.getPersonaByUserID(id)?.let { persona -> withData("persona", persona) }
-        fabricanteService.getFabricanteByUserID(id)?.let { fabricante -> withData("fabricante", fabricante) }
+    override suspend fun getProfile(id: UUID): ApiContentResponse {
+        val builder = createResponseBuilder()
+        personaService.getPersonaByUserID(id)?.let { persona -> builder.withData("persona", persona) }
+        fabricanteService.getFabricanteByUserID(id)?.let { fabricante -> builder.withData("fabricante", fabricante) }
+        return builder.build()
     }
 
     override suspend fun getLogin(id: UUID): ApiContentResponse {
         val response = createResponseBuilder()
-        val usuario = usuarioRepository.findById(id).getOrNull()
+        val usuario = usuarioRepository.findByIdOrNull(id)
         usuario?.let {
             if (it.persona != null) {
                 response.withData("persona", it.persona!!.toPersonaDto())
@@ -141,16 +149,28 @@ class UsuarioServiceImpl(
     }
 
     @Transactional
-    override fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit) {
-        val usuario = Usuario(
-            username = usuarioDto.username,
-            clave = passwordEncoder.encode(usuarioDto.password),
-            createdAt = usuarioDto.createdAt,
-            roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet(),
-        )
+    override suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?) {
+        val roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet()
+        transactionTemplate.execute {
+            val managedPersona = persona?.let { entityManager.merge(it) }
+            val managedFabricante = fabricante?.let { entityManager.merge(it) }
 
-        block(usuario)
-        usuarioRepository.save(usuario)
+            val usuario = Usuario(
+                username = usuarioDto.username,
+                clave = passwordEncoder.encode(usuarioDto.password),
+                createdAt = usuarioDto.createdAt,
+                roles = roles,
+                persona = persona,
+                fabricante = fabricante,
+                id = usuarioDto.id,
+                disabled = usuarioDto.disabled,
+            )
+            managedPersona?.usuario = usuario
+            managedFabricante?.usuario = usuario
+
+            usuarioRepository.save(usuario)
+            log.trace("User created: {}", usuario)
+        }
     }
 
     @Transactional
@@ -193,12 +213,15 @@ class UsuarioServiceImpl(
     }
 
     @Modifying
-    override fun updateLastUsed(id: UUID) {
-        usuarioRepository.findById(id).ifPresentOrElse({
+    @Transactional
+    override suspend fun updateLastUsed(id: UUID) {
+        val it = usuarioRepository.findByIdOrNull(id)
+        if (it == null) {
+            log.error("Cannot find a user with id {} for update last used", id)
+        }
+        if (it != null) {
             it.lastUsed = LocalDateTime.now(UTC)
             usuarioRepository.save(it)
-        }) {
-            log.error("Cannot find a user with id {} for update last used", id)
         }
     }
 

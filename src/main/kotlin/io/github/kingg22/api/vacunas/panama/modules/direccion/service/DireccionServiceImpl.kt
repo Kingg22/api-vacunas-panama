@@ -31,17 +31,17 @@ class DireccionServiceImpl(
         unless = "#result==null or #result.isEmpty()",
     )
     @Transactional
-    override fun getDistritosDto() = distritoRepository.findAll().toListDistritoDto()
+    override suspend fun getDistritosDto() = distritoRepository.findAll().toListDistritoDto()
 
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'provinciasDto'",
         unless = "#result==null or #result.isEmpty()",
     )
-    override fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
+    override suspend fun getProvinciasDto() = provinciaRepository.findAll().toListProvinciaDto()
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    override fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
+    override suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
         val distrito = direccionDto.distrito.id?.let {
             distritoRepository.findById(it).orElseThrow()
         } ?: getDistritoDefault().toDistrito()
@@ -55,16 +55,10 @@ class DireccionServiceImpl(
         ).toDireccionDto()
     }
 
-    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
-    override fun getDireccionDefault() =
-        direccionRepository.findDireccionByDescripcionAndDistrito_Id("Por registrar", 0).firstOrNull()?.toDireccionDto()
-            ?: throw IllegalStateException("Dirección default not found")
-
-    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
-    override fun getDistritoDefault(): DistritoDto = distritoRepository.findByIdOrNull(0)?.toDistritoDto()
+    suspend fun getDistritoDefault(): DistritoDto = distritoRepository.findByIdOrNull(0)?.toDistritoDto()
         ?: throw IllegalStateException("Distrito default not found")
 
-    override fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {
+    override suspend fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {
         direccionDto.id?.let { return direccionRepository.findByIdOrNull(it)?.toDireccionDto() }
 
         val direccion = direccionDto.descripcion.takeIf { it.isNotBlank() } ?: return null

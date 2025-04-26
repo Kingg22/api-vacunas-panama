@@ -17,7 +17,7 @@ interface PacienteService {
      * @param pacienteDto DTO containing the patient information to create.
      * @return [ApiContentResponse] with creation result and metadata.
      */
-    fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse
+    suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse
 
     /**
      * Retrieves a patient DTO by its internal ID.
@@ -25,7 +25,7 @@ interface PacienteService {
      * @param id UUID of the patient.
      * @return [PacienteDto] containing patient information.
      */
-    fun getPacienteDtoById(id: UUID): PacienteDto?
+    suspend fun getPacienteDtoById(id: UUID): PacienteDto?
 
     /**
      * Retrieves a [PacienteDto] by its unique ID.
@@ -34,7 +34,7 @@ interface PacienteService {
      * @return [PacienteDto] if found, or null if not.
      */
     @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
-    fun getPacienteById(idPaciente: UUID): Paciente?
+    suspend fun getPacienteById(idPaciente: UUID): Paciente?
 
     /**
      * Retrieves a list of vaccines and diseases linked to the given patient.
@@ -43,5 +43,5 @@ interface PacienteService {
      * @param id UUID of the patient.
      * @return List of [ViewPacienteVacunaEnfermedadDto] representing vaccine-disease records.
      */
-    fun getViewVacunaEnfermedad(id: UUID): List<ViewPacienteVacunaEnfermedadDto>
+    suspend fun getViewVacunaEnfermedad(id: UUID): List<ViewPacienteVacunaEnfermedadDto>
 }

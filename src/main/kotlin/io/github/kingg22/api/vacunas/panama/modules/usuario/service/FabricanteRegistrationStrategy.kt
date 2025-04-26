@@ -20,7 +20,7 @@ class FabricanteRegistrationStrategy(
     @Lazy private val usuarioService: UsuarioService,
 ) : RegistrationStrategy {
 
-    override fun validate(registerUserDto: RegisterUserDto): RegistrationResult {
+    override suspend fun validate(registerUserDto: RegisterUserDto): RegistrationResult {
         val licencia = registerUserDto.licenciaFabricante
             ?: return RegistrationError(
                 createApiErrorBuilder {
@@ -56,7 +56,7 @@ class FabricanteRegistrationStrategy(
     }
 
     @Transactional
-    override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
+    override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
             is RegistrationError -> createContentResponse().apply {
@@ -74,10 +74,7 @@ class FabricanteRegistrationStrategy(
                         )
                     }
 
-                usuarioService.createUser(registerUserDto.usuario) {
-                    fabricante.usuario = it
-                    it.fabricante = fabricante
-                }
+                usuarioService.createUser(registerUserDto.usuario, fabricante = fabricante, persona = null)
 
                 createContentResponse().apply {
                     addData("fabricante", fabricante.toFabricanteDto())

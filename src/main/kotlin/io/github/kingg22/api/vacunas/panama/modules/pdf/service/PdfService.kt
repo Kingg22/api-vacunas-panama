@@ -18,7 +18,7 @@ interface PdfService {
      * @param idCertificate UUID of the certificate being generated (for tracking or registry).
      * @return A [ByteArray] representing the raw PDF content.
      */
-    fun generatePdf(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): ByteArray
+    suspend fun generatePdf(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): ByteArray
 
     /**
      * Generates a PDF certificate and encodes it to a Base64 string.
@@ -29,5 +29,5 @@ interface PdfService {
      * @param idCertificate UUID of the certificate being generated.
      * @return A [String] representing the PDF content encoded in Base64.
      */
-    fun generatePdfBase64(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): String
+    suspend fun generatePdfBase64(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): String
 }
