@@ -22,7 +22,7 @@ class PersonaRegistrationStrategy(
 ) : RegistrationStrategy {
     private val log = logger()
 
-    override fun validate(registerUserDto: RegisterUserDto): RegistrationResult {
+    override suspend fun validate(registerUserDto: RegisterUserDto): RegistrationResult {
         val identifier = registerUserDto.cedula ?: registerUserDto.pasaporte
             ?: return RegistrationError(
                 createApiErrorBuilder {
@@ -58,7 +58,7 @@ class PersonaRegistrationStrategy(
     }
 
     @Transactional
-    override fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
+    override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
             is RegistrationError -> createContentResponse().apply {
@@ -80,10 +80,7 @@ class PersonaRegistrationStrategy(
                 log.debug("Persona validated: {}", persona)
                 log.debug("Persona ID: {}", persona.id)
 
-                usuarioService.createUser(registerUserDto.usuario) {
-                    persona.usuario = it
-                    it.persona = persona
-                }
+                usuarioService.createUser(registerUserDto.usuario, persona = persona, fabricante = null)
 
                 createContentResponse().apply {
                     addData("persona", persona.toPersonaDto())

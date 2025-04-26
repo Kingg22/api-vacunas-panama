@@ -5,7 +5,6 @@ import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.pdf.dto.PdfDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
-import io.github.kingg22.api.vacunas.panama.util.isNotNullOrBlank
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.or
 import io.github.kingg22.api.vacunas.panama.util.orElse
@@ -34,17 +33,23 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
         key = "'certificate:'.concat(#idCertificate)",
         unless = "#result == null or #result.length == 0",
     )
-    override fun generatePdf(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): ByteArray =
-        this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos))
+    override suspend fun generatePdf(
+        pacienteDto: PacienteDto,
+        dosisDtos: List<DosisDto>,
+        idCertificate: UUID,
+    ): ByteArray = this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos))
 
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'certificate64:'.concat(#idCertificate)",
         unless = "#result == null or #result.length == 0",
     )
-    override fun generatePdfBase64(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>, idCertificate: UUID): String =
-        Base64.getEncoder()
-            .encodeToString(this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos)))
+    override suspend fun generatePdfBase64(
+        pacienteDto: PacienteDto,
+        dosisDtos: List<DosisDto>,
+        idCertificate: UUID,
+    ): String =
+        Base64.getEncoder().encodeToString(this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos)))
 
     /**
      * Generador de certificados PDF basados en una plantilla
@@ -89,11 +94,8 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
 
     /** Obtiene la identificación del paciente en el orden de prioridad correcto.  */
     private fun obtenerIdentificacion(pacienteDto: PacienteDto) = pacienteDto.persona.let { persona ->
-        persona.cedula
-            .takeIf { it.isNotNullOrBlank() }
-            .or { persona.pasaporte.takeIf { it.isNotNullOrBlank() } }
-            .or { pacienteDto.identificacionTemporal.takeIf { it.isNotNullOrBlank() } }
-            .orElse {
+        persona.cedula.takeIf { !it.isNullOrBlank() }.or { persona.pasaporte.takeIf { !it.isNullOrBlank() } }
+            .or { pacienteDto.identificacionTemporal.takeIf { !it.isNullOrBlank() } }.orElse {
                 persona.id?.toString() orElse {
                     val fakeId = "INVALID-${UUID.randomUUID()}"
                     log.error("ID de la persona es null. Generando identificador temporal: $fakeId")
@@ -104,10 +106,8 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
 
     private fun generateHtmlTemplate(certificateId: UUID, pdfDto: PdfDto): String {
         val base64Image = "data:image/png;base64,$iconImageBase64"
-        val templateWithValues = template.replace("{{base64Image}}", base64Image)
-            .replace("{{nombres}}", pdfDto.nombres)
-            .replace("{{apellidos}}", pdfDto.apellidos)
-            .replace("{{identificacion}}", pdfDto.identificacion)
+        val templateWithValues = template.replace("{{base64Image}}", base64Image).replace("{{nombres}}", pdfDto.nombres)
+            .replace("{{apellidos}}", pdfDto.apellidos).replace("{{identificacion}}", pdfDto.identificacion)
             .replace("{{certificate_id}}", certificateId.toString())
             .replace("{{fecha_nacimiento}}", pdfDto.fechaNacimiento?.toString() ?: "N/A")
 
@@ -135,8 +135,7 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
     }
 
     companion object {
-        private val template =
-            """
+        private val template = """
                 <!DOCTYPE html>
                 <html lang="es">
                 <head>
@@ -234,6 +233,6 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
                 </div>
                 </body>
                 </html>
-            """.trimIndent()
+        """.trimIndent()
     }
 }

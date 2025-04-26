@@ -21,14 +21,14 @@ interface VacunaService {
      * @param insertDosisDto DTO containing information about the dose to be created.
      * @return API response indicating the result of the operation.
      */
-    fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse
+    suspend fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse
 
     /**
      * Retrieves a list of vaccines by their manufacturer.
      *
      * @return A list of DTOs containing vaccine manufacturer details.
      */
-    fun getVacunasFabricante(): List<VacunaFabricanteDto>
+    suspend fun getVacunasFabricante(): List<VacunaFabricanteDto>
 
     /**
      * Retrieves doses administered to a patient for a specific vaccine.
@@ -37,5 +37,5 @@ interface VacunaService {
      * @param idVacuna The UUID of the vaccine.
      * @return A list of DTOs containing the doses administered to the patient for the given vaccine.
      */
-    fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID): List<DosisDto>
+    suspend fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID): List<DosisDto>
 }

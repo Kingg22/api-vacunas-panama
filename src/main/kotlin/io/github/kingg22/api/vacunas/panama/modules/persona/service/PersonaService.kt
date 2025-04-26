@@ -18,17 +18,7 @@ interface PersonaService {
         message = "This function be change to use DTO when jooq is set as ORM",
         replaceWith = ReplaceWith("getPersonaDto(identifier)"),
     )
-    fun getPersona(identifier: String): Persona?
-
-    /**
-     * Retrieves a [PersonaDto] entity by an identifier
-     * (maybe can be [PersonaDto.cedula], [PersonaDto.pasaporte], [PersonaDto.correo] or `PersonaDto.usuario.username`).
-     *
-     * @param identifier UUID of the persona to retrieve.
-     * @return The persona if found, or empty if not.
-     * @see io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto.username
-     */
-    fun getPersonaDto(identifier: String): PersonaDto?
+    suspend fun getPersona(identifier: String): Persona?
 
     /**
      * Retrieves a [PersonaDto] associated with the specified user ID.
@@ -36,5 +26,5 @@ interface PersonaService {
      * @param idUser UUID of the user linked to the persona.
      * @return The persona if found, or null if not.
      */
-    fun getPersonaByUserID(idUser: UUID): PersonaDto?
+    suspend fun getPersonaByUserID(idUser: UUID): PersonaDto?
 }

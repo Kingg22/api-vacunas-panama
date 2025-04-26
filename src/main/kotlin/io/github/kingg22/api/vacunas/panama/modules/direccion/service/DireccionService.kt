@@ -16,14 +16,14 @@ interface DireccionService {
      *
      * @return List of [DistritoDto] representing available districts.
      */
-    fun getDistritosDto(): List<DistritoDto>
+    suspend fun getDistritosDto(): List<DistritoDto>
 
     /**
      * Retrieves a list of all provinces mapped to DTOs.
      *
      * @return List of [ProvinciaDto] representing available provinces.
      */
-    fun getProvinciasDto(): List<ProvinciaDto>
+    suspend fun getProvinciasDto(): List<ProvinciaDto>
 
     /**
      * Creates and persists a new `Direccion` entity from the given [DireccionDto].
@@ -31,7 +31,7 @@ interface DireccionService {
      * @param direccionDto DTO containing address data to persist.
      * @return The newly created [DireccionDto] entity.
      */
-    fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
+    suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
 
     /**
      * Returns the default [DireccionDto] used by the system.
@@ -39,7 +39,7 @@ interface DireccionService {
      *
      * @return Default [DireccionDto] instance.
      */
-    fun getDireccionDefault(): DireccionDto
+    suspend fun getDireccionDefault(): DireccionDto
 
     /**
      * Returns the default [DistritoDto] used by the system.
@@ -47,7 +47,7 @@ interface DireccionService {
      *
      * @return Default [DistritoDto] instance.
      */
-    fun getDistritoDefault(): DistritoDto
+    suspend fun getDistritoDefault(): DistritoDto
 
     /**
      * Searches for an address entity matching the fields of the provided [DireccionDto].
@@ -55,5 +55,5 @@ interface DireccionService {
      * @param direccionDto DTO containing the address fields to search for.
      * @return [DireccionDto], present if a match is found, null otherwise.
      */
-    fun getDireccionByDto(direccionDto: DireccionDto): DireccionDto?
+    suspend fun getDireccionByDto(direccionDto: DireccionDto): DireccionDto?
 }

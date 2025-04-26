@@ -11,7 +11,7 @@ interface FabricanteService {
      * @param licencia String with the licencia linked to the fabricante.
      * @return The fabricante if found or null if not.
      */
-    fun getFabricante(licencia: String): FabricanteDto?
+    suspend fun getFabricante(licencia: String): FabricanteDto?
 
     /**
      * Retrieves a [FabricanteDto] associated with the specified user ID.
@@ -19,5 +19,5 @@ interface FabricanteService {
      * @param idUser UUID of the user linked to the doctor.
      * @return The fabricante if found or null if not.
      */
-    fun getFabricanteByUserID(idUser: UUID): FabricanteDto?
+    suspend fun getFabricanteByUserID(idUser: UUID): FabricanteDto?
 }

@@ -38,7 +38,7 @@ class VacunaServiceImpl(
     private val log = logger()
 
     @Transactional
-    override fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
+    override suspend fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
         val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)
         val vacuna = vacunaRepository.findByIdOrNull(insertDosisDto.vacunaId)
@@ -119,9 +119,9 @@ class VacunaServiceImpl(
         key = "'vacunas'",
         unless = "#result==null or #result.isEmpty()",
     )
-    override fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
+    override suspend fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
 
     @Transactional
-    override fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
+    override suspend fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
         dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna).toListDosisDto()
 }

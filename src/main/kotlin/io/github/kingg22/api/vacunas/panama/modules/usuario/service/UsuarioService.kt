@@ -1,9 +1,10 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import org.springframework.security.core.Authentication
 import java.util.UUID
@@ -21,7 +22,7 @@ interface UsuarioService {
      * @param identifier User identifier.
      * @return The user if found, otherwise null.
      */
-    fun getUsuarioByIdentifier(identifier: String): UsuarioDto?
+    suspend fun getUsuarioByIdentifier(identifier: String): UsuarioDto?
 
     /**
      * Retrieves a user by a given unique ID.
@@ -29,7 +30,7 @@ interface UsuarioService {
      * @param id User ID.
      * @return The user if found, otherwise null.
      */
-    fun getUsuarioById(id: UUID): UsuarioDto?
+    suspend fun getUsuarioById(id: UUID): UsuarioDto?
 
     /**
      * Retrieves the complete profile data for a given user.
@@ -37,7 +38,7 @@ interface UsuarioService {
      * @param id UUID of the user.
      * @return [ApiContentResponse] with data Map with profile fields and values.
      */
-    fun getProfile(id: UUID): ApiContentResponse
+    suspend fun getProfile(id: UUID): ApiContentResponse
 
     /**
      * Sets and returns essential login data when a user signs in.
@@ -56,7 +57,7 @@ interface UsuarioService {
      */
     suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ApiContentResponse
 
-    fun createUser(usuarioDto: UsuarioDto, block: (Usuario) -> Unit = {})
+    suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?)
 
     /**
      * Changes the password of a user using the provided restore DTO.
@@ -71,5 +72,5 @@ interface UsuarioService {
      *
      * @param id UUID of the user.
      */
-    fun updateLastUsed(id: UUID)
+    suspend fun updateLastUsed(id: UUID)
 }

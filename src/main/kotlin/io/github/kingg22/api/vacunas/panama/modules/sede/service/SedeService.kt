@@ -15,7 +15,7 @@ interface SedeService {
      *
      * @return a list of [UUIDNombreDto] containing the UUID and name of each `Sede`.
      */
-    fun getIdNombreSedes(): List<UUIDNombreDto>
+    suspend fun getIdNombreSedes(): List<UUIDNombreDto>
 
     /**
      * Retrieves the details of a `Sede` entity based on its unique identifier.
@@ -23,14 +23,6 @@ interface SedeService {
      * @param id the unique identifier of the `Sede` to retrieve
      * @return a [SedeDto] containing the details of the `Sede`, or null if no found.
      */
-    @Deprecated("Use DTO instead", ReplaceWith("getSedeDtoById(id)"))
-    fun getSedeById(id: UUID): Sede?
-
-    /**
-     * Retrieves the details of a `Sede` entity based on its unique identifier.
-     *
-     * @param id the unique identifier of the `Sede` to retrieve
-     * @return a [SedeDto] containing the details of the `Sede`, or null if no found.
-     */
-    fun getSedeDtoById(id: UUID): SedeDto?
+    @Deprecated("Use DTO instead")
+    suspend fun getSedeById(id: UUID): Sede?
 }

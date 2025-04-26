@@ -30,7 +30,7 @@ class PacienteServiceImpl(
     @Lazy private val direccionService: DireccionService,
 ) : PacienteService {
     @Transactional
-    override fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
+    override suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
         val response = createContentResponse()
         response.addErrors(validatePacienteExist(pacienteDto))
         response.addErrors(validateCreatePaciente(pacienteDto))
@@ -75,13 +75,13 @@ class PacienteServiceImpl(
         return response
     }
 
-    override fun getPacienteDtoById(id: UUID) = pacienteRepository.findByIdOrNull(id)?.toPacienteDto()
+    override suspend fun getPacienteDtoById(id: UUID) = pacienteRepository.findByIdOrNull(id)?.toPacienteDto()
 
     @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
-    override fun getPacienteById(idPaciente: UUID) = pacienteRepository.findByIdOrNull(idPaciente)
+    override suspend fun getPacienteById(idPaciente: UUID) = pacienteRepository.findByIdOrNull(idPaciente)
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
-    override fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
+    override suspend fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
 
     private fun validatePacienteExist(pacienteDto: PacienteDto) = buildList {
         val persona = pacienteDto.persona
@@ -226,7 +226,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (pacienteDto.persona.sexo?.toString()?.equals("X", ignoreCase = true) == true) {
+        if (pacienteDto.persona.sexo?.equals("X", ignoreCase = true) == true) {
             withWarning(
                 ApiResponseCode.DEPRECATION_WARNING,
                 "Sexo no definido afecta reglas de vacunación",
