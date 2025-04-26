@@ -4,6 +4,6 @@ import java.io.Serializable
 
 @JvmRecord
 data class IdNombreDto(val id: Long, val nombre: String?) : Serializable {
+    @Suppress("unused")
     constructor(id: Short, nombre: String?) : this(id.toLong(), nombre)
-    constructor(id: Int, nombre: String?) : this(id.toLong(), nombre)
 }

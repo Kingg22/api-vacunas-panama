@@ -55,13 +55,7 @@ class DireccionServiceImpl(
         ).toDireccionDto()
     }
 
-    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'direccionDefault'")
-    override suspend fun getDireccionDefault() =
-        direccionRepository.findDireccionByDescripcionAndDistrito_Id("Por registrar", 0).firstOrNull()?.toDireccionDto()
-            ?: throw IllegalStateException("Dirección default not found")
-
-    @Cacheable(cacheNames = [CacheDuration.MASSIVE_VALUE], key = "'distritoDefault'")
-    override suspend fun getDistritoDefault(): DistritoDto = distritoRepository.findByIdOrNull(0)?.toDistritoDto()
+    suspend fun getDistritoDefault(): DistritoDto = distritoRepository.findByIdOrNull(0)?.toDistritoDto()
         ?: throw IllegalStateException("Distrito default not found")
 
     override suspend fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {

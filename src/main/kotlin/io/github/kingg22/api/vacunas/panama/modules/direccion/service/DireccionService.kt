@@ -34,22 +34,6 @@ interface DireccionService {
     suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
 
     /**
-     * Returns the default [DireccionDto] used by the system.
-     * Useful for fallback or initial reference values.
-     *
-     * @return Default [DireccionDto] instance.
-     */
-    suspend fun getDireccionDefault(): DireccionDto
-
-    /**
-     * Returns the default [DistritoDto] used by the system.
-     * Useful for fallback or initial reference values.
-     *
-     * @return Default [DistritoDto] instance.
-     */
-    suspend fun getDistritoDefault(): DistritoDto
-
-    /**
      * Searches for an address entity matching the fields of the provided [DireccionDto].
      *
      * @param direccionDto DTO containing the address fields to search for.

@@ -46,10 +46,4 @@ interface ApiResponse : ApiContentResponse {
 
     /** Merge two [ApiResponse] in one */
     fun mergeResponse(response: ApiResponse): ApiResponse
-
-    operator fun plus(other: ApiResponse): ApiResponse = mergeResponse(other)
-
-    operator fun plusAssign(other: ApiResponse) {
-        mergeResponse(other)
-    }
 }
