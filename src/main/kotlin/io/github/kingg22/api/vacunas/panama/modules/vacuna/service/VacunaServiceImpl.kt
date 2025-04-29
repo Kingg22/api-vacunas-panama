@@ -10,8 +10,7 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.VacunaRepository
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.persistence.VacunaPersistenceService
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
@@ -20,28 +19,24 @@ import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Service
 class VacunaServiceImpl(
-    private val vacunaRepository: VacunaRepository,
-    private val dosisRepository: DosisRepository,
+    private val vacunaPersistenceService: VacunaPersistenceService,
     @Lazy private val doctorService: DoctorService,
     @Lazy private val sedeService: SedeService,
     @Lazy private val pacienteService: PacienteService,
 ) : VacunaService {
     private val log = logger()
 
-    @Transactional
     override suspend fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
         val contentResponse = createResponseBuilder()
         val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)
-        val vacuna = vacunaRepository.findByIdOrNull(insertDosisDto.vacunaId)
+        val vacuna = vacunaPersistenceService.findVacunaById(insertDosisDto.vacunaId)
         val sede = sedeService.getSedeById(insertDosisDto.sedeId)
         val doctor = insertDosisDto.doctorId?.let {
             doctorService.getDoctorById(it)
@@ -84,7 +79,7 @@ class VacunaServiceImpl(
             }
         }
 
-        dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente, vacuna).ifPresentOrElse({
+        vacunaPersistenceService.findTopDosisByPacienteAndVacuna(paciente, vacuna).ifPresentOrElse({
             log.debug("Última dosis encontrada, ID: {}", it.id)
             val numeroDosis = it.numeroDosis.getNumeroDosisAsEnum()
             if (!numeroDosis.isValidNew(insertDosisDto.numeroDosis)) {
@@ -99,7 +94,7 @@ class VacunaServiceImpl(
         }) { log.debug("El paciente no tiene dosis previas") }
         contentResponse.build().returnIfErrors()?.let { return it }
 
-        val dosis = dosisRepository.save(
+        val dosis = vacunaPersistenceService.saveDosis(
             Dosis(
                 paciente = paciente,
                 numeroDosis = insertDosisDto.numeroDosis.value,
@@ -107,6 +102,7 @@ class VacunaServiceImpl(
                 sede = sede,
                 lote = insertDosisDto.lote,
                 doctor = doctor?.toDoctor(),
+                fechaAplicacion = insertDosisDto.fechaAplicacion ?: LocalDateTime.now(UTC),
                 createdAt = LocalDateTime.now(UTC),
             ),
         )
@@ -119,9 +115,8 @@ class VacunaServiceImpl(
         key = "'vacunas'",
         unless = "#result==null or #result.isEmpty()",
     )
-    override suspend fun getVacunasFabricante() = vacunaRepository.findAllIdAndNombreAndFabricante()
+    override suspend fun getVacunasFabricante() = vacunaPersistenceService.findAllVacunasWithFabricantes()
 
-    @Transactional
     override suspend fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =
-        dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna).toListDosisDto()
+        vacunaPersistenceService.findAllDosisByPacienteIdAndVacunaId(idPaciente, idVacuna).toListDosisDto()
 }

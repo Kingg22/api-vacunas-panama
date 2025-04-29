@@ -15,7 +15,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
+import io.github.kingg22.api.vacunas.panama.modules.usuario.persistence.UsuarioPersistenceService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiError
@@ -26,18 +26,14 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.logger
-import io.github.kingg22.api.vacunas.panama.util.or
 import jakarta.persistence.EntityManager
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.context.annotation.Lazy
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
@@ -49,7 +45,7 @@ class UsuarioServiceImpl(
     private val transactionTemplate: TransactionTemplate,
     private val reactiveCompromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
     private val passwordEncoder: PasswordEncoder,
-    private val usuarioRepository: UsuarioRepository,
+    private val usuarioPersistenceService: UsuarioPersistenceService,
     @Lazy private val registrationStrategyFactory: RegistrationStrategyFactory,
     @Lazy private val rolPermisoService: RolPermisoService,
     @Lazy private val personaService: PersonaService,
@@ -58,28 +54,28 @@ class UsuarioServiceImpl(
 ) : UsuarioService {
     private val log = logger()
 
-    @Transactional
-    override suspend fun getUsuarioByIdentifier(identifier: String): UsuarioDto? =
-        usuarioRepository.findByUsername(identifier)?.toUsuarioDto()?.also {
+    override suspend fun getUsuarioByIdentifier(identifier: String): UsuarioDto? {
+        val byUsername = usuarioPersistenceService.findByUsername(identifier)?.toUsuarioDto()?.also {
             log.debug("Found user by username: {}", it.id)
         }
-            .or {
-                val formatted = formatToSearch(identifier)
-                usuarioRepository.findByCedulaOrPasaporteOrCorreo(
-                    formatted.cedula,
-                    formatted.pasaporte,
-                    formatted.correo,
-                )?.toUsuarioDto()?.also {
-                    log.debug("Found user: {}, with credentials of Persona", it.id)
-                }
-            }
-            .or {
-                usuarioRepository.findByLicenciaOrCorreo(identifier, identifier)?.toUsuarioDto()?.also {
-                    log.debug("Found user: {}, with credentials of Fabricante", it.id)
-                }
-            }
+        if (byUsername != null) return byUsername
 
-    override suspend fun getUsuarioById(id: UUID): UsuarioDto? = usuarioRepository.findByIdOrNull(id)?.toUsuarioDto()
+        val formatted = formatToSearch(identifier)
+        val byPersona = usuarioPersistenceService.findByCedulaOrPasaporteOrCorreo(
+            formatted.cedula,
+            formatted.pasaporte,
+            formatted.correo,
+        )?.toUsuarioDto()?.also {
+            log.debug("Found user: {}, with credentials of Persona", it.id)
+        }
+        if (byPersona != null) return byPersona
+
+        return usuarioPersistenceService.findByLicenciaOrCorreo(identifier, identifier)?.toUsuarioDto()?.also {
+            log.debug("Found user: {}, with credentials of Fabricante", it.id)
+        }
+    }
+
+    override suspend fun getUsuarioById(id: UUID) = usuarioPersistenceService.findUsuarioById(id)?.toUsuarioDto()
 
     override suspend fun getProfile(id: UUID): ApiContentResponse {
         val builder = createResponseBuilder()
@@ -90,16 +86,16 @@ class UsuarioServiceImpl(
 
     override suspend fun getLogin(id: UUID): ApiContentResponse {
         val response = createResponseBuilder()
-        val usuario = usuarioRepository.findByIdOrNull(id)
-        usuario?.let {
-            if (it.persona != null) {
-                response.withData("persona", it.persona!!.toPersonaDto())
+        val usuario = usuarioPersistenceService.findUsuarioById(id)
+        if (usuario != null) {
+            if (usuario.persona != null) {
+                response.withData("persona", usuario.persona!!.toPersonaDto())
             }
-            if (it.fabricante != null) {
-                response.withData("fabricante", it.fabricante!!.toFabricanteDto())
+            if (usuario.fabricante != null) {
+                response.withData("fabricante", usuario.fabricante!!.toFabricanteDto())
             }
-            response.withData(tokenService.generateTokens(it.toUsuarioDto()))
-        } ?: {
+            response.withData(tokenService.generateTokens(usuario.toUsuarioDto()))
+        } else {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
                 "El usuario no ha sido encontrado, intente nuevamente.",
@@ -108,7 +104,6 @@ class UsuarioServiceImpl(
         return response.build()
     }
 
-    @Transactional
     override suspend fun createUser(
         registerUserDto: RegisterUserDto,
         authentication: Authentication?,
@@ -148,7 +143,6 @@ class UsuarioServiceImpl(
         return response
     }
 
-    @Transactional
     override suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?) {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet()
         transactionTemplate.execute {
@@ -168,12 +162,12 @@ class UsuarioServiceImpl(
             managedPersona?.usuario = usuario
             managedFabricante?.usuario = usuario
 
-            usuarioRepository.save(usuario)
+            // Using entityManager directly, since we're in a transaction and this, it'd not suspend the function body
+            entityManager.persist(usuario)
             log.trace("User created: {}", usuario)
         }
     }
 
-    @Transactional
     override suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse {
         val response = createResponseBuilder()
         val usuarioOpt = getUsuarioByIdentifier(restoreDto.username)
@@ -206,22 +200,19 @@ class UsuarioServiceImpl(
         if (!response.hasErrors()) {
             val persistenceUsuario = usuario.copy(password = passwordEncoder.encode(restoreDto.newPassword))
                 .toUsuario()
-            usuarioRepository.save(persistenceUsuario)
+            usuarioPersistenceService.saveUsuario(persistenceUsuario)
         }
 
         return response.build()
     }
 
-    @Modifying
-    @Transactional
     override suspend fun updateLastUsed(id: UUID) {
-        val it = usuarioRepository.findByIdOrNull(id)
-        if (it == null) {
+        val usuario = usuarioPersistenceService.findUsuarioById(id)
+        if (usuario == null) {
             log.error("Cannot find a user with id {} for update last used", id)
-        }
-        if (it != null) {
-            it.lastUsed = LocalDateTime.now(UTC)
-            usuarioRepository.save(it)
+        } else {
+            usuario.lastUsed = LocalDateTime.now(UTC)
+            usuarioPersistenceService.saveUsuario(usuario)
         }
     }
 
@@ -333,5 +324,6 @@ class UsuarioServiceImpl(
         return if (errors.isEmpty()) RegistrationResult.RegistrationSuccess(Any()) else RegistrationError(errors)
     }
 
-    fun isUsernameRegistered(username: String?) = username != null && usuarioRepository.findByUsername(username) != null
+    suspend fun isUsernameRegistered(username: String?) =
+        username != null && usuarioPersistenceService.findByUsername(username) != null
 }

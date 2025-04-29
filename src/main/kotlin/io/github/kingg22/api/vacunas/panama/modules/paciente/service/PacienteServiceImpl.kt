@@ -6,7 +6,7 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionS
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
-import io.github.kingg22.api.vacunas.panama.modules.paciente.repository.PacienteRepository
+import io.github.kingg22.api.vacunas.panama.modules.paciente.persistence.PacientePersistenceService
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
@@ -19,17 +19,14 @@ import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
 import org.hibernate.Hibernate
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
 class PacienteServiceImpl(
-    private val pacienteRepository: PacienteRepository,
+    private val pacientePersistenceService: PacientePersistenceService,
     @Lazy private val direccionService: DireccionService,
 ) : PacienteService {
-    @Transactional
     override suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
         val response = createContentResponse()
         response.addErrors(validatePacienteExist(pacienteDto))
@@ -43,7 +40,7 @@ class PacienteServiceImpl(
                 ?: direccionService.createDireccion(it).toDireccion()
         }
 
-        val paciente = pacienteRepository.save(
+        val paciente = pacientePersistenceService.savePaciente(
             Paciente(
                 identificacionTemporal = pacienteDto.identificacionTemporal,
                 createdAt = pacienteDto.createdAt,
@@ -75,21 +72,22 @@ class PacienteServiceImpl(
         return response
     }
 
-    override suspend fun getPacienteDtoById(id: UUID) = pacienteRepository.findByIdOrNull(id)?.toPacienteDto()
+    override suspend fun getPacienteDtoById(id: UUID) = pacientePersistenceService.findPacienteById(id)?.toPacienteDto()
 
     @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
-    override suspend fun getPacienteById(idPaciente: UUID) = pacienteRepository.findByIdOrNull(idPaciente)
+    override suspend fun getPacienteById(idPaciente: UUID) = pacientePersistenceService.findPacienteById(idPaciente)
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
-    override suspend fun getViewVacunaEnfermedad(id: UUID) = pacienteRepository.findAllFromViewVacunaEnfermedad(id)
+    override suspend fun getViewVacunaEnfermedad(id: UUID) =
+        pacientePersistenceService.findAllFromViewVacunaEnfermedad(id)
 
-    private fun validatePacienteExist(pacienteDto: PacienteDto) = buildList {
+    private suspend fun validatePacienteExist(pacienteDto: PacienteDto) = buildList {
         val persona = pacienteDto.persona
 
         persona.cedula?.let {
             val formatted = FormatterUtil.formatCedula(it)
             pacienteDto.copy(persona = persona.copy(cedula = formatted))
-            if (pacienteRepository.findByPersonaCedula(formatted) != null) {
+            if (pacientePersistenceService.findByPersonaCedula(formatted) != null) {
                 add(
                     createApiErrorBuilder {
                         withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -101,7 +99,7 @@ class PacienteServiceImpl(
         }
 
         if (!persona.pasaporte.isNullOrBlank() &&
-            pacienteRepository.findByPersonaPasaporte(persona.pasaporte) != null
+            pacientePersistenceService.findByPersonaPasaporte(persona.pasaporte) != null
         ) {
             add(
                 createApiErrorBuilder {
@@ -113,7 +111,7 @@ class PacienteServiceImpl(
         }
 
         if (!pacienteDto.identificacionTemporal.isNullOrBlank() &&
-            pacienteRepository.findByIdentificacionTemporal(pacienteDto.identificacionTemporal) != null
+            pacientePersistenceService.findByIdentificacionTemporal(pacienteDto.identificacionTemporal) != null
         ) {
             add(
                 createApiErrorBuilder {
@@ -124,7 +122,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.correo.isNullOrBlank() && pacienteRepository.findByPersonaCorreo(persona.correo) != null) {
+        if (!persona.correo.isNullOrBlank() && pacientePersistenceService.findByPersonaCorreo(persona.correo) != null) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -134,7 +132,9 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!persona.telefono.isNullOrBlank() && pacienteRepository.findByPersonaTelefono(persona.telefono) != null) {
+        if (!persona.telefono.isNullOrBlank() &&
+            pacientePersistenceService.findByPersonaTelefono(persona.telefono) != null
+        ) {
             add(
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.VALIDATION_FAILED)
@@ -145,7 +145,7 @@ class PacienteServiceImpl(
         }
     }
 
-    private fun validateCreatePaciente(pacienteDto: PacienteDto) = buildList {
+    private suspend fun validateCreatePaciente(pacienteDto: PacienteDto) = buildList {
         val persona = pacienteDto.persona
 
         if (persona.nombre.isNullOrBlank() && persona.nombre2.isNullOrBlank()) {
@@ -199,7 +199,7 @@ class PacienteServiceImpl(
      * @param pacienteDto DTO containing patient data to validate.
      * @return [ApiContentResponse] with validation results or errors.
      */
-    private fun validateCreatePacienteUsuario(pacienteDto: PacienteDto): ApiContentResponse = createResponseBuilder {
+    private suspend fun validateCreatePacienteUsuario(pacienteDto: PacienteDto) = createResponseBuilder {
         val usuario = pacienteDto.persona.usuario
 
         if (usuario == null) {
