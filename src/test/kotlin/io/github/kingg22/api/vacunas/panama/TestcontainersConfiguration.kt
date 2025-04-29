@@ -6,7 +6,6 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.annotation.Bean
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
 @TestConfiguration(proxyBeanMethods = false)
@@ -17,7 +16,4 @@ class TestcontainersConfiguration {
     @ServiceConnection(name = "redis")
     fun redisContainer(): GenericContainer<*> =
         GenericContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379)
-
-    @Rule
-    fun postgresContainer(): PostgreSQLContainer<*> = PostgreSQLContainer("postgres:17-alpine")
 }
