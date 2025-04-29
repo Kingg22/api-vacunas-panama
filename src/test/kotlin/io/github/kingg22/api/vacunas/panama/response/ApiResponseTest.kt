@@ -47,7 +47,7 @@ class ApiResponseTest {
             },
         )
         response.addWarning(DefaultApiErrorTest("warningCode", "testProperty", "warningMessage"))
-        response.addStatusCode(HttpStatus.OK)
+        response.addStatusCode(HttpStatus.OK.value())
 
         ApiResponseUtil.setMetadata(response, request)
 
@@ -57,7 +57,6 @@ class ApiResponseTest {
         assertEquals("errorCode", response.errors[0].code)
         assertEquals("warningCode", response.warnings[0].code)
         assertEquals(200, response.retrieveStatusCode())
-        assertEquals(HttpStatus.OK, response.retrieveHttpStatusCode())
     }
 
     @Test
@@ -71,7 +70,7 @@ class ApiResponseTest {
             }
             withWarning("warningCode", "Warning message")
             withStatus("testStatus", 123)
-            withStatusCode(HttpStatus.NOT_FOUND)
+            withStatusCode(HttpStatus.NOT_FOUND.value())
         }
 
         assertEquals("testValue", response.data["testData"])
@@ -119,7 +118,7 @@ class ApiResponseTest {
     fun `Test response change to builder`() {
         val response = ApiResponseFactory.createResponseBuilder {
             withData(mapOf("testData" to "testValue"))
-            withStatusCode(HttpStatus.BAD_REQUEST)
+            withStatusCode(HttpStatus.BAD_REQUEST.value())
         }
         val responseWithErrors = response.returnIfErrors()
         assertNull(responseWithErrors)

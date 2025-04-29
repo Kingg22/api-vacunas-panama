@@ -1,13 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import jakarta.validation.constraints.NotNull
 import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /** Default implementation of [ApiResponse] with a fluent builder pattern. */
 @JsonPropertyOrder(value = ["status", "data", "errors", "warnings", "metadata"])
-internal data class DefaultApiResponse(
+data class DefaultApiResponse(
     override val status: MutableMap<String, Serializable> = mutableMapOf(),
     override val data: MutableMap<String, Serializable> = mutableMapOf(),
     override val errors: MutableList<ApiError> = mutableListOf(),
@@ -43,8 +42,13 @@ internal data class DefaultApiResponse(
 
     override fun hasWarnings() = warnings.isNotEmpty()
 
-    override fun addStatusCode(@NotNull httpStatus: HttpStatusCode) {
-        status["code"] = httpStatus
+    @Deprecated("Use addStatusCode(integer) instead", replaceWith = ReplaceWith("addStatusCode(httpStatus.value())"))
+    override fun addStatusCode(httpStatus: HttpStatusCode) {
+        status["code"] = httpStatus.value()
+    }
+
+    override fun addStatusCode(statusCode: Int) {
+        status["code"] = statusCode
     }
 
     override fun addStatus(key: String, value: Serializable) {
@@ -55,10 +59,7 @@ internal data class DefaultApiResponse(
         metadata[key] = value
     }
 
-    override fun retrieveStatusCode(): Int = (status["code"] as? HttpStatusCode ?: HttpStatusCode.valueOf(500)).value()
-
-    override fun retrieveHttpStatusCode(): HttpStatusCode =
-        status["code"] as? HttpStatusCode ?: HttpStatusCode.valueOf(500)
+    override fun retrieveStatusCode(): Int = status["code"] as? Int ?: 500
 
     override fun mergeResponse(response: ApiResponse): ApiResponse = this.apply {
         this.status.putAll(response.status)

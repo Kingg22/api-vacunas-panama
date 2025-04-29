@@ -59,7 +59,7 @@ object ApiResponseUtil {
         setMetadata(this, serverHttpRequest)
         log.trace(toString())
     }.let {
-        ResponseEntity.status(it.retrieveHttpStatusCode()).body(it)
+        ResponseEntity.status(it.retrieveStatusCode()).body(it)
     }
 
     /**
@@ -81,7 +81,7 @@ object ApiResponseUtil {
         ApiResponseFactory.createResponseBuilder {
             apply(builder)
             withData(data)
-            withStatusCode(statusCode)
+            withStatusCode(statusCode.value())
         },
         serverHttpRequest,
     )
@@ -97,7 +97,7 @@ object ApiResponseUtil {
     @JvmStatic
     fun transformApiErrorResponse(apiErrorResponse: ApiErrorResponse, request: ServerHttpRequest) =
         ApiResponseFactory.createResponseBuilder {
-            withStatusCode(apiErrorResponse.httpStatus)
+            withStatusCode(apiErrorResponse.httpStatus.value())
 
             val errorMessage = if (
                 apiErrorResponse.message.contains("Dto") ||

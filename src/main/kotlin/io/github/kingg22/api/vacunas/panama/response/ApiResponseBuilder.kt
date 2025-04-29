@@ -149,11 +149,11 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
     /**
      * Set the HTTP status code for the response.
      *
-     * @param httpStatus The HTTP status code.
+     * @param statusCode HTTP status code as integer.
      * @return The current builder instance for chaining.
      */
-    fun withStatusCode(httpStatus: HttpStatusCode) = apply {
-        response.addStatusCode(httpStatus)
+    fun withStatusCode(statusCode: Int) = apply {
+        response.addStatusCode(statusCode)
     }
 
     /**
@@ -230,6 +230,7 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          * @param code A string representing the error code.
          * @return The builder itself for method chaining.
          */
+        @Deprecated("Use withCode(string) instead", ReplaceWith("withCode(code.toString())"))
         fun withCode(httpStatusCode: HttpStatusCode) = apply {
             this.codeString = httpStatusCode.toString()
         }

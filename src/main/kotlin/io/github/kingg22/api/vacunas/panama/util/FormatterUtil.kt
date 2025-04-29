@@ -1,7 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.util
 
-import jakarta.validation.constraints.NotNull
-
 object FormatterUtil {
     private val log = logger()
     private val INCORRECT_PATTERN =
@@ -75,7 +73,7 @@ object FormatterUtil {
      * @return [FormatterResult] containing the identified data type.
      */
     @JvmStatic
-    fun formatToSearch(identifier: @NotNull String): FormatterResult {
+    fun formatToSearch(identifier: String): FormatterResult {
         log.debug("Received a data to identifier type. Data: {}", identifier)
         var cedula: String? = null
         val pasaporte = if (identifier.matches("^[A-Z0-9]{5,20}$".toRegex())) identifier else null

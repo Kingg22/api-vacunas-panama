@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.response
 
-import jakarta.validation.constraints.NotNull
 import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
@@ -16,7 +15,14 @@ interface ApiResponse : ApiContentResponse {
      * Add an HTTP status code to the response
      * @param httpStatus The HTTP status to be added
      */
-    fun addStatusCode(@NotNull httpStatus: HttpStatusCode)
+    @Deprecated("Use addStatusCode(integer) instead", ReplaceWith("addStatusCode(httpStatus.value())"))
+    fun addStatusCode(httpStatus: HttpStatusCode)
+
+    /**
+     * Add an HTTP status code to the response
+     * @param statusCode The HTTP status code to be added as an integer
+     */
+    fun addStatusCode(statusCode: Int)
 
     /**
      * Add a status entry
@@ -37,12 +43,6 @@ interface ApiResponse : ApiContentResponse {
      * @return The HTTP status code as an integer
      */
     fun retrieveStatusCode(): Int
-
-    /**
-     * Get the HTTP status code
-     * @return The HTTP status code
-     */
-    fun retrieveHttpStatusCode(): HttpStatusCode
 
     /** Merge two [ApiResponse] in one */
     fun mergeResponse(response: ApiResponse): ApiResponse
