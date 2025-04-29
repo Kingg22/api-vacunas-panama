@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.entity
 
+import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DistritoModel
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -35,4 +37,10 @@ class Distrito(
     @NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
-)
+) {
+    override fun toString(): String = Distrito::class.simpleName +
+        "(id=$id, provincia=$provincia, nombre='$nombre')"
+
+    @KonvertFrom(DistritoModel::class)
+    companion object
+}

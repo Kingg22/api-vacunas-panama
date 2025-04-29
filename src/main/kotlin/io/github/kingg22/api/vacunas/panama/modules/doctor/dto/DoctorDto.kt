@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.doctor.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.doctor.domain.DoctorModel
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.mcarle.konvert.api.KonvertTo
@@ -28,6 +29,7 @@ import java.time.ZoneOffset.UTC
         Mapping(target = "idoneidad", expression = "idoneidad ?: \"\""),
     ],
 )
+@KonvertTo(DoctorModel::class)
 data class DoctorDto(
     @field:Valid @param:Valid val persona: PersonaDto,
 
@@ -45,8 +47,8 @@ data class DoctorDto(
     @param:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @field:JsonProperty(value = "updated_at")
-    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @field:PastOrPresent
     @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,

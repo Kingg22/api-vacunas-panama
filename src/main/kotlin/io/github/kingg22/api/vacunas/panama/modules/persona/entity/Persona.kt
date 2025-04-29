@@ -1,9 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.persona.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
+import io.github.kingg22.api.vacunas.panama.modules.persona.domain.PersonaModel
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -62,7 +65,7 @@ class Persona(
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
-    var direccion: Direccion,
+    var direccion: Direccion = Direccion.DIRECCION_DEFAULT,
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario")
@@ -97,4 +100,20 @@ class Persona(
     @Size(max = 254)
     @Column(name = "correo", length = 254)
     var correo: String? = null,
-)
+) {
+    override fun toString(): String = Persona::class.simpleName +
+        " id: $id, nombre: $nombre, apellido1: $apellido1, apellido2: $apellido2, cedula: $cedula, direccion: $direccion, estado: $estado, fechaNacimiento: $fechaNacimiento, pasaporte: $pasaporte, telefono: $telefono, usuario: $usuario, correo: $correo, sexo: $sexo, edad: $edad"
+
+    @KonvertFrom(
+        PersonaModel::class,
+        mappings = [
+            Mapping(
+                "fechaNacimiento",
+                expression =
+                "it.fechaNacimiento?.let { f -> java.time.LocalDateTime.from(f.atStartOfDay(java.time.ZoneOffset.UTC)) }",
+            ),
+            Mapping("direccion", ignore = true),
+        ],
+    )
+    companion object
+}

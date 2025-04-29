@@ -15,7 +15,7 @@ import java.time.ZoneOffset.UTC
 /**
  * DTO for [io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol]
  *
- * _Warning_: [RolDto.toRol] include a default value ([DEFAULT_ROL]) for [RolDto.nombre] if it is null.
+ * _Warning_: [RolDto.toRol] include a default value ([RolDto.Companion.DEFAULT_ROL]) for [RolDto.nombre] if it is null.
  */
 @JvmRecord
 @KonvertTo(Rol::class, mappings = [Mapping("nombre", expression = "nombre ?: RolDto.DEFAULT_ROL")])
@@ -38,8 +38,8 @@ data class RolDto(
     @field:PastOrPresent(message = "La fecha de creación no puede ser futura")
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @param:JsonProperty(value = "updated_at")
-    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @param:PastOrPresent(message = "La fecha de actualización no puede ser futura")
     @field:PastOrPresent(message = "La fecha de actualización no puede ser futura")
     val updatedAt: LocalDateTime? = null,

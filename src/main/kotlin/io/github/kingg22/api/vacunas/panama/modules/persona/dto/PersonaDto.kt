@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.persona.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.persona.domain.PersonaModel
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.mcarle.konvert.api.KonvertTo
@@ -26,6 +27,7 @@ import java.util.UUID
  */
 @JvmRecord
 @KonvertTo(Persona::class, mappings = [Mapping(target = "estado", expression = "estado ?: PersonaDto.DEFAULT_ESTADO")])
+@KonvertTo(PersonaModel::class)
 data class PersonaDto(
     val id: UUID? = null,
 

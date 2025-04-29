@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.usuario.domain.UsuarioModel
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
@@ -22,6 +23,7 @@ import java.util.UUID
         Mapping("fabricante", ignore = true), Mapping("persona", ignore = true),
     ],
 )
+@KonvertTo(UsuarioModel::class)
 data class UsuarioDto(
     val id: UUID? = null,
 
@@ -37,12 +39,12 @@ data class UsuarioDto(
     @field:JsonProperty(value = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @param:JsonProperty(value = "updated_at")
-    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     val updatedAt: LocalDateTime? = null,
 
-    @param:JsonProperty(value = "last_used")
-    @field:JsonProperty(value = "last_used")
+    @param:JsonProperty(value = "last_used", access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(value = "last_used", access = JsonProperty.Access.READ_ONLY)
     val lastUsed: LocalDateTime? = null,
 
     @param:NotEmpty(message = "Los roles no puede estar vacíos")

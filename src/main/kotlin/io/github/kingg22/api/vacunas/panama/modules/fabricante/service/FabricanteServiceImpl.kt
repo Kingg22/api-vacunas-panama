@@ -1,15 +1,16 @@
 package io.github.kingg22.api.vacunas.panama.modules.fabricante.service
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.repository.FabricanteRepository
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.persistence.FabricantePersistenceService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-class FabricanteServiceImpl(private val fabricanteRepository: FabricanteRepository) : FabricanteService {
+class FabricanteServiceImpl(private val fabricantePersistenceService: FabricantePersistenceService) :
+    FabricanteService {
     override suspend fun getFabricante(licencia: String) =
-        fabricanteRepository.findByLicencia(licencia)?.toFabricanteDto()
+        fabricantePersistenceService.findByLicencia(licencia)?.toFabricanteDto()
 
     override suspend fun getFabricanteByUserID(idUser: UUID) =
-        fabricanteRepository.findByUsuario_Id(idUser)?.toFabricanteDto()
+        fabricantePersistenceService.findByUsuarioId(idUser)?.toFabricanteDto()
 }

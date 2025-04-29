@@ -1,8 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.sede.service
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto
-import io.github.kingg22.api.vacunas.panama.modules.sede.dto.SedeDto
-import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
+import io.github.kingg22.api.vacunas.panama.modules.sede.domain.SedeModel
 import java.util.UUID
 
 /**
@@ -18,11 +17,10 @@ interface SedeService {
     suspend fun getIdNombreSedes(): List<UUIDNombreDto>
 
     /**
-     * Retrieves the details of a `Sede` entity based on its unique identifier.
+     * Retrieves the details of a `Sede` model based on its unique identifier.
      *
      * @param id the unique identifier of the `Sede` to retrieve
-     * @return a [SedeDto] containing the details of the `Sede`, or null if no found.
+     * @return a [SedeModel] containing the details of the `Sede`, or null if not found.
      */
-    @Deprecated("Use DTO instead")
-    suspend fun getSedeById(id: UUID): Sede?
+    suspend fun getSedeById(id: UUID): SedeModel?
 }

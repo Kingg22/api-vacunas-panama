@@ -1,7 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
-import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
@@ -57,7 +55,15 @@ interface UsuarioService {
      */
     suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ApiContentResponse
 
-    suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?)
+    /**
+     * Registers a new user.
+     * _This is an internal function to [RegistrationStrategy]._
+     *
+     * @param usuarioDto Usuario DTO containing the user information.
+     * @param personaId Optional if the user is linked to a persona.
+     * @param fabricanteId Optional if the user is linked to fabricante.
+     */
+    suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?)
 
     /**
      * Changes the password of a user using the provided restore DTO.

@@ -1,8 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.domain.PacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import java.util.UUID
 
@@ -12,7 +12,7 @@ import java.util.UUID
  */
 interface PacienteService {
     /**
-     * Creates a new `Paciente` and associated user if validation is successful.
+     * Creates a new `PacienteModel` and associated user if validation is successful.
      *
      * @param pacienteDto DTO containing the patient information to create.
      * @return [ApiContentResponse] with creation result and metadata.
@@ -28,13 +28,12 @@ interface PacienteService {
     suspend fun getPacienteDtoById(id: UUID): PacienteDto?
 
     /**
-     * Retrieves a [PacienteDto] by its unique ID.
+     * Retrieves a [PacienteModel] by its unique ID.
      *
      * @param idPaciente UUID of the patient.
-     * @return [PacienteDto] if found, or null if not.
+     * @return [PacienteModel] if found, or null if not.
      */
-    @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
-    suspend fun getPacienteById(idPaciente: UUID): Paciente?
+    suspend fun getPacienteById(idPaciente: UUID): PacienteModel?
 
     /**
      * Retrieves a list of vaccines and diseases linked to the given patient.

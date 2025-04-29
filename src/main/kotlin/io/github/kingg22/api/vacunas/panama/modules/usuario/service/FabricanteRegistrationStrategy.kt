@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
@@ -12,7 +11,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FabricanteRegistrationStrategy(
@@ -55,7 +53,6 @@ class FabricanteRegistrationStrategy(
         )
     }
 
-    @Transactional
     override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
@@ -64,20 +61,21 @@ class FabricanteRegistrationStrategy(
             }
 
             is RegistrationSuccess -> {
-                val fabricante = resultValidate.outcome as? Fabricante
-                    ?: return createContentResponse().apply {
-                        addError(
-                            createApiErrorBuilder {
-                                withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
-                                withMessage("No se puede crear fabricante")
-                            },
-                        )
-                    }
+                val fabricante =
+                    resultValidate.outcome as? FabricanteDto
+                        ?: return createContentResponse().apply {
+                            addError(
+                                createApiErrorBuilder {
+                                    withCode(ApiResponseCode.API_UPDATE_UNSUPPORTED)
+                                    withMessage("No se puede crear fabricante")
+                                },
+                            )
+                        }
 
-                usuarioService.createUser(registerUserDto.usuario, fabricante = fabricante, persona = null)
+                usuarioService.createUser(registerUserDto.usuario, null, fabricante.entidad.id)
 
                 createContentResponse().apply {
-                    addData("fabricante", fabricante.toFabricanteDto())
+                    addData("fabricante", fabricante)
                 }
             }
         }

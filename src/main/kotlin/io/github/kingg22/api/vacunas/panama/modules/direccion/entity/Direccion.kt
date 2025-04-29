@@ -1,6 +1,10 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.entity
 
+import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DireccionModel
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -52,4 +56,18 @@ class Direccion(
     @ColumnDefault("0")
     @JoinColumn(name = "distrito", nullable = false)
     var distrito: Distrito,
-)
+) {
+    override fun toString(): String = Direccion::class.simpleName +
+        "(id=$id, descripcion='$descripcion', createdAt=$createdAt, updatedAt=$updatedAt, distrito=$distrito)"
+
+    @KonvertFrom(DireccionModel::class)
+    companion object {
+        val DIRECCION_DEFAULT = Direccion(
+            descripcion = DireccionDto.DEFAULT_DIRECCION,
+            distrito = Distrito(
+                nombre = DistritoDto.DEFAULT_DISTRITO,
+                provincia = Provincia(nombre = ProvinciaDto.DEFAULT_PROVINCIA),
+            ),
+        )
+    }
+}
