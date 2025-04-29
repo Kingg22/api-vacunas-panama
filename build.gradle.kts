@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.14.5"
+version = "0.14.6"
 
 java {
     toolchain {
@@ -31,6 +31,7 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+        javaParameters.set(true)
     }
 }
 

@@ -116,7 +116,9 @@ class VacunaPersistenceServiceImpl(
             entityManager.persist(dosis)
             savedDosis = dosis
         }
-        checkNotNull(savedDosis) { "Dosis not saved" }
+        checkNotNull(savedDosis) {
+            "Dosis not saved for paciente=$pacienteId, sede=$sedeId, numero dosis=$numeroDosis, fecha aplicación=$fechaAplicacion, lote=$lote, doctor=$doctorId"
+        }
         return savedDosis
     }
 }
