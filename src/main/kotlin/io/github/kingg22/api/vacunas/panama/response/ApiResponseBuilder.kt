@@ -192,9 +192,9 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
     /**
      * Build the final [ApiResponse] object.
      *
-     * @return The constructed [ApiResponse] object.
+     * @return The constructed [ActualApiResponse] object.
      */
-    fun build(): ApiResponse = response
+    fun build() = response as ActualApiResponse
 
     /**
      * ApiErrorBuilder is a class designed to facilitate the construction of ApiError objects.
@@ -258,7 +258,7 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          * @return A constructed ApiError object.
          * @throws IllegalStateException if the required `message` or `code` field is not initialized.
          */
-        fun build(): ApiError {
+        fun build(): ActualApiError {
             check(::message.isInitialized && message.isNotBlank()) { "The 'message' field is required." }
             val finalCode = code?.toString() ?: codeString
             check(!finalCode.isNullOrBlank()) { "The 'code' field is required." }

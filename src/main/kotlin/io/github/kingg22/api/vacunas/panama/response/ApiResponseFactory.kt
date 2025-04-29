@@ -21,7 +21,7 @@ object ApiResponseFactory {
      */
     @JvmStatic
     @Contract(" -> new")
-    fun createResponse(): ApiResponse = DefaultApiResponse()
+    fun createResponse(): ActualApiResponse = DefaultApiResponse()
 
     /**
      * Creates a new [ApiContentResponse] instance ready for population
@@ -30,7 +30,7 @@ object ApiResponseFactory {
      */
     @JvmStatic
     @Contract(" -> new")
-    fun createContentResponse(): ApiContentResponse = DefaultApiResponse()
+    fun createContentResponse(): ActualApiResponse = DefaultApiResponse()
 
     /** Creates a new builder for [ApiResponse] */
     @JvmStatic
@@ -45,14 +45,6 @@ object ApiResponseFactory {
     @JvmStatic
     fun createResponseBuilder(response: ApiResponse = DefaultApiResponse(), block: ApiResponseBuilder.() -> Unit) =
         ApiResponseBuilder(response).apply(block).build()
-
-    /** Create a new [ApiContentResponse] with DSL of [ApiResponseBuilder] */
-    @JvmStatic
-    @Contract(" -> new")
-    fun createContentResponseBuilder(
-        response: ApiContentResponse = DefaultApiResponse(),
-        block: ApiResponseBuilder.() -> Unit,
-    ): ApiContentResponse = ApiResponseBuilder(response as ApiResponse).apply(block).build()
 
     /** Create a new [ApiError] with DSL of [ApiResponseBuilder.ApiErrorBuilder] */
     @JvmStatic

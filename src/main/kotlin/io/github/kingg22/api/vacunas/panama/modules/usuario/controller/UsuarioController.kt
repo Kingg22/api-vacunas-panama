@@ -7,7 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -77,7 +77,7 @@ class UsuarioController(
      * @param registerUserDto The [RegisterUserDto] containing the user registration details.
      * @param authentication The [Authentication] representing the current user (if any).
      * @param request The [ServerHttpRequest] used for building the response.
-     * @return [ApiResponse] containing the registration result, including user details, associated
+     * @return [ActualApiResponse] containing the registration result, including user details, associated
      * `Persona` or `Entidad` information and a token if the `Persona` or `Entidad` is
      * validated and active.
      *
@@ -92,7 +92,7 @@ class UsuarioController(
         @RequestBody @Valid registerUserDto: RegisterUserDto,
         authentication: Authentication?,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
 
@@ -110,22 +110,25 @@ class UsuarioController(
                     withMessage("Solo pacientes pueden registrarse sin autenticación")
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
+            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
             apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
             return createResponseEntity(apiResponse, request)
         }
 
         apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
+            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED)
+            apiResponse.addStatusCode(HttpStatus.CREATED.value())
         }
         return createResponseEntity(apiResponse, request)
     }
 
     @PostMapping("/login")
-    suspend fun login(@RequestBody @Valid loginDto: LoginDto, request: ServerHttpRequest): ResponseEntity<ApiResponse> {
+    suspend fun login(
+        @RequestBody @Valid loginDto: LoginDto,
+        request: ServerHttpRequest,
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         try {
             val authentication = reactiveAuthenticationManager.authenticate(
@@ -133,12 +136,12 @@ class UsuarioController(
             ).awaitSingle()
             if (authentication.isAuthenticated) {
                 apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(authentication.name)))
-                apiResponse.addStatusCode(HttpStatus.OK)
+                apiResponse.addStatusCode(HttpStatus.OK.value())
                 apiResponse.addStatus("message", "Login successful")
             }
         } catch (exception: CompromisedPasswordException) {
             log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
-            apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT)
+            apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT.value())
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
                 createApiErrorBuilder {
@@ -155,26 +158,26 @@ class UsuarioController(
     suspend fun restore(
         @RequestBody @Valid restoreDto: RestoreDto,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
+            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
         } else {
-            apiResponse.addStatusCode(HttpStatus.OK)
+            apiResponse.addStatusCode(HttpStatus.OK.value())
         }
         return createResponseEntity(apiResponse, request)
     }
 
     @GetMapping
-    suspend fun profile(authentication: Authentication, request: ServerHttpRequest): ResponseEntity<ApiResponse> {
+    suspend fun profile(authentication: Authentication, request: ServerHttpRequest): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         try {
             apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
-            apiResponse.addStatusCode(HttpStatus.OK)
+            apiResponse.addStatusCode(HttpStatus.OK.value())
         } catch (e: IllegalArgumentException) {
             log.error("Error while user fetching the profile", e)
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
+            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
         }
         return createResponseEntity(apiResponse, request)
     }

@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 /**
- * Check if this have errors.
+ * Check if this has errors.
  *
  * If the number of errors is equal to or greater than the value specified in the minErrors parameter (the default is 1),
  * it returns the object itself. Otherwise, it returns null.
@@ -30,4 +30,5 @@ fun ApiResponse.asBuilder() = ApiResponseBuilder(this)
  * Allows you to construct or modify an [ApiResponse] object using DSL style.
  * @return [ApiResponse] with all.
  */
-fun ApiResponse.builder(block: ApiResponseBuilder.() -> Unit) = ApiResponseBuilder(this).apply(block).build()
+fun ApiResponse.builder(block: ApiResponseBuilder.() -> Unit) =
+    ApiResponseBuilder(this).apply(block).build() as ActualApiResponse

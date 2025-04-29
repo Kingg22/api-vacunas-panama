@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -28,7 +28,7 @@ class PacienteController(private val pacienteService: PacienteService) {
     suspend fun getPaciente(
         @AuthenticationPrincipal jwt: Jwt,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         val personaIdString = jwt.getClaimAsString("persona")
         check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
@@ -43,9 +43,9 @@ class PacienteController(private val pacienteService: PacienteService) {
                     message = "El paciente no tiene dosis registradas"
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+            apiResponse.addStatusCode(HttpStatus.NOT_FOUND.value())
         } else {
-            apiResponse.addStatusCode(HttpStatus.OK)
+            apiResponse.addStatusCode(HttpStatus.OK.value())
         }
         return createResponseEntity(apiResponse, request)
     }

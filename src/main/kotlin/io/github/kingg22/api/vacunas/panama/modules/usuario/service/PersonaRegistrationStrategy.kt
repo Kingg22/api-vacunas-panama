@@ -8,7 +8,7 @@ import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaServi
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationSuccess
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
@@ -58,7 +58,7 @@ class PersonaRegistrationStrategy(
         )
     }
 
-    override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
+    override suspend fun create(registerUserDto: RegisterUserDto): ActualApiResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
             is RegistrationError -> createContentResponse().apply {

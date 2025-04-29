@@ -55,11 +55,11 @@ object ApiResponseUtil {
     fun createResponseEntity(
         apiResponse: ApiResponse,
         serverHttpRequest: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> = apiResponse.apply {
+    ): ResponseEntity<ActualApiResponse> = apiResponse.apply {
         setMetadata(this, serverHttpRequest)
         log.trace(toString())
     }.let {
-        ResponseEntity.status(it.retrieveStatusCode()).body(it)
+        ResponseEntity.status(it.retrieveStatusCode()).body(it as ActualApiResponse)
     }
 
     /**

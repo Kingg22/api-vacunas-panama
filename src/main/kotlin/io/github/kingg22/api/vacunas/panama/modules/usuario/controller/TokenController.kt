@@ -2,7 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -37,13 +37,13 @@ class TokenController(
      *
      * @param jwt The [Jwt] containing user ID.
      * @param request The [ServerHttpRequest] used for building the response.
-     * @return [ApiResponse] with new access_token and refresh_token.
+     * @return [ActualApiResponse] with new access_token and refresh_token.
      */
     @PostMapping("/refresh")
     suspend fun refreshToken(
         @AuthenticationPrincipal jwt: Jwt,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         val userId = checkNotNull(jwt.subject) { "Jwt subject is null" }
         log.debug("Receive a request to refresh token for user with id: {}", userId)
@@ -52,7 +52,7 @@ class TokenController(
             usuarioService.getUsuarioById(UUID.fromString(userId))?.let {
                 log.trace("User found, refreshing token for user with id: {}", userId)
                 apiResponse.addData(tokenService.generateTokens(it))
-                apiResponse.addStatusCode(HttpStatus.OK)
+                apiResponse.addStatusCode(HttpStatus.OK.value())
                 log.debug("Deleting refresh token for user with id: {}", userId)
                 redisTemplate.delete("token:refresh:$userId:${jwt.id}").awaitSingle()
             } ?: {
@@ -63,12 +63,12 @@ class TokenController(
                         withMessage("Usuario no encontrado, intente nuevamente")
                     },
                 )
-                apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+                apiResponse.addStatusCode(HttpStatus.NOT_FOUND.value())
             }
         } catch (e: IllegalArgumentException) {
             log.error("Error while refreshing token to {}", userId, e)
             apiResponse.addStatus("message", "Invalid token")
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
+            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
         }
         return createResponseEntity(apiResponse, request)
     }

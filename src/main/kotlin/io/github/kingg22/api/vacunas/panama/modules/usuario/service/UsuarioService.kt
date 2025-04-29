@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import org.springframework.security.core.Authentication
 import java.util.UUID
 
@@ -34,17 +34,17 @@ interface UsuarioService {
      * Retrieves the complete profile data for a given user.
      *
      * @param id UUID of the user.
-     * @return [ApiContentResponse] with data Map with profile fields and values.
+     * @return [ActualApiResponse] with data Map with profile fields and values.
      */
-    suspend fun getProfile(id: UUID): ApiContentResponse
+    suspend fun getProfile(id: UUID): ActualApiResponse
 
     /**
      * Sets and returns essential login data when a user signs in.
      *
      * @param id UUID of the user.
-     * @return [ApiContentResponse] with Map containing login-related data (e.g., tokens, roles).
+     * @return [ActualApiResponse] with Map containing login-related data (e.g., tokens, roles).
      */
-    suspend fun getLogin(id: UUID): ApiContentResponse
+    suspend fun getLogin(id: UUID): ActualApiResponse
 
     /**
      * Registers a new user using the provided DTO.
@@ -53,7 +53,7 @@ interface UsuarioService {
      * @param authentication Optional if the user is authenticated to verify permissions.
      * @return API response indicating a result and any errors.
      */
-    suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ApiContentResponse
+    suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ActualApiResponse
 
     /**
      * Registers a new user.
@@ -71,7 +71,7 @@ interface UsuarioService {
      * @param restoreDto DTO containing current and new password data.
      * @return API response with result or validation errors.
      */
-    suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse
+    suspend fun changePassword(restoreDto: RestoreDto): ActualApiResponse
 
     /**
      * Updates the timestamp of the user's last activity or usage.

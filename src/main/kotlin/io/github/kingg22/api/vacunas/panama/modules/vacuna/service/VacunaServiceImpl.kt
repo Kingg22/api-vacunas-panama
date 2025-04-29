@@ -10,7 +10,7 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.persistence.VacunaPersistenceService
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
@@ -30,7 +30,7 @@ class VacunaServiceImpl(
 ) : VacunaService {
     private val log = logger()
 
-    override suspend fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse {
+    override suspend fun createDosis(insertDosisDto: InsertDosisDto): ActualApiResponse {
         val contentResponse = createResponseBuilder()
         val paciente = pacienteService.getPacienteById(insertDosisDto.pacienteId)
         val vacuna = vacunaPersistenceService.findVacunaById(insertDosisDto.vacunaId)
@@ -89,7 +89,7 @@ class VacunaServiceImpl(
             }
             log.debug("Nueva dosis cumple las reglas de secuencia en número de dosis")
         }) { log.debug("El paciente no tiene dosis previas") }
-        contentResponse.build().returnIfErrors()?.let { return it }
+        contentResponse.build().returnIfErrors()?.let { return it as ActualApiResponse }
 
         val dosis = vacunaPersistenceService.createAndSaveDosis(
             DosisModel(
