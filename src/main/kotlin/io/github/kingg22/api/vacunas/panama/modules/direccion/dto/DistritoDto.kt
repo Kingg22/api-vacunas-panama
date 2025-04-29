@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DistritoModel
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.validation.Valid
@@ -10,6 +11,7 @@ import java.io.Serializable
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito] */
 @JvmRecord
 @KonvertTo(Distrito::class)
+@KonvertTo(DistritoModel::class)
 data class DistritoDto(
     val id: Short? = null,
 

@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.domain.PacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.domain.DosisModel
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
@@ -33,12 +35,13 @@ interface VacunaPersistenceService {
     suspend fun findTopDosisByPacienteAndVacuna(paciente: Paciente, vacuna: Vacuna): Dosis?
 
     /**
-     * Saves a new dose entity.
+     * Finds the most recent dose for a patient and vaccine.
      *
-     * @param dosis The dose entity to save.
-     * @return The saved dose entity.
+     * @param paciente The patient model
+     * @param vacuna The vaccine entity.
+     * @return The most recent dose entity if found, null otherwise.
      */
-    suspend fun saveDosis(dosis: Dosis): Dosis
+    suspend fun findTopDosisByPacienteAndVacuna(paciente: PacienteModel, vacuna: Vacuna): Dosis?
 
     /**
      * Finds all vaccines with their manufacturers.
@@ -55,4 +58,12 @@ interface VacunaPersistenceService {
      * @return A list of dose entities.
      */
     suspend fun findAllDosisByPacienteIdAndVacunaId(idPaciente: UUID, idVacuna: UUID): List<Dosis>
+
+    /**
+     * Creates and saves a new dose entity.
+     *
+     * @param dosisModel The dosis model
+     * @return The saved dose entity.
+     */
+    suspend fun createAndSaveDosis(dosisModel: DosisModel): Dosis
 }

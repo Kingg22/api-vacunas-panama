@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.sede.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto
+import io.github.kingg22.api.vacunas.panama.modules.sede.domain.SedeModel
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
@@ -15,6 +16,17 @@ import java.time.ZoneOffset.UTC
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede] */
 @JvmRecord
 @KonvertTo(Sede::class, mappings = [Mapping("id", ignore = true)])
+@KonvertTo(
+    SedeModel::class,
+    mappings = [
+        Mapping(
+            "nombre",
+            expression =
+            "entidad.nombre ?: io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto.DEFAULT_NOMBRE",
+        ),
+        Mapping("dependencia", source = "entidad.dependencia"),
+    ],
+)
 data class SedeDto(
     @field:Valid @param:Valid val entidad: EntidadDto,
 
@@ -28,8 +40,8 @@ data class SedeDto(
     @param:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @field:JsonProperty(value = "updated_at")
-    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @field:PastOrPresent
     @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,

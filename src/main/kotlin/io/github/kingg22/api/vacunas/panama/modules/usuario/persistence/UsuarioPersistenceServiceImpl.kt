@@ -1,5 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
 import jakarta.persistence.EntityManager
@@ -73,5 +77,52 @@ class UsuarioPersistenceServiceImpl(
         }
         checkNotNull(user) { "User was not saved" }
         return user
+    }
+
+    /**
+     * Creates a new user entity with the given DTO and associates it with the given persona or fabricante.
+     *
+     * @param usuarioDto The DTO containing the user information.
+     * @param persona The persona entity to associate with the user (optional).
+     * @param fabricante The fabricante entity to associate with the user (optional).
+     * @param encodedPassword The encoded password for the user.
+     * @param roles The set of roles for the user.
+     * @return The created user entity.
+     */
+    override suspend fun createUser(
+        usuarioDto: UsuarioDto,
+        persona: Persona?,
+        fabricante: Fabricante?,
+        encodedPassword: String,
+        roles: MutableSet<Rol>,
+    ): Usuario {
+        var savedUsuario: Usuario? = null
+        transactionTemplate.execute {
+            // Find entities using entityManager.find instead of merge
+            val managedPersona = persona?.id?.let {
+                entityManager.find(Persona::class.java, it)
+            }
+            val managedFabricante = fabricante?.id?.let {
+                entityManager.find(Fabricante::class.java, it)
+            }
+
+            val usuario = Usuario(
+                username = usuarioDto.username,
+                clave = encodedPassword,
+                createdAt = usuarioDto.createdAt,
+                roles = roles,
+                persona = managedPersona,
+                fabricante = managedFabricante,
+                id = usuarioDto.id,
+                disabled = usuarioDto.disabled,
+            )
+            managedPersona?.usuario = usuario
+            managedFabricante?.usuario = usuario
+
+            entityManager.persist(usuario)
+            savedUsuario = usuario
+        }
+        checkNotNull(savedUsuario) { "User was not created" }
+        return savedUsuario
     }
 }

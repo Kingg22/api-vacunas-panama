@@ -1,9 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.doctor.entity
 
+import io.github.kingg22.api.vacunas.panama.modules.doctor.domain.DoctorModel
 import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.DoctorDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -61,4 +64,7 @@ class Doctor(
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-)
+) {
+    @KonvertFrom(DoctorModel::class, mappings = [Mapping(target = "idoneidad", expression = "it.idoneidad ?: \"\"")])
+    companion object
+}

@@ -59,7 +59,7 @@ interface DireccionPersistenceService {
      * @param distritoId The ID of the district.
      * @return A list of address entities.
      */
-    suspend fun findDireccionByDescripcionAndDistritoId(descripcion: String, distritoId: Int): List<Direccion>
+    suspend fun findDireccionByDescripcionAndDistritoId(descripcion: String, distritoId: Short): List<Direccion>
 
     /**
      * Finds addresses by description and district name.

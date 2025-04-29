@@ -45,7 +45,7 @@ class Entidad(
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
-    var direccion: Direccion,
+    var direccion: Direccion = Direccion.DIRECCION_DEFAULT,
 
     @Size(max = 50)
     @NotNull

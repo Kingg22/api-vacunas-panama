@@ -88,8 +88,8 @@ data class PacienteInputDto(
     @param:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @field:JsonProperty(value = "updated_at")
-    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @field:PastOrPresent
     @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,

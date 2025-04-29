@@ -1,6 +1,8 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
+import io.github.kingg22.api.vacunas.panama.modules.persona.domain.PersonaModel
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.fromPersonaModel
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -13,7 +15,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createCo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PersonaRegistrationStrategy(
@@ -57,7 +58,6 @@ class PersonaRegistrationStrategy(
         )
     }
 
-    @Transactional
     override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
@@ -66,8 +66,8 @@ class PersonaRegistrationStrategy(
             }
 
             is RegistrationSuccess -> {
-                val persona = (
-                    resultValidate.outcome as? Persona
+                val persona = Persona.fromPersonaModel(
+                    resultValidate.outcome as? PersonaModel
                         ?: return createContentResponse().apply {
                             addError(
                                 createApiErrorBuilder {
@@ -75,8 +75,8 @@ class PersonaRegistrationStrategy(
                                     withMessage("No se puede crear persona")
                                 },
                             )
-                        }
-                    )
+                        },
+                )
                 log.debug("Persona validated: {}", persona)
                 log.debug("Persona ID: {}", persona.id)
 

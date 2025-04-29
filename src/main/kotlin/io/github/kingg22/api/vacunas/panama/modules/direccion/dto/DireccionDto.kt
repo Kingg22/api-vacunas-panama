@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.direccion.dto
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DireccionModel
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.validation.Valid
@@ -15,6 +16,7 @@ import java.util.UUID
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion] */
 @JvmRecord
 @KonvertTo(Direccion::class)
+@KonvertTo(DireccionModel::class)
 data class DireccionDto(
     val id: UUID? = null,
 
@@ -40,8 +42,8 @@ data class DireccionDto(
     @param:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
 
-    @field:JsonProperty(value = "updated_at")
-    @param:JsonProperty(value = "updated_at")
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @field:PastOrPresent
     @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,

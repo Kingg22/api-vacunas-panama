@@ -4,6 +4,7 @@ import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.persistence.PacientePersistenceService
@@ -74,8 +75,8 @@ class PacienteServiceImpl(
 
     override suspend fun getPacienteDtoById(id: UUID) = pacientePersistenceService.findPacienteById(id)?.toPacienteDto()
 
-    @Deprecated("Use DTO instead", replaceWith = ReplaceWith("getPacienteDtoById(idPaciente)"))
-    override suspend fun getPacienteById(idPaciente: UUID) = pacientePersistenceService.findPacienteById(idPaciente)
+    override suspend fun getPacienteById(idPaciente: UUID) =
+        pacientePersistenceService.findPacienteById(idPaciente)?.toPacienteDto()?.toPacienteModel()
 
     @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
     override suspend fun getViewVacunaEnfermedad(id: UUID) =

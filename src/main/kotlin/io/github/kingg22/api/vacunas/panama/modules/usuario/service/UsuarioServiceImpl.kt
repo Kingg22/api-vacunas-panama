@@ -13,7 +13,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.persistence.UsuarioPersistenceService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
@@ -26,7 +25,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.logger
-import jakarta.persistence.EntityManager
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.context.annotation.Lazy
 import org.springframework.security.authentication.AnonymousAuthenticationToken
@@ -34,15 +32,12 @@ import org.springframework.security.authentication.password.ReactiveCompromisedP
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Service
 class UsuarioServiceImpl(
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
     private val reactiveCompromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
     private val passwordEncoder: PasswordEncoder,
     private val usuarioPersistenceService: UsuarioPersistenceService,
@@ -145,27 +140,17 @@ class UsuarioServiceImpl(
 
     override suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?) {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet()
-        transactionTemplate.execute {
-            val managedPersona = persona?.let { entityManager.merge(it) }
-            val managedFabricante = fabricante?.let { entityManager.merge(it) }
+        val encodedPassword = passwordEncoder.encode(usuarioDto.password)
 
-            val usuario = Usuario(
-                username = usuarioDto.username,
-                clave = passwordEncoder.encode(usuarioDto.password),
-                createdAt = usuarioDto.createdAt,
-                roles = roles,
-                persona = persona,
-                fabricante = fabricante,
-                id = usuarioDto.id,
-                disabled = usuarioDto.disabled,
-            )
-            managedPersona?.usuario = usuario
-            managedFabricante?.usuario = usuario
+        val usuario = usuarioPersistenceService.createUser(
+            usuarioDto = usuarioDto,
+            persona = persona,
+            fabricante = fabricante,
+            encodedPassword = encodedPassword,
+            roles = roles,
+        )
 
-            // Using entityManager directly, since we're in a transaction and this, it'd not suspend the function body
-            entityManager.persist(usuario)
-            log.trace("User created: {}", usuario)
-        }
+        log.trace("User created: {}", usuario)
     }
 
     override suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse {

@@ -54,7 +54,7 @@ class DireccionServiceImpl(private val direccionPersistenceService: DireccionPer
         direccionDto.distrito.id?.let { distritoId ->
             direccionPersistenceService.findDireccionByDescripcionAndDistritoId(
                 direccion,
-                distritoId.toInt(),
+                distritoId,
             ).firstOrNull()?.let {
                 return it.toDireccionDto()
             }

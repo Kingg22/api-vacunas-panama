@@ -31,8 +31,8 @@ data class VacunaDto(
     @field:PastOrPresent
     val createdAt: LocalDateTime? = null,
 
-    @param:JsonProperty(value = "updated_at")
-    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @param:PastOrPresent
     @field:PastOrPresent
     val updatedAt: LocalDateTime? = null,

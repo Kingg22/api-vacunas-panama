@@ -82,7 +82,7 @@ class DireccionPersistenceServiceImpl(
      * @param distritoId The ID of the district.
      * @return A list of address entities.
      */
-    override suspend fun findDireccionByDescripcionAndDistritoId(descripcion: String, distritoId: Int) =
+    override suspend fun findDireccionByDescripcionAndDistritoId(descripcion: String, distritoId: Short) =
         direccionRepository.findDireccionByDescripcionAndDistrito_Id(descripcion, distritoId)
 
     /**

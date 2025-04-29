@@ -3,7 +3,9 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.entity
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.usuario.domain.UsuarioModel
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
@@ -86,4 +88,7 @@ class Usuario(
 
     @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
     var persona: Persona? = null,
-)
+) {
+    @KonvertFrom(UsuarioModel::class, mappings = [Mapping("clave", constant = "\"\"")])
+    companion object
+}

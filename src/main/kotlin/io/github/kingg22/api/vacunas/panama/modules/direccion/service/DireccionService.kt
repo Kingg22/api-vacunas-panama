@@ -29,7 +29,7 @@ interface DireccionService {
      * Creates and persists a new `Direccion` entity from the given [DireccionDto].
      *
      * @param direccionDto DTO containing address data to persist.
-     * @return The newly created [DireccionDto] entity.
+     * @return The newly created [DireccionDto] representing the saved model.
      */
     suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
 

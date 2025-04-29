@@ -1,12 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
-import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.toDoctor
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.domain.DosisModel
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
@@ -20,8 +19,6 @@ import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Service
@@ -94,16 +91,15 @@ class VacunaServiceImpl(
         }) { log.debug("El paciente no tiene dosis previas") }
         contentResponse.build().returnIfErrors()?.let { return it }
 
-        val dosis = vacunaPersistenceService.saveDosis(
-            Dosis(
-                paciente = paciente,
+        val dosis = vacunaPersistenceService.createAndSaveDosis(
+            DosisModel(
+                pacienteId = insertDosisDto.pacienteId,
+                vacunaId = insertDosisDto.vacunaId,
+                sedeId = insertDosisDto.sedeId,
                 numeroDosis = insertDosisDto.numeroDosis.value,
-                vacuna = vacuna,
-                sede = sede,
                 lote = insertDosisDto.lote,
-                doctor = doctor?.toDoctor(),
-                fechaAplicacion = insertDosisDto.fechaAplicacion ?: LocalDateTime.now(UTC),
-                createdAt = LocalDateTime.now(UTC),
+                doctorId = insertDosisDto.doctorId,
+                fechaAplicacion = insertDosisDto.fechaAplicacion,
             ),
         )
         contentResponse.withData("dosis", dosis.toDosisDto())

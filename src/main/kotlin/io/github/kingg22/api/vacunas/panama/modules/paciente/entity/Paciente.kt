@@ -1,8 +1,10 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.entity
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.domain.PacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.ColumnResult
@@ -119,4 +121,7 @@ class Paciente(
     @Size(max = 255)
     @Column(name = "identificacion_temporal")
     var identificacionTemporal: String? = null,
-)
+) {
+    @KonvertFrom(PacienteModel::class)
+    companion object
+}

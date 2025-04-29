@@ -1,8 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.modules.sede.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
+import io.github.kingg22.api.vacunas.panama.modules.sede.domain.SedeModel
 import io.github.kingg22.api.vacunas.panama.modules.sede.dto.SedeDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
+import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -53,4 +56,15 @@ class Sede(
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-)
+) {
+    @KonvertFrom(
+        SedeModel::class,
+        mappings = [
+            Mapping(
+                "entidad",
+                expression = "io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad(nombre = it.nombre)",
+            ),
+        ],
+    )
+    companion object
+}

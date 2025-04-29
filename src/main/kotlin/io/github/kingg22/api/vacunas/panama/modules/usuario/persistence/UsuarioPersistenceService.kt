@@ -1,5 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import java.util.UUID
 
@@ -54,4 +58,22 @@ interface UsuarioPersistenceService {
      * @return The saved user entity.
      */
     suspend fun saveUsuario(usuario: Usuario): Usuario
+
+    /**
+     * Creates a new user entity with the given DTO and associates it with the given persona or fabricante.
+     *
+     * @param usuarioDto The DTO containing the user information.
+     * @param persona The persona entity to associate with the user (optional).
+     * @param fabricante The fabricante entity to associate with the user (optional).
+     * @param encodedPassword The encoded password for the user.
+     * @param roles The set of roles for the user.
+     * @return The created user entity.
+     */
+    suspend fun createUser(
+        usuarioDto: UsuarioDto,
+        persona: Persona? = null,
+        fabricante: Fabricante? = null,
+        encodedPassword: String,
+        roles: MutableSet<Rol>,
+    ): Usuario
 }

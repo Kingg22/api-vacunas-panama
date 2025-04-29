@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto.Companion.DEFAULT_ROL
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
@@ -38,8 +39,8 @@ data class RolDto(
     @field:PastOrPresent(message = "La fecha de creación no puede ser futura")
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @param:JsonProperty(value = "updated_at")
-    @field:JsonProperty(value = "updated_at")
+    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @param:PastOrPresent(message = "La fecha de actualización no puede ser futura")
     @field:PastOrPresent(message = "La fecha de actualización no puede ser futura")
     val updatedAt: LocalDateTime? = null,
