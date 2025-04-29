@@ -10,7 +10,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-interface DoctorPersistenceService {
+fun interface DoctorPersistenceService {
 
     /**
      * Finds a doctor by its ID.

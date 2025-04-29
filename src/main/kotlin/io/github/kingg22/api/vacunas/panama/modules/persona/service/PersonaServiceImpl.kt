@@ -11,10 +11,6 @@ import java.util.UUID
 
 @Service
 class PersonaServiceImpl(private val personaPersistenceService: PersonaPersistenceService) : PersonaService {
-    @Deprecated(
-        "This function be change to use DTO when jooq is set as ORM",
-        replaceWith = ReplaceWith("getPersonaDto(identifier)"),
-    )
     override suspend fun getPersona(identifier: @NotNull String): PersonaModel? {
         val result = formatToSearch(identifier)
         val personaOpt = personaPersistenceService.findByCedulaOrPasaporteOrCorreo(

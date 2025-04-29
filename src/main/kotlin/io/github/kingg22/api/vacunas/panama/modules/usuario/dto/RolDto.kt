@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto.Companion.DEFAULT_ROL
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
@@ -16,7 +15,7 @@ import java.time.ZoneOffset.UTC
 /**
  * DTO for [io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol]
  *
- * _Warning_: [RolDto.toRol] include a default value ([DEFAULT_ROL]) for [RolDto.nombre] if it is null.
+ * _Warning_: [RolDto.toRol] include a default value ([RolDto.Companion.DEFAULT_ROL]) for [RolDto.nombre] if it is null.
  */
 @JvmRecord
 @KonvertTo(Rol::class, mappings = [Mapping("nombre", expression = "nombre ?: RolDto.DEFAULT_ROL")])
