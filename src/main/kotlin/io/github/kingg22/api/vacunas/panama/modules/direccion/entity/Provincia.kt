@@ -30,6 +30,9 @@ class Provincia(
     @Column(name = "nombre", nullable = false, length = 30)
     var nombre: String,
 ) {
+    override fun toString(): String = Provincia::class.simpleName +
+        "(id=$id, nombre='$nombre')"
+
     @KonvertFrom(ProvinciaModel::class)
     companion object
 }

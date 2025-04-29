@@ -1,8 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.toFabricante
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
@@ -63,7 +61,7 @@ class FabricanteRegistrationStrategy(
             }
 
             is RegistrationSuccess -> {
-                val fabricante = (
+                val fabricante =
                     resultValidate.outcome as? FabricanteDto
                         ?: return createContentResponse().apply {
                             addError(
@@ -73,12 +71,11 @@ class FabricanteRegistrationStrategy(
                                 },
                             )
                         }
-                    ).toFabricante()
 
-                usuarioService.createUser(registerUserDto.usuario, fabricante = fabricante, persona = null)
+                usuarioService.createUser(registerUserDto.usuario, null, fabricante.entidad.id)
 
                 createContentResponse().apply {
-                    addData("fabricante", fabricante.toFabricanteDto())
+                    addData("fabricante", fabricante)
                 }
             }
         }

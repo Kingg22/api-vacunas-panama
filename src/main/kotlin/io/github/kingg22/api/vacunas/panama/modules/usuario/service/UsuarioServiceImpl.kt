@@ -1,9 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
-import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.toFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.FabricanteService
-import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
@@ -11,7 +9,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.persistence.UsuarioPersistenceService
@@ -138,19 +135,19 @@ class UsuarioServiceImpl(
         return response
     }
 
-    override suspend fun createUser(usuarioDto: UsuarioDto, persona: Persona?, fabricante: Fabricante?) {
-        val roles = rolPermisoService.convertToExistRol(usuarioDto.roles).map { it.toRol() }.toMutableSet()
-        val encodedPassword = passwordEncoder.encode(usuarioDto.password)
+    override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?) {
+        val roles = rolPermisoService.convertToExistRol(usuarioDto.roles)
+        val encodedPassword: String = passwordEncoder.encode(usuarioDto.password)
 
-        val usuario = usuarioPersistenceService.createUser(
+        usuarioPersistenceService.createUser(
             usuarioDto = usuarioDto,
-            persona = persona,
-            fabricante = fabricante,
+            personaId = personaId,
+            fabricanteId = fabricanteId,
             encodedPassword = encodedPassword,
             roles = roles,
-        )
-
-        log.trace("User created: {}", usuario)
+        ).also {
+            log.trace("User created: {}", it)
+        }
     }
 
     override suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse {

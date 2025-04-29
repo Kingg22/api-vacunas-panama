@@ -122,6 +122,9 @@ class Paciente(
     @Column(name = "identificacion_temporal")
     var identificacionTemporal: String? = null,
 ) {
+    override fun toString(): String = Paciente::class.simpleName +
+        ": id=$id, persona=$persona, createdAt=$createdAt, updatedAt=$updatedAt, identificacionTemporal=$identificacionTemporal"
+
     @KonvertFrom(PacienteModel::class)
     companion object
 }

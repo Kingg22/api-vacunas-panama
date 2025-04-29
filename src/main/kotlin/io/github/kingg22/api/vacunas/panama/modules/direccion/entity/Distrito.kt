@@ -38,6 +38,9 @@ class Distrito(
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
 ) {
+    override fun toString(): String = Distrito::class.simpleName +
+        "(id=$id, provincia=$provincia, nombre='$nombre')"
+
     @KonvertFrom(DistritoModel::class)
     companion object
 }

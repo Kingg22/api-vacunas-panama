@@ -1,14 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPacienteModel
-import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.persistence.PacientePersistenceService
-import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
@@ -17,7 +14,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createCo
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
-import org.hibernate.Hibernate
+import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
@@ -28,6 +25,8 @@ class PacienteServiceImpl(
     private val pacientePersistenceService: PacientePersistenceService,
     @Lazy private val direccionService: DireccionService,
 ) : PacienteService {
+    private val log = logger()
+
     override suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
         val response = createContentResponse()
         response.addErrors(validatePacienteExist(pacienteDto))
@@ -37,39 +36,30 @@ class PacienteServiceImpl(
         response.returnIfErrors()?.let { return it }
 
         val direccion = pacienteDto.persona.direccion.let {
-            direccionService.getDireccionByDto(it)?.toDireccion()
-                ?: direccionService.createDireccion(it).toDireccion()
+            direccionService.getDireccionByDto(it)
+                ?: direccionService.createDireccion(it)
+        }
+
+        pacienteDto.persona.usuario?.let {
+            log.warn(
+                "createPaciente: Paciente have usuario, but this will be ignored. Please use updatePaciente instead. Usuario: {}",
+                it,
+            )
         }
 
         val paciente = pacientePersistenceService.savePaciente(
-            Paciente(
-                identificacionTemporal = pacienteDto.identificacionTemporal,
-                createdAt = pacienteDto.createdAt,
-                persona = Persona(
-                    nombre = pacienteDto.persona.nombre,
-                    nombre2 = pacienteDto.persona.nombre2,
-                    apellido1 = pacienteDto.persona.apellido1,
-                    apellido2 = pacienteDto.persona.apellido2,
-                    fechaNacimiento = pacienteDto.persona.fechaNacimiento,
-                    cedula = pacienteDto.persona.cedula,
-                    pasaporte = pacienteDto.persona.pasaporte,
-                    telefono = pacienteDto.persona.telefono,
-                    correo = pacienteDto.persona.correo,
-                    sexo = pacienteDto.persona.sexo,
+            pacienteDto.copy(
+                updatedAt = null,
+                persona = pacienteDto.persona.copy(
+                    id = null,
                     direccion = direccion,
                     estado = pacienteDto.persona.estado ?: "ACTIVO",
+                    usuario = null,
                 ),
             ),
         )
 
-        Hibernate.initialize(paciente.persona.usuario)
-        Hibernate.initialize(paciente.persona.direccion)
-        paciente.persona.direccion.distrito.let {
-            Hibernate.initialize(it)
-            Hibernate.initialize(it.provincia)
-        }
-
-        response.addData("paciente", paciente.toPacienteDto())
+        response.addData("paciente", paciente)
         return response
     }
 

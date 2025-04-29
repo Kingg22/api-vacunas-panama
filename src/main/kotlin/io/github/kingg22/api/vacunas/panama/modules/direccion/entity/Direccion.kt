@@ -57,6 +57,9 @@ class Direccion(
     @JoinColumn(name = "distrito", nullable = false)
     var distrito: Distrito,
 ) {
+    override fun toString(): String = Direccion::class.simpleName +
+        "(id=$id, descripcion='$descripcion', createdAt=$createdAt, updatedAt=$updatedAt, distrito=$distrito)"
+
     @KonvertFrom(DireccionModel::class)
     companion object {
         val DIRECCION_DEFAULT = Direccion(

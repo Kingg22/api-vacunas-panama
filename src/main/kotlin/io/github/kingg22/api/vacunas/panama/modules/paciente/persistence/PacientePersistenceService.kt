@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import java.util.UUID
@@ -71,10 +72,10 @@ interface PacientePersistenceService {
     suspend fun findByPersonaTelefono(telefono: String?): Paciente?
 
     /**
-     * Saves a paciente entity.
+     * Saves a paciente entity using DTO.
      *
-     * @param paciente The paciente entity to save.
-     * @return The saved paciente entity.
+     * @param pacienteDto The paciente DTO to save.
+     * @return The saved paciente DTO.
      */
-    suspend fun savePaciente(paciente: Paciente): Paciente
+    suspend fun savePaciente(pacienteDto: PacienteDto): PacienteDto
 }

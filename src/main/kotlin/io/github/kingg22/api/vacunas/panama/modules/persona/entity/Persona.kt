@@ -101,6 +101,9 @@ class Persona(
     @Column(name = "correo", length = 254)
     var correo: String? = null,
 ) {
+    override fun toString(): String = Persona::class.simpleName +
+        " id: $id, nombre: $nombre, apellido1: $apellido1, apellido2: $apellido2, cedula: $cedula, direccion: $direccion, estado: $estado, fechaNacimiento: $fechaNacimiento, pasaporte: $pasaporte, telefono: $telefono, usuario: $usuario, correo: $correo, sexo: $sexo, edad: $edad"
+
     @KonvertFrom(
         PersonaModel::class,
         mappings = [

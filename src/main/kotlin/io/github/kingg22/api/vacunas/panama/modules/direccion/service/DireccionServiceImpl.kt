@@ -2,8 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 
 import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDistrito
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.persistence.DireccionPersistenceService
 import jakarta.validation.Valid
@@ -35,12 +33,12 @@ class DireccionServiceImpl(private val direccionPersistenceService: DireccionPer
         } ?: getDistritoDefault()
 
         return direccionPersistenceService.saveDireccion(
-            Direccion(
-                descripcion = direccionDto.descripcion,
-                distrito = distritoDto.toDistrito(),
-                createdAt = direccionDto.createdAt,
+            direccionDto.copy(
+                id = null,
+                updatedAt = null,
+                distrito = distritoDto,
             ),
-        ).toDireccionDto()
+        )
     }
 
     suspend fun getDistritoDefault() = direccionPersistenceService.findDistritoById(0)

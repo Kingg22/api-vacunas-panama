@@ -1,7 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
+import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPaciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
+import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.repository.PacienteRepository
+import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.persistence.EntityManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -21,6 +25,7 @@ class PacientePersistenceServiceImpl(
     private val transactionTemplate: TransactionTemplate,
     private val pacienteRepository: PacienteRepository,
 ) : PacientePersistenceService {
+    private val log = logger()
 
     /**
      * Finds a paciente by its ID.
@@ -83,18 +88,21 @@ class PacientePersistenceServiceImpl(
     override suspend fun findByPersonaTelefono(telefono: String?) = pacienteRepository.findByPersonaTelefono(telefono)
 
     /**
-     * Saves a paciente entity.
+     * Saves a paciente entity using DTO.
      *
-     * @param paciente The paciente entity to save.
-     * @return The saved paciente entity.
+     * @param pacienteDto The paciente DTO to save.
+     * @return The saved paciente DTO.
      */
-    override suspend fun savePaciente(paciente: Paciente): Paciente {
+    override suspend fun savePaciente(pacienteDto: PacienteDto): PacienteDto {
         var savedPaciente: Paciente? = null
         transactionTemplate.execute {
+            log.trace("Saving pacienteDTO {}", pacienteDto)
+            val paciente = pacienteDto.toPaciente()
+            log.trace("Converted paciente {}", paciente)
             entityManager.persist(paciente)
             savedPaciente = paciente
         }
         checkNotNull(savedPaciente) { "Paciente not saved" }
-        return savedPaciente
+        return savedPaciente.toPacienteDto()
     }
 }

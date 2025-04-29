@@ -80,7 +80,7 @@ class PersonaRegistrationStrategy(
                 log.debug("Persona validated: {}", persona)
                 log.debug("Persona ID: {}", persona.id)
 
-                usuarioService.createUser(registerUserDto.usuario, persona = persona, fabricante = null)
+                usuarioService.createUser(registerUserDto.usuario, persona.id, null)
 
                 createContentResponse().apply {
                     addData("persona", persona.toPersonaDto())

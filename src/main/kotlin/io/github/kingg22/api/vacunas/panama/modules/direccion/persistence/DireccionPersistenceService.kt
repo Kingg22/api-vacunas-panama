@@ -1,5 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
@@ -37,12 +38,12 @@ interface DireccionPersistenceService {
     suspend fun findDistritoById(id: Short): DistritoDto?
 
     /**
-     * Saves a new address entity.
+     * Saves a new address entity using DTO.
      *
-     * @param direccion The address entity to save.
-     * @return The saved address entity.
+     * @param direccionDto The address DTO to save.
+     * @return The saved address DTO.
      */
-    suspend fun saveDireccion(direccion: Direccion): Direccion
+    suspend fun saveDireccion(direccionDto: DireccionDto): DireccionDto
 
     /**
      * Finds an address by its ID.

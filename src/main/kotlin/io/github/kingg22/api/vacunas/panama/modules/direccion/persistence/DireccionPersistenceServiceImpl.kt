@@ -1,12 +1,16 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.persistence
 
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DireccionRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DistritoRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.ProvinciaRepository
+import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.persistence.EntityManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -28,6 +32,7 @@ class DireccionPersistenceServiceImpl(
     private val distritoRepository: DistritoRepository,
     private val provinciaRepository: ProvinciaRepository,
 ) : DireccionPersistenceService {
+    private val log = logger()
 
     /**
      * Finds all districts.
@@ -52,19 +57,22 @@ class DireccionPersistenceServiceImpl(
     override suspend fun findDistritoById(id: Short) = distritoRepository.findByIdOrNull(id)?.toDistritoDto()
 
     /**
-     * Saves a new address entity.
+     * Saves a new address entity using DTO.
      *
-     * @param direccion The address entity to save.
-     * @return The saved address entity.
+     * @param direccionDto The address DTO to save.
+     * @return The saved address DTO.
      */
-    override suspend fun saveDireccion(direccion: Direccion): Direccion {
+    override suspend fun saveDireccion(direccionDto: DireccionDto): DireccionDto {
         var direccionSaved: Direccion? = null
         transactionTemplate.execute {
+            log.trace("Saving direccionDTO {}", direccionDto.toString())
+            val direccion = direccionDto.toDireccion()
+            log.trace("Converted direccion {}", direccion.toString())
             entityManager.merge(direccion)
             direccionSaved = direccionRepository.save(direccion)
         }
         checkNotNull(direccionSaved) { "Direccion not saved" }
-        return direccionSaved
+        return direccionSaved.toDireccionDto()
     }
 
     /**

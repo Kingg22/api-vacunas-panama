@@ -2,8 +2,9 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.persistence
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Rol
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
 import jakarta.persistence.EntityManager
@@ -83,26 +84,26 @@ class UsuarioPersistenceServiceImpl(
      * Creates a new user entity with the given DTO and associates it with the given persona or fabricante.
      *
      * @param usuarioDto The DTO containing the user information.
-     * @param persona The persona entity to associate with the user (optional).
-     * @param fabricante The fabricante entity to associate with the user (optional).
+     * @param personaId The persona entity to associate with the user (optional).
+     * @param fabricanteId The fabricante entity to associate with the user (optional).
      * @param encodedPassword The encoded password for the user.
      * @param roles The set of roles for the user.
      * @return The created user entity.
      */
     override suspend fun createUser(
         usuarioDto: UsuarioDto,
-        persona: Persona?,
-        fabricante: Fabricante?,
+        personaId: UUID?,
+        fabricanteId: UUID?,
         encodedPassword: String,
-        roles: MutableSet<Rol>,
+        roles: Set<RolDto>,
     ): Usuario {
         var savedUsuario: Usuario? = null
         transactionTemplate.execute {
             // Find entities using entityManager.find instead of merge
-            val managedPersona = persona?.id?.let {
+            val managedPersona = personaId?.let {
                 entityManager.find(Persona::class.java, it)
             }
-            val managedFabricante = fabricante?.id?.let {
+            val managedFabricante = fabricanteId?.let {
                 entityManager.find(Fabricante::class.java, it)
             }
 
@@ -110,7 +111,7 @@ class UsuarioPersistenceServiceImpl(
                 username = usuarioDto.username,
                 clave = encodedPassword,
                 createdAt = usuarioDto.createdAt,
-                roles = roles,
+                roles = roles.map { it.toRol() }.toMutableSet(),
                 persona = managedPersona,
                 fabricante = managedFabricante,
                 id = usuarioDto.id,
