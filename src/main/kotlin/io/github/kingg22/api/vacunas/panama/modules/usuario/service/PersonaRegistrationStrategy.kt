@@ -6,6 +6,7 @@ import io.github.kingg22.api.vacunas.panama.modules.persona.entity.fromPersonaMo
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.service.PersonaService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationSuccess
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
@@ -80,7 +81,7 @@ class PersonaRegistrationStrategy(
                 log.debug("Persona validated: {}", persona)
                 log.debug("Persona ID: {}", persona.id)
 
-                usuarioService.createUser(registerUserDto.usuario, persona.id, null)
+                persona.usuario = usuarioService.createUser(registerUserDto.usuario, persona.id, null).toUsuario()
 
                 createContentResponse().apply {
                     addData("persona", persona.toPersonaDto())

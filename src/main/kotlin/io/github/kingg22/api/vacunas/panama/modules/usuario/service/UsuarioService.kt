@@ -63,7 +63,7 @@ interface UsuarioService {
      * @param personaId Optional if the user is linked to a persona.
      * @param fabricanteId Optional if the user is linked to fabricante.
      */
-    suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?)
+    suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?): UsuarioDto
 
     /**
      * Changes the password of a user using the provided restore DTO.

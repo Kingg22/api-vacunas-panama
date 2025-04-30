@@ -135,18 +135,21 @@ class UsuarioServiceImpl(
         return response
     }
 
-    override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?) {
+    override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?): UsuarioDto {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles)
         val encodedPassword: String = passwordEncoder.encode(usuarioDto.password)
 
-        usuarioPersistenceService.createUser(
+        return usuarioPersistenceService.createUser(
             usuarioDto = usuarioDto,
             personaId = personaId,
             fabricanteId = fabricanteId,
             encodedPassword = encodedPassword,
             roles = roles,
-        ).also {
-            log.trace("User created: {}", it)
+        ).let {
+            log.trace("User entity created: {}", it.toString())
+            log.trace("User created: {}", it.toUsuarioDto().toString())
+            log.trace("Have user: {}", it.persona?.usuario)
+            it.toUsuarioDto()
         }
     }
 

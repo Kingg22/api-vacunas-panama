@@ -72,10 +72,16 @@ class FabricanteRegistrationStrategy(
                             )
                         }
 
-                usuarioService.createUser(registerUserDto.usuario, null, fabricante.entidad.id)
+                val fabricanteDto = fabricante.copy(
+                    usuario = usuarioService.createUser(
+                        registerUserDto.usuario,
+                        null,
+                        fabricante.entidad.id,
+                    ),
+                )
 
                 createContentResponse().apply {
-                    addData("fabricante", fabricante)
+                    addData("fabricante", fabricanteDto)
                 }
             }
         }
