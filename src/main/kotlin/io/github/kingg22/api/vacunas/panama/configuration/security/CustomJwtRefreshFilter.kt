@@ -1,3 +1,5 @@
+@file:Suppress("kotlin:S6508") // Inheritance / Implementation cannot change the signature
+
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
@@ -52,12 +54,17 @@ class CustomJwtRefreshFilter(private val tokenService: TokenService, private val
                     tokenService.isRefreshTokenValid(userId, tokenId),
                 ).flatMap {
                     val (accessTokenValid, refreshTokenValid) = it.t1 to it.t2
-                    log.debug("IsAccessTokenValid: $accessTokenValid, IsRefreshTokenValid: $refreshTokenValid")
+                    val path = exchange.request.uri.path
+                    checkNotNull(path) { "Path is null for filter chain" }
+                    log.debug(
+                        "IsAccessTokenValid: $accessTokenValid, IsRefreshTokenValid: $refreshTokenValid. Going to '$path'",
+                    )
 
                     when {
                         !accessTokenValid &&
                             refreshTokenValid &&
-                            exchange.request.uri.path != REFRESH_TOKEN_ENDPOINT -> {
+                            path != REFRESH_TOKEN_ENDPOINT -> {
+                            log.debug("Refresh token invalid use. Returning 403 Forbidden.")
                             setWWWHeader(exchange.response, "invalid_token", "Refresh token is only for refresh tokens")
                             exchange.response.statusCode = HttpStatus.FORBIDDEN
                             exchange.response.setComplete()
@@ -65,7 +72,8 @@ class CustomJwtRefreshFilter(private val tokenService: TokenService, private val
 
                         accessTokenValid &&
                             !refreshTokenValid &&
-                            exchange.request.uri.path == REFRESH_TOKEN_ENDPOINT -> {
+                            path == REFRESH_TOKEN_ENDPOINT -> {
+                            log.debug("Access token invalid use. Returning 403 Forbidden.")
                             setWWWHeader(
                                 exchange.response,
                                 "invalid_token",
@@ -76,6 +84,7 @@ class CustomJwtRefreshFilter(private val tokenService: TokenService, private val
                         }
 
                         !accessTokenValid && !refreshTokenValid -> {
+                            log.debug("Access and refresh token invalid use. Returning 403 Forbidden.")
                             setWWWHeader(exchange.response, "invalid_token", "Tokens has been revoked")
                             exchange.response.statusCode = HttpStatus.FORBIDDEN
                             exchange.response.setComplete()

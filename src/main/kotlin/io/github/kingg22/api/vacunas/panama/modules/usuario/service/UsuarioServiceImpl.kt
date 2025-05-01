@@ -86,7 +86,12 @@ class UsuarioServiceImpl(
             if (usuario.fabricante != null) {
                 response.withData("fabricante", usuario.fabricante!!.toFabricanteDto())
             }
-            response.withData(tokenService.generateTokens(usuario.toUsuarioDto()))
+            response.withData(
+                tokenService.generateTokens(
+                    usuario.toUsuarioDto(),
+                    mapOf("persona" to usuario.persona?.id, "fabricante" to usuario.fabricante?.id),
+                ),
+            )
         } else {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
