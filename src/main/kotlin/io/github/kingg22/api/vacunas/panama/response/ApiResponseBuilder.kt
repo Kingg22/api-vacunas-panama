@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.response
 
-import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /**
@@ -223,16 +222,6 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          */
         fun withCode(code: String) = apply {
             this.codeString = code
-        }
-
-        /**
-         * Specifies the error code directly as a string.
-         * @param code A string representing the error code.
-         * @return The builder itself for method chaining.
-         */
-        @Deprecated("Use withCode(string) instead", ReplaceWith("withCode(code.toString())"))
-        fun withCode(httpStatusCode: HttpStatusCode) = apply {
-            this.codeString = httpStatusCode.toString()
         }
 
         /**

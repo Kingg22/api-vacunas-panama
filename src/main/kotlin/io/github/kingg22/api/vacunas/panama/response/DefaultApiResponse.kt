@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
-import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /** Default implementation of [ApiResponse] with a fluent builder pattern. */
@@ -41,11 +40,6 @@ data class DefaultApiResponse(
     override fun hasErrors() = errors.isNotEmpty()
 
     override fun hasWarnings() = warnings.isNotEmpty()
-
-    @Deprecated("Use addStatusCode(integer) instead", replaceWith = ReplaceWith("addStatusCode(httpStatus.value())"))
-    override fun addStatusCode(httpStatus: HttpStatusCode) {
-        status["code"] = httpStatus.value()
-    }
 
     override fun addStatusCode(statusCode: Int) {
         status["code"] = statusCode

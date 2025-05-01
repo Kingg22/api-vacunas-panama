@@ -11,7 +11,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createRespo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -69,7 +68,7 @@ class PdfController(
                 .body(pdfStream)
         } catch (e: Exception) {
             log.error(e.message, e)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            return ResponseEntity.status(500).build()
         }
     }
 
@@ -95,7 +94,7 @@ class PdfController(
                         message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF"
                     },
                 )
-                apiResponse.addStatusCode(HttpStatus.NOT_FOUND.value())
+                apiResponse.addStatusCode(404)
                 return createResponseEntity(apiResponse, webRequest)
             }
 
@@ -116,16 +115,16 @@ class PdfController(
 
             apiResponse.addData("id_certificado", idCertificado.toString())
             apiResponse.addData("pdf", pdfBase64)
-            apiResponse.addStatusCode(HttpStatus.OK.value())
+            apiResponse.addStatusCode(200)
         } catch (e: Exception) {
             log.debug(e.message, e)
             apiResponse.addError(
                 createApiErrorBuilder {
-                    withCode(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                    withCode(ApiResponseCode.INTERNAL_SERVER_ERROR)
                     message = "Ha ocurrido un error al generar el PDF"
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            apiResponse.addStatusCode(500)
         }
         return createResponseEntity(apiResponse, webRequest)
     }

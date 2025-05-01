@@ -9,7 +9,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -39,7 +38,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.addErrors(pacienteContent.errors)
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
+            apiResponse.addStatusCode(400)
             return createResponseEntity(apiResponse, request)
         }
         val registerUserDto = RegisterUserDto(
@@ -52,9 +51,9 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.mergeContentResponse(apiContentResponse)
         log.trace("CreateUser return: {}", apiContentResponse.toString())
         if (apiContentResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED.value())
+            apiResponse.addStatusCode(201)
         }
         return createResponseEntity(apiResponse, request)
     }

@@ -8,7 +8,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAn
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import jakarta.validation.Valid
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -33,9 +32,9 @@ class VacunaController(private val vacunaService: VacunaService) {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED.value())
+            apiResponse.addStatusCode(201)
         }
         return createResponseEntity(apiResponse, servletWebRequest)
     }

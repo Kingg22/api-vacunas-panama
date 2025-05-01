@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.response
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.springframework.http.HttpStatus
 import org.springframework.http.server.reactive.ServerHttpRequest
 import java.io.Serializable
 import java.net.URI
@@ -47,7 +46,7 @@ class ApiResponseTest {
             },
         )
         response.addWarning(DefaultApiErrorTest("warningCode", "testProperty", "warningMessage"))
-        response.addStatusCode(HttpStatus.OK.value())
+        response.addStatusCode(200)
 
         ApiResponseUtil.setMetadata(response, request)
 
@@ -70,7 +69,7 @@ class ApiResponseTest {
             }
             withWarning("warningCode", "Warning message")
             withStatus("testStatus", 123)
-            withStatusCode(HttpStatus.NOT_FOUND.value())
+            withStatusCode(404)
         }
 
         assertEquals("testValue", response.data["testData"])
@@ -118,7 +117,7 @@ class ApiResponseTest {
     fun `Test response change to builder`() {
         val response = ApiResponseFactory.createResponseBuilder {
             withData(mapOf("testData" to "testValue"))
-            withStatusCode(HttpStatus.BAD_REQUEST.value())
+            withStatusCode(400)
         }
         val responseWithErrors = response.returnIfErrors()
         assertNull(responseWithErrors)

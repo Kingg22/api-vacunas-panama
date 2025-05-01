@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.response
 
-import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /** Extended interface for API responses that include status and metadata */
@@ -10,13 +9,6 @@ interface ApiResponse : ApiContentResponse {
 
     /** Metadata information map */
     val metadata: MutableMap<String, Serializable>
-
-    /**
-     * Add an HTTP status code to the response
-     * @param httpStatus The HTTP status to be added
-     */
-    @Deprecated("Use addStatusCode(integer) instead", ReplaceWith("addStatusCode(httpStatus.value())"))
-    fun addStatusCode(httpStatus: HttpStatusCode)
 
     /**
      * Add an HTTP status code to the response

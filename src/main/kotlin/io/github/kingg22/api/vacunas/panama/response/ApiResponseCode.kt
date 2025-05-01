@@ -61,4 +61,7 @@ enum class ApiResponseCode {
 
     /** Deprecation warning for an API endpoint or feature */
     DEPRECATION_WARNING,
+
+    /** Only if not have a more useful message, Internal Server Error */
+    INTERNAL_SERVER_ERROR,
 }

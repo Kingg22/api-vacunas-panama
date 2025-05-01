@@ -8,7 +8,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -43,9 +42,9 @@ class PacienteController(private val pacienteService: PacienteService) {
                     message = "El paciente no tiene dosis registradas"
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.NOT_FOUND.value())
+            apiResponse.addStatusCode(404)
         } else {
-            apiResponse.addStatusCode(HttpStatus.OK.value())
+            apiResponse.addStatusCode(200)
         }
         return createResponseEntity(apiResponse, request)
     }

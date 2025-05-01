@@ -10,7 +10,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createRespo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.redis.core.ReactiveRedisTemplate
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -51,8 +50,9 @@ class TokenController(
         try {
             usuarioService.getUsuarioById(UUID.fromString(userId))?.let {
                 log.trace("User found, refreshing token for user with id: {}", userId)
+                // TODO change to add additional ids (persona, fabricante)
                 apiResponse.addData(tokenService.generateTokens(it))
-                apiResponse.addStatusCode(HttpStatus.OK.value())
+                apiResponse.addStatusCode(200)
                 log.debug("Deleting refresh token for user with id: {}", userId)
                 redisTemplate.delete("token:refresh:$userId:${jwt.id}").awaitSingle()
             } ?: {
@@ -63,12 +63,12 @@ class TokenController(
                         withMessage("Usuario no encontrado, intente nuevamente")
                     },
                 )
-                apiResponse.addStatusCode(HttpStatus.NOT_FOUND.value())
+                apiResponse.addStatusCode(404)
             }
         } catch (e: IllegalArgumentException) {
             log.error("Error while refreshing token to {}", userId, e)
             apiResponse.addStatus("message", "Invalid token")
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
+            apiResponse.addStatusCode(403)
         }
         return createResponseEntity(apiResponse, request)
     }

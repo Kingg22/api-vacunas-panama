@@ -15,7 +15,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createRespo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
 import kotlinx.coroutines.reactive.awaitSingle
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -110,16 +109,16 @@ class UsuarioController(
                     withMessage("Solo pacientes pueden registrarse sin autenticación")
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
+            apiResponse.addStatusCode(403)
             apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
             return createResponseEntity(apiResponse, request)
         }
 
         apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED.value())
+            apiResponse.addStatusCode(201)
         }
         return createResponseEntity(apiResponse, request)
     }
@@ -136,12 +135,12 @@ class UsuarioController(
             ).awaitSingle()
             if (authentication.isAuthenticated) {
                 apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(authentication.name)))
-                apiResponse.addStatusCode(HttpStatus.OK.value())
+                apiResponse.addStatusCode(200)
                 apiResponse.addStatus("message", "Login successful")
             }
         } catch (exception: CompromisedPasswordException) {
             log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
-            apiResponse.addStatusCode(HttpStatus.TEMPORARY_REDIRECT.value())
+            apiResponse.addStatusCode(307)
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
                 createApiErrorBuilder {
@@ -162,9 +161,9 @@ class UsuarioController(
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST.value())
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.OK.value())
+            apiResponse.addStatusCode(200)
         }
         return createResponseEntity(apiResponse, request)
     }
@@ -174,10 +173,10 @@ class UsuarioController(
         val apiResponse = createResponse()
         try {
             apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
-            apiResponse.addStatusCode(HttpStatus.OK.value())
+            apiResponse.addStatusCode(200)
         } catch (e: IllegalArgumentException) {
             log.error("Error while user fetching the profile", e)
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN.value())
+            apiResponse.addStatusCode(403)
         }
         return createResponseEntity(apiResponse, request)
     }
