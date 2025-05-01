@@ -16,6 +16,7 @@ apache-commons-pool2 = "2.12.1"
 mockk = "1.14.0"
 spring-mockk = "4.0.2"
 kotest = "5.9.1"
+rest-assured = "5.5.1"
 
 [libraries]
 # Spring
@@ -49,6 +50,7 @@ spring-security-test = { group = "org.springframework.security", name = "spring-
 spring-boot-testcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers" }
 testcontainers-junit = { group = "org.testcontainers", name = "junit-jupiter" }
 testcontainers-postgres = { group = "org.testcontainers", name = "postgresql" }
+testcontainers-redis = { group = "com.redis", name = "testcontainers-redis" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
@@ -57,6 +59,8 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 spring-mockk = { group = "com.ninja-squad", name = "springmockk", version.ref = "spring-mockk" }
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
+rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "rest-assured" }
+rest-assured-kotlin = { group = "io.rest-assured", name = "kotlin-extensions", version.ref = "rest-assured" }
 
 # Third Party
 dotenv-java = { group = "io.github.cdimascio", name = "dotenv-java", version.ref = "dotenv-java" }
@@ -108,7 +112,10 @@ testImplementation = [
     "kotest-assertions-json",
     "spring-boot-testcontainers",
     "testcontainers-junit",
-    "testcontainers-postgres"
+    "testcontainers-postgres",
+    "testcontainers-redis",
+    "rest-assured",
+    "rest-assured-kotlin"
 ]
 
 [plugins]
