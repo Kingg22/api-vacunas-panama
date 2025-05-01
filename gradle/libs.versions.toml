@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.1.20"
-ksp = "2.1.20-2.0.0"
+ksp = "2.1.20-2.0.1"
 spring = "3.4.5"
 spring-dependency = "1.1.7"
 spring-error-handling = "4.6.0"
