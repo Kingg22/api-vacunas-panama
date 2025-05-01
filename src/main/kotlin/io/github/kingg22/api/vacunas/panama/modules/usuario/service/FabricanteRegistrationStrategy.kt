@@ -5,7 +5,7 @@ import io.github.kingg22.api.vacunas.panama.modules.fabricante.service.Fabricant
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationSuccess
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
@@ -53,7 +53,7 @@ class FabricanteRegistrationStrategy(
         )
     }
 
-    override suspend fun create(registerUserDto: RegisterUserDto): ApiContentResponse {
+    override suspend fun create(registerUserDto: RegisterUserDto): ActualApiResponse {
         val resultValidate = validate(registerUserDto)
         return when (resultValidate) {
             is RegistrationError -> createContentResponse().apply {
@@ -72,10 +72,16 @@ class FabricanteRegistrationStrategy(
                             )
                         }
 
-                usuarioService.createUser(registerUserDto.usuario, null, fabricante.entidad.id)
+                val fabricanteDto = fabricante.copy(
+                    usuario = usuarioService.createUser(
+                        registerUserDto.usuario,
+                        null,
+                        fabricante.entidad.id,
+                    ),
+                )
 
                 createContentResponse().apply {
-                    addData("fabricante", fabricante)
+                    addData("fabricante", fabricanteDto)
                 }
             }
         }

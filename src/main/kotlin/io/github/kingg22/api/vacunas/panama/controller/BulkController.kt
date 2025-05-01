@@ -4,12 +4,11 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteInputDt
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -28,7 +27,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
     suspend fun createPacienteUsuario(
         @RequestBody @Valid pacienteInputDto: PacienteInputDto,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())
         val pacienteDto = pacienteInputDto.toPacienteDto()
@@ -39,7 +38,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.addErrors(pacienteContent.errors)
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
+            apiResponse.addStatusCode(400)
             return createResponseEntity(apiResponse, request)
         }
         val registerUserDto = RegisterUserDto(
@@ -52,9 +51,9 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         apiResponse.mergeContentResponse(apiContentResponse)
         log.trace("CreateUser return: {}", apiContentResponse.toString())
         if (apiContentResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED)
+            apiResponse.addStatusCode(201)
         }
         return createResponseEntity(apiResponse, request)
     }

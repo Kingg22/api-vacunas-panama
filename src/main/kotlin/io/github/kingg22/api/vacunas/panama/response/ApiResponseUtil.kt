@@ -2,8 +2,6 @@ package io.github.kingg22.api.vacunas.panama.response
 
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.wimdeblauwe.errorhandlingspringbootstarter.ApiErrorResponse
-import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
 import java.io.Serializable
@@ -55,11 +53,11 @@ object ApiResponseUtil {
     fun createResponseEntity(
         apiResponse: ApiResponse,
         serverHttpRequest: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> = apiResponse.apply {
+    ): ResponseEntity<ActualApiResponse> = apiResponse.apply {
         setMetadata(this, serverHttpRequest)
         log.trace(toString())
     }.let {
-        ResponseEntity.status(it.retrieveHttpStatusCode()).body(it)
+        ResponseEntity.status(it.retrieveStatusCode()).body(it as ActualApiResponse)
     }
 
     /**
@@ -67,7 +65,7 @@ object ApiResponseUtil {
      *
      * @param serverHttpRequest [ServerHttpRequest] used to set metadata in the response.
      * @param data [Map] shortcut to add data to the response.
-     * @param statusCode [HttpStatusCode] HTTP status code to be set in the response. Defaults to OK.
+     * @param statusCode [Int] HTTP status code to be set in the response. Defaults to 200 OK.
      * @param builder [ApiResponseBuilder] builder to make the response.
      * @return A [ResponseEntity] with the status code and body set to [ApiResponse] the API response object.
      */
@@ -75,7 +73,7 @@ object ApiResponseUtil {
     fun createApiAndResponseEntity(
         serverHttpRequest: ServerHttpRequest,
         data: Map<String, Serializable>,
-        statusCode: HttpStatusCode = HttpStatus.OK,
+        statusCode: Int = 200,
         builder: ApiResponseBuilder.() -> Unit = {},
     ) = createResponseEntity(
         ApiResponseFactory.createResponseBuilder {
@@ -97,7 +95,7 @@ object ApiResponseUtil {
     @JvmStatic
     fun transformApiErrorResponse(apiErrorResponse: ApiErrorResponse, request: ServerHttpRequest) =
         ApiResponseFactory.createResponseBuilder {
-            withStatusCode(apiErrorResponse.httpStatus)
+            withStatusCode(apiErrorResponse.httpStatus.value())
 
             val errorMessage = if (
                 apiErrorResponse.message.contains("Dto") ||

@@ -1,10 +1,15 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.entity
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
@@ -42,4 +47,13 @@ class Rol(
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "roles_permisos",
+        joinColumns = [JoinColumn(name = "rol")],
+        inverseJoinColumns = [JoinColumn(name = "permiso")],
+    )
+    @JsonManagedReference
+    var permisos: MutableSet<Permiso> = mutableSetOf(),
 )

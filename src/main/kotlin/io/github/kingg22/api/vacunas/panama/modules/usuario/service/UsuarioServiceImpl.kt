@@ -13,7 +13,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toUsuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toUsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.persistence.UsuarioPersistenceService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RegistrationResult.RegistrationError
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiError
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
@@ -69,14 +69,14 @@ class UsuarioServiceImpl(
 
     override suspend fun getUsuarioById(id: UUID) = usuarioPersistenceService.findUsuarioById(id)?.toUsuarioDto()
 
-    override suspend fun getProfile(id: UUID): ApiContentResponse {
+    override suspend fun getProfile(id: UUID): ActualApiResponse {
         val builder = createResponseBuilder()
         personaService.getPersonaByUserID(id)?.let { persona -> builder.withData("persona", persona) }
         fabricanteService.getFabricanteByUserID(id)?.let { fabricante -> builder.withData("fabricante", fabricante) }
         return builder.build()
     }
 
-    override suspend fun getLogin(id: UUID): ApiContentResponse {
+    override suspend fun getLogin(id: UUID): ActualApiResponse {
         val response = createResponseBuilder()
         val usuario = usuarioPersistenceService.findUsuarioById(id)
         if (usuario != null) {
@@ -86,7 +86,12 @@ class UsuarioServiceImpl(
             if (usuario.fabricante != null) {
                 response.withData("fabricante", usuario.fabricante!!.toFabricanteDto())
             }
-            response.withData(tokenService.generateTokens(usuario.toUsuarioDto()))
+            response.withData(
+                tokenService.generateTokens(
+                    usuario.toUsuarioDto(),
+                    mapOf("persona" to usuario.persona?.id, "fabricante" to usuario.fabricante?.id),
+                ),
+            )
         } else {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
@@ -99,7 +104,7 @@ class UsuarioServiceImpl(
     override suspend fun createUser(
         registerUserDto: RegisterUserDto,
         authentication: Authentication?,
-    ): ApiContentResponse {
+    ): ActualApiResponse {
         val response = createContentResponse()
         val usuarioDto = registerUserDto.usuario
 
@@ -108,7 +113,7 @@ class UsuarioServiceImpl(
                 authentication !is AnonymousAuthenticationToken
             ) {
                 response.addErrors(validateAuthoritiesRegister(usuarioDto, authentication))
-                response.returnIfErrors()?.let { return it }
+                response.returnIfErrors()?.let { return it as ActualApiResponse }
             }
         }
 
@@ -135,22 +140,25 @@ class UsuarioServiceImpl(
         return response
     }
 
-    override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?) {
+    override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?): UsuarioDto {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles)
         val encodedPassword: String = passwordEncoder.encode(usuarioDto.password)
 
-        usuarioPersistenceService.createUser(
+        return usuarioPersistenceService.createUser(
             usuarioDto = usuarioDto,
             personaId = personaId,
             fabricanteId = fabricanteId,
             encodedPassword = encodedPassword,
             roles = roles,
-        ).also {
-            log.trace("User created: {}", it)
+        ).let {
+            log.trace("User entity created: {}", it.toString())
+            log.trace("User created: {}", it.toUsuarioDto().toString())
+            log.trace("Have user: {}", it.persona?.usuario)
+            it.toUsuarioDto()
         }
     }
 
-    override suspend fun changePassword(restoreDto: RestoreDto): ApiContentResponse {
+    override suspend fun changePassword(restoreDto: RestoreDto): ActualApiResponse {
         val response = createResponseBuilder()
         val usuarioOpt = getUsuarioByIdentifier(restoreDto.username)
 

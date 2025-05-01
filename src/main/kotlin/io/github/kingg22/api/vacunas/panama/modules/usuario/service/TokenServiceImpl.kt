@@ -27,15 +27,17 @@ class TokenServiceImpl(
 ) : TokenService {
     override suspend fun generateTokens(
         usuarioDto: UsuarioDto,
-        idsAdicionales: Map<String, Serializable>,
-    ): Map<String, Serializable> = mapOf(
-        "access_token" to createToken(
-            subject = usuarioDto.id.toString(),
-            rolesPermisos = getRolesPermisos(usuarioDto),
-            claims = idsAdicionales,
-        ),
-        "refresh_token" to createRefreshToken(usuarioDto.id.toString()),
-    )
+        idsAdicionales: Map<String, Serializable?>,
+    ): Map<String, Serializable> = checkNotNull(usuarioDto.id) { "UsuarioDto id is null. $usuarioDto" }.let {
+        mapOf(
+            "access_token" to createToken(
+                subject = usuarioDto.id.toString(),
+                rolesPermisos = getRolesPermisos(usuarioDto),
+                claims = idsAdicionales,
+            ),
+            "refresh_token" to createRefreshToken(usuarioDto.id.toString()),
+        )
+    }
 
     override fun isAccessTokenValid(userId: String, tokenId: String): Mono<Boolean> =
         reactiveRedisTemplate.hasKey(generateKey("access", userId, tokenId))
@@ -46,9 +48,9 @@ class TokenServiceImpl(
     private suspend fun createToken(
         subject: String,
         rolesPermisos: Collection<String>,
-        claims: Map<String, Serializable>?,
+        claims: Map<String, Serializable?>,
     ): String {
-        val (id, token) = encodeJwt(subject, expirationTime, claims.orEmpty(), rolesPermisos)
+        val (id, token) = encodeJwt(subject, expirationTime, claims, rolesPermisos)
         saveInCache(generateKey("access", subject, id), token, expirationTime)
         return token
     }
@@ -62,7 +64,7 @@ class TokenServiceImpl(
     private fun encodeJwt(
         subject: String,
         expiresIn: Long,
-        claimsExtra: Map<String, Serializable> = emptyMap(),
+        claimsExtra: Map<String, Serializable?> = emptyMap(),
         scope: Collection<String>? = null,
     ): Pair<String, String> {
         val now = Instant.now()
@@ -77,7 +79,11 @@ class TokenServiceImpl(
             .id(id)
 
         scope?.let { builder.claim("scope", it) }
-        claimsExtra.forEach { (key, value) -> builder.claim(key, value) }
+        claimsExtra.forEach { (key, value) ->
+            if (key.isNotBlank() && value != null) {
+                builder.claim(key, value)
+            }
+        }
 
         val claims = builder.build()
         val header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build()
@@ -96,6 +102,10 @@ class TokenServiceImpl(
     private fun getRolesPermisos(usuarioDto: UsuarioDto) = usuarioDto.roles
         .flatMap { role ->
             val permisos = role.permisos.map { it.nombre }
-            listOf("ROLE_${role.nombre?.uppercase()}") + permisos
+            if (role.nombre != null) {
+                listOf("ROLE_${role.nombre.uppercase()}") + permisos
+            } else {
+                permisos
+            }
         }
 }

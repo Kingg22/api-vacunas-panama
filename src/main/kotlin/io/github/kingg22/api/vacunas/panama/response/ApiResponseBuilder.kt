@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.response
 
-import org.springframework.http.HttpStatusCode
 import java.io.Serializable
 
 /**
@@ -149,11 +148,11 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
     /**
      * Set the HTTP status code for the response.
      *
-     * @param httpStatus The HTTP status code.
+     * @param statusCode HTTP status code as integer.
      * @return The current builder instance for chaining.
      */
-    fun withStatusCode(httpStatus: HttpStatusCode) = apply {
-        response.addStatusCode(httpStatus)
+    fun withStatusCode(statusCode: Int) = apply {
+        response.addStatusCode(statusCode)
     }
 
     /**
@@ -192,9 +191,9 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
     /**
      * Build the final [ApiResponse] object.
      *
-     * @return The constructed [ApiResponse] object.
+     * @return The constructed [ActualApiResponse] object.
      */
-    fun build(): ApiResponse = response
+    fun build() = response as ActualApiResponse
 
     /**
      * ApiErrorBuilder is a class designed to facilitate the construction of ApiError objects.
@@ -226,15 +225,6 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
         }
 
         /**
-         * Specifies the error code directly as a string.
-         * @param code A string representing the error code.
-         * @return The builder itself for method chaining.
-         */
-        fun withCode(httpStatusCode: HttpStatusCode) = apply {
-            this.codeString = httpStatusCode.toString()
-        }
-
-        /**
          * Specifies the error message.
          * @param message A string describing the error.
          * @return The builder itself for method chaining.
@@ -257,7 +247,7 @@ data class ApiResponseBuilder(private val response: ApiResponse = DefaultApiResp
          * @return A constructed ApiError object.
          * @throws IllegalStateException if the required `message` or `code` field is not initialized.
          */
-        fun build(): ApiError {
+        fun build(): ActualApiError {
             check(::message.isInitialized && message.isNotBlank()) { "The 'message' field is required." }
             val finalCode = code?.toString() ?: codeString
             check(!finalCode.isNullOrBlank()) { "The 'code' field is required." }

@@ -2,7 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -10,7 +10,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createRespo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.redis.core.ReactiveRedisTemplate
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -37,13 +36,13 @@ class TokenController(
      *
      * @param jwt The [Jwt] containing user ID.
      * @param request The [ServerHttpRequest] used for building the response.
-     * @return [ApiResponse] with new access_token and refresh_token.
+     * @return [ActualApiResponse] with new access_token and refresh_token.
      */
     @PostMapping("/refresh")
     suspend fun refreshToken(
         @AuthenticationPrincipal jwt: Jwt,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         val userId = checkNotNull(jwt.subject) { "Jwt subject is null" }
         log.debug("Receive a request to refresh token for user with id: {}", userId)
@@ -51,8 +50,9 @@ class TokenController(
         try {
             usuarioService.getUsuarioById(UUID.fromString(userId))?.let {
                 log.trace("User found, refreshing token for user with id: {}", userId)
+                // TODO change to add additional ids (persona, fabricante)
                 apiResponse.addData(tokenService.generateTokens(it))
-                apiResponse.addStatusCode(HttpStatus.OK)
+                apiResponse.addStatusCode(200)
                 log.debug("Deleting refresh token for user with id: {}", userId)
                 redisTemplate.delete("token:refresh:$userId:${jwt.id}").awaitSingle()
             } ?: {
@@ -63,12 +63,12 @@ class TokenController(
                         withMessage("Usuario no encontrado, intente nuevamente")
                     },
                 )
-                apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+                apiResponse.addStatusCode(404)
             }
         } catch (e: IllegalArgumentException) {
             log.error("Error while refreshing token to {}", userId, e)
             apiResponse.addStatus("message", "Invalid token")
-            apiResponse.addStatusCode(HttpStatus.FORBIDDEN)
+            apiResponse.addStatusCode(403)
         }
         return createResponseEntity(apiResponse, request)
     }

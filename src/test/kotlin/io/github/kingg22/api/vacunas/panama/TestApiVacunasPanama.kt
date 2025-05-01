@@ -7,7 +7,7 @@ import java.util.TimeZone
 fun main(args: Array<String>) {
     TimeZone.setDefault(TimeZone.getTimeZone(UTC))
     fromApplication<ApiVacunasPanamaApplication>()
-        .with(TestcontainersConfiguration::class.java)
+        .with(TestContainersConfig::class.java)
         .withAdditionalProfiles("test")
         .run(*args)
 }

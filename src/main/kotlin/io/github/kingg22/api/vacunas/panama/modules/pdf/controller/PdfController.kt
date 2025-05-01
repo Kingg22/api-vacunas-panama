@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.modules.pdf.controller
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
@@ -11,7 +11,6 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createRespo
 import io.github.kingg22.api.vacunas.panama.util.logger
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -69,7 +68,7 @@ class PdfController(
                 .body(pdfStream)
         } catch (e: Exception) {
             log.error(e.message, e)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            return ResponseEntity.status(500).build()
         }
     }
 
@@ -78,7 +77,7 @@ class PdfController(
         @AuthenticationPrincipal jwt: Jwt,
         @RequestParam("idVacuna") idVacuna: UUID,
         webRequest: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         try {
             val personaIdString = jwt.getClaimAsString("persona")
@@ -95,7 +94,7 @@ class PdfController(
                         message = "Dosis de la vacuna para el paciente no fueron encontradas para generar el PDF"
                     },
                 )
-                apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+                apiResponse.addStatusCode(404)
                 return createResponseEntity(apiResponse, webRequest)
             }
 
@@ -116,16 +115,16 @@ class PdfController(
 
             apiResponse.addData("id_certificado", idCertificado.toString())
             apiResponse.addData("pdf", pdfBase64)
-            apiResponse.addStatusCode(HttpStatus.OK)
+            apiResponse.addStatusCode(200)
         } catch (e: Exception) {
             log.debug(e.message, e)
             apiResponse.addError(
                 createApiErrorBuilder {
-                    withCode(HttpStatus.INTERNAL_SERVER_ERROR)
+                    withCode(ApiResponseCode.INTERNAL_SERVER_ERROR)
                     message = "Ha ocurrido un error al generar el PDF"
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+            apiResponse.addStatusCode(500)
         }
         return createResponseEntity(apiResponse, webRequest)
     }

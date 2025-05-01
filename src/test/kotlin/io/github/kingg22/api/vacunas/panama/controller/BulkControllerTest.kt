@@ -1,21 +1,21 @@
 package io.github.kingg22.api.vacunas.panama.controller
 
-import io.github.kingg22.api.vacunas.panama.TestcontainersConfiguration
+import io.github.kingg22.api.vacunas.panama.TestBase
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.kotest.matchers.string.shouldContain
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.reactive.server.WebTestClient
+import io.kotest.matchers.string.shouldNotContain
+import io.restassured.http.ContentType
+import io.restassured.module.kotlin.extensions.Extract
+import io.restassured.module.kotlin.extensions.Given
+import io.restassured.module.kotlin.extensions.Then
+import io.restassured.module.kotlin.extensions.When
+import org.apache.http.HttpStatus
+import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-@ActiveProfiles("test")
-@Import(TestcontainersConfiguration::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BulkControllerTest @Autowired constructor(private val webTestClient: WebTestClient) {
+class BulkControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+
     @Test
     fun createPacienteUsuario() {
         val json =
@@ -37,17 +37,22 @@ class BulkControllerTest @Autowired constructor(private val webTestClient: WebTe
             }
             """.trimIndent()
 
-        webTestClient.post()
-            .uri("/bulk/paciente-usuario-direccion")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(json)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody()
-            .consumeWith {
-                val responseBody = it.responseBody?.toString(Charsets.UTF_8)
-                assertNotNull(responseBody)
-                responseBody.removeMetadata() shouldContain "\"persona\""
-            }
+        val responseBody = Given {
+            contentType(ContentType.JSON)
+            body(json)
+        } When {
+            post("/bulk/paciente-usuario-direccion")
+        } Then {
+            statusCode(HttpStatus.SC_CREATED)
+        } Extract {
+            body().asString()
+        }
+
+        assertNotNull(responseBody)
+        responseBody
+            .removeMetadata()
+            .shouldContain("\"persona\"")
+            .shouldNotContain("\"usuario\":null".toRegex())
+            .shouldContain("\"direccion\"")
     }
 }

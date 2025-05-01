@@ -7,7 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.persistence.PacientePersistenceService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
@@ -27,13 +27,13 @@ class PacienteServiceImpl(
 ) : PacienteService {
     private val log = logger()
 
-    override suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse {
+    override suspend fun createPaciente(pacienteDto: PacienteDto): ActualApiResponse {
         val response = createContentResponse()
         response.addErrors(validatePacienteExist(pacienteDto))
         response.addErrors(validateCreatePaciente(pacienteDto))
         response.mergeContentResponse(validateCreatePacienteUsuario(pacienteDto))
 
-        response.returnIfErrors()?.let { return it }
+        response.returnIfErrors()?.let { return it as ActualApiResponse }
 
         val direccion = pacienteDto.persona.direccion.let {
             direccionService.getDireccionByDto(it)
@@ -188,7 +188,7 @@ class PacienteServiceImpl(
      * Includes checks like duplicate identity, missing fields, etc.
      *
      * @param pacienteDto DTO containing patient data to validate.
-     * @return [ApiContentResponse] with validation results or errors.
+     * @return [ActualApiResponse] with validation results or errors.
      */
     private suspend fun validateCreatePacienteUsuario(pacienteDto: PacienteDto) = createResponseBuilder {
         val usuario = pacienteDto.persona.usuario

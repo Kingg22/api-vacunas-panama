@@ -1,14 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -28,7 +27,7 @@ class PacienteController(private val pacienteService: PacienteService) {
     suspend fun getPaciente(
         @AuthenticationPrincipal jwt: Jwt,
         request: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         val personaIdString = jwt.getClaimAsString("persona")
         check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
@@ -43,9 +42,9 @@ class PacienteController(private val pacienteService: PacienteService) {
                     message = "El paciente no tiene dosis registradas"
                 },
             )
-            apiResponse.addStatusCode(HttpStatus.NOT_FOUND)
+            apiResponse.addStatusCode(404)
         } else {
-            apiResponse.addStatusCode(HttpStatus.OK)
+            apiResponse.addStatusCode(200)
         }
         return createResponseEntity(apiResponse, request)
     }

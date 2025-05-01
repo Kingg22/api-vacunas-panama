@@ -1,74 +1,61 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 
-import io.github.kingg22.api.vacunas.panama.TestcontainersConfiguration
+import io.github.kingg22.api.vacunas.panama.TestBase
 import io.github.kingg22.api.vacunas.panama.util.extractJsonToken
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
-import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.string.shouldBeBlank
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotBeBlank
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.reactive.server.WebTestClient
+import io.restassured.module.kotlin.extensions.Extract
+import io.restassured.module.kotlin.extensions.Given
+import io.restassured.module.kotlin.extensions.Then
+import io.restassured.module.kotlin.extensions.When
+import org.apache.http.HttpStatus
+import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-@ActiveProfiles("test")
-@AutoConfigureWebTestClient
-@Import(TestcontainersConfiguration::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class TokenControllerTest @Autowired constructor(private val webTestClient: WebTestClient) {
+class TokenControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+
     @Test
     fun refreshToken() {
-        val loginDto =
-            """
-                {
-                    "username": "1-123-456",
-                    "password": "prue2*test"
-                }
-            """.trimIndent()
+        val loginResponse = getLoginResponse()
 
-        // Primero: Hacemos login
-        val accessToken = webTestClient
-            .post()
-            .uri("/account/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginDto)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.data.access_token").value { token: String ->
-                assertNotNull(token)
-            }
-            .shouldNotBeNull()
-            .returnResult()
-            .responseBody
-            ?.let { body ->
-                val json = String(body)
-                json.extractJsonToken("$.data.access_token")
-            }
+        // Extraemos el token de refresh
+        val refreshToken = loginResponse.extractJsonToken("$.data.refresh_token")
 
         // Aseguramos que el token existe
-        assertNotNull(accessToken)
-        accessToken.shouldNotBeBlank()
+        refreshToken.shouldNotBeBlank()
 
         // Segundo: Usamos ese token para pedir refresh
-        webTestClient
-            .post()
-            .uri("/token/refresh")
-            .headers {
-                it.setBearerAuth(accessToken)
-            }
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .consumeWith {
-                val responseBody = it.responseBody?.toString(Charsets.UTF_8)
-                assertNotNull(responseBody)
-                responseBody.removeMetadata() shouldContain "\"access_token\"" shouldContain "\"refresh_token\""
-            }
+        val responseBody = Given {
+            header("Authorization", "Bearer $refreshToken")
+        } When {
+            post("/token/refresh")
+        } Then {
+            statusCode(HttpStatus.SC_OK)
+        } Extract {
+            body().asString()
+        }
+
+        assertNotNull(responseBody)
+        responseBody.removeMetadata() shouldContain "\"access_token\"" shouldContain "\"refresh_token\""
+    }
+
+    @Test
+    fun refreshTokenWithAccessTokenFail() {
+        val authenticateHeader = Given {
+            authenticateRequest()
+        } When {
+            post("/token/refresh")
+        } Then {
+            statusCode(HttpStatus.SC_FORBIDDEN)
+        } Extract {
+            body().asString().shouldBeBlank()
+            header("WWW-Authenticate")
+        }
+        assertNotNull(authenticateHeader)
+            .shouldNotBeBlank()
+            .shouldContain("Access token cannot be used to refresh tokens")
     }
 }

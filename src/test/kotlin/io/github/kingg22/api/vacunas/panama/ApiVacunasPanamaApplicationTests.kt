@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 
 @DataJpaTest
-@Import(TestcontainersConfiguration::class)
+@Import(TestContainersConfig::class)
 @ActiveProfiles("test")
 class ApiVacunasPanamaApplicationTests {
     @Test

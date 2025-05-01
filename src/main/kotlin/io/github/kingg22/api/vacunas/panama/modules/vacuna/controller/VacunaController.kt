@@ -2,13 +2,12 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
-import io.github.kingg22.api.vacunas.panama.response.ApiResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAndResponseEntity
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import jakarta.validation.Valid
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -29,13 +28,13 @@ class VacunaController(private val vacunaService: VacunaService) {
     suspend fun createDosis(
         @RequestBody @Valid insertDosisDto: InsertDosisDto,
         servletWebRequest: ServerHttpRequest,
-    ): ResponseEntity<ApiResponse> {
+    ): ResponseEntity<ActualApiResponse> {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {
-            apiResponse.addStatusCode(HttpStatus.BAD_REQUEST)
+            apiResponse.addStatusCode(400)
         } else {
-            apiResponse.addStatusCode(HttpStatus.CREATED)
+            apiResponse.addStatusCode(201)
         }
         return createResponseEntity(apiResponse, servletWebRequest)
     }

@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.github.kingg22.api.vacunas.panama.util.logger
 import kotlinx.coroutines.reactor.mono
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
@@ -17,15 +18,18 @@ import reactor.core.publisher.Mono
  */
 @Component
 class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService) : ReactiveUserDetailsService {
+    private val log = logger()
     override fun findByUsername(username: String): Mono<UserDetails> =
         mono { usuarioService.getUsuarioByIdentifier(username) }
             .switchIfEmpty(Mono.error { UsernameNotFoundException("User not found") })
             .flatMap { user: UsuarioDto ->
                 val roles = user.roles.mapNotNull { it.nombre?.uppercase() }.toTypedArray()
+                log.trace("Roles for user {}: {}", user.id, roles.contentToString())
                 Flux.fromIterable(user.roles).flatMap { Flux.fromIterable(it.permisos) }
                     .flatMap { Mono.just(SimpleGrantedAuthority(it.nombre.uppercase())) }
                     .collectList()
                     .flatMap { permisoAuthorities: List<SimpleGrantedAuthority> ->
+                        log.trace("Permisos for user {}: {}", user.id, permisoAuthorities.map { it.authority })
                         Mono.just(
                             User.withUsername(user.id.toString())
                                 .password(user.password)

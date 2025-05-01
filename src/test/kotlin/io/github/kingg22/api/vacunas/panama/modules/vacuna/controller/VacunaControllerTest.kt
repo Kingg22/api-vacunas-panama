@@ -1,41 +1,41 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.controller
 
-import io.github.kingg22.api.vacunas.panama.TestcontainersConfiguration
+import io.github.kingg22.api.vacunas.panama.TestBase
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.NumDosisEnum
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.github.kingg22.api.vacunas.panama.util.retrieveFileJson
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.matchers.string.shouldContain
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
+import io.restassured.http.ContentType
+import io.restassured.module.kotlin.extensions.Extract
+import io.restassured.module.kotlin.extensions.Given
+import io.restassured.module.kotlin.extensions.Then
+import io.restassured.module.kotlin.extensions.When
+import org.apache.http.HttpStatus
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-@ActiveProfiles("test")
-@Import(TestcontainersConfiguration::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class VacunaControllerTest @Autowired constructor(private val webTestClient: WebTestClient) {
+class VacunaControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+
     @Test
     fun getVacunas() {
         val expectedJson = retrieveFileJson("/responses/vacunas/get_vacunas_fabricante.json")
 
-        webTestClient.get()
-            .uri("/vaccines")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .consumeWith {
-                val responseBody = it.responseBody?.toString(Charsets.UTF_8)
-                assertNotNull(responseBody)
-                responseBody.removeMetadata() shouldEqualJson expectedJson
-            }
+        val responseBody = When {
+            get("/vaccines")
+        } Then {
+            statusCode(HttpStatus.SC_OK)
+        } Extract {
+            body().asString()
+        }
+
+        assertNotNull(responseBody)
+        responseBody.removeMetadata() shouldEqualJson expectedJson
     }
 
     // crear dosis con datos válidos debe retornar CREATED
@@ -60,16 +60,18 @@ class VacunaControllerTest @Autowired constructor(private val webTestClient: Web
             doctorId = doctorId,
         )
 
-        webTestClient.post()
-            .uri("/vaccines/create-dosis")
-            .bodyValue(insertDto)
-            .exchange()
-            .expectStatus().isCreated
-            .expectBody()
-            .consumeWith {
-                val responseBody = it.responseBody?.toString(Charsets.UTF_8)
-                assertNotNull(responseBody)
-                responseBody.removeMetadata() shouldContain "\"dosis\""
-            }
+        val responseBody = Given {
+            contentType(ContentType.JSON)
+            body(insertDto)
+        } When {
+            post("/vaccines/create-dosis")
+        } Then {
+            statusCode(HttpStatus.SC_CREATED)
+        } Extract {
+            body().asString()
+        }
+
+        assertNotNull(responseBody)
+        responseBody.removeMetadata() shouldContain "\"dosis\""
     }
 }

@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import java.util.UUID
 
 /**
@@ -21,7 +21,7 @@ interface VacunaService {
      * @param insertDosisDto DTO containing information about the dose to be created.
      * @return API response indicating the result of the operation.
      */
-    suspend fun createDosis(insertDosisDto: InsertDosisDto): ApiContentResponse
+    suspend fun createDosis(insertDosisDto: InsertDosisDto): ActualApiResponse
 
     /**
      * Retrieves a list of vaccines by their manufacturer.

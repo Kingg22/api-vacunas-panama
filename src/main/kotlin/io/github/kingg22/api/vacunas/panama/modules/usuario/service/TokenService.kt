@@ -36,7 +36,7 @@ interface TokenService {
      */
     suspend fun generateTokens(
         @NotNull usuarioDto: UsuarioDto,
-        idsAdicionales: Map<String, Serializable> = emptyMap(),
+        idsAdicionales: Map<String, Serializable?> = emptyMap(),
     ): Map<String, Serializable>
 
     /**

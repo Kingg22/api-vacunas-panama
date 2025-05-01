@@ -3,7 +3,7 @@ package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 import io.github.kingg22.api.vacunas.panama.modules.paciente.domain.PacienteModel
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.ViewPacienteVacunaEnfermedadDto
-import io.github.kingg22.api.vacunas.panama.response.ApiContentResponse
+import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import java.util.UUID
 
 /**
@@ -15,9 +15,9 @@ interface PacienteService {
      * Creates a new `PacienteModel` and associated user if validation is successful.
      *
      * @param pacienteDto DTO containing the patient information to create.
-     * @return [ApiContentResponse] with creation result and metadata.
+     * @return [ActualApiResponse] with creation result and metadata.
      */
-    suspend fun createPaciente(pacienteDto: PacienteDto): ApiContentResponse
+    suspend fun createPaciente(pacienteDto: PacienteDto): ActualApiResponse
 
     /**
      * Retrieves a patient DTO by its internal ID.
