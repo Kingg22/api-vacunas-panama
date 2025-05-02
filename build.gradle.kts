@@ -2,28 +2,29 @@ import com.diffplug.spotless.LineEnding
 import com.github.jk1.license.filter.LicenseBundleNormalizer
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
-import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
-import java.time.Instant
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin
-    kotlin("plugin.spring") version libs.versions.kotlin
+    kotlin("plugin.allopen") version libs.versions.kotlin
     kotlin("plugin.jpa") version libs.versions.kotlin
-    alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
+    kotlin("plugin.serialization") version libs.versions.kotlin
+
     alias(libs.plugins.ksp)
     alias(libs.plugins.spotless)
     alias(libs.plugins.license.report)
     alias(libs.plugins.kover)
+
+    alias(libs.plugins.quarkus)
 }
 
 group = "io.github.kingg22"
-version = "0.14.7"
+version = "0.15.0"
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
-        vendor.set(JvmVendorSpec.JETBRAINS)
+        vendor.set(JvmVendorSpec.GRAAL_VM)
     }
 }
 
@@ -31,26 +32,23 @@ kotlin {
     jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+        jvmTarget.set(JvmTarget.JVM_21)
         javaParameters.set(true)
     }
 }
 
 dependencies {
-    implementation(libs.bundles.implementation)
-
-    runtimeOnly(libs.bundles.runtimeOnly)
-
     ksp(libs.konvert)
 
-    testImplementation(libs.bundles.testImplementation)
-    testImplementation(libs.spring.boot.starter.test) {
-        exclude(group = "org.mockito")
-    }
-
-    testRuntimeOnly(libs.junit.platform.launcher)
+    implementation(enforcedPlatform(libs.quarkus.bom))
+    implementation(libs.bundles.quarkusImplementation)
+    testImplementation(libs.bundles.quarkusTestImplementation)
 }
 
 allOpen {
+    annotation("io.quarkus.test.junit.QuarkusTest")
+    annotation("jakarta.ws.rs.Path")
+    annotation("jakarta.enterprise.context.ApplicationScoped")
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
@@ -62,7 +60,11 @@ tasks.withType<Test> {
         it.name.contains("byte-buddy-agent")
     } ?: throw GradleException("ByteBuddy agent JAR not found")
 
+    systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
     jvmArgs("-javaagent:${agentJar.absolutePath}", "-Duser.timezone=UTC")
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 spotless {
@@ -111,17 +113,22 @@ kover {
     }
 }
 
-tasks.named<BootBuildImage>("bootBuildImage") {
-    imageName.set("kingg22/api-vacunas-panama:${project.version}")
-    createdDate.set(Instant.now().toString())
-    tags.add("kingg22/api-vacunas-panama:latest")
-    builder.set(
-        "paketobuildpacks/builder-jammy-java-tiny@sha256:1f2bd39426f8e462f6d6177cb1504cf01211a134d51e2674f97176a8b17d8a55",
-    )
-}
+/* Circular dependency between the following tasks:
+:kspKotlin
++--- :quarkusGenerateCode
+|    \--- :processResources
+|         \--- :kspKotlin (*)
+ */
 
-tasks.test {
-    testLogging {
-        showStandardStreams = true
+project.afterEvaluate {
+    getTasksByName("quarkusGenerateCode", true).forEach { task ->
+        task.setDependsOn(
+            task.dependsOn.filterIsInstance<Provider<Task>>().filter { it.get().name != "processResources" },
+        )
+    }
+    getTasksByName("quarkusGenerateCodeDev", true).forEach { task ->
+        task.setDependsOn(
+            task.dependsOn.filterIsInstance<Provider<Task>>().filter { it.get().name != "processResources" },
+        )
     }
 }
