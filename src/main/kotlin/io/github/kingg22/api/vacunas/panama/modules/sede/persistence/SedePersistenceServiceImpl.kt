@@ -1,8 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.sede.persistence
 
 import io.github.kingg22.api.vacunas.panama.modules.sede.repository.SedeRepository
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
 /**
@@ -12,7 +11,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class SedePersistenceServiceImpl(private val sedeRepository: SedeRepository) : SedePersistenceService {
 
     /**

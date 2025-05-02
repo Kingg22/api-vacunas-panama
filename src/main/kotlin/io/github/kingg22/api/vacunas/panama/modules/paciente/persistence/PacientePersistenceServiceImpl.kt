@@ -6,10 +6,8 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.repository.PacienteRepository
 import io.github.kingg22.api.vacunas.panama.util.logger
+import jakarta.enterprise.context.ApplicationScoped
 import jakarta.persistence.EntityManager
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
 import java.util.UUID
 
 /**
@@ -19,7 +17,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class PacientePersistenceServiceImpl(
     private val entityManager: EntityManager,
     private val transactionTemplate: TransactionTemplate,

@@ -9,10 +9,8 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.VacunaRepository
+import jakarta.enterprise.context.ApplicationScoped
 import jakarta.persistence.EntityManager
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
@@ -24,7 +22,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class VacunaPersistenceServiceImpl(
     private val entityManager: EntityManager,
     private val transactionTemplate: TransactionTemplate,
