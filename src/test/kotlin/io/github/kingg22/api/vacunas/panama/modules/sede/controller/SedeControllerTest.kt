@@ -8,11 +8,10 @@ import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class SedeControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+class SedeControllerTest : TestBase() {
 
     @Test
     fun getSedes() {

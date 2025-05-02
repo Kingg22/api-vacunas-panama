@@ -11,11 +11,10 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class TokenControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+class TokenControllerTest : TestBase() {
 
     @Test
     fun refreshToken() {

@@ -5,7 +5,7 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Provincia
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
-import org.assertj.core.api.Assertions.assertThat
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
@@ -30,6 +30,6 @@ class PacienteBuilderTests {
             ),
             createdAt = fecha,
         )
-        assertThat(paciente).usingRecursiveComparison().isEqualTo(pacienteBuilder)
+        paciente shouldBe pacienteBuilder
     }
 }

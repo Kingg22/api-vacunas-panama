@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama
 
 import io.github.kingg22.api.vacunas.panama.util.extractJsonToken
 import io.kotest.matchers.string.shouldNotBeBlank
+import io.quarkus.test.junit.QuarkusTest
 import io.restassured.RestAssured
 import io.restassured.config.LogConfig
 import io.restassured.config.RestAssuredConfig
@@ -14,30 +15,18 @@ import io.restassured.module.kotlin.extensions.When
 import io.restassured.specification.RequestSpecification
 import org.apache.http.HttpStatus
 import org.junit.jupiter.api.BeforeAll
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.ActiveProfiles
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertNotNull
 
 /** Base class for all tests that need to interact with the API. */
-@ActiveProfiles("test")
-@Import(TestContainersConfig::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@QuarkusTest
 abstract class TestBase {
-    private val serverPort: Int
-
-    constructor(serverPort: Int) {
-        this.serverPort = serverPort
-    }
-
     companion object {
         @JvmStatic
         @BeforeAll
         fun setupRestAssured() {
             // Configure Rest-Assured
-            RestAssured.baseURI = "http://localhost"
             RestAssured.basePath = "/vacunacion/v1"
             RestAssured.config = RestAssuredConfig.config()
                 .logConfig(LogConfig.logConfig().enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL))
@@ -47,7 +36,6 @@ abstract class TestBase {
     @BeforeTest
     fun setupTest() {
         // Additional setup for each test if needed
-        RestAssured.port = serverPort
     }
 
     @AfterTest
@@ -73,7 +61,6 @@ abstract class TestBase {
 
         // Primero: Hacemos login
         val loginResponse = Given {
-            port(serverPort)
             contentType(ContentType.JSON)
             body(loginDto)
         } When {

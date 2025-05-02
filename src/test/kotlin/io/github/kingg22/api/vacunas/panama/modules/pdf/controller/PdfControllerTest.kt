@@ -9,11 +9,10 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import org.hamcrest.Matchers.containsString
-import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class PdfControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+class PdfControllerTest : TestBase() {
 
     @Test
     fun getPdfFile() {
