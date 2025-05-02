@@ -19,30 +19,23 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
-import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.logger
-import kotlinx.coroutines.reactor.awaitSingle
-import org.springframework.context.annotation.Lazy
-import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker
-import org.springframework.security.core.Authentication
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
 
-@Service
+@ApplicationScoped
 class UsuarioServiceImpl(
-    private val reactiveCompromisedPasswordChecker: ReactiveCompromisedPasswordChecker,
-    private val passwordEncoder: PasswordEncoder,
+    private val reactiveCompromisedPasswordChecker: Any,
+    private val passwordEncoder: Any,
     private val usuarioPersistenceService: UsuarioPersistenceService,
-    @Lazy private val registrationStrategyFactory: RegistrationStrategyFactory,
-    @Lazy private val rolPermisoService: RolPermisoService,
-    @Lazy private val personaService: PersonaService,
-    @Lazy private val fabricanteService: FabricanteService,
-    @Lazy private val tokenService: TokenService,
+    private val registrationStrategyFactory: RegistrationStrategyFactory,
+    private val rolPermisoService: RolPermisoService,
+    private val personaService: PersonaService,
+    private val fabricanteService: FabricanteService,
+    private val tokenService: TokenService,
 ) : UsuarioService {
     private val log = logger()
 
@@ -102,21 +95,19 @@ class UsuarioServiceImpl(
     }
 
     override suspend fun createUser(
-        registerUserDto: RegisterUserDto,
-        authentication: Authentication?,
-    ): ActualApiResponse {
+        registerUserDto: RegisterUserDto, authentication: Any?,): ActualApiResponse {
         val response = createContentResponse()
         val usuarioDto = registerUserDto.usuario
-
-        authentication?.let { authentication ->
-            if (authentication.isAuthenticated &&
-                authentication !is AnonymousAuthenticationToken
-            ) {
-                response.addErrors(validateAuthoritiesRegister(usuarioDto, authentication))
-                response.returnIfErrors()?.let { return it as ActualApiResponse }
+        /*
+            authentication?.let { authentication ->
+                if (authentication.isAuthenticated &&
+                    authentication !is AnonymousAuthenticationToken
+                ) {
+                    response.addErrors(validateAuthoritiesRegister(usuarioDto, authentication))
+                    response.returnIfErrors()?.let { return it as ActualApiResponse }
+                }
             }
-        }
-
+         */
         response.addWarnings(validateWarningsRegistration(usuarioDto))
 
         val validationResult = validateRegistration(registerUserDto)
@@ -142,7 +133,7 @@ class UsuarioServiceImpl(
 
     override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?): UsuarioDto {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles)
-        val encodedPassword: String = passwordEncoder.encode(usuarioDto.password)
+        val encodedPassword: String = "" // passwordEncoder.encode(usuarioDto.password)
 
         return usuarioPersistenceService.createUser(
             usuarioDto = usuarioDto,
@@ -188,7 +179,7 @@ class UsuarioServiceImpl(
         )
 
         if (!response.hasErrors()) {
-            val persistenceUsuario = usuario.copy(password = passwordEncoder.encode(restoreDto.newPassword))
+            val persistenceUsuario = usuario.copy(password = "" /* passwordEncoder.encode(restoreDto.newPassword)*/)
                 .toUsuario()
             usuarioPersistenceService.saveUsuario(persistenceUsuario)
         }
@@ -209,7 +200,7 @@ class UsuarioServiceImpl(
     private suspend fun validateChangePassword(usuario: UsuarioDto, restoreDto: RestoreDto): List<ApiError> {
         val newPassword = "new_password"
         val builder = createResponseBuilder()
-        if (passwordEncoder.matches(restoreDto.newPassword, usuario.password)) {
+        if (false /*passwordEncoder.matches(restoreDto.newPassword, usuario.password)*/) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña no puede ser igual a la contraseña actual",
@@ -223,7 +214,7 @@ class UsuarioServiceImpl(
                 newPassword,
             )
         }
-        if (reactiveCompromisedPasswordChecker.check(restoreDto.newPassword).awaitSingle().isCompromised) {
+        if (false /*reactiveCompromisedPasswordChecker.check(restoreDto.newPassword).awaitSingle().isCompromised*/) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña está comprometida, utilice contraseñas seguras",
@@ -233,31 +224,32 @@ class UsuarioServiceImpl(
         return builder.build().errors
     }
 
-    private fun validateAuthoritiesRegister(usuarioDto: UsuarioDto, authentication: Authentication): List<ApiError> {
-        val authenticatedRoles = authentication.authorities
-            .mapNotNull { it.authority.removePrefix("ROLE_").takeIf(String::isNotBlank) }
-            .mapNotNull { runCatching { RolesEnum.valueOf(it) }.getOrNull() }
+    /*
+        private fun validateAuthoritiesRegister(usuarioDto: UsuarioDto, authentication: Authentication): List<ApiError> {
+            val authenticatedRoles = authentication.authorities
+                .mapNotNull { it.authority.removePrefix("ROLE_").takeIf(String::isNotBlank) }
+                .mapNotNull { runCatching { RolesEnum.valueOf(it) }.getOrNull() }
 
-        val errors = mutableListOf<ApiError>()
+            val errors = mutableListOf<ApiError>()
 
-        if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
-            errors += createApiErrorBuilder {
-                withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
-                withProperty("roles[]")
-                withMessage("No puede asignar roles superiores a su rol actual")
+            if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
+                errors += createApiErrorBuilder {
+                    withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
+                    withProperty("roles[]")
+                    withMessage("No puede asignar roles superiores a su rol actual")
+                }
             }
-        }
 
-        if (!hasUserManagementPermissions(authenticatedRoles.map { it.name })) {
-            errors += createApiErrorBuilder {
-                withCode(ApiResponseCode.PERMISSION_DENIED)
-                withMessage("No tienes permisos para registrar")
+            if (!hasUserManagementPermissions(authenticatedRoles.map { it.name })) {
+                errors += createApiErrorBuilder {
+                    withCode(ApiResponseCode.PERMISSION_DENIED)
+                    withMessage("No tienes permisos para registrar")
+                }
             }
+
+            return errors
         }
-
-        return errors
-    }
-
+     */
     private fun validateWarningsRegistration(usuarioDto: UsuarioDto): List<ApiError> {
         val apiErrorList = mutableListOf<ApiError>()
         if (usuarioDto.roles.any { rolDto -> rolDto.permisos.isNotEmpty() }
@@ -303,7 +295,7 @@ class UsuarioServiceImpl(
             }
         }
 
-        if (reactiveCompromisedPasswordChecker.check(usuarioDto.password).awaitSingle().isCompromised) {
+        if (false/*reactiveCompromisedPasswordChecker.check(usuarioDto.password).awaitSingle().isCompromised*/) {
             errors += createApiErrorBuilder {
                 withCode(ApiResponseCode.COMPROMISED_PASSWORD)
                 withProperty("password")

@@ -1,29 +1,17 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate
-import org.springframework.data.redis.core.setAndAwait
-import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm
-import org.springframework.security.oauth2.jwt.JwsHeader
-import org.springframework.security.oauth2.jwt.JwtClaimsSet
-import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import jakarta.enterprise.context.ApplicationScoped
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.io.Serializable
 import java.time.Instant
 import java.util.UUID
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
-@Service
+@ApplicationScoped
 class TokenServiceImpl(
-    private val jwtEncoder: JwtEncoder,
-    private val reactiveRedisTemplate: ReactiveStringRedisTemplate,
-    @Value("\${security.jwt.issuer}") private val issuer: String,
-    @Value("\${security.jwt.expiration-time}") private val expirationTime: Long,
-    @Value("\${security.jwt.refresh-time}") private val refreshTime: Long,
+    @ConfigProperty(name = "security.jwt.issuer") private val issuer: String,
+    @ConfigProperty(name = "security.jwt.expiration-time") private val expirationTime: Long,
+    @ConfigProperty(name = "security.jwt.refresh-time") private val refreshTime: Long,
 ) : TokenService {
     override suspend fun generateTokens(
         usuarioDto: UsuarioDto,
@@ -39,11 +27,13 @@ class TokenServiceImpl(
         )
     }
 
-    override fun isAccessTokenValid(userId: String, tokenId: String): Mono<Boolean> =
-        reactiveRedisTemplate.hasKey(generateKey("access", userId, tokenId))
+    override suspend fun isAccessTokenValid(userId: String, tokenId: String): Boolean = true
+    // TODO
+    // reactiveRedisTemplate.hasKey(generateKey("access", userId, tokenId))
 
-    override fun isRefreshTokenValid(userId: String, tokenId: String): Mono<Boolean> =
-        reactiveRedisTemplate.hasKey(generateKey("refresh", userId, tokenId))
+    override suspend fun isRefreshTokenValid(userId: String, tokenId: String): Boolean = false
+    // TODO
+    // reactiveRedisTemplate.hasKey(generateKey("refresh", userId, tokenId))
 
     private suspend fun createToken(
         subject: String,
@@ -70,31 +60,33 @@ class TokenServiceImpl(
         val now = Instant.now()
         val id = UUID.randomUUID().toString()
 
-        val builder = JwtClaimsSet.builder()
-            .issuer(issuer)
-            .issuedAt(now)
-            .notBefore(now)
-            .expiresAt(now.plusSeconds(expiresIn))
-            .subject(subject)
-            .id(id)
+        /*
+            TODO: implement JWT
+            val builder = JwtClaimsSet.builder()
+                .issuer(issuer)
+                .issuedAt(now)
+                .notBefore(now)
+                .expiresAt(now.plusSeconds(expiresIn))
+                .subject(subject)
+                .id(id)
 
-        scope?.let { builder.claim("scope", it) }
-        claimsExtra.forEach { (key, value) ->
-            if (key.isNotBlank() && value != null) {
-                builder.claim(key, value)
+            scope?.let { builder.claim("scope", it) }
+            claimsExtra.forEach { (key, value) ->
+                if (key.isNotBlank() && value != null) {
+                    builder.claim(key, value)
+                }
             }
-        }
 
-        val claims = builder.build()
-        val header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build()
-        val token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).tokenValue
+            val claims = builder.build()
+            val header = JwsHeader.with(SignatureAlgorithm.RS256).type("JWT").build()
+            val token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).tokenValue
+         */
 
-        return id to token
+        return id to ""
     }
 
     private suspend fun saveInCache(key: String, jwtToken: String, expirationTime: Long) {
-        reactiveRedisTemplate.opsForValue()
-            .setAndAwait(key, jwtToken, timeout = expirationTime.seconds.toJavaDuration())
+        // reactiveRedisTemplate.opsForValue().setAndAwait(key, jwtToken, timeout = expirationTime.seconds.toJavaDuration())
     }
 
     private fun generateKey(type: String, subject: String, id: String) = "token:$type:$subject:$id"

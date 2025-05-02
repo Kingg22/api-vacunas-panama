@@ -4,13 +4,11 @@ import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.persistence.DireccionPersistenceService
+import jakarta.enterprise.context.ApplicationScoped
 import jakarta.validation.Valid
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 
-@Service
+@ApplicationScoped
 class DireccionServiceImpl(private val direccionPersistenceService: DireccionPersistenceService) : DireccionService {
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
@@ -26,7 +24,7 @@ class DireccionServiceImpl(private val direccionPersistenceService: DireccionPer
     )
     override suspend fun getProvinciasDto() = direccionPersistenceService.findAllProvincias()
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    // TODO add transaction propagation requires new
     override suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
         val distritoDto = direccionDto.distrito.id?.let {
             direccionPersistenceService.findDistritoById(it)

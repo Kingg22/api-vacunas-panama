@@ -16,17 +16,16 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
+import jakarta.enterprise.context.ApplicationScoped
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
 import java.util.UUID
 
-@Service
+@ApplicationScoped
 class VacunaServiceImpl(
     private val vacunaPersistenceService: VacunaPersistenceService,
-    @Lazy private val doctorService: DoctorService,
-    @Lazy private val sedeService: SedeService,
-    @Lazy private val pacienteService: PacienteService,
+    private val doctorService: DoctorService,
+    private val sedeService: SedeService,
+    private val pacienteService: PacienteService,
 ) : VacunaService {
     private val log = logger()
 

@@ -9,13 +9,12 @@ import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 
-@Service
+@ApplicationScoped
 class FabricanteRegistrationStrategy(
-    @Lazy private val fabricanteService: FabricanteService,
-    @Lazy private val usuarioService: UsuarioService,
+    private val fabricanteService: FabricanteService,
+    private val usuarioService: UsuarioService,
 ) : RegistrationStrategy {
 
     override suspend fun validate(registerUserDto: RegisterUserDto): RegistrationResult {

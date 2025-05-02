@@ -2,7 +2,6 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import jakarta.validation.constraints.NotNull
-import reactor.core.publisher.Mono
 import java.io.Serializable
 
 /**
@@ -47,7 +46,7 @@ interface TokenService {
      * @param tokenId The unique token ID of the access token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    fun isAccessTokenValid(@NotNull userId: String, @NotNull tokenId: String): Mono<Boolean>
+    suspend fun isAccessTokenValid(@NotNull userId: String, @NotNull tokenId: String): Boolean
 
     /**
      * Validates the existence of a given refresh token in Redis cache.
@@ -57,5 +56,5 @@ interface TokenService {
      * @param tokenId The unique token ID of the refresh token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    fun isRefreshTokenValid(@NotNull userId: String, @NotNull tokenId: String): Mono<Boolean>
+    suspend fun isRefreshTokenValid(@NotNull userId: String, @NotNull tokenId: String): Boolean
 }

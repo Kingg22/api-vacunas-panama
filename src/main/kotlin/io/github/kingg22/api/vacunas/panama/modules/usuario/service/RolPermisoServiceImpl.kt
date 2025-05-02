@@ -6,10 +6,11 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.toRolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.PermisoRepository
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.RolRepository
 import io.github.kingg22.api.vacunas.panama.util.logger
+import jakarta.enterprise.context.ApplicationScoped
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.stereotype.Service
 
-@Service
+// TODO URGENT NEED TO DECOUPLE REPOSITORY WITH PERSISTENCE LAYER
+@ApplicationScoped
 class RolPermisoServiceImpl(
     private val rolRepository: RolRepository,
     private val permisoRepository: PermisoRepository,

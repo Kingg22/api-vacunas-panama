@@ -8,22 +8,21 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.or
 import io.github.kingg22.api.vacunas.panama.util.orElse
+import jakarta.enterprise.context.ApplicationScoped
 import jakarta.validation.constraints.NotNull
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.core.io.ResourceLoader
-import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 import java.util.Base64
 import java.util.UUID
 
-@Service
-class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
+@ApplicationScoped
+class PdfServiceImpl : PdfService {
     private val log = logger()
     private val iconImageBase64: String by lazy {
-        val resource = resourceLoader.getResource("classpath:images/icon.png")
-        require(resource.exists()) { "No se encontró el recurso icon.png en el classpath." }
+        val resource = Thread.currentThread().contextClassLoader.getResourceAsStream("images/icon.png")
+        requireNotNull(resource) { "No se encontró el recurso icon.png en el classpath." }
 
-        return@lazy resource.inputStream.use { input ->
+        return@lazy resource.use { input ->
             Base64.getEncoder().encodeToString(input.readBytes())
         }
     }

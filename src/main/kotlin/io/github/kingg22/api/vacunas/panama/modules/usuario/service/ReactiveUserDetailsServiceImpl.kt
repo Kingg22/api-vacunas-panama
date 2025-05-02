@@ -1,21 +1,11 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import io.github.kingg22.api.vacunas.panama.util.logger
-import kotlinx.coroutines.reactor.mono
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-
 /**
  * Service for loading user details during JWT authentication. Extends [ReactiveUserDetailsService] and is used by Spring
  * Security to verify and authenticate JWT tokens. Delegates user operations to [UsuarioService].
  */
+/*
+TODO maybe this is not longer necesary
 @Component
 class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService) : ReactiveUserDetailsService {
     private val log = logger()
@@ -43,3 +33,4 @@ class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService)
                     }
             }
 }
+*/

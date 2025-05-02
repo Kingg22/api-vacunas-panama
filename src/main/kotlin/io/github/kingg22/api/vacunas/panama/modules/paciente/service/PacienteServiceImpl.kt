@@ -15,15 +15,14 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
 import io.github.kingg22.api.vacunas.panama.util.logger
+import jakarta.enterprise.context.ApplicationScoped
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
 import java.util.UUID
 
-@Service
+@ApplicationScoped
 class PacienteServiceImpl(
     private val pacientePersistenceService: PacientePersistenceService,
-    @Lazy private val direccionService: DireccionService,
+    private val direccionService: DireccionService,
 ) : PacienteService {
     private val log = logger()
 

@@ -1,9 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
-import org.springframework.stereotype.Component
+import jakarta.enterprise.context.ApplicationScoped
 
-@Component
+@ApplicationScoped
 class RegistrationStrategyFactory(
     private val personaStrategy: PersonaRegistrationStrategy,
     private val fabricanteStrategy: FabricanteRegistrationStrategy,

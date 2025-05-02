@@ -4,7 +4,6 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
-import org.springframework.security.core.Authentication
 import java.util.UUID
 
 /**
@@ -53,7 +52,7 @@ interface UsuarioService {
      * @param authentication Optional if the user is authenticated to verify permissions.
      * @return API response indicating a result and any errors.
      */
-    suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Authentication? = null): ActualApiResponse
+    suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Any? = null): ActualApiResponse
 
     /**
      * Registers a new user.
