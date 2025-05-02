@@ -3,9 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.LoginDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
@@ -14,20 +11,13 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
-import kotlinx.coroutines.reactive.awaitSingle
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.authentication.password.CompromisedPasswordException
-import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.PATCH
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 import java.util.UUID
 
 /**
@@ -52,12 +42,9 @@ import java.util.UUID
  * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
  * @see io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
  */
-@RestController
-@RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class UsuarioController(
-    private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
-    private val usuarioService: UsuarioService,
-) {
+@Path("/account")
+@Produces(MediaType.APPLICATION_JSON)
+class UsuarioController(private val usuarioService: UsuarioService) {
     private val log = logger()
 
     /**
@@ -86,59 +73,58 @@ class UsuarioController(
      * @see io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
      * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
      */
-    @PostMapping("/register")
-    suspend fun register(
-        @RequestBody @Valid registerUserDto: RegisterUserDto,
-        authentication: Authentication?,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/register")
+    @POST
+    suspend fun register(@Valid registerUserDto: RegisterUserDto): Response {
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
 
-        if (authentication == null &&
-            !usuarioDto.roles.all { rolDto: RolDto ->
-                rolDto.id != null &&
-                    getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
-                    rolDto.nombre != null &&
-                    rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
-            }
-        ) {
-            apiResponse.addError(
-                createApiErrorBuilder {
-                    withCode(ApiResponseCode.MISSING_ROLE_OR_PERMISSION)
-                    withMessage("Solo pacientes pueden registrarse sin autenticación")
-                },
-            )
-            apiResponse.addStatusCode(403)
-            apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
-            return createResponseEntity(apiResponse, request)
-        }
+        /*
+                if (authentication == null &&
+                    !usuarioDto.roles.all { rolDto: RolDto ->
+                        rolDto.id != null &&
+                            getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
+                            rolDto.nombre != null &&
+                            rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
+                    }
+                ) {
+                    apiResponse.addError(
+                        createApiErrorBuilder {
+                            withCode(ApiResponseCode.MISSING_ROLE_OR_PERMISSION)
+                            withMessage("Solo pacientes pueden registrarse sin autenticación")
+                        },
+                    )
+                    apiResponse.addStatusCode(403)
+                    apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
+                    return createResponseEntity(apiResponse, request)
+                }
+         */
 
-        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
+        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, null))
         if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(400)
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 
-    @PostMapping("/login")
-    suspend fun login(
-        @RequestBody @Valid loginDto: LoginDto,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/login")
+    @POST
+    suspend fun login(@Valid loginDto: LoginDto): Response {
         val apiResponse = createResponse()
         try {
-            val authentication = reactiveAuthenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
-            ).awaitSingle()
-            if (authentication.isAuthenticated) {
-                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(authentication.name)))
+//            val authentication = reactiveAuthenticationManager.authenticate(
+//                UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
+//            ).awaitSingle()
+            if (false) {
+                // TODO resolve login with authentication object
+                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString("")))
                 apiResponse.addStatusCode(200)
                 apiResponse.addStatus("message", "Login successful")
             }
-        } catch (exception: CompromisedPasswordException) {
+        } catch (exception: Throwable) {
+            // TODO Compromised Password Exception
             log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
             apiResponse.addStatusCode(307)
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
@@ -150,14 +136,12 @@ class UsuarioController(
                 },
             )
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 
-    @PatchMapping("/restore")
-    suspend fun restore(
-        @RequestBody @Valid restoreDto: RestoreDto,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/restore")
+    @PATCH
+    suspend fun restore(@Valid restoreDto: RestoreDto): Response {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
@@ -165,19 +149,20 @@ class UsuarioController(
         } else {
             apiResponse.addStatusCode(200)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 
-    @GetMapping
-    suspend fun profile(authentication: Authentication, request: ServerHttpRequest): ResponseEntity<ActualApiResponse> {
+    @GET
+    suspend fun profile(): Response {
         val apiResponse = createResponse()
         try {
-            apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
+            // TODO authentication principal
+            apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString("")))
             apiResponse.addStatusCode(200)
         } catch (e: IllegalArgumentException) {
             log.error("Error while user fetching the profile", e)
             apiResponse.addStatusCode(403)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 }

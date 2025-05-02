@@ -3,27 +3,18 @@ package io.github.kingg22.api.vacunas.panama.modules.pdf.controller
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
-import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.http.ContentDisposition
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.QueryParam
+import jakarta.ws.rs.core.Response
 import java.util.UUID
 
-@RestController
-@RequestMapping(path = ["/pdf"])
+@Path("/pdf")
 class PdfController(
     private val pdfService: PdfService,
     private val pacienteService: PacienteService,
@@ -31,13 +22,13 @@ class PdfController(
 ) {
     private val log = logger()
 
-    @GetMapping
-    suspend fun getPdfFile(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam("idVacuna") idVacuna: UUID,
-    ): ResponseEntity<ByteArray> {
+    @GET
+    suspend fun getPdfFile(@QueryParam("idVacuna") idVacuna: UUID): Response {
         try {
-            val personaIdString = jwt.getClaimAsString("persona")
+            val jwt = object {
+                val id: String = "1"
+            }
+            val personaIdString: String? = null
             check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
 
             val idPaciente: UUID = UUID.fromString(personaIdString)
@@ -45,42 +36,38 @@ class PdfController(
 
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
-                return ResponseEntity.notFound().build()
+                return Response.status(404).build()
             }
 
             val pacienteDto = pacienteService.getPacienteDtoById(idPaciente)
 
             if (pacienteDto == null) {
-                return ResponseEntity.notFound().build()
+                return Response.status(404).build()
             }
 
             val idCertificado: UUID = UUID.randomUUID()
             val pdfStream = pdfService.generatePdf(pacienteDto, dosisDtos, idCertificado)
 
-            return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_PDF)
-                .headers { it: HttpHeaders ->
-                    it.contentDisposition = ContentDisposition
-                        .attachment()
-                        .filename("certificado_vacunas_$idCertificado.pdf")
-                        .build()
-                }
-                .body(pdfStream)
+            return Response.ok(pdfStream)
+                .type("application/pdf")
+                .header("Content-Disposition", "attachment; filename=\"certificado_vacunas_$idCertificado.pdf\"")
+                .build()
         } catch (e: Exception) {
             log.error(e.message, e)
-            return ResponseEntity.status(500).build()
+            return Response.status(500).build()
         }
     }
 
-    @GetMapping("/base64")
-    suspend fun getPdfBase64(
-        @AuthenticationPrincipal jwt: Jwt,
-        @RequestParam("idVacuna") idVacuna: UUID,
-        webRequest: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/base64")
+    @GET
+    suspend fun getPdfBase64(@QueryParam("idVacuna") idVacuna: UUID): Response {
         val apiResponse = createResponse()
         try {
-            val personaIdString = jwt.getClaimAsString("persona")
+            // TODO add authentication principal
+            val jwt = object {
+                val id: String = "2"
+            }
+            val personaIdString: String? = null
             check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
 
             val idPaciente: UUID = UUID.fromString(personaIdString)
@@ -95,7 +82,7 @@ class PdfController(
                     },
                 )
                 apiResponse.addStatusCode(404)
-                return createResponseEntity(apiResponse, webRequest)
+                return createResponseEntity(apiResponse)
             }
 
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
@@ -107,7 +94,7 @@ class PdfController(
                         message = "El paciente no fue encontrado, intente nuevamente."
                     },
                 )
-                return createResponseEntity(apiResponse, webRequest)
+                return createResponseEntity(apiResponse)
             }
 
             val idCertificado: UUID = UUID.randomUUID()
@@ -126,6 +113,6 @@ class PdfController(
             )
             apiResponse.addStatusCode(500)
         }
-        return createResponseEntity(apiResponse, webRequest)
+        return createResponseEntity(apiResponse)
     }
 }

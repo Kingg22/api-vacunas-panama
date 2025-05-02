@@ -4,30 +4,25 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteInputDt
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.validation.Valid
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 
 /** TODO to split in modules controllers */
-@RestController
-@RequestMapping(path = ["/bulk"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@Path("/bulk")
+@Produces(MediaType.APPLICATION_JSON)
 class BulkController(private val usuarioService: UsuarioService, private val pacienteService: PacienteService) {
     private val log = logger()
 
-    @PostMapping("/paciente-usuario-direccion")
-    suspend fun createPacienteUsuario(
-        @RequestBody @Valid pacienteInputDto: PacienteInputDto,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @POST
+    @Path("/paciente-usuario-direccion")
+    suspend fun createPacienteUsuario(@Valid pacienteInputDto: PacienteInputDto): Response {
         val apiResponse = createResponse()
         log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())
         val pacienteDto = pacienteInputDto.toPacienteDto()
@@ -39,7 +34,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
             apiResponse.addStatusCode(400)
-            return createResponseEntity(apiResponse, request)
+            return createResponseEntity(apiResponse)
         }
         val registerUserDto = RegisterUserDto(
             pacienteDto.persona.usuario!!,
@@ -55,6 +50,6 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 }

@@ -3,16 +3,15 @@ package io.github.kingg22.api.vacunas.panama.modules.sede.controller
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAndResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
-import org.springframework.http.MediaType
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
 
-@RestController
-@RequestMapping(path = ["/sedes"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@Path("/sedes")
+@Produces(MediaType.APPLICATION_JSON)
 class SedeController(private val sedeService: SedeService) {
-    @GetMapping
-    suspend fun getSedes(request: ServerHttpRequest) =
-        createApiAndResponseEntity(request, mapOf("sedes" to sedeService.getIdNombreSedes().toArrayList()))
+    @GET
+    suspend fun getSedes() =
+        createApiAndResponseEntity(null, mapOf("sedes" to sedeService.getIdNombreSedes().toArrayList()))
 }

@@ -1,35 +1,32 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
-import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 import java.util.UUID
 
-@RestController
-@RequestMapping(path = ["/patient"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@Path("/patient")
+@Produces(MediaType.APPLICATION_JSON)
 class PacienteController(private val pacienteService: PacienteService) {
     private val log = logger()
 
-    @GetMapping
-    suspend fun getPaciente(
-        @AuthenticationPrincipal jwt: Jwt,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @GET
+    suspend fun getPaciente(): Response {
+        // TODO add authentication principal or something else
+        val jwt = object {
+            val id: String = "1"
+        }
         val apiResponse = createResponse()
-        val personaIdString = jwt.getClaimAsString("persona")
+        val personaIdString: String? = null
         check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
         val idPersona = UUID.fromString(personaIdString)
         log.debug("Received a query of Paciente: {}", idPersona)
@@ -46,6 +43,6 @@ class PacienteController(private val pacienteService: PacienteService) {
         } else {
             apiResponse.addStatusCode(200)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse)
     }
 }
