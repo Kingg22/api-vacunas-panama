@@ -3,10 +3,10 @@ package io.github.kingg22.api.vacunas.panama
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.quarkus.liquibase.runtime.NativeImageResourceAccessor
 import io.quarkus.runtime.ImageMode
-import io.quarkus.runtime.StartupEvent
+import io.quarkus.runtime.Startup
 import io.quarkus.runtime.util.StringUtil
+import jakarta.annotation.PostConstruct
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.enterprise.event.Observes
 import liquibase.Contexts
 import liquibase.LabelExpression
 import liquibase.Liquibase
@@ -20,11 +20,20 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.io.FileNotFoundException
 import java.nio.file.Paths
 import java.util.Optional
+import kotlin.jvm.optionals.getOrElse
 
 /* Copy of https://github.com/quarkusio/quarkus/issues/14682#issuecomment-1205682175 */
 @ApplicationScoped
+@Startup
 class LiquibaseSetup {
-    private val logger = logger()
+    @ConfigProperty(name = "quarkus.liquibase.enabled")
+    private lateinit var active: Optional<Boolean>
+
+    @ConfigProperty(name = "quarkus.liquibase.contexts")
+    private lateinit var contexts: Optional<List<String>>
+
+    @ConfigProperty(name = "quarkus.liquibase.labels")
+    private lateinit var labels: Optional<List<String>>
 
     @ConfigProperty(name = "quarkus.datasource.reactive.url")
     private lateinit var datasourceUrl: List<String>
@@ -46,10 +55,27 @@ class LiquibaseSetup {
 
     private val filesystemPrefix = "filesystem:"
 
-    fun runLiquibaseMigration(@Observes event: StartupEvent) {
+    @PostConstruct
+    fun init() {
+        launchMigrationInBackground()
+    }
+
+    private fun launchMigrationInBackground() {
+        if (active.getOrElse { false }) {
+            Thread {
+                runLiquibaseMigration()
+            }.start()
+        }
+    }
+
+    private fun runLiquibaseMigration() {
+        val logger = logger()
         var liquibase: Liquibase? = null
         try {
+            val contexts = createContexts()
+            val labels = createLabels()
             logger.info("liquibase setup to $datasourceUrl")
+            logger.info("Liquibase with contexts [$contexts] and labels [$labels]")
             val resourceAccessor: ResourceAccessor = resolveResourceAccessor()
             check(datasourceUrl.isNotEmpty() || datasourceUrlJdbc.isPresent) {
                 "Datasource url must not be empty for Liquibase to run. Found: $datasourceUrl"
@@ -77,7 +103,7 @@ class LiquibaseSetup {
                 resourceAccessor,
             )
             liquibase = Liquibase(parseChangeLog(changeLogLocation), resourceAccessor, conn)
-            liquibase.update(Contexts(), LabelExpression())
+            liquibase.update(contexts, labels)
         } catch (e: Exception) {
             logger.error("Liquibase Migration Exception: ", e)
         } finally {
@@ -142,4 +168,8 @@ class LiquibaseSetup {
 
         return changeLog
     }
+
+    private fun createContexts() = Contexts(contexts.getOrElse { emptyList() })
+
+    private fun createLabels() = LabelExpression(labels.getOrElse { emptyList() })
 }
