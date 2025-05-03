@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioServi
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.vertx.ext.web.RoutingContext
 import jakarta.validation.Valid
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -22,7 +23,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
 
     @POST
     @Path("/paciente-usuario-direccion")
-    suspend fun createPacienteUsuario(@Valid pacienteInputDto: PacienteInputDto): Response {
+    suspend fun createPacienteUsuario(@Valid pacienteInputDto: PacienteInputDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())
         val pacienteDto = pacienteInputDto.toPacienteDto()
@@ -34,7 +35,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         if (pacienteContent.hasErrors()) {
             log.trace("CreatePaciente return errors: {}", pacienteContent.errors)
             apiResponse.addStatusCode(400)
-            return createResponseEntity(apiResponse)
+            return createResponseEntity(apiResponse, rc)
         }
         val registerUserDto = RegisterUserDto(
             pacienteDto.persona.usuario!!,
@@ -50,6 +51,6 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }

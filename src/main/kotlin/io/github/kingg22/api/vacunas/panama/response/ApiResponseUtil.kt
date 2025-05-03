@@ -1,6 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.vertx.ext.web.RoutingContext
 import jakarta.ws.rs.core.Response
 import java.io.Serializable
 import java.time.Instant
@@ -16,12 +17,12 @@ object ApiResponseUtil {
      * Adds metadata information to the provided API response.
      *
      * @param apiResponse [ApiResponse] object to which metadata will be added.
-     * @param serverHttpRequest [] request data used to extract information.
+     * @param request [RoutingContext] request data used to extract information.
      */
     @JvmStatic
-    fun setMetadata(apiResponse: ApiResponse, serverHttpRequest: Any? = null) {
+    fun setMetadata(apiResponse: ApiResponse, request: RoutingContext) {
         apiResponse.apply {
-            addMetadata("path", "")
+            addMetadata("path", request.request().path())
             addMetadata("timestamp", Instant.now().toString())
         }
     }
@@ -30,12 +31,12 @@ object ApiResponseUtil {
      * Adds metadata information to the provided API response.
      *
      * @param apiResponseBuilder [ApiResponseBuilder] object to which metadata will be added.
-     * @param serverHttpRequest [] request data used to extract information.
+     * @param request [RoutingContext] request data used to extract information.
      */
     @JvmStatic
-    fun setMetadata(apiResponseBuilder: ApiResponseBuilder, serverHttpRequest: Any? = null) {
+    fun setMetadata(apiResponseBuilder: ApiResponseBuilder, request: RoutingContext) {
         apiResponseBuilder.apply {
-            withMetadata("path", "")
+            withMetadata("path", request.request().path())
             withMetadata("timestamp", Instant.now().toString())
         }
     }
@@ -44,12 +45,14 @@ object ApiResponseUtil {
      * Creates a standardized HTTP response from the API response.
      *
      * @param apiResponse [ApiResponse] object containing the response with status.
-     * @param serverHttpRequest [] used to set metadata in the response.
+     * @param request [RoutingContext] used to set metadata in the response.
      * @return A [Response] with the status code and body set to [ApiResponse] the API response object.
      */
     @JvmStatic
-    fun createResponseEntity(apiResponse: ApiResponse, serverHttpRequest: Any? = null): Response = apiResponse.apply {
-        setMetadata(this, serverHttpRequest)
+    fun createResponseEntity(apiResponse: ApiResponse, request: RoutingContext? = null): Response = apiResponse.apply {
+        if (request != null) {
+            setMetadata(this, request)
+        }
         log.trace(toString())
     }.let {
         Response.status(it.retrieveStatusCode()).entity(it as ActualApiResponse).build()
@@ -58,7 +61,7 @@ object ApiResponseUtil {
     /**
      * Creates a standardized HTTP response from the API response and build into ResponseEntity it immediately.
      *
-     * @param serverHttpRequest [] used to set metadata in the response.
+     * @param request [RoutingContext] used to set metadata in the response.
      * @param data [Map] shortcut to add data to the response.
      * @param statusCode [Int] HTTP status code to be set in the response. Defaults to 200 OK.
      * @param builder [ApiResponseBuilder] builder to make the response.
@@ -66,7 +69,7 @@ object ApiResponseUtil {
      */
     @JvmStatic
     fun createApiAndResponseEntity(
-        serverHttpRequest: Any? = null,
+        request: RoutingContext,
         data: Map<String, Serializable>,
         statusCode: Int = 200,
         builder: ApiResponseBuilder.() -> Unit = {},
@@ -76,7 +79,7 @@ object ApiResponseUtil {
             withData(data)
             withStatusCode(statusCode)
         },
-        serverHttpRequest,
+        request,
     )
     /*
         /**

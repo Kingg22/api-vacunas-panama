@@ -7,9 +7,12 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
+import io.quarkus.security.identity.SecurityIdentity
+import io.vertx.ext.web.RoutingContext
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import java.util.UUID
@@ -20,7 +23,7 @@ class PacienteController(private val pacienteService: PacienteService) {
     private val log = logger()
 
     @GET
-    suspend fun getPaciente(): Response {
+    suspend fun getPaciente(@Context identity: SecurityIdentity, rc: RoutingContext): Response {
         // TODO add authentication principal or something else
         val jwt = object {
             val id: String = "1"
@@ -43,6 +46,6 @@ class PacienteController(private val pacienteService: PacienteService) {
         } else {
             apiResponse.addStatusCode(200)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }

@@ -10,6 +10,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.vertx.ext.web.RoutingContext
 import jakarta.validation.Valid
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.PATCH
@@ -75,7 +76,7 @@ class UsuarioController(private val usuarioService: UsuarioService) {
      */
     @Path("/register")
     @POST
-    suspend fun register(@Valid registerUserDto: RegisterUserDto): Response {
+    suspend fun register(@Valid registerUserDto: RegisterUserDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
 
@@ -106,12 +107,12 @@ class UsuarioController(private val usuarioService: UsuarioService) {
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 
     @Path("/login")
     @POST
-    suspend fun login(@Valid loginDto: LoginDto): Response {
+    suspend fun login(@Valid loginDto: LoginDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         try {
 //            val authentication = reactiveAuthenticationManager.authenticate(
@@ -136,12 +137,12 @@ class UsuarioController(private val usuarioService: UsuarioService) {
                 },
             )
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 
     @Path("/restore")
     @PATCH
-    suspend fun restore(@Valid restoreDto: RestoreDto): Response {
+    suspend fun restore(@Valid restoreDto: RestoreDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
@@ -149,11 +150,11 @@ class UsuarioController(private val usuarioService: UsuarioService) {
         } else {
             apiResponse.addStatusCode(200)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 
     @GET
-    suspend fun profile(): Response {
+    suspend fun profile(rc: RoutingContext): Response {
         val apiResponse = createResponse()
         try {
             // TODO authentication principal
@@ -163,6 +164,6 @@ class UsuarioController(private val usuarioService: UsuarioService) {
             log.error("Error while user fetching the profile", e)
             apiResponse.addStatusCode(403)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }

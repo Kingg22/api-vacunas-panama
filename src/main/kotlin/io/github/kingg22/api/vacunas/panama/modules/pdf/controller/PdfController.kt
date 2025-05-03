@@ -8,6 +8,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.vertx.ext.web.RoutingContext
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.QueryParam
@@ -60,7 +61,7 @@ class PdfController(
 
     @Path("/base64")
     @GET
-    suspend fun getPdfBase64(@QueryParam("idVacuna") idVacuna: UUID): Response {
+    suspend fun getPdfBase64(@QueryParam("idVacuna") idVacuna: UUID, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         try {
             // TODO add authentication principal
@@ -82,7 +83,7 @@ class PdfController(
                     },
                 )
                 apiResponse.addStatusCode(404)
-                return createResponseEntity(apiResponse)
+                return createResponseEntity(apiResponse, rc)
             }
 
             val pDetalle = pacienteService.getPacienteDtoById(idPaciente)
@@ -94,7 +95,7 @@ class PdfController(
                         message = "El paciente no fue encontrado, intente nuevamente."
                     },
                 )
-                return createResponseEntity(apiResponse)
+                return createResponseEntity(apiResponse, rc)
             }
 
             val idCertificado: UUID = UUID.randomUUID()
@@ -113,6 +114,6 @@ class PdfController(
             )
             apiResponse.addStatusCode(500)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }

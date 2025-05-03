@@ -6,6 +6,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAndResponseEntity
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
+import io.vertx.ext.web.RoutingContext
 import jakarta.validation.Valid
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
@@ -18,12 +19,12 @@ import jakarta.ws.rs.core.Response
 @Produces(MediaType.APPLICATION_JSON)
 class VacunaController(private val vacunaService: VacunaService) {
     @GET
-    suspend fun getVacunas() =
-        createApiAndResponseEntity(null, mapOf("vacunas" to vacunaService.getVacunasFabricante().toArrayList()))
+    suspend fun getVacunas(rc: RoutingContext) =
+        createApiAndResponseEntity(rc, mapOf("vacunas" to vacunaService.getVacunasFabricante().toArrayList()))
 
     @Path("/create-dosis")
     @POST
-    suspend fun createDosis(@Valid insertDosisDto: InsertDosisDto): Response {
+    suspend fun createDosis(@Valid insertDosisDto: InsertDosisDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))
         if (apiResponse.hasErrors()) {
@@ -31,6 +32,6 @@ class VacunaController(private val vacunaService: VacunaService) {
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }

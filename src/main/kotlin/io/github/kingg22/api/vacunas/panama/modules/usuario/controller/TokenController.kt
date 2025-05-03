@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.vertx.ext.web.RoutingContext
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
@@ -29,7 +30,7 @@ class TokenController(private val usuarioService: UsuarioService, private val to
      */
     @Path("/refresh")
     @POST
-    suspend fun refreshToken(): Response {
+    suspend fun refreshToken(rc: RoutingContext): Response {
         val jwt = object {
             val subject: String? = null
             val id = "43"
@@ -61,6 +62,6 @@ class TokenController(private val usuarioService: UsuarioService, private val to
             apiResponse.addStatus("message", "Invalid token")
             apiResponse.addStatusCode(403)
         }
-        return createResponseEntity(apiResponse)
+        return createResponseEntity(apiResponse, rc)
     }
 }
