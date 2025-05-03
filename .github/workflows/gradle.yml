@@ -11,7 +11,7 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-
+    if: "!startsWith(github.ref, 'refs/tags/')"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,8 +48,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
+      - name: Build Native Image with Gradle Wrapper
+        run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false
         env:
           JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
           JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}

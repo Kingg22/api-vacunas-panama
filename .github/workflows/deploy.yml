@@ -1,9 +1,11 @@
 name: Publish Spring Boot Image with Boot Build Image
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+# Desactivate temporal migration to Quarkus
+#  push:
+#    tags:
+#      - "v*"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
