@@ -28,8 +28,6 @@ import java.util.UUID
 
 @ApplicationScoped
 class UsuarioServiceImpl(
-    private val reactiveCompromisedPasswordChecker: Any,
-    private val passwordEncoder: Any,
     private val usuarioPersistenceService: UsuarioPersistenceService,
     private val registrationStrategyFactory: RegistrationStrategyFactory,
     private val rolPermisoService: RolPermisoService,
@@ -94,8 +92,7 @@ class UsuarioServiceImpl(
         return response.build()
     }
 
-    override suspend fun createUser(
-        registerUserDto: RegisterUserDto, authentication: Any?,): ActualApiResponse {
+    override suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Any?): ActualApiResponse {
         val response = createContentResponse()
         val usuarioDto = registerUserDto.usuario
         /*
@@ -179,7 +176,8 @@ class UsuarioServiceImpl(
         )
 
         if (!response.hasErrors()) {
-            val persistenceUsuario = usuario.copy(password = "" /* passwordEncoder.encode(restoreDto.newPassword)*/)
+            /* passwordEncoder.encode(restoreDto.newPassword)*/
+            val persistenceUsuario = usuario.copy(password = "")
                 .toUsuario()
             usuarioPersistenceService.saveUsuario(persistenceUsuario)
         }
@@ -200,7 +198,8 @@ class UsuarioServiceImpl(
     private suspend fun validateChangePassword(usuario: UsuarioDto, restoreDto: RestoreDto): List<ApiError> {
         val newPassword = "new_password"
         val builder = createResponseBuilder()
-        if (false /*passwordEncoder.matches(restoreDto.newPassword, usuario.password)*/) {
+        /*passwordEncoder.matches(restoreDto.newPassword, usuario.password)*/
+        if (false) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña no puede ser igual a la contraseña actual",
@@ -214,7 +213,8 @@ class UsuarioServiceImpl(
                 newPassword,
             )
         }
-        if (false /*reactiveCompromisedPasswordChecker.check(restoreDto.newPassword).awaitSingle().isCompromised*/) {
+        /*reactiveCompromisedPasswordChecker.check(restoreDto.newPassword).awaitSingle().isCompromised*/
+        if (false) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña está comprometida, utilice contraseñas seguras",
@@ -295,7 +295,8 @@ class UsuarioServiceImpl(
             }
         }
 
-        if (false/*reactiveCompromisedPasswordChecker.check(usuarioDto.password).awaitSingle().isCompromised*/) {
+        /*reactiveCompromisedPasswordChecker.check(usuarioDto.password).awaitSingle().isCompromised*/
+        if (false) {
             errors += createApiErrorBuilder {
                 withCode(ApiResponseCode.COMPROMISED_PASSWORD)
                 withProperty("password")

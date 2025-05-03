@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
@@ -17,7 +16,6 @@ import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.enterprise.context.ApplicationScoped
-import org.springframework.cache.annotation.Cacheable
 import java.util.UUID
 
 @ApplicationScoped
@@ -105,11 +103,14 @@ class VacunaServiceImpl(
         return contentResponse.build()
     }
 
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.HUGE_VALUE],
         key = "'vacunas'",
         unless = "#result==null or #result.isEmpty()",
     )
+    @CacheResult(cacheName = CacheDuration.HUGE_VALUE)
+     */
     override suspend fun getVacunasFabricante() = vacunaPersistenceService.findAllVacunasWithFabricantes()
 
     override suspend fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =

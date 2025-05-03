@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPacienteModel
@@ -16,7 +15,6 @@ import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.enterprise.context.ApplicationScoped
-import org.springframework.cache.annotation.Cacheable
 import java.util.UUID
 
 @ApplicationScoped
@@ -67,7 +65,8 @@ class PacienteServiceImpl(
     override suspend fun getPacienteById(idPaciente: UUID) =
         pacientePersistenceService.findPacienteById(idPaciente)?.toPacienteDto()?.toPacienteModel()
 
-    @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
+    // @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
+    // @CacheResult(cacheName = CacheDuration.CACHE_VALUE)
     override suspend fun getViewVacunaEnfermedad(id: UUID) =
         pacientePersistenceService.findAllFromViewVacunaEnfermedad(id)
 
