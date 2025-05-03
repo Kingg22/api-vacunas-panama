@@ -74,7 +74,7 @@
   roles y su jerarquía. Se debe modificar a medida que los roles cambien.
 - Se valida el formato del email mas no si su dominio existe.
 - La v1 de la API está limitada en:
-    - No hay endpoint u operaciones asíncronas.
+    - ~~No hay endpoint u operaciones asíncronas.~~ Desde v0.11.0 todo el sistema es reactivo asíncrono.
     - No hay filtros de búsquedas.
     - No paginación de resultados.
 - De las reglas de vacunación en el proyecto solo implementamos: la edad mínima, intervalo entre primera y segunda
