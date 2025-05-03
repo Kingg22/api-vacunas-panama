@@ -1,7 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import jakarta.validation.constraints.NotNull
 import java.io.Serializable
 
 /**
@@ -34,7 +33,7 @@ interface TokenService {
      *         is the token type (e.g., "access_token", "refresh_token") and the value is the encoded token string.
      */
     suspend fun generateTokens(
-        @NotNull usuarioDto: UsuarioDto,
+        usuarioDto: UsuarioDto,
         idsAdicionales: Map<String, Serializable?> = emptyMap(),
     ): Map<String, Serializable>
 
@@ -46,7 +45,7 @@ interface TokenService {
      * @param tokenId The unique token ID of the access token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    suspend fun isAccessTokenValid(@NotNull userId: String, @NotNull tokenId: String): Boolean
+    suspend fun isAccessTokenValid(userId: String, tokenId: String): Boolean
 
     /**
      * Validates the existence of a given refresh token in Redis cache.
@@ -56,5 +55,5 @@ interface TokenService {
      * @param tokenId The unique token ID of the refresh token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    suspend fun isRefreshTokenValid(@NotNull userId: String, @NotNull tokenId: String): Boolean
+    suspend fun isRefreshTokenValid(userId: String, tokenId: String): Boolean
 }

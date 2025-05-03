@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
-import jakarta.validation.Valid
 
 /**
  * Service interface for managing address-related operations such as creating, retrieving, and searching for provinces,
@@ -31,7 +30,7 @@ interface DireccionService {
      * @param direccionDto DTO containing address data to persist.
      * @return The newly created [DireccionDto] representing the saved model.
      */
-    suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto
+    suspend fun createDireccion(direccionDto: DireccionDto): DireccionDto
 
     /**
      * Searches for an address entity matching the fields of the provided [DireccionDto].

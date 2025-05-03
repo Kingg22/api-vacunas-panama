@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Size
-import org.springframework.format.annotation.DateTimeFormat
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
@@ -13,8 +12,6 @@ import java.util.UUID
 data class InsertDosisDto(
     @field:JsonProperty(value = "paciente_id") @param:JsonProperty(value = "paciente_id") val pacienteId: UUID,
 
-    @field:DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @param:DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @field:JsonProperty(value = "fecha_aplicacion")
     @param:JsonProperty(value = "fecha_aplicacion")
     @field:PastOrPresent

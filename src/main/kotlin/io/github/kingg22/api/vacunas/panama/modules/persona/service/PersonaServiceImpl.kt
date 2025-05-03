@@ -6,12 +6,11 @@ import io.github.kingg22.api.vacunas.panama.modules.persona.entity.toPersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.persistence.PersonaPersistenceService
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.validation.constraints.NotNull
 import java.util.UUID
 
 @ApplicationScoped
 class PersonaServiceImpl(private val personaPersistenceService: PersonaPersistenceService) : PersonaService {
-    override suspend fun getPersona(identifier: @NotNull String): PersonaModel? {
+    override suspend fun getPersona(identifier: String): PersonaModel? {
         val result = formatToSearch(identifier)
         val personaOpt = personaPersistenceService.findByCedulaOrPasaporteOrCorreo(
             result.cedula,
@@ -23,6 +22,6 @@ class PersonaServiceImpl(private val personaPersistenceService: PersonaPersisten
             ?.toPersonaModel()
     }
 
-    override suspend fun getPersonaByUserID(idUser: @NotNull UUID) =
+    override suspend fun getPersonaByUserID(idUser: UUID) =
         personaPersistenceService.findByUsuarioId(idUser)?.toPersonaDto()
 }

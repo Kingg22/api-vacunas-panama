@@ -1,31 +1,35 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.service
 
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.persistence.DireccionPersistenceService
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.validation.Valid
-import org.springframework.cache.annotation.Cacheable
 
 @ApplicationScoped
 class DireccionServiceImpl(private val direccionPersistenceService: DireccionPersistenceService) : DireccionService {
+
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'distritosDto'",
         unless = "#result==null or #result.isEmpty()",
     )
+    @CacheResult(cacheName = CacheDuration.MASSIVE_VALUE)
+     */
     override suspend fun getDistritosDto() = direccionPersistenceService.findAllDistritos()
 
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'provinciasDto'",
         unless = "#result==null or #result.isEmpty()",
     )
+    @CacheResult(cacheName = CacheDuration.MASSIVE_VALUE)
+     */
     override suspend fun getProvinciasDto() = direccionPersistenceService.findAllProvincias()
 
     // TODO add transaction propagation requires new
-    override suspend fun createDireccion(@Valid direccionDto: DireccionDto): DireccionDto {
+    override suspend fun createDireccion(direccionDto: DireccionDto): DireccionDto {
         val distritoDto = direccionDto.distrito.id?.let {
             direccionPersistenceService.findDistritoById(it)
         } ?: getDistritoDefault()
@@ -42,7 +46,7 @@ class DireccionServiceImpl(private val direccionPersistenceService: DireccionPer
     suspend fun getDistritoDefault() = direccionPersistenceService.findDistritoById(0)
         ?: throw IllegalStateException("Distrito default not found")
 
-    override suspend fun getDireccionByDto(@Valid direccionDto: DireccionDto): DireccionDto? {
+    override suspend fun getDireccionByDto(direccionDto: DireccionDto): DireccionDto? {
         direccionDto.id?.let { return direccionPersistenceService.findDireccionById(it)?.toDireccionDto() }
 
         val direccion = direccionDto.descripcion.takeIf { it.isNotBlank() } ?: return null
