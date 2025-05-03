@@ -11,13 +11,13 @@ import io.vertx.core.impl.ContextInternal
 import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.hibernate.reactive.mutiny.Mutiny
 
 /* Inspired on: https://github.com/quarkusio/quarkus/issues/34101#issuecomment-2687147471 */
 
-val logger = logger("HibernateReactivePanacheExt")
+val panacheLogger = logger("HibernateReactivePanacheExt")
 
 /**
  * Executes a given block of code within a Vert.x context using its dispatcher for coroutine execution.
@@ -36,18 +36,18 @@ val logger = logger("HibernateReactivePanacheExt")
 suspend inline fun <T> withVertx(crossinline block: suspend (CoroutineScope) -> T): T {
     val vertx: Vertx = Vertx.vertx()
     val context = Vertx.currentContext()
-        ?: (vertx.orCreateContext).also { logger.debug("Vertx current context is null, using orCreateContext") }
+        ?: (vertx.orCreateContext).also { panacheLogger.debug("Vertx current context is null, using orCreateContext") }
             .let { it: Context -> it as ContextInternal }
             .duplicate()
             .also { it: ContextInternal -> VertxContextSafetyToggle.setContextSafe(it, true) }
 
     return coroutineScope {
         check(context != null) { "withVertx: Vertx context is null" }
-        async(context.dispatcher()) {
-            // uses vertx dispatcher
+        // uses vertx dispatcher
+        withContext(context.dispatcher()) {
             // this is CoroutineScope
             block(this)
-        }.await() // awaits the Deferred from async
+        }
     }
 }
 
@@ -69,15 +69,15 @@ suspend inline fun <T> withVertx(crossinline block: suspend (CoroutineScope) -> 
 suspend inline fun <T> withTransaction(crossinline block: suspend CoroutineScope.(Mutiny.Transaction) -> T): T =
     withVertx { scope ->
         Panache.withTransaction {
-            val uniTransaction = Panache.currentTransaction()
+            val uniTransaction: Uni<Mutiny.Transaction?> = Panache.currentTransaction()
+            // this is CoroutineScope
             uni(scope) {
-                // this is CoroutineScope
                 try {
                     val transaction: Mutiny.Transaction? = uniTransaction.awaitSuspending()
                     check(transaction != null) { "Current transaction is null when previous call withTransaction" }
                     block(scope, transaction)
                 } catch (e: IllegalStateException) {
-                    logger.error("Error in Vertx Mutiny withTransaction", e)
+                    panacheLogger.error("Error in Vertx Mutiny withTransaction", e)
                     // Rethrow to be handled by the caller
                     throw e
                 }
@@ -102,13 +102,13 @@ suspend inline fun <T> withSession(crossinline block: suspend CoroutineScope.(Mu
     withVertx { scope ->
         Panache.withSession {
             val session: Uni<Mutiny.Session> = Panache.getSession()
+            // Use the given CoroutineScope
             uni(scope) {
-                // this is CoroutineScope
                 try {
                     val unwrappedSession = session.awaitSuspending()
                     block(scope, unwrappedSession)
                 } catch (e: IllegalStateException) {
-                    logger.error("Error in Vertx Mutiny withSession", e)
+                    panacheLogger.error("Error in Vertx Mutiny withSession", e)
                     // Rethrow to be handled by the caller
                     throw e
                 }
@@ -143,7 +143,7 @@ suspend inline fun <T> withSessionAndTransaction(
                 check(transaction != null) { "Current transaction is null when previous call withTransaction" }
                 block(scope, session, transaction)
             } catch (e: IllegalStateException) {
-                logger.error("Error in Vertx Mutiny withSessionAndTransaction", e)
+                panacheLogger.error("Error in Vertx Mutiny withSessionAndTransaction", e)
                 // Rethrow to be handled by the caller
                 throw e
             }

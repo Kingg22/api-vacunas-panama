@@ -134,3 +134,17 @@ project.afterEvaluate {
         )
     }
 }
+
+/*
+* What went wrong:
+Some problems were found with the configuration of task ':compileKotlin' (type 'KotlinCompile').
+  - Gradle detected a problem with the following location: '/home/runner/work/api-vacunas-panama/api-vacunas-panama/build/classes/java/quarkus-generated-sources'.
+    Reason: Task ':compileKotlin' uses this output of task ':compileQuarkusGeneratedSourcesJava' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
+    Possible solutions:
+      1. Declare task ':compileQuarkusGeneratedSourcesJava' as an input of ':compileKotlin'.
+      2. Declare an explicit dependency on ':compileQuarkusGeneratedSourcesJava' from ':compileKotlin' using Task#dependsOn.
+      3. Declare an explicit dependency on ':compileQuarkusGeneratedSourcesJava' from ':compileKotlin' using Task#mustRunAfter.
+ */
+tasks.named("compileQuarkusGeneratedSourcesJava") {
+    enabled = false
+}
