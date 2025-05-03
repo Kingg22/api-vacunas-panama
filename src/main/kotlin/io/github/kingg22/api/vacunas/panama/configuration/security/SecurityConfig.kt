@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
 /*

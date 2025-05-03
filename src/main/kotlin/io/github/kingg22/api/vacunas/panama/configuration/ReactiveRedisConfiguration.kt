@@ -1,5 +1,8 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.configuration
 
+/*
 /**
  * Configuración principal de caché reactiva utilizando Redis.
  *
@@ -10,7 +13,6 @@ package io.github.kingg22.api.vacunas.panama.configuration
  * La configuración está optimizada para manejar objetos en formato JSON usando Jackson, y se integra con Spring
  * Cache para permitir la anotación de métodos con `@Cacheable`.
  */
-/*
 TODO Probably this file will be delete
 @Configuration
 @EnableCaching

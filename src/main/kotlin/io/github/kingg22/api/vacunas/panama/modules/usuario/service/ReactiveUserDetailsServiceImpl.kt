@@ -1,10 +1,12 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
+/*
 /**
  * Service for loading user details during JWT authentication. Extends [ReactiveUserDetailsService] and is used by Spring
  * Security to verify and authenticate JWT tokens. Delegates user operations to [UsuarioService].
  */
-/*
 TODO maybe this is not longer necesary
 @Component
 class ReactiveUserDetailsServiceImpl(private val usuarioService: UsuarioService) : ReactiveUserDetailsService {
