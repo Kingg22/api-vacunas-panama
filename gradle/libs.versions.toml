@@ -93,44 +93,57 @@ html2pdf = { group = "com.itextpdf", name = "html2pdf", version.ref = "itextpdf-
 
 # Quarkus
 quarkus-bom = { group = "io.quarkus.platform", name = "quarkus-bom", version.ref = "quarkus" }
+quarkus-arc = { group = "io.quarkus", name = "quarkus-arc" }
 quarkus-rest = { group = "io.quarkus", name = "quarkus-rest" }
+quarkus-rest-jackson = { group = "io.quarkus", name = "quarkus-rest-jackson" }
 quarkus-rest-kotlin-serialization = { group = "io.quarkus", name = "quarkus-rest-kotlin-serialization" }
 quarkus-oidc = { group = "io.quarkus", name = "quarkus-oidc" }
-quarkus-arc = { group = "io.quarkus", name = "quarkus-arc" }
 quarkus-security-jpa-reactive = { group = "io.quarkus", name = "quarkus-security-jpa-reactive" }
 quarkus-validator = { group = "io.quarkus", name = "quarkus-hibernate-validator" }
+quarkus-jackson = { group = "io.quarkus", name = "quarkus-jackson" }
 quarkus-kotlin = { group = "io.quarkus", name = "quarkus-kotlin" }
 quarkus-liquibase = { group = "io.quarkus", name = "quarkus-liquibase" }
+quarkus-postgres = { group = "io.quarkus", name = "quarkus-jdbc-postgresql" }
 quarkus-hibernate-reactive-panache-kotlin = { group = "io.quarkus", name = "quarkus-hibernate-reactive-panache-kotlin" }
 quarkus-reactive-postgres = { group = "io.quarkus", name = "quarkus-reactive-pg-client" }
+hibernate-jpa-model = { group = "org.hibernate.orm", name = "hibernate-jpamodelgen" }
 quarkus-redis-cache = { group = "io.quarkus", name = "quarkus-redis-cache" }
-quarkus-spring-cache = { group = "io.quarkus", name = "quarkus-spring-cache" }
 ## Kotlin required to Quarkus
 kotlin-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8" }
+## Vertx
+vertx-kotlin = { group = "io.vertx", name = "vertx-lang-kotlin" }
+vertx-kotlin-coroutines = { group = "io.vertx", name = "vertx-lang-kotlin-coroutines" }
 
 # Quarkus Test
 quarkus-junit5 = { group = "io.quarkus", name = "quarkus-junit5" }
 quarkus-devservices = { group = "io.quarkus", name = "quarkus-observability-devservices" }
+quarkus-test-hibernate-reactive-panache = { group = "io.quarkus", name = "quarkus-test-hibernate-reactive-panache" }
 
 [bundles]
 quarkusImplementation = [
     "kotlin-jdk8",
+    "jackson-module-kotlin",
+    "jackson-datatype-jsr310",
     "itextpdf",
     "html2pdf",
     "konvert-api",
-    "quarkus-rest",
-    "quarkus-rest-kotlin-serialization",
-    "quarkus-oidc",
     "quarkus-arc",
-    "quarkus-security-jpa-reactive",
+    "quarkus-rest",
+    "quarkus-rest-jackson", # Temporal
+    #"quarkus-rest-kotlin-serialization",
+    #"quarkus-oidc",
+    #"quarkus-security-jpa-reactive",
     "quarkus-validator",
     "quarkus-kotlin",
     "quarkus-liquibase",
+    "quarkus-postgres", # Only for liquibase
     "quarkus-hibernate-reactive-panache-kotlin",
     "quarkus-reactive-postgres",
     "quarkus-redis-cache",
     "quarkus-devservices",
-    "quarkus-spring-cache"
+    "vertx-kotlin",
+    "vertx-kotlin-coroutines",
+    "quarkus-jackson"
 ]
 
 quarkusTestImplementation = [
@@ -145,6 +158,7 @@ quarkusTestImplementation = [
     "rest-assured",
     "rest-assured-kotlin",
     "quarkus-junit5",
+    "quarkus-test-hibernate-reactive-panache"
 ]
 
 #implementation = [
