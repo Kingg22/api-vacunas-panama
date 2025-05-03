@@ -7,6 +7,7 @@ import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.github.kingg22.api.vacunas.panama.util.retrieveFileJson
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.matchers.string.shouldContain
+import io.quarkus.test.junit.QuarkusTest
 import io.restassured.http.ContentType
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
@@ -18,6 +19,7 @@ import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
+@QuarkusTest
 class VacunaControllerTest : TestBase() {
 
     @Test
@@ -37,6 +39,7 @@ class VacunaControllerTest : TestBase() {
     }
 
     // crear dosis con datos válidos debe retornar CREATED
+    // @Ignore("Until set security and token storage")
     @Test
     fun createDosis() {
         /*

@@ -5,9 +5,9 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Provincia
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
-import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.Test
+import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import java.time.LocalDateTime
+import kotlin.test.Test
 
 class PacienteBuilderTests {
     @Test
@@ -30,6 +30,6 @@ class PacienteBuilderTests {
             ),
             createdAt = fecha,
         )
-        paciente shouldBe pacienteBuilder
+        paciente shouldBeEqualToComparingFields pacienteBuilder
     }
 }

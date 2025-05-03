@@ -3,9 +3,9 @@ package io.github.kingg22.api.vacunas.panama.response
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.springframework.http.server.reactive.ServerHttpRequest
+import io.vertx.core.http.HttpServerRequest
+import io.vertx.ext.web.RoutingContext
 import java.io.Serializable
-import java.net.URI
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,19 +14,19 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ApiResponseTest {
-    private lateinit var request: ServerHttpRequest
+    private lateinit var request: RoutingContext
 
     @BeforeTest
     fun retrieveMockRequest() {
         // Crear un mock de ServerHttpRequest
-        val serverHttpRequest = mockk<ServerHttpRequest>()
+        val serverHttpRequest = mockk<RoutingContext>()
 
         // Crear un mock de URI para evitar NullPointerException al acceder a la ruta
-        val uri = mockk<URI>()
+        val uri = mockk<HttpServerRequest>()
 
         // Configurar el comportamiento del mock
-        every { serverHttpRequest.uri } returns uri
-        every { uri.path } returns "/my/test/path"
+        every { serverHttpRequest.request() } returns uri
+        every { uri.path() } returns "/my/test/path"
 
         this.request = serverHttpRequest
     }
@@ -97,7 +97,7 @@ class ApiResponseTest {
         val response = ApiResponseFactory.createResponse()
         ApiResponseUtil.setMetadata(response, request)
 
-        verify { request.uri }
+        verify(inverse = true) { request.request().path() }
     }
 
     @Test

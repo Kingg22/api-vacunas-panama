@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.controller
 
 import io.github.kingg22.api.vacunas.panama.TestBase
 import io.kotest.matchers.string.shouldNotBeBlank
+import io.quarkus.test.junit.QuarkusTest
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
@@ -9,6 +10,7 @@ import org.apache.http.HttpStatus
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
+@QuarkusTest
 class PublicResourcesControllerTest : TestBase() {
     @Test
     fun getDistritos() {
