@@ -4,6 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaDto
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -65,4 +67,6 @@ class Vacuna(
         inverseJoinColumns = [JoinColumn(name = "fabricante")],
     )
     var fabricantes: MutableSet<Fabricante> = mutableSetOf(),
-)
+) : PanacheEntityBase {
+    companion object : PanacheCompanionBase<Vacuna, UUID>
+}

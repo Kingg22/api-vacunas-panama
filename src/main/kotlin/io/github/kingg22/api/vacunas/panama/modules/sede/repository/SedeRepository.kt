@@ -2,18 +2,25 @@ package io.github.kingg22.api.vacunas.panama.modules.sede.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheRepositoryBase
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-interface SedeRepository : JpaRepository<Sede, UUID> {
-    @Query(
-        """
-            SELECT new io.github.kingg22.api.vacunas.panama.modules.common.dto.UUIDNombreDto(s.id, s.entidad.nombre)
+@ApplicationScoped
+class SedeRepository : PanacheRepositoryBase<Sede, UUID> {
+    suspend fun findByIdOrNull(id: UUID): Sede? = withSession { findById(id).awaitSuspending() }
+
+    suspend fun findAllIdAndNombre(): List<UUIDNombreDto> = withSession { _ ->
+        list(
+            """
+            SELECT s
             FROM Sede s
+            JOIN FETCH s.entidad e
             WHERE s.entidad.estado LIKE 'ACTIVO'
             ORDER BY s.entidad.nombre
             """,
-    )
-    fun findAllIdAndNombre(): List<UUIDNombreDto>
+        ).awaitSuspending().map { UUIDNombreDto(it.id!!, it.entidad.nombre) }
+    }
 }

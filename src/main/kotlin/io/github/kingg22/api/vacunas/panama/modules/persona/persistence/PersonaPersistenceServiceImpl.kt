@@ -31,7 +31,7 @@ class PersonaPersistenceServiceImpl(private val personaRepository: PersonaReposi
      * @param id The UUID of the user.
      * @return The persona entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioId(id: UUID) = personaRepository.findByUsuario_Id(id)
+    override suspend fun findByUsuarioId(id: UUID) = personaRepository.findByUsuarioId(id)
 
     /**
      * Finds a persona by its username.
@@ -39,5 +39,5 @@ class PersonaPersistenceServiceImpl(private val personaRepository: PersonaReposi
      * @param username The username of the user.
      * @return The persona entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioUsername(username: String) = personaRepository.findByUsuario_Username(username)
+    override suspend fun findByUsuarioUsername(username: String) = personaRepository.findByUsuarioUsername(username)
 }

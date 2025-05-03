@@ -6,6 +6,8 @@ import io.github.kingg22.api.vacunas.panama.modules.sede.dto.SedeDto
 import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -56,7 +58,7 @@ class Sede(
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-) {
+) : PanacheEntityBase {
     @KonvertFrom(
         SedeModel::class,
         mappings = [
@@ -66,5 +68,5 @@ class Sede(
             ),
         ],
     )
-    companion object
+    companion object : PanacheCompanionBase<Sede, UUID>
 }

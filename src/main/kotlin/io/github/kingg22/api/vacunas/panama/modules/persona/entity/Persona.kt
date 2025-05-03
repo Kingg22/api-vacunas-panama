@@ -7,6 +7,8 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -100,7 +102,7 @@ class Persona(
     @Size(max = 254)
     @Column(name = "correo", length = 254)
     var correo: String? = null,
-) {
+) : PanacheEntityBase {
     override fun toString(): String = Persona::class.simpleName +
         " id: $id, nombre: $nombre, apellido1: $apellido1, apellido2: $apellido2, cedula: $cedula, direccion: $direccion, estado: $estado, fechaNacimiento: $fechaNacimiento, pasaporte: $pasaporte, telefono: $telefono, usuario: $usuario, correo: $correo, sexo: $sexo, edad: $edad"
 
@@ -115,5 +117,5 @@ class Persona(
             Mapping("direccion", ignore = true),
         ],
     )
-    companion object
+    companion object : PanacheCompanionBase<Persona, UUID>
 }

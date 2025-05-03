@@ -29,5 +29,5 @@ class FabricantePersistenceServiceImpl(private val fabricanteRepository: Fabrica
      * @param idUsuario The UUID of the user.
      * @return The fabricante entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioId(idUsuario: UUID) = fabricanteRepository.findByUsuario_Id(idUsuario)
+    override suspend fun findByUsuarioId(idUsuario: UUID) = fabricanteRepository.findByUsuarioId(idUsuario)
 }

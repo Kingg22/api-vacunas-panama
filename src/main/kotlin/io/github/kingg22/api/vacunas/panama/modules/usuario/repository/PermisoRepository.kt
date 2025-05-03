@@ -2,12 +2,17 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Permiso
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheRepositoryBase
+import io.quarkus.panache.common.Sort
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 
-interface PermisoRepository : JpaRepository<Permiso, Short> {
-    @Query(
-        "SELECT new io.github.kingg22.api.vacunas.panama.modules.common.dto.IdNombreDto(p.id, p.nombre) FROM Permiso p ORDER BY p.id",
-    )
-    fun findAllIdNombre(): List<IdNombreDto>
+@ApplicationScoped
+class PermisoRepository : PanacheRepositoryBase<Permiso, Short> {
+    suspend fun findAllIdNombre(): List<IdNombreDto> = withSession {
+        listAll(Sort.by("id")).awaitSuspending().map {
+            IdNombreDto(it.id!!, it.nombre)
+        }
+    }
 }

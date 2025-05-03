@@ -4,6 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertTo
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -72,4 +74,6 @@ class Fabricante(
     @Size(max = 254)
     @Column(name = "contacto_correo", length = 254)
     var contactoCorreo: String? = null,
-)
+) : PanacheEntityBase {
+    companion object : PanacheCompanionBase<Fabricante, UUID>
+}

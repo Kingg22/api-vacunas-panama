@@ -7,8 +7,10 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.toRol
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.github.kingg22.api.vacunas.panama.modules.usuario.repository.UsuarioRepository
+import io.github.kingg22.api.vacunas.panama.util.withSessionAndTransaction
+import io.github.kingg22.api.vacunas.panama.util.withTransaction
+import io.smallrye.mutiny.coroutines.awaitSuspending
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.persistence.EntityManager
 import java.util.UUID
 
 /**
@@ -19,11 +21,7 @@ import java.util.UUID
  * It encapsulates all JPA-related operations.
  */
 @ApplicationScoped
-class UsuarioPersistenceServiceImpl(
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
-    private val usuarioRepository: UsuarioRepository,
-) : UsuarioPersistenceService {
+class UsuarioPersistenceServiceImpl(private val usuarioRepository: UsuarioRepository) : UsuarioPersistenceService {
 
     /**
      * Finds a user by its ID.
@@ -69,10 +67,8 @@ class UsuarioPersistenceServiceImpl(
      * @return The saved user entity.
      */
     override suspend fun saveUsuario(usuario: Usuario): Usuario {
-        var user: Usuario? = null
-        transactionTemplate.execute {
-            entityManager.merge(usuario)
-            user = usuarioRepository.save(usuario)
+        val user: Usuario? = withSessionAndTransaction { session, _ ->
+            session.merge(usuario).awaitSuspending()
         }
         checkNotNull(user) { "User was not saved" }
         return user
@@ -95,14 +91,13 @@ class UsuarioPersistenceServiceImpl(
         encodedPassword: String,
         roles: Set<RolDto>,
     ): Usuario {
-        var savedUsuario: Usuario? = null
-        transactionTemplate.execute {
-            // Find entities using entityManager.find instead of merge
+        val savedUsuario: Usuario? = withTransaction { _ ->
+            // Find entities with findById
             val managedPersona = personaId?.let {
-                entityManager.find(Persona::class.java, it)
+                Persona.findById(it).awaitSuspending()
             }
             val managedFabricante = fabricanteId?.let {
-                entityManager.find(Fabricante::class.java, it)
+                Fabricante.findById(it).awaitSuspending()
             }
 
             val usuario = Usuario(
@@ -118,8 +113,7 @@ class UsuarioPersistenceServiceImpl(
             managedPersona?.usuario = usuario
             managedFabricante?.usuario = usuario
 
-            entityManager.persist(usuario)
-            savedUsuario = usuario
+            usuarioRepository.persistAndFlush(usuario).awaitSuspending()
         }
         checkNotNull(savedUsuario) { "User was not created" }
         return savedUsuario
