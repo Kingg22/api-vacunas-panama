@@ -63,6 +63,9 @@ jobs:
 
       - name: Build Native Image with Gradle Wrapper
         run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false
+        env:
+          JWT_PUBLIC_LOCATION: ${{ secrets.JWT_PUBLIC_LOCATION }}
+          JWT_PRIVATE_LOCATION: ${{ secrets.JWT_PRIVATE_LOCATION }}
 
       - name: Clean up PEM files
         if: always()
