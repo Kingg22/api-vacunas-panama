@@ -9,6 +9,10 @@ name: Java CI with Gradle
 
 on: [ push, pull_request ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     if: "!startsWith(github.ref, 'refs/tags/')"
@@ -22,7 +26,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'jetbrains'
+          distribution: 'graalvm'
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
@@ -48,11 +52,21 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Native Image with Gradle Wrapper
-        run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false
+      - name: Create PEM files
+        run: |
+          mkdir -p src/main/resources
+          echo "${JWT_PRIVATE}" > src/main/resources/private.pem
+          echo "${JWT_PUBLIC}" > src/main/resources/public.pem
         env:
           JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
           JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}
+
+      - name: Build Native Image with Gradle Wrapper
+        run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false
+
+      - name: Clean up PEM files
+        if: always()
+        run: rm -f src/main/resources/*.pem
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -79,7 +93,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'jetbrains'
+          distribution: 'graalvm'
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
