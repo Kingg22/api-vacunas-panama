@@ -4,6 +4,7 @@ import io.github.kingg22.api.vacunas.panama.modules.usuario.service.RolPermisoSe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAndResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.PermitAll
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
@@ -11,6 +12,7 @@ import jakarta.ws.rs.core.MediaType
 
 @Path("/roles")
 @Produces(MediaType.APPLICATION_JSON)
+@PermitAll
 class RolesPermisosController(private val rolesPermisoService: RolPermisoService) {
     @GET
     suspend fun getRoles(rc: RoutingContext) =

@@ -7,7 +7,10 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createApiAn
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
 import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.PermitAll
+import jakarta.annotation.security.RolesAllowed
 import jakarta.validation.Valid
+import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -19,11 +22,14 @@ import jakarta.ws.rs.core.Response
 @Produces(MediaType.APPLICATION_JSON)
 class VacunaController(private val vacunaService: VacunaService) {
     @GET
+    @PermitAll
     suspend fun getVacunas(rc: RoutingContext) =
         createApiAndResponseEntity(rc, mapOf("vacunas" to vacunaService.getVacunasFabricante().toArrayList()))
 
     @Path("/create-dosis")
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed("DOCTOR", "ENFERMERA")
     suspend fun createDosis(@Valid insertDosisDto: InsertDosisDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(vacunaService.createDosis(insertDosisDto))

@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.pdf.controller
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.pdf.service.PdfService
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.service.VacunaService
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
@@ -9,13 +10,19 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.RolesAllowed
+import jakarta.enterprise.context.RequestScoped
+import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.QueryParam
 import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.jwt.JsonWebToken
 import java.util.UUID
 
 @Path("/pdf")
+@RequestScoped
+@RolesAllowed(value = ["PACIENTE_READ"])
 class PdfController(
     private val pdfService: PdfService,
     private val pacienteService: PacienteService,
@@ -23,17 +30,13 @@ class PdfController(
 ) {
     private val log = logger()
 
+    @Inject
+    lateinit var jwt: JsonWebToken
+
     @GET
     suspend fun getPdfFile(@QueryParam("idVacuna") idVacuna: UUID): Response {
         try {
-            val jwt = object {
-                val id: String = "1"
-            }
-            val personaIdString: String? = null
-            check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
-
-            val idPaciente: UUID = UUID.fromString(personaIdString)
-            val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
+            val (dosisDtos, idPaciente) = getDosisVacunaOfPaciente(idVacuna)
 
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
@@ -64,15 +67,7 @@ class PdfController(
     suspend fun getPdfBase64(@QueryParam("idVacuna") idVacuna: UUID, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         try {
-            // TODO add authentication principal
-            val jwt = object {
-                val id: String = "2"
-            }
-            val personaIdString: String? = null
-            check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
-
-            val idPaciente: UUID = UUID.fromString(personaIdString)
-            val dosisDtos = vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna)
+            val (dosisDtos, idPaciente) = getDosisVacunaOfPaciente(idVacuna)
 
             if (dosisDtos.isEmpty()) {
                 log.debug(dosisDtos.toString())
@@ -115,5 +110,13 @@ class PdfController(
             apiResponse.addStatusCode(500)
         }
         return createResponseEntity(apiResponse, rc)
+    }
+
+    private suspend fun getDosisVacunaOfPaciente(idVacuna: UUID): Pair<List<DosisDto>, UUID> {
+        val personaIdString = jwt.getClaim<String>("persona")
+        check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.tokenID}" }
+
+        val idPaciente: UUID = UUID.fromString(personaIdString)
+        return vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna) to idPaciente
     }
 }

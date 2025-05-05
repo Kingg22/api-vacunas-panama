@@ -7,30 +7,34 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.github.kingg22.api.vacunas.panama.util.toArrayList
-import io.quarkus.security.identity.SecurityIdentity
 import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.RolesAllowed
+import jakarta.enterprise.context.RequestScoped
+import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
-import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.jwt.JsonWebToken
 import java.util.UUID
 
 @Path("/patient")
 @Produces(MediaType.APPLICATION_JSON)
+@RequestScoped
+@RolesAllowed("PACIENTE_READ")
 class PacienteController(private val pacienteService: PacienteService) {
     private val log = logger()
 
+    @Inject
+    lateinit var jwt: JsonWebToken
+
     @GET
-    suspend fun getPaciente(@Context identity: SecurityIdentity, rc: RoutingContext): Response {
-        // TODO add authentication principal or something else
-        val jwt = object {
-            val id: String = "1"
-        }
+    suspend fun getPaciente(rc: RoutingContext): Response {
         val apiResponse = createResponse()
-        val personaIdString: String? = null
-        check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.id}" }
+        val personaIdString = checkNotNull(jwt.getClaim<String>("persona")) {
+            "Claim persona is null in jwt ${jwt.subject}"
+        }
         val idPersona = UUID.fromString(personaIdString)
         log.debug("Received a query of Paciente: {}", idPersona)
         val viewPacienteVacunaEnfermedad = pacienteService.getViewVacunaEnfermedad(idPersona).toArrayList()
