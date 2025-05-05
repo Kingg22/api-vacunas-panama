@@ -8,6 +8,7 @@ import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -37,10 +38,14 @@ data class UsuarioDto(
 
     @param:JsonProperty(value = "created_at")
     @field:JsonProperty(value = "created_at")
+    @field:PastOrPresent
+    @param:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
     @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
+    @field:PastOrPresent
+    @param:PastOrPresent
     val updatedAt: LocalDateTime? = null,
 
     @param:JsonProperty(value = "last_used", access = JsonProperty.Access.READ_ONLY)

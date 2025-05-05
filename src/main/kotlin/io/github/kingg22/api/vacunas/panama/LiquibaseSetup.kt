@@ -19,7 +19,9 @@ import liquibase.resource.ResourceAccessor
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.io.FileNotFoundException
 import java.nio.file.Paths
+import java.time.ZoneOffset.UTC
 import java.util.Optional
+import java.util.TimeZone
 import kotlin.jvm.optionals.getOrElse
 
 /* Copy of https://github.com/quarkusio/quarkus/issues/14682#issuecomment-1205682175 */
@@ -57,6 +59,7 @@ class LiquibaseSetup {
 
     @PostConstruct
     fun init() {
+        TimeZone.setDefault(TimeZone.getTimeZone(UTC))
         launchMigrationInBackground()
     }
 
