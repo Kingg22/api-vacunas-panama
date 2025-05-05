@@ -10,7 +10,6 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -18,7 +17,6 @@ import kotlin.test.assertNotNull
 class UsuarioControllerTest : TestBase() {
 
     @Test
-    @Ignore("Until set password encoder")
     fun register() {
         val registerUserDto =
             """
@@ -51,7 +49,6 @@ class UsuarioControllerTest : TestBase() {
     }
 
     @Test
-    @Ignore("Until set security")
     fun login() {
         val loginDto =
             """
@@ -80,7 +77,6 @@ class UsuarioControllerTest : TestBase() {
     }
 
     @Test
-    @Ignore("Until set password encoder")
     fun restore() {
         val restoreDto =
             """
@@ -106,7 +102,6 @@ class UsuarioControllerTest : TestBase() {
     }
 
     @Test
-    @Ignore("Until retrieve authentication principal or jwt")
     fun profile() {
         val responseBody = Given {
             authenticateRequest()

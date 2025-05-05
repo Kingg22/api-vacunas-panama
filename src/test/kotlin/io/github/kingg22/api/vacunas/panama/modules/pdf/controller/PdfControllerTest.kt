@@ -10,12 +10,10 @@ import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import org.hamcrest.Matchers.containsString
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 @QuarkusTest
-@Ignore("Until retrieve authenticated user from context")
 class PdfControllerTest : TestBase() {
 
     @Test

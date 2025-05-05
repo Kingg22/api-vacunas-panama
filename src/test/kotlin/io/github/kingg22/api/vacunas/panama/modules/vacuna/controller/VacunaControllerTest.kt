@@ -16,6 +16,7 @@ import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -39,7 +40,7 @@ class VacunaControllerTest : TestBase() {
     }
 
     // crear dosis con datos válidos debe retornar CREATED
-    // @Ignore("Until set security and token storage")
+    @Ignore("Until create a new user with role DOCTOR and ENFERMERA")
     @Test
     fun createDosis() {
         /*

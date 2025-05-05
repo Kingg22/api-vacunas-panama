@@ -9,7 +9,6 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -17,7 +16,6 @@ import kotlin.test.assertNotNull
 class PacienteControllerTest : TestBase() {
 
     @Test
-    @Ignore("Until retrieve authenticated user from context")
     fun getPaciente() {
         val responseBody = Given {
             authenticateRequest()

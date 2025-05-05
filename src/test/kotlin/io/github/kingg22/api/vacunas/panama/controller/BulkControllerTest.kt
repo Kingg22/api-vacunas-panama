@@ -12,7 +12,6 @@ import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -21,7 +20,6 @@ class BulkControllerTest : TestBase() {
 
     @Test
     @RunOnVertxContext
-    @Ignore("Until set password encoder")
     fun createPacienteUsuario() {
         val json =
             """
