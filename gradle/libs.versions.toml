@@ -95,10 +95,13 @@ html2pdf = { group = "com.itextpdf", name = "html2pdf", version.ref = "itextpdf-
 quarkus-bom = { group = "io.quarkus.platform", name = "quarkus-bom", version.ref = "quarkus" }
 quarkus-arc = { group = "io.quarkus", name = "quarkus-arc" }
 quarkus-rest = { group = "io.quarkus", name = "quarkus-rest" }
+quarkus-rest-client = { group = "io.quarkus", name = "quarkus-rest-client" }
 quarkus-rest-jackson = { group = "io.quarkus", name = "quarkus-rest-jackson" }
 quarkus-rest-kotlin-serialization = { group = "io.quarkus", name = "quarkus-rest-kotlin-serialization" }
 quarkus-oidc = { group = "io.quarkus", name = "quarkus-oidc" }
 quarkus-security-jpa-reactive = { group = "io.quarkus", name = "quarkus-security-jpa-reactive" }
+quarkus-smallrye-jwt = { group = "io.quarkus", name = "quarkus-smallrye-jwt" }
+quarkus-smallrye-jwt-build = { group = "io.quarkus", name = "quarkus-smallrye-jwt-build" }
 quarkus-validator = { group = "io.quarkus", name = "quarkus-hibernate-validator" }
 quarkus-jackson = { group = "io.quarkus", name = "quarkus-jackson" }
 quarkus-kotlin = { group = "io.quarkus", name = "quarkus-kotlin" }
@@ -126,13 +129,15 @@ quarkusImplementation = [
     "jackson-datatype-jsr310",
     "itextpdf",
     "html2pdf",
+    "dotenv-java",
     "konvert-api",
     "quarkus-arc",
     "quarkus-rest",
+    "quarkus-rest-client",
     "quarkus-rest-jackson", # Temporal
     #"quarkus-rest-kotlin-serialization",
     #"quarkus-oidc",
-    #"quarkus-security-jpa-reactive",
+    "quarkus-security-jpa-reactive",
     "quarkus-validator",
     "quarkus-kotlin",
     "quarkus-liquibase",
@@ -143,7 +148,9 @@ quarkusImplementation = [
     "quarkus-devservices",
     "vertx-kotlin",
     "vertx-kotlin-coroutines",
-    "quarkus-jackson"
+    "quarkus-jackson",
+    "quarkus-smallrye-jwt",
+    "quarkus-smallrye-jwt-build"
 ]
 
 quarkusTestImplementation = [

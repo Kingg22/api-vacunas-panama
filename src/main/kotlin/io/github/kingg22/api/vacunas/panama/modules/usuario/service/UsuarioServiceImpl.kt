@@ -20,6 +20,9 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createAp
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
+import io.github.kingg22.api.vacunas.panama.util.HaveIBeenPwnedPasswordChecker
+import io.github.kingg22.api.vacunas.panama.util.bcryptHash
+import io.github.kingg22.api.vacunas.panama.util.bcryptMatch
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.enterprise.context.ApplicationScoped
 import java.time.LocalDateTime
@@ -28,6 +31,7 @@ import java.util.UUID
 
 @ApplicationScoped
 class UsuarioServiceImpl(
+    private val compromisedPasswordChecker: HaveIBeenPwnedPasswordChecker,
     private val usuarioPersistenceService: UsuarioPersistenceService,
     private val registrationStrategyFactory: RegistrationStrategyFactory,
     private val rolPermisoService: RolPermisoService,
@@ -130,7 +134,7 @@ class UsuarioServiceImpl(
 
     override suspend fun createUser(usuarioDto: UsuarioDto, personaId: UUID?, fabricanteId: UUID?): UsuarioDto {
         val roles = rolPermisoService.convertToExistRol(usuarioDto.roles)
-        val encodedPassword: String = "" // passwordEncoder.encode(usuarioDto.password)
+        val encodedPassword = usuarioDto.password.bcryptHash()
 
         return usuarioPersistenceService.createUser(
             usuarioDto = usuarioDto,
@@ -176,9 +180,7 @@ class UsuarioServiceImpl(
         )
 
         if (!response.hasErrors()) {
-            /* passwordEncoder.encode(restoreDto.newPassword)*/
-            val persistenceUsuario = usuario.copy(password = "")
-                .toUsuario()
+            val persistenceUsuario = usuario.copy(password = restoreDto.newPassword.bcryptHash()).toUsuario()
             usuarioPersistenceService.saveUsuario(persistenceUsuario)
         }
 
@@ -198,8 +200,7 @@ class UsuarioServiceImpl(
     private suspend fun validateChangePassword(usuario: UsuarioDto, restoreDto: RestoreDto): List<ApiError> {
         val newPassword = "new_password"
         val builder = createResponseBuilder()
-        /*passwordEncoder.matches(restoreDto.newPassword, usuario.password)*/
-        if (false) {
+        if (restoreDto.newPassword.bcryptMatch(usuario.password)) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña no puede ser igual a la contraseña actual",
@@ -213,8 +214,7 @@ class UsuarioServiceImpl(
                 newPassword,
             )
         }
-        /*reactiveCompromisedPasswordChecker.check(restoreDto.newPassword).awaitSingle().isCompromised*/
-        if (false) {
+        if (compromisedPasswordChecker.isPasswordCompromised(restoreDto.newPassword)) {
             builder.withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "La nueva contraseña está comprometida, utilice contraseñas seguras",
@@ -295,8 +295,7 @@ class UsuarioServiceImpl(
             }
         }
 
-        /*reactiveCompromisedPasswordChecker.check(usuarioDto.password).awaitSingle().isCompromised*/
-        if (false) {
+        if (compromisedPasswordChecker.isPasswordCompromised(usuarioDto.password)) {
             errors += createApiErrorBuilder {
                 withCode(ApiResponseCode.COMPROMISED_PASSWORD)
                 withProperty("password")
