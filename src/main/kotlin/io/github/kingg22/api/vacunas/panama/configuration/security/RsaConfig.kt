@@ -1,8 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
+import io.github.cdimascio.dotenv.Dotenv
 import io.github.kingg22.api.vacunas.panama.util.logger
-import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces
+import jakarta.inject.Singleton
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import java.security.Key
 import java.security.KeyFactory
@@ -29,12 +30,13 @@ import kotlin.jvm.optionals.getOrNull
  * @see RSAPublicKey
  * @see RSAPrivateKey
  */
-@ApplicationScoped
+@Singleton
 class RsaConfig(
     @ConfigProperty(name = "security.jwt.public") private val rsaPublicKey: Optional<String>,
     @ConfigProperty(name = "security.jwt.private") private val rsaPrivateKey: Optional<String>,
 ) {
     private val log = logger()
+    private val dotenv: Dotenv = Dotenv.configure().ignoreIfMissing().load()
 
     /**
      * Retrieves the public RSA key for JWT authentication.
@@ -44,10 +46,19 @@ class RsaConfig(
      * @return the [RSAPublicKey] used for JWT encoding/decoding, or null if no key is available.
      */
     @Produces
-    fun retrievePublicKey(): RSAPublicKey? = rsaPublicKey.getOrNull()?.let {
-        log.info("Using public key from String")
+    fun retrievePublicKey(): RSAPublicKey? = rsaPublicKey.getOrNull().let {
+        if (it.isNullOrBlank() || it.length < 500 || !it.contains("-----END PRIVATE KEY-----")) {
+            log.info("No public key provided in configuration, calling dotenv")
+            dotenv["JWT_PUBLIC", null]
+        } else {
+            it
+        }
+    }?.let {
+        log.debug("Using public key from String: {}", it)
         getKeyFromString(it, true) as RSAPublicKey
-    }?.also { log.info("Successfully loaded public key") }
+    }?.also {
+        log.info("Successfully loaded public key")
+    }
 
     /**
      * Retrieves the private RSA key for JWT authentication.
@@ -57,8 +68,15 @@ class RsaConfig(
      * @return the [RSAPrivateKey] used for JWT encoding/decoding, or null if no key is available.
      */
     @Produces
-    fun retrievePrivateKey(): RSAPrivateKey? = rsaPrivateKey.getOrNull()?.let {
-        log.info("Using private key from String")
+    fun retrievePrivateKey(): RSAPrivateKey? = rsaPrivateKey.getOrNull().let {
+        if (it.isNullOrBlank() || it.length < 500 || !it.contains("-----END PUBLIC KEY-----")) {
+            log.info("No private key provided in configuration, calling dotenv")
+            dotenv["JWT_PRIVATE", null]
+        } else {
+            it
+        }
+    }?.let {
+        log.debug("Using private key from String: {}", it)
         getKeyFromString(it, false) as RSAPrivateKey
     }?.also { log.info("Successfully loaded private key") }
 
