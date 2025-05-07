@@ -41,7 +41,9 @@ dependencies {
     ksp(libs.konvert)
 
     implementation(enforcedPlatform(libs.quarkus.bom))
+    implementation(libs.bundles.projectImplementation)
     implementation(libs.bundles.quarkusImplementation)
+    testImplementation(libs.bundles.projectTestImplementation)
     testImplementation(libs.bundles.quarkusTestImplementation)
 }
 

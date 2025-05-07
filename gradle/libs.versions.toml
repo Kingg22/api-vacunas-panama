@@ -78,6 +78,7 @@ quarkus-hibernate-reactive-panache-kotlin = { group = "io.quarkus", name = "quar
 quarkus-reactive-postgres = { group = "io.quarkus", name = "quarkus-reactive-pg-client" }
 #hibernate-jpa-model = { group = "org.hibernate.orm", name = "hibernate-jpamodelgen" }
 #hibernate-query-validator = { group = "org.hibernate", name = "query-validator" }
+quarkus-container = { group = "io.quarkus", name = "quarkus-container-image-jib" }
 #quarkus-redis-cache = { group = "io.quarkus", name = "quarkus-redis-cache" }
 ## Vertx
 vertx-kotlin = { group = "io.vertx", name = "vertx-lang-kotlin" }
@@ -89,7 +90,7 @@ quarkus-devservices = { group = "io.quarkus", name = "quarkus-observability-devs
 quarkus-test-hibernate-reactive-panache = { group = "io.quarkus", name = "quarkus-test-hibernate-reactive-panache" }
 
 [bundles]
-quarkusImplementation = [
+projectImplementation = [
     "kotlin-reflect",
     "kotlinx-coroutines",
     "kotlinx-coroutines-reactor",
@@ -98,7 +99,10 @@ quarkusImplementation = [
     "jackson-datatype-jsr310",
     "itextpdf",
     "html2pdf",
-    "konvert-api",
+    "konvert-api"
+]
+
+quarkusImplementation = [
     "quarkus-arc",
     "quarkus-rest",
     "quarkus-rest-client",
@@ -117,10 +121,11 @@ quarkusImplementation = [
     "vertx-kotlin-coroutines",
     "quarkus-jackson",
     "quarkus-smallrye-jwt",
-    "quarkus-smallrye-jwt-build"
+    "quarkus-smallrye-jwt-build",
+    "quarkus-container"
 ]
 
-quarkusTestImplementation = [
+projectTestImplementation = [
     "testcontainers-junit",
     "testcontainers-redis",
     "testcontainers-postgres",
@@ -130,7 +135,10 @@ quarkusTestImplementation = [
     "kotest-assertions-core",
     "kotest-assertions-json",
     "rest-assured",
-    "rest-assured-kotlin",
+    "rest-assured-kotlin"
+]
+
+quarkusTestImplementation = [
     "quarkus-junit5",
     "quarkus-test-hibernate-reactive-panache"
 ]
