@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
-import io.github.cdimascio.dotenv.Dotenv
 import io.github.kingg22.api.vacunas.panama.util.logger
 import jakarta.enterprise.inject.Produces
 import jakarta.inject.Singleton
@@ -36,7 +35,7 @@ class RsaConfig(
     @ConfigProperty(name = "security.jwt.private") private val rsaPrivateKey: Optional<String>,
 ) {
     private val log = logger()
-    private val dotenv: Dotenv = Dotenv.configure().ignoreIfMissing().load()
+    // dotenv: Dotenv = Dotenv.configure().ignoreIfMissing().load()
 
     /**
      * Retrieves the public RSA key for JWT authentication.
@@ -49,7 +48,8 @@ class RsaConfig(
     fun retrievePublicKey(): RSAPublicKey? = rsaPublicKey.getOrNull().let {
         if (it.isNullOrBlank() || it.length < 500 || !it.contains("-----END PRIVATE KEY-----")) {
             log.info("No public key provided in configuration, calling dotenv")
-            dotenv["JWT_PUBLIC", null]
+            // dotenv["JWT_PUBLIC", null]
+            null
         } else {
             it
         }
@@ -71,7 +71,8 @@ class RsaConfig(
     fun retrievePrivateKey(): RSAPrivateKey? = rsaPrivateKey.getOrNull().let {
         if (it.isNullOrBlank() || it.length < 500 || !it.contains("-----END PUBLIC KEY-----")) {
             log.info("No private key provided in configuration, calling dotenv")
-            dotenv["JWT_PRIVATE", null]
+            // dotenv["JWT_PRIVATE", null]
+            null
         } else {
             it
         }

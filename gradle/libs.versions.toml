@@ -6,10 +6,11 @@ ksp = "2.1.20-2.0.0"
 itextpdf-core = "9.1.0"
 itextpdf-html = "6.1.0"
 
-konvert = "4.1.0"
 # Plugins
+konvert = "4.1.0"
 spotless = "7.0.3"
 gradle-license-report = "2.9"
+
 # Testing
 kover = "0.9.1"
 mockk = "1.14.0"
@@ -17,42 +18,20 @@ kotest = "5.9.1"
 rest-assured = "5.5.1"
 redis-testcontainers = "2.2.2"
 
-# Spring
-spring = "3.4.5"
-spring-dependency = "1.1.7"
-spring-error-handling = "4.6.0"
-spring-mockk = "4.0.2"
-spring-dotenv = "4.0.0"
-dotenv-java = "3.2.0"
-
 # Quarkus
-quarkus = "3.21.4"
+quarkus = "3.22.2"
 
 [libraries]
-# Spring
-spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
-spring-boot-starter-data-redis-reactive = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis-reactive" }
-spring-boot-starter-oauth2-resource-server = { group = "org.springframework.boot", name = "spring-boot-starter-oauth2-resource-server" }
-spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
-spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
-spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
-spring-security-oauth2-jose = { group = "org.springframework.security", name = "spring-security-oauth2-jose" }
-
-# Missing in spring boot
-apache-commons-pool2 = { group = "org.apache.commons", name = "commons-pool2" }
-
 jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
 
 # Kotlin
-jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
+## Kotlin required to Quarkus
+kotlin-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
-
-reactor-kotlin = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
-
-# Database
-postgresql = { group = "org.postgresql", name = "postgresql" }
-liquibase = { group = "org.liquibase", name = "liquibase-core" }
+## Extensions
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
 
 # Testing
 ## Testcontainers
@@ -64,24 +43,12 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.re
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
 ## Mockk
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-## Kotrst
+## Kotest
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
 ## Rest assured
 rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "rest-assured" }
 rest-assured-kotlin = { group = "io.rest-assured", name = "kotlin-extensions", version.ref = "rest-assured" }
-## Spring
-spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
-spring-security-test = { group = "org.springframework.security", name = "spring-security-test" }
-spring-boot-testcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers" }
-junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
-spring-mockk = { group = "com.ninja-squad", name = "springmockk", version.ref = "spring-mockk" }
-reactor-test = { group = "io.projectreactor", name = "reactor-test" }
-
-# Third Party
-dotenv-java = { group = "io.github.cdimascio", name = "dotenv-java", version.ref = "dotenv-java" }
-spring-dotenv = { group = "me.paulschwarz", name = "spring-dotenv", version.ref = "spring-dotenv" }
-spring-error-handling = { group = "io.github.wimdeblauwe", name = "error-handling-spring-boot-starter", version.ref = "spring-error-handling" }
 
 # Konvert
 konvert-api = { group = "io.mcarle", name = "konvert-api", version.ref = "konvert" }
@@ -98,7 +65,7 @@ quarkus-rest = { group = "io.quarkus", name = "quarkus-rest" }
 quarkus-rest-client = { group = "io.quarkus", name = "quarkus-rest-client" }
 quarkus-rest-jackson = { group = "io.quarkus", name = "quarkus-rest-jackson" }
 quarkus-rest-kotlin-serialization = { group = "io.quarkus", name = "quarkus-rest-kotlin-serialization" }
-quarkus-oidc = { group = "io.quarkus", name = "quarkus-oidc" }
+#quarkus-oidc = { group = "io.quarkus", name = "quarkus-oidc" }
 quarkus-security-jpa-reactive = { group = "io.quarkus", name = "quarkus-security-jpa-reactive" }
 quarkus-smallrye-jwt = { group = "io.quarkus", name = "quarkus-smallrye-jwt" }
 quarkus-smallrye-jwt-build = { group = "io.quarkus", name = "quarkus-smallrye-jwt-build" }
@@ -109,10 +76,9 @@ quarkus-liquibase = { group = "io.quarkus", name = "quarkus-liquibase" }
 quarkus-postgres = { group = "io.quarkus", name = "quarkus-jdbc-postgresql" }
 quarkus-hibernate-reactive-panache-kotlin = { group = "io.quarkus", name = "quarkus-hibernate-reactive-panache-kotlin" }
 quarkus-reactive-postgres = { group = "io.quarkus", name = "quarkus-reactive-pg-client" }
-hibernate-jpa-model = { group = "org.hibernate.orm", name = "hibernate-jpamodelgen" }
-quarkus-redis-cache = { group = "io.quarkus", name = "quarkus-redis-cache" }
-## Kotlin required to Quarkus
-kotlin-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8" }
+#hibernate-jpa-model = { group = "org.hibernate.orm", name = "hibernate-jpamodelgen" }
+#hibernate-query-validator = { group = "org.hibernate", name = "query-validator" }
+#quarkus-redis-cache = { group = "io.quarkus", name = "quarkus-redis-cache" }
 ## Vertx
 vertx-kotlin = { group = "io.vertx", name = "vertx-lang-kotlin" }
 vertx-kotlin-coroutines = { group = "io.vertx", name = "vertx-lang-kotlin-coroutines" }
@@ -124,12 +90,14 @@ quarkus-test-hibernate-reactive-panache = { group = "io.quarkus", name = "quarku
 
 [bundles]
 quarkusImplementation = [
+    "kotlin-reflect",
+    "kotlinx-coroutines",
+    "kotlinx-coroutines-reactor",
     "kotlin-jdk8",
     "jackson-module-kotlin",
     "jackson-datatype-jsr310",
     "itextpdf",
     "html2pdf",
-    "dotenv-java",
     "konvert-api",
     "quarkus-arc",
     "quarkus-rest",
@@ -137,14 +105,13 @@ quarkusImplementation = [
     "quarkus-rest-jackson", # Temporal
     #"quarkus-rest-kotlin-serialization",
     #"quarkus-oidc",
-    "quarkus-security-jpa-reactive",
+    "quarkus-security-jpa-reactive", # TODO implement entity annotation
     "quarkus-validator",
     "quarkus-kotlin",
     "quarkus-liquibase",
     "quarkus-postgres", # Only for liquibase
     "quarkus-hibernate-reactive-panache-kotlin",
     "quarkus-reactive-postgres",
-    "quarkus-redis-cache",
     "quarkus-devservices",
     "vertx-kotlin",
     "vertx-kotlin-coroutines",
@@ -168,53 +135,11 @@ quarkusTestImplementation = [
     "quarkus-test-hibernate-reactive-panache"
 ]
 
-#implementation = [
-#    "spring-boot-starter-data-jpa",
-#    "spring-boot-starter-data-redis-reactive",
-#    "spring-boot-starter-oauth2-resource-server",
-#    "spring-security-oauth2-jose",
-#    "spring-boot-starter-webflux",
-#    "spring-boot-starter-security",
-#    "spring-boot-starter-validation",
-#    "jackson-datatype-jsr310",
-#    "jackson-module-kotlin",
-#    "kotlin-reflect",
-#    "spring-error-handling",
-#    "itextpdf",
-#    "html2pdf",
-#    "dotenv-java",
-#    "spring-dotenv",
-#    "konvert-api",
-#    "kotlinx-coroutines-reactor",
-#    "reactor-kotlin",
-#    "apache-commons-pool2",
-#    "liquibase"
-#]
-
-#testImplementation = [
-#    "kotlin-test",
-#    "spring-security-test",
-#    "reactor-test",
-#    "kotlinx-coroutines-test",
-#    "mockk",
-#    "spring-mockk",
-#    "kotest-assertions-core",
-#    "kotest-assertions-json",
-#    "spring-boot-testcontainers",
-#    "testcontainers-junit",
-#    "testcontainers-postgres",
-#    "testcontainers-redis",
-#    "rest-assured",
-#    "rest-assured-kotlin"
-#]
-
 [plugins]
 ksp =  { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "gradle-license-report" }
-# Spring
-#spring-boot = { id = "org.springframework.boot", version.ref = "spring" }
-#spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency" }
+
 # Quarkus
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

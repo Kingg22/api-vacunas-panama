@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama
 
 import io.github.kingg22.api.vacunas.panama.util.logger
-import io.quarkus.liquibase.runtime.NativeImageResourceAccessor
+import io.quarkus.liquibase.common.runtime.NativeImageResourceAccessor
 import io.quarkus.runtime.ImageMode
 import io.quarkus.runtime.Startup
 import io.quarkus.runtime.util.StringUtil

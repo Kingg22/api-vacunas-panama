@@ -49,6 +49,7 @@ allOpen {
     annotation("io.quarkus.test.junit.QuarkusTest")
     annotation("jakarta.ws.rs.Path")
     annotation("jakarta.enterprise.context.ApplicationScoped")
+    annotation("jakarta.enterprise.context.RequestScoped")
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
@@ -101,12 +102,10 @@ kover {
     reports {
         total.verify {
             rule("Basic Line Coverage") {
-                // Temporally reduce to 20 because have much ignored test
-                minBound(20, CoverageUnit.LINE)
+                minBound(60, CoverageUnit.LINE)
             }
             rule("Basic Branch Coverage") {
-                // Temporally reduce to 15 because have much ignored test
-                minBound(15, CoverageUnit.BRANCH)
+                minBound(20, CoverageUnit.BRANCH)
             }
         }
         filters.excludes {
