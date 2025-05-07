@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import org.hibernate.reactive.mutiny.Mutiny
 
 /* Inspired on: https://github.com/quarkusio/quarkus/issues/34101#issuecomment-2687147471 */
-
+val vertxLogger = logger("VertxExt")
 val panacheLogger = logger("HibernateReactivePanacheExt")
 
 /**
@@ -27,19 +27,38 @@ val panacheLogger = logger("HibernateReactivePanacheExt")
  * **Important**: When invoking another suspend function inside this block, ensure the original [CoroutineScope] is passed.
  * Losing the scope may break Vert.x context propagation and cause unexpected behavior in Hibernate Reactive.
  *
+ * @param duplicate If you need a duplicated Vert.x context or not.
  * @param block A suspending lambda to be executed within the Vert.x context.
  * The `block` receives a [CoroutineScope] as a parameter to execute its operations within.
  * @return The result of the executed block.
  * @throws IllegalStateException if the Vert.x context fails to initialize.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
-suspend inline fun <T> withVertx(crossinline block: suspend (CoroutineScope) -> T): T {
-    val vertx: Vertx = Vertx.vertx()
+suspend inline fun <T> withVertx(duplicate: Boolean = false, crossinline block: suspend (CoroutineScope) -> T): T {
     val context = Vertx.currentContext()
-        ?: (vertx.orCreateContext).also { panacheLogger.debug("Vertx current context is null, using orCreateContext") }
-            .let { it: Context -> it as ContextInternal }
-            .duplicate()
-            .also { it: ContextInternal -> VertxContextSafetyToggle.setContextSafe(it, true) }
+        ?: (Vertx.vertx().orCreateContext).also {
+            vertxLogger.warn("Vertx current context is null, using orCreateContext")
+        }
+            ?.let { context: Context ->
+                val contextInternal = context as ContextInternal
+                if (duplicate) {
+                    vertxLogger.info("Duplicate Vertx context is needed, duplicating it...")
+                    val duplicatedContext = if (contextInternal.isDuplicate) {
+                        vertxLogger.warn("Vertx context is already duplicated, skipping duplicate creation")
+                        contextInternal
+                    } else {
+                        contextInternal.duplicate()
+                    }
+                    return@let duplicatedContext.also { duplicated: ContextInternal ->
+                        if (!VertxContextSafetyToggle.isExplicitlyMarkedAsSafe(duplicated)) {
+                            VertxContextSafetyToggle.setContextSafe(duplicated, true)
+                        } else {
+                            vertxLogger.warn("Vertx context is already marked as safe, skipping safe marking")
+                        }
+                    }
+                } else {
+                    context
+                }
+            }
 
     return coroutineScope {
         check(context != null) { "withVertx: Vertx context is null" }
@@ -67,7 +86,7 @@ suspend inline fun <T> withVertx(crossinline block: suspend (CoroutineScope) -> 
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend inline fun <T> withTransaction(crossinline block: suspend CoroutineScope.(Mutiny.Transaction) -> T): T =
-    withVertx { scope ->
+    withVertx(true) { scope ->
         Panache.withTransaction {
             val uniTransaction: Uni<Mutiny.Transaction?> = Panache.currentTransaction()
             // this is CoroutineScope
@@ -99,7 +118,7 @@ suspend inline fun <T> withTransaction(crossinline block: suspend CoroutineScope
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend inline fun <T> withSession(crossinline block: suspend CoroutineScope.(Mutiny.Session) -> T): T =
-    withVertx { scope ->
+    withVertx(true) { scope ->
         Panache.withSession {
             val session: Uni<Mutiny.Session> = Panache.getSession()
             // Use the given CoroutineScope
@@ -131,7 +150,7 @@ suspend inline fun <T> withSession(crossinline block: suspend CoroutineScope.(Mu
 @OptIn(ExperimentalCoroutinesApi::class)
 suspend inline fun <T> withSessionAndTransaction(
     crossinline block: suspend CoroutineScope.(Mutiny.Session, Mutiny.Transaction) -> T,
-): T = withVertx { scope ->
+): T = withVertx(true) { scope ->
     Panache.withTransaction {
         val uniTransaction: Uni<Mutiny.Transaction?> = Panache.currentTransaction()
         val uniSession: Uni<Mutiny.Session> = Panache.getSession()
