@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "io.github.kingg22"
-version = "0.15.0"
+version = "0.15.0-RC3"
 
 java {
     toolchain {
