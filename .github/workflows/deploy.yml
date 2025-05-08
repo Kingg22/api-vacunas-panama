@@ -1,4 +1,4 @@
-name: Publish Spring Boot Image with Boot Build Image
+name: Publish Docker Image
 
 on:
   workflow_dispatch:
@@ -43,8 +43,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build image using gradle and quarkus container
+      - name: Create PEM files
+        run: |
+          mkdir -p src/main/resources
+          echo "${JWT_PRIVATE}" > src/main/resources/private.pem
+          echo "${JWT_PUBLIC}" > src/main/resources/public.pem
+        env:
+          JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
+          JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}
+
+      - name: Build image using gradle and container plugin
         run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false -Dquarkus.container-image.build=true
+        env:
+          JWT_PUBLIC_LOCATION: ${{ secrets.JWT_PUBLIC_LOCATION }}
+          JWT_PRIVATE_LOCATION: ${{ secrets.JWT_PRIVATE_LOCATION }}
 
       - name: Publish to Docker Hub
         run: |
@@ -59,6 +71,10 @@ jobs:
           else
             echo "Skipping latest tag for prerelease"
           fi
+
+      - name: Clean up PEM files
+        if: always()
+        run: rm -f src/main/resources/*.pem
 
   create_release:
     needs: build_and_push

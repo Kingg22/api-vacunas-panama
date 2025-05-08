@@ -15,12 +15,9 @@ import java.io.Serializable
  * is used for each purpose. The tokens are encoded with data such as user information and expiration
  * times, using values set in the application's configuration (`application.properties`).
  *
- * Tokens are stored in Redis cache to facilitate fast access and efficient validation during
+ * Tokens are stored in a cache to facilitate fast access and efficient validation during
  * authentication. This ensures that the system can handle large-scale user bases while minimizing
  * redundant calculations.
- *
- * **Note:** The decoding of tokens is handled separately by the [org.springframework.security.oauth2.jwt.JwtDecoder].
- * This service is solely responsible for generating, storing, and validating tokens.
  */
 interface TokenService {
     /**

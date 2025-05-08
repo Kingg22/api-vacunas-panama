@@ -9,9 +9,8 @@ sedes sanitarias de Panamá, tanto públicas como privadas. La implementación d
 seguimiento de las vacunaciones, mejorar la precisión de los datos y apoyar en la toma de decisiones para el control
 sanitario del país. A continuación, se detallan los aspectos clave del proyecto, sus objetivos, alcance y
 recomendaciones para su implementación.
-Este proyecto consiste en el desarrollo de una API que gestiona la información sobre vacunación en Panamá. La
-solución está diseñada utilizando tecnologías como Java con Spring Boot y SQL Server, y se enfoca en varios aspectos
-clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad y la facilidad de uso.
+Este proyecto consiste en el desarrollo de una API que gestiona la información sobre vacunación en Panamá, se enfoca en
+varios aspectos clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad y la facilidad de uso.
 
 :construction: Proyecto mejorado lentamente en los tiempos libres :construction:
 

@@ -32,12 +32,10 @@
 - Se está analizando traducir la base de datos para estandarizar principalmente los nombres de vacunas dando posibilidad
   a exportar datos.
 - Separar el manejo de usuarios a otra base de datos incluyendo el registro de logs y tokens de autorización.
-- Complemento a métricas y observabilidad
-  implementando [Prometheus exporter](https://docs.spring.io/spring-boot/api/rest/actuator/prometheus.html) protegiendo
-  el acceso a estas.
+- Complemento a métricas y observabilidad implementando Prometheus protegiendo el acceso a estas.
 - Manejar con otros u más datos personales la recuperación de contraseña del usuario, similar a Panamá Digital.
 - Migrar el OAuth Server de JWT
-  hacia [Auth0](https://auth0.com/docs/quickstart/backend/java-spring-security5/interactive).
+  hacia [Auth0](https://auth0.com).
     - Utilizar un [Authentication Flow seguro](https://auth0.com/docs/get-started/authentication-and-authorization-flow#authorization-code-flow-with-enhanced-privacy-protection)
       de Auth0, garantizando la seguridad y confidencialidad de los datos.
     - Con este feature abre la posibilidad de tener todos los JWT con las mismas credenciales entre varios sistemas y
