@@ -19,6 +19,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponseBuilder
+import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil.formatToSearch
 import io.github.kingg22.api.vacunas.panama.util.HaveIBeenPwnedPasswordChecker
 import io.github.kingg22.api.vacunas.panama.util.bcryptHash
@@ -96,19 +97,14 @@ class UsuarioServiceImpl(
         return response.build()
     }
 
-    override suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Any?): ActualApiResponse {
+    override suspend fun createUser(registerUserDto: RegisterUserDto, scope: Set<String>): ActualApiResponse {
         val response = createContentResponse()
         val usuarioDto = registerUserDto.usuario
-        /*
-            authentication?.let { authentication ->
-                if (authentication.isAuthenticated &&
-                    authentication !is AnonymousAuthenticationToken
-                ) {
-                    response.addErrors(validateAuthoritiesRegister(usuarioDto, authentication))
-                    response.returnIfErrors()?.let { return it as ActualApiResponse }
-                }
-            }
-         */
+
+        if (scope.isNotEmpty()) {
+            response.addErrors(validateAuthoritiesRegister(usuarioDto, scope))
+            response.returnIfErrors()?.let { return it as ActualApiResponse }
+        }
         response.addWarnings(validateWarningsRegistration(usuarioDto))
 
         val validationResult = validateRegistration(registerUserDto)
@@ -224,32 +220,32 @@ class UsuarioServiceImpl(
         return builder.build().errors
     }
 
-    /*
-        private fun validateAuthoritiesRegister(usuarioDto: UsuarioDto, authentication: Authentication): List<ApiError> {
-            val authenticatedRoles = authentication.authorities
-                .mapNotNull { it.authority.removePrefix("ROLE_").takeIf(String::isNotBlank) }
-                .mapNotNull { runCatching { RolesEnum.valueOf(it) }.getOrNull() }
+    private fun validateAuthoritiesRegister(usuarioDto: UsuarioDto, authentication: Set<String>): List<ApiError> {
+        val authenticatedRoles = authentication
+            .mapNotNull { it.removePrefix("ROLE_").takeIf(String::isNotBlank) }
+            .mapNotNull { runCatching { RolesEnum.valueOf(it) }.getOrNull() }
+            .toSet()
 
-            val errors = mutableListOf<ApiError>()
+        val errors = mutableListOf<ApiError>()
 
-            if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
-                errors += createApiErrorBuilder {
-                    withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
-                    withProperty("roles[]")
-                    withMessage("No puede asignar roles superiores a su rol actual")
-                }
+        if (!usuarioDto.roles.all { canRegisterRole(it, authenticatedRoles) }) {
+            errors += createApiErrorBuilder {
+                withCode(ApiResponseCode.ROL_HIERARCHY_VIOLATION)
+                withProperty("roles[]")
+                withMessage("No puede asignar roles superiores a su rol actual")
             }
-
-            if (!hasUserManagementPermissions(authenticatedRoles.map { it.name })) {
-                errors += createApiErrorBuilder {
-                    withCode(ApiResponseCode.PERMISSION_DENIED)
-                    withMessage("No tienes permisos para registrar")
-                }
-            }
-
-            return errors
         }
-     */
+
+        if (!hasUserManagementPermissions(authenticatedRoles.map { it.name }.toSet())) {
+            errors += createApiErrorBuilder {
+                withCode(ApiResponseCode.PERMISSION_DENIED)
+                withMessage("No tienes permisos para registrar")
+            }
+        }
+
+        return errors
+    }
+
     private fun validateWarningsRegistration(usuarioDto: UsuarioDto): List<ApiError> {
         val apiErrorList = mutableListOf<ApiError>()
         if (usuarioDto.roles.any { rolDto -> rolDto.permisos.isNotEmpty() }
@@ -273,12 +269,12 @@ class UsuarioServiceImpl(
         return apiErrorList
     }
 
-    private fun canRegisterRole(rolDto: RolDto, authenticatedRoles: List<RolesEnum>): Boolean {
+    private fun canRegisterRole(rolDto: RolDto, authenticatedRoles: Set<RolesEnum>): Boolean {
         val maxRolPriority = authenticatedRoles.maxBy { it.priority }.priority
         return rolDto.nombre != null && RolesEnum.valueOf(rolDto.nombre.uppercase()).priority <= maxRolPriority
     }
 
-    private fun hasUserManagementPermissions(authenticatedAuthorities: List<String>) =
+    private fun hasUserManagementPermissions(authenticatedAuthorities: Set<String>) =
         authenticatedAuthorities.contains("ADMINISTRATIVO_WRITE") ||
             authenticatedAuthorities.contains("AUTORIDAD_WRITE") ||
             authenticatedAuthorities.contains("USER_MANAGER_WRITE")

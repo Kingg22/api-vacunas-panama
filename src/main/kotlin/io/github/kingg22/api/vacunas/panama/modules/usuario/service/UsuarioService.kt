@@ -49,10 +49,10 @@ interface UsuarioService {
      * Registers a new user using the provided DTO.
      *
      * @param registerUserDto Registration details.
-     * @param authentication Optional if the user is authenticated to verify permissions.
+     * @param scope Optional if the user is authenticated to verify permissions and roles.
      * @return API response indicating a result and any errors.
      */
-    suspend fun createUser(registerUserDto: RegisterUserDto, authentication: Any? = null): ActualApiResponse
+    suspend fun createUser(registerUserDto: RegisterUserDto, scope: Set<String> = emptySet()): ActualApiResponse
 
     /**
      * Registers a new user.

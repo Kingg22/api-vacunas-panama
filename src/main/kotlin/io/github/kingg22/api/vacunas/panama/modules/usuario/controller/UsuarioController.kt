@@ -3,6 +3,8 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.LoginDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
+import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
@@ -13,6 +15,7 @@ import io.github.kingg22.api.vacunas.panama.util.HaveIBeenPwnedPasswordChecker
 import io.github.kingg22.api.vacunas.panama.util.bcryptMatch
 import io.github.kingg22.api.vacunas.panama.util.isCompromisedUsing
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.smallrye.jwt.auth.cdi.NullJsonWebToken
 import io.vertx.ext.web.RoutingContext
 import jakarta.annotation.security.PermitAll
 import jakarta.enterprise.context.RequestScoped
@@ -97,28 +100,24 @@ class UsuarioController(
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
 
-        /*
-                if (authentication == null &&
-                    !usuarioDto.roles.all { rolDto: RolDto ->
-                        rolDto.id != null &&
-                            getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
-                            rolDto.nombre != null &&
-                            rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
-                    }
-                ) {
-                    apiResponse.addError(
-                        createApiErrorBuilder {
-                            withCode(ApiResponseCode.MISSING_ROLE_OR_PERMISSION)
-                            withMessage("Solo pacientes pueden registrarse sin autenticación")
-                        },
-                    )
-                    apiResponse.addStatusCode(403)
-                    apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
-                    return createResponseEntity(apiResponse, request)
-                }
-         */
+        if ((jwt is NullJsonWebToken || jwt.subject == null || jwt.groups.isEmpty()) &&
+            !usuarioDto.roles.all { rolDto ->
+                (rolDto.id != null && getByPriority(rolDto.id) == RolesEnum.PACIENTE) ||
+                    (rolDto.nombre != null && rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true))
+            }
+        ) {
+            apiResponse.addError(
+                createApiErrorBuilder {
+                    withCode(ApiResponseCode.MISSING_ROLE_OR_PERMISSION)
+                    withMessage("Solo pacientes pueden registrarse sin autenticación")
+                },
+            )
+            apiResponse.addStatusCode(403)
+            apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
+            return createResponseEntity(apiResponse, rc)
+        }
 
-        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, null))
+        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, jwt.groups ?: emptySet()))
         if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(400)
         } else {

@@ -43,7 +43,8 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
             pacienteDto.persona.pasaporte,
         )
         log.trace("RegisterUserDto: {}", registerUserDto.toString())
-        val apiContentResponse = usuarioService.createUser(registerUserDto, null)
+        // TODO add authentication verify of scopes
+        val apiContentResponse = usuarioService.createUser(registerUserDto)
         apiResponse.mergeContentResponse(apiContentResponse)
         log.trace("CreateUser return: {}", apiContentResponse.toString())
         if (apiContentResponse.hasErrors()) {
