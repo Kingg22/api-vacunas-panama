@@ -5,7 +5,6 @@ import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import io.quarkus.test.junit.QuarkusTest
-import io.quarkus.test.vertx.RunOnVertxContext
 import io.restassured.http.ContentType
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
@@ -19,7 +18,6 @@ import kotlin.test.assertNotNull
 class BulkControllerTest : TestBase() {
 
     @Test
-    @RunOnVertxContext
     fun createPacienteUsuario() {
         val json =
             """
