@@ -8,12 +8,12 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.allopen") version libs.versions.kotlin
     kotlin("plugin.jpa") version libs.versions.kotlin
-    kotlin("plugin.serialization") version libs.versions.kotlin
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.spotless)
     alias(libs.plugins.license.report)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ktlint)
 
     alias(libs.plugins.quarkus)
 }
@@ -31,7 +31,7 @@ java {
 kotlin {
     jvmToolchain(21)
     compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-target-all")
         jvmTarget.set(JvmTarget.JVM_21)
         javaParameters.set(true)
     }
@@ -58,29 +58,21 @@ allOpen {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
     val agentJar = configurations.testRuntimeClasspath.get().find {
         it.name.contains("byte-buddy-agent")
     } ?: throw GradleException("ByteBuddy agent JAR not found")
 
     systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
     jvmArgs("-javaagent:${agentJar.absolutePath}", "-Duser.timezone=UTC")
-    testLogging {
-        showStandardStreams = true
-    }
+}
+
+ktlint {
+    version.set("1.5.1-SNAPSHOT")
 }
 
 spotless {
     encoding("UTF-8")
     lineEndings = LineEnding.PRESERVE
-    kotlin {
-        target("src/*/kotlin/**/*.kt")
-        ktlint()
-    }
-    kotlinGradle {
-        targetExclude("build/generated/**")
-        ktlint()
-    }
     sql {
         targetExclude("build/generated/**")
         target("src/**/*.sql", "containers/database/**/*.sql")

@@ -1,6 +1,6 @@
 [versions]
-kotlin = "2.1.20"
-ksp = "2.1.20-2.0.0"
+kotlin = "2.2.0-Beta2"
+ksp = "2.2.0-Beta2-2.0.1"
 
 # PDF
 itextpdf-core = "9.1.0"
@@ -10,11 +10,13 @@ itextpdf-html = "6.1.0"
 konvert = "4.1.0"
 spotless = "7.0.3"
 gradle-license-report = "2.9"
+ktlint = "12.2.0"
 
 # Testing
 kover = "0.9.1"
 mockk = "1.14.0"
 kotest = "5.9.1"
+konsist = "0.17.3"
 rest-assured = "5.5.1"
 redis-testcontainers = "2.2.2"
 
@@ -46,6 +48,8 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 ## Kotest
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
+## Konsist
+konsist = { group = "com.lemonappdev", name = "konsist", version.ref = "konsist" }
 ## Rest assured
 rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "rest-assured" }
 rest-assured-kotlin = { group = "io.rest-assured", name = "kotlin-extensions", version.ref = "rest-assured" }
@@ -64,7 +68,7 @@ quarkus-arc = { group = "io.quarkus", name = "quarkus-arc" }
 quarkus-rest = { group = "io.quarkus", name = "quarkus-rest" }
 quarkus-rest-client = { group = "io.quarkus", name = "quarkus-rest-client" }
 quarkus-rest-jackson = { group = "io.quarkus", name = "quarkus-rest-jackson" }
-quarkus-rest-kotlin-serialization = { group = "io.quarkus", name = "quarkus-rest-kotlin-serialization" }
+#quarkus-amazon-lambda-rest = { group ="io.quarkus", name = "quarkus-amazon-lambda-rest" }
 #quarkus-oidc = { group = "io.quarkus", name = "quarkus-oidc" }
 quarkus-security-jpa-reactive = { group = "io.quarkus", name = "quarkus-security-jpa-reactive" }
 quarkus-smallrye-jwt = { group = "io.quarkus", name = "quarkus-smallrye-jwt" }
@@ -106,8 +110,7 @@ quarkusImplementation = [
     "quarkus-arc",
     "quarkus-rest",
     "quarkus-rest-client",
-    "quarkus-rest-jackson", # Temporal
-    #"quarkus-rest-kotlin-serialization",
+    "quarkus-rest-jackson",
     #"quarkus-oidc",
     "quarkus-security-jpa-reactive", # TODO implement entity annotation
     "quarkus-validator",
@@ -135,7 +138,8 @@ projectTestImplementation = [
     "kotest-assertions-core",
     "kotest-assertions-json",
     "rest-assured",
-    "rest-assured-kotlin"
+    "rest-assured-kotlin",
+    "konsist"
 ]
 
 quarkusTestImplementation = [
@@ -148,6 +152,7 @@ ksp =  { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "gradle-license-report" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 # Quarkus
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }
