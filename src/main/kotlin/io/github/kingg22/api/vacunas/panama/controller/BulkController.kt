@@ -8,6 +8,7 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.PermitAll
 import jakarta.validation.Valid
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -23,6 +24,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
 
     @POST
     @Path("/paciente-usuario-direccion")
+    @PermitAll
     suspend fun createPacienteUsuario(@Valid pacienteInputDto: PacienteInputDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())

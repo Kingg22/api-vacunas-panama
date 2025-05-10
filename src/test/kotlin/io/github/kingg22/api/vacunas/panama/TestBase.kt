@@ -1,7 +1,10 @@
 package io.github.kingg22.api.vacunas.panama
 
+import io.github.kingg22.api.vacunas.panama.util.HaveIBeenPwnedPasswordChecker
 import io.github.kingg22.api.vacunas.panama.util.extractJsonToken
 import io.kotest.matchers.string.shouldNotBeBlank
+import io.mockk.coEvery
+import io.mockk.mockk
 import io.quarkus.test.junit.QuarkusTest
 import io.restassured.RestAssured
 import io.restassured.config.LogConfig
@@ -51,6 +54,8 @@ abstract class TestBase {
      * @return The response received from the login endpoint as a string.
      */
     protected fun getLoginResponse(): String {
+        val pwChecker = mockk<HaveIBeenPwnedPasswordChecker>()
+        coEvery { pwChecker.isPasswordCompromised(any()) } returns false
         val loginDto =
             """
                 {
