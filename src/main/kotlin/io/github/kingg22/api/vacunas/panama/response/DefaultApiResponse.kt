@@ -1,10 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import io.quarkus.runtime.annotations.RegisterForReflection
 import java.io.Serializable
 
 /** Default implementation of [ApiResponse] with a fluent builder pattern. */
+@RegisterForReflection
 @JsonPropertyOrder(value = ["status", "data", "errors", "warnings", "metadata"])
+@JvmRecord
 data class DefaultApiResponse(
     override val status: MutableMap<String, Serializable> = mutableMapOf(),
     override val data: MutableMap<String, Serializable> = mutableMapOf(),

@@ -5,7 +5,6 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -30,7 +29,7 @@ import java.util.UUID
         Index(name = "ix_direcciones_descripcion", columnList = "descripcion"),
     ],
 )
-@KonvertTo(DireccionDto::class)
+@KonvertFrom(DireccionModel::class)
 class Direccion(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -38,12 +37,12 @@ class Direccion(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @Size(max = 150)
-    @NotNull
+    @all:Size(max = 150)
+    @all:NotNull
     @Column(name = "descripcion", nullable = false, length = 150)
     var descripcion: String,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
@@ -51,7 +50,7 @@ class Direccion(
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @ColumnDefault("0")
     @JoinColumn(name = "distrito", nullable = false)
@@ -60,7 +59,6 @@ class Direccion(
     override fun toString(): String = Direccion::class.simpleName +
         "(id=$id, descripcion='$descripcion', createdAt=$createdAt, updatedAt=$updatedAt, distrito=$distrito)"
 
-    @KonvertFrom(DireccionModel::class)
     companion object {
         val DIRECCION_DEFAULT = Direccion(
             descripcion = DireccionDto.DEFAULT_DIRECCION,

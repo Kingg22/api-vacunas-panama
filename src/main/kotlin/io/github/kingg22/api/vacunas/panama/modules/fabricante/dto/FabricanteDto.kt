@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.common.dto.EntidadDto
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.runtime.annotations.RegisterForReflection
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.PastOrPresent
@@ -15,59 +17,51 @@ import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 
-/** DTO for [io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante]  */
-@JvmRecord
+/**
+ * DTO for [io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante]
+ *
+ * _Warning_:
+ * - [licencia] is required in Entity, default value: `""`
+ */
+@RegisterForReflection
 @KonvertTo(Fabricante::class, [Mapping("licencia", expression = "licencia ?: \"\"")])
+@KonvertFrom(Fabricante::class)
+@JvmRecord
 data class FabricanteDto(
-    @field:Valid @param:Valid val entidad: EntidadDto,
+    @all:Valid
+    val entidad: EntidadDto,
 
-    @field:Size(max = 50)
-    @param:Size(max = 50)
-    @field:Pattern(
-        regexp = "^.+/DNFD$",
-        flags = [Pattern.Flag.CASE_INSENSITIVE],
-        message = "La licencia_fabricante no es válida",
-    )
-    @param:Pattern(
+    @all:Size(max = 50)
+    @all:Pattern(
         regexp = "^.+/DNFD$",
         flags = [Pattern.Flag.CASE_INSENSITIVE],
         message = "La licencia_fabricante no es válida",
     )
     val licencia: String? = null,
 
-    @field:JsonProperty(value = "contacto_nombre")
-    @param:JsonProperty(value = "contacto_nombre")
-    @field:Size(max = 100)
-    @param:Size(max = 100)
+    @all:JsonProperty(value = "contacto_nombre")
+    @all:Size(max = 100)
     val contactoNombre: String? = null,
 
-    @field:JsonProperty(value = "contacto_correo")
-    @param:JsonProperty(value = "contacto_correo")
-    @field:Size(max = 254)
-    @param:Size(max = 254)
-    @field:Email
-    @param:Email
+    @all:JsonProperty(value = "contacto_correo")
+    @all:Size(max = 254)
+    @all:Email
     val contactoCorreo: String? = null,
 
-    @field:JsonProperty(value = "contacto_telefono")
-    @param:JsonProperty(value = "contacto_telefono")
-    @field:Size(max = 15)
-    @param:Size(max = 15)
-    @field:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
-    @param:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
+    @all:JsonProperty(value = "contacto_telefono")
+    @all:Size(max = 15)
+    @all:Pattern(regexp = "^\\+\\d{1,14}$", message = "El formato del teléfono no es válido")
     val contactoTelefono: String? = null,
 
-    @field:JsonProperty(value = "created_at")
-    @param:JsonProperty(value = "created_at")
-    @field:PastOrPresent
-    @param:PastOrPresent
+    @all:JsonProperty(value = "created_at")
+    @all:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @field:PastOrPresent
-    @param:PastOrPresent
+    @all:JsonProperty(value = "updated_at")
+    @all:PastOrPresent
     val updatedAt: LocalDateTime? = null,
 
     @field:Valid @param:Valid val usuario: UsuarioDto? = null,
-) : Serializable
+) : Serializable {
+    companion object
+}

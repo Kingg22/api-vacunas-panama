@@ -1,7 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.entity
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.PermisoDto
-import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -24,13 +22,12 @@ import java.time.ZoneOffset.UTC
         UniqueConstraint(name = "uq_permisos_nombre", columnNames = ["nombre"]),
     ],
 )
-@KonvertTo(PermisoDto::class)
 class Permiso(
     @Id
     @Column(name = "id", nullable = false)
     var id: Short? = null,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
@@ -38,12 +35,12 @@ class Permiso(
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "descripcion", length = 100)
     var descripcion: String? = null,
 
-    @Size(max = 100)
-    @NotNull
+    @all:Size(max = 100)
+    @all:NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
 )

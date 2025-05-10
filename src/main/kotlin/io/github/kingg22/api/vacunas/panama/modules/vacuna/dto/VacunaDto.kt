@@ -2,40 +2,46 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.dto.FabricanteDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
+import io.mcarle.konvert.api.KonvertFrom
+import io.mcarle.konvert.api.Mapping
+import io.quarkus.runtime.annotations.RegisterForReflection
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Size
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 /** DTO for [io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna] */
+@RegisterForReflection
+@KonvertFrom(Vacuna::class, [Mapping("dosisMaxima", constant = "null")])
 @JvmRecord
 data class VacunaDto(
     val id: UUID? = null,
 
-    @param:Size(max = 100) @field:Size(max = 100) @param:NotBlank @field:NotBlank val nombre: String,
+    @all:Size(max = 100)
+    @all:NotBlank
+    val nombre: String,
 
-    @param:JsonProperty(value = "edad_minima_dias")
-    @field:JsonProperty(value = "edad_minima_dias")
+    @all:JsonProperty(value = "edad_minima_dias")
     val edadMinimaDias: Short? = null,
 
-    @param:JsonProperty(value = "dosis_maxima")
-    @field:JsonProperty(value = "dosis_maxima")
+    @all:JsonProperty(value = "dosis_maxima")
     val dosisMaxima: NumDosisEnum? = null,
 
-    @param:JsonProperty(value = "created_at")
-    @field:JsonProperty(value = "created_at")
-    @param:PastOrPresent
-    @field:PastOrPresent
-    val createdAt: LocalDateTime? = null,
+    @all:JsonProperty(value = "created_at")
+    @all:PastOrPresent
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @param:PastOrPresent
-    @field:PastOrPresent
+    @all:JsonProperty(value = "updated_at")
+    @all:PastOrPresent
     val updatedAt: LocalDateTime? = null,
 
-    @param:Valid @field:Valid val fabricantes: Set<FabricanteDto> = emptySet(),
-) : Serializable
+    @all:Valid
+    val fabricantes: Set<FabricanteDto> = emptySet(),
+) : Serializable {
+    companion object
+}

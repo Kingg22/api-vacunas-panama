@@ -4,6 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.ProvinciaMo
 import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.ProvinciaDto
 import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -25,14 +27,14 @@ class Provincia(
     @Column(name = "id", nullable = false)
     var id: Short? = null,
 
-    @Size(max = 30)
-    @NotNull
+    @all:Size(max = 30)
+    @all:NotNull
     @Column(name = "nombre", nullable = false, length = 30)
     var nombre: String,
-) {
+) : PanacheEntityBase {
     override fun toString(): String = Provincia::class.simpleName +
         "(id=$id, nombre='$nombre')"
 
     @KonvertFrom(ProvinciaModel::class)
-    companion object
+    companion object : PanacheCompanionBase<Provincia, Short>
 }

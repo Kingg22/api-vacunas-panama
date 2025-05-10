@@ -83,7 +83,7 @@ class UsuarioControllerTest : TestBase() {
                 {
                     "username": "1-123-456",
                     "new_password": "new*Secure2dPassword",
-                    "fecha_nacimiento": "1990-01-01T00:00:00"
+                    "fecha_nacimiento": "1990-01-01"
                 }
             """.trimIndent()
 

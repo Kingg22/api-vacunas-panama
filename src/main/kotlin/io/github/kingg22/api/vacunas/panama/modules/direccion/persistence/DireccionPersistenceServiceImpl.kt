@@ -5,8 +5,8 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListProvinciaDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toListDistritoDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toListProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DireccionRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DistritoRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.ProvinciaRepository

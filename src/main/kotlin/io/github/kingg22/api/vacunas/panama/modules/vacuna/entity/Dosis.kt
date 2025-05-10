@@ -3,10 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.entity
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
-import io.mcarle.konvert.api.KonvertTo
-import io.mcarle.konvert.api.Mapping
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -25,7 +21,6 @@ import java.util.UUID
 
 @Entity
 @Table(name = "dosis")
-@KonvertTo(DosisDto::class, mappings = [Mapping("numeroDosis", constant = "getNumeroDosisAsEnum()")])
 class Dosis(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,17 +28,17 @@ class Dosis(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @Size(max = 2)
-    @NotNull
+    @all:Size(max = 2)
+    @all:NotNull
     @Column(name = "numero_dosis", nullable = false, length = 2)
     var numeroDosis: String,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "fecha_aplicacion", nullable = false)
     var fechaAplicacion: LocalDateTime = LocalDateTime.now(UTC),
@@ -55,25 +50,22 @@ class Dosis(
     @JoinColumn(name = "doctor")
     var doctor: Doctor? = null,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "paciente", nullable = false)
     var paciente: Paciente,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "sede", nullable = false)
     var sede: Sede,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "vacuna", nullable = false)
     var vacuna: Vacuna,
 
-    @Size(max = 50)
+    @all:Size(max = 50)
     @Column(name = "lote", length = 50)
     var lote: String? = null,
-) {
-    /** Only for [KonvertTo], use [String.getNumeroDosisAsEnum] */
-    final fun getNumeroDosisAsEnum() = numeroDosis.getNumeroDosisAsEnum()
-}
+)

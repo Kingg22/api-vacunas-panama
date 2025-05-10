@@ -1,9 +1,13 @@
-package io.github.kingg22.api.vacunas.panama.modules.direccion.extensions
+package io.github.kingg22.api.vacunas.panama.modules.direccion.entity
 
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Distrito
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Provincia
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toProvinciaDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DireccionDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.fromDireccion
+import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.fromDistrito
+
+fun Direccion.toDireccionDto() = DireccionDto.fromDireccion(this)
+
+fun Distrito.toDistritoDto() = DistritoDto.fromDistrito(this)
 
 /**
  * Converts a list of [Distrito] entities into a list of `DistritoDto` objects.

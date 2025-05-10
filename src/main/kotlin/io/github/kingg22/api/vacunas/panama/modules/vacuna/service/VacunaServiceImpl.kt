@@ -5,9 +5,9 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteSer
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.domain.DosisModel
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.persistence.VacunaPersistenceService
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode

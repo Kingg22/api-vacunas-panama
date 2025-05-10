@@ -1,23 +1,20 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.dto
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import io.quarkus.runtime.annotations.RegisterForReflection
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import java.io.Serializable
 
-/** DTO for Login in the API  */
+/** DTO for Login in the API */
+@RegisterForReflection
 @JvmRecord
 data class LoginDto(
-    @field:NotBlank(message = "La identificación es requerido")
-    @param:NotBlank(message = "La identificación es requerido")
+    @all:NotBlank(message = "La identificación es requerido")
     val username: String,
 
-    @field:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @param:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @field:NotBlank
-    @param:NotBlank
-    @field:Size(min = 8, max = 70, message = "La contraseña no es válida")
-    @param:Size(min = 8, max = 70, message = "La contraseña no es válida")
+    @all:NotBlank
+    @all:Size(min = 8, max = 70, message = "La contraseña no es válida")
     val password: String,
-) {
+) : Serializable {
     override fun toString() = LoginDto::class.simpleName + "(username: $username)"
 }
