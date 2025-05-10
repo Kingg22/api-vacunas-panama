@@ -13,9 +13,9 @@ import java.util.UUID
 
 @ApplicationScoped
 class TokenServiceImpl(
-    @ConfigProperty(name = "security.jwt.issuer") private val issuer: String,
-    @ConfigProperty(name = "security.jwt.expiration-time") private val expirationTime: Long,
-    @ConfigProperty(name = "security.jwt.refresh-time") private val refreshTime: Long,
+    @param:ConfigProperty(name = "security.jwt.issuer") private val issuer: String,
+    @param:ConfigProperty(name = "security.jwt.expiration-time") private val expirationTime: Long,
+    @param:ConfigProperty(name = "security.jwt.refresh-time") private val refreshTime: Long,
 ) : TokenService {
     private val log = logger()
 

@@ -31,8 +31,8 @@ import kotlin.jvm.optionals.getOrNull
  */
 @Singleton
 class RsaConfig(
-    @ConfigProperty(name = "security.jwt.public") private val rsaPublicKey: Optional<String>,
-    @ConfigProperty(name = "security.jwt.private") private val rsaPrivateKey: Optional<String>,
+    @param:ConfigProperty(name = "security.jwt.public") private val rsaPublicKey: Optional<String>,
+    @param:ConfigProperty(name = "security.jwt.private") private val rsaPrivateKey: Optional<String>,
 ) {
     private val log = logger()
     // dotenv: Dotenv = Dotenv.configure().ignoreIfMissing().load()

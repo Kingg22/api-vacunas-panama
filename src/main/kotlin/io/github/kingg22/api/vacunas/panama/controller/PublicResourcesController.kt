@@ -2,6 +2,7 @@ package io.github.kingg22.api.vacunas.panama.controller
 
 import io.github.kingg22.api.vacunas.panama.util.permanentRedirect
 import io.github.kingg22.api.vacunas.panama.util.toUri
+import jakarta.annotation.security.PermitAll
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.MediaType
 @Deprecated(message = "For compatibility in v1. Redirect to specific controller in modules.")
 @Path("/public")
 @Produces(MediaType.APPLICATION_JSON)
+@PermitAll
 class PublicResourcesController {
 
     @GET

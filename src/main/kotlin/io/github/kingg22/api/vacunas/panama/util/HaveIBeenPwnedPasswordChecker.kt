@@ -27,7 +27,7 @@ import java.security.MessageDigest
  * @see HaveIBeenPwnedPasswordChecker.isPasswordCompromised
  */
 @Singleton
-class HaveIBeenPwnedPasswordChecker(@RestClient private val webClient: ApiPwnedPasswordsClient) {
+class HaveIBeenPwnedPasswordChecker(@param:RestClient private val webClient: ApiPwnedPasswordsClient) {
     private val logger = logger()
 
     companion object {

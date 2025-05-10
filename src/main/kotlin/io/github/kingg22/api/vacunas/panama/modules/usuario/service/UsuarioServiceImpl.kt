@@ -150,7 +150,7 @@ class UsuarioServiceImpl(
         val response = createResponseBuilder()
         val usuarioOpt = getUsuarioByIdentifier(restoreDto.username)
 
-        if (usuarioOpt == null) {
+        if (usuarioOpt == null || usuarioOpt.id == null) {
             response.withError(
                 ApiResponseCode.NOT_FOUND,
                 "La persona con la identificación dada no fue encontrada",
@@ -162,8 +162,16 @@ class UsuarioServiceImpl(
         val usuario = usuarioOpt
         response.withError(validateChangePassword(usuario, restoreDto))
 
-        personaService.getPersonaByUserID(usuario.id!!)?.let {
-            if (it.fechaNacimiento!!.toLocalDate() != restoreDto.fechaNacimiento) {
+        personaService.getPersonaByUserID(usuario.id)?.let {
+            if (it.fechaNacimiento == null) {
+                response.withError(
+                    ApiResponseCode.MISSING_INFORMATION,
+                    "Operación no permitida. La fecha de nacimiento de la persona es null",
+                    "fecha_nacimiento",
+                )
+                return@let
+            }
+            if (!it.fechaNacimiento!!.toLocalDate()!!.isEqual(restoreDto.fechaNacimiento)) {
                 response.withError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "La fecha de nacimiento no coincide con la registrada",
@@ -258,7 +266,7 @@ class UsuarioServiceImpl(
                 )
             }
         }
-        if (usuarioDto.roles.any { rolDto -> rolDto.id == null && rolDto.nombre != null && !rolDto.nombre.isBlank() }) {
+        if (usuarioDto.roles.any { rD -> rD.id == null && rD.nombre != null && !rD.nombre!!.isBlank() }) {
             apiErrorList +=
                 createApiErrorBuilder {
                     withCode(ApiResponseCode.NON_IDEMPOTENCE)
@@ -271,7 +279,7 @@ class UsuarioServiceImpl(
 
     private fun canRegisterRole(rolDto: RolDto, authenticatedRoles: Set<RolesEnum>): Boolean {
         val maxRolPriority = authenticatedRoles.maxBy { it.priority }.priority
-        return rolDto.nombre != null && RolesEnum.valueOf(rolDto.nombre.uppercase()).priority <= maxRolPriority
+        return rolDto.nombre != null && RolesEnum.valueOf(rolDto.nombre!!.uppercase()).priority <= maxRolPriority
     }
 
     private fun hasUserManagementPermissions(authenticatedAuthorities: Set<String>) =
