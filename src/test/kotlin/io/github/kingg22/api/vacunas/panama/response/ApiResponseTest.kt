@@ -1,5 +1,9 @@
 package io.github.kingg22.api.vacunas.panama.response
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.kotest.assertions.json.shouldBeJsonObject
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.string.shouldNotBeBlank
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -153,6 +157,29 @@ class ApiResponseTest {
         assertFailsWith(IllegalStateException::class) {
             ApiResponseFactory.createApiErrorBuilder().withCode("Test").build()
         }
+    }
+
+    @Test
+    fun `ApiResponse can be serializable`() {
+        // empty
+        val response = ApiResponseFactory.createResponseBuilder().build()
+        val json = ObjectMapper().writeValueAsString(response)
+        json.shouldNotBeNull().shouldNotBeBlank()?.shouldBeJsonObject()
+
+        // With all fields full
+        response.addStatus("testStatus", "testValue")
+        response.addMetadata("testMetadata", 123)
+        response.addData("testData", true)
+        response.addError(
+            ApiResponseFactory.createApiErrorBuilder {
+                withCode("errorCode")
+                withProperty("testProperty")
+                withMessage("errorMessage")
+            },
+        )
+        response.addWarning(DefaultApiErrorTest("warningCode", "testProperty", "warningMessage"))
+        val newJson = ObjectMapper().writeValueAsString(response)
+        newJson.shouldNotBeNull().shouldNotBeBlank()?.shouldBeJsonObject()
     }
 
     private class DefaultApiErrorTest(
