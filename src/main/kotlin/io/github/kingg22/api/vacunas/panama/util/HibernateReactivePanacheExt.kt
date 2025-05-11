@@ -1,74 +1,15 @@
 package io.github.kingg22.api.vacunas.panama.util
 
 import io.quarkus.hibernate.reactive.panache.Panache
-import io.quarkus.vertx.core.runtime.context.VertxContextSafetyToggle
 import io.smallrye.mutiny.Uni
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import io.smallrye.mutiny.coroutines.uni
-import io.vertx.core.Context
-import io.vertx.core.Vertx
-import io.vertx.core.impl.ContextInternal
-import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import org.hibernate.reactive.mutiny.Mutiny
 
 /* Inspired on: https://github.com/quarkusio/quarkus/issues/34101#issuecomment-2687147471 */
-val vertxLogger = logger("VertxExt")
 val panacheLogger = logger("HibernateReactivePanacheExt")
-
-/**
- * Executes a given block of code within a Vert.x context using its dispatcher for coroutine execution.
- * Ensures the Vert.x context is appropriately created and managed if not already available, providing a safe
- * execution environment.
- *
- * **Important**: When invoking another suspend function inside this block, ensure the original [CoroutineScope] is passed.
- * Losing the scope may break Vert.x context propagation and cause unexpected behavior in Hibernate Reactive.
- *
- * @param duplicate If you need a duplicated Vert.x context or not.
- * @param block A suspending lambda to be executed within the Vert.x context.
- * The `block` receives a [CoroutineScope] as a parameter to execute its operations within.
- * @return The result of the executed block.
- * @throws IllegalStateException if the Vert.x context fails to initialize.
- */
-suspend inline fun <T> withVertx(duplicate: Boolean = false, crossinline block: suspend (CoroutineScope) -> T): T {
-    val context = Vertx.currentContext()
-        ?: (Vertx.vertx().orCreateContext).also {
-            vertxLogger.warn("Vertx current context is null, using orCreateContext")
-        }
-            ?.let { context: Context ->
-                val contextInternal = context as ContextInternal
-                if (duplicate) {
-                    vertxLogger.info("Duplicate Vertx context is needed, duplicating it...")
-                    val duplicatedContext = if (contextInternal.isDuplicate) {
-                        vertxLogger.warn("Vertx context is already duplicated, skipping duplicate creation")
-                        contextInternal
-                    } else {
-                        contextInternal.duplicate()
-                    }
-                    return@let duplicatedContext.also { duplicated: ContextInternal ->
-                        if (!VertxContextSafetyToggle.isExplicitlyMarkedAsSafe(duplicated)) {
-                            VertxContextSafetyToggle.setContextSafe(duplicated, true)
-                        } else {
-                            vertxLogger.warn("Vertx context is already marked as safe, skipping safe marking")
-                        }
-                    }
-                } else {
-                    context
-                }
-            }
-
-    return coroutineScope {
-        check(context != null) { "withVertx: Vertx context is null" }
-        // uses vertx dispatcher
-        withContext(context.dispatcher()) {
-            // this is CoroutineScope
-            block(this)
-        }
-    }
-}
 
 /**
  * Executes a given block within an active transaction using the Mutiny API.
@@ -93,7 +34,7 @@ suspend inline fun <T> withTransaction(crossinline block: suspend CoroutineScope
             uni(scope) {
                 try {
                     val transaction: Mutiny.Transaction? = uniTransaction.awaitSuspending()
-                    check(transaction != null) { "Current transaction is null when previous call withTransaction" }
+                    checkNotNull(transaction) { "Current transaction is null when previous call withTransaction" }
                     block(scope, transaction)
                 } catch (e: IllegalStateException) {
                     panacheLogger.error("Error in Vertx Mutiny withTransaction", e)
@@ -159,7 +100,7 @@ suspend inline fun <T> withSessionAndTransaction(
             try {
                 val transaction: Mutiny.Transaction? = uniTransaction.awaitSuspending()
                 val session = uniSession.awaitSuspending()
-                check(transaction != null) { "Current transaction is null when previous call withTransaction" }
+                checkNotNull(transaction) { "Current transaction is null when previous call withTransaction" }
                 block(scope, session, transaction)
             } catch (e: IllegalStateException) {
                 panacheLogger.error("Error in Vertx Mutiny withSessionAndTransaction", e)
