@@ -40,7 +40,6 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
 - [PostgreSQL](https://www.postgresql.org/) - Gestor de base de datos.
 - [Quarkus](https://quarkus.io/) — Framework non-blocking, reactive, native code. _Quarkus is a Kubernetes-native Java
   framework tailored for GraalVM and HotSpot, crafted from best-of-breed Java libraries and standards._
-- [Redis](https://redis.io/) - Base de datos en memoria para almacenar datos de forma rápida.
 - Y más... Detalles
   en [libs.versions.toml](https://github.com/kingg22/api-vacunas-panama/blob/main/gradle/libs.versions.toml)
 
