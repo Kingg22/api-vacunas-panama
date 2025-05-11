@@ -231,7 +231,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (!pacienteDto.createdAt.toLocalDate()!!.isEqual(usuario.createdAt.toLocalDate()!!)) {
+        if (!pacienteDto.createdAt.toLocalDate().isEqual(usuario.createdAt.toLocalDate())) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "created_at de Paciente y Usuario deben coincidir",

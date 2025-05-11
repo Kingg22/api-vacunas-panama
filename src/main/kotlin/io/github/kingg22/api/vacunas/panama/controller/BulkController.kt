@@ -4,6 +4,8 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteInputDt
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
+import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
 import io.github.kingg22.api.vacunas.panama.util.logger
@@ -30,6 +32,16 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
         log.debug("Received a request to create a new Paciente, Dirección and User: {}", pacienteInputDto.toString())
         val pacienteDto = pacienteInputDto.toPacienteDto()
         log.debug(pacienteDto.toString())
+        if (pacienteDto.persona.usuario == null) {
+            apiResponse.addError(
+                ApiResponseFactory.createApiErrorBuilder {
+                    withCode(ApiResponseCode.VALIDATION_FAILED)
+                    withMessage("Usuario is required")
+                    withProperty("usuario")
+                },
+            )
+            return createResponseEntity(apiResponse, rc)
+        }
         val pacienteContent = pacienteService.createPaciente(pacienteDto)
         log.trace(pacienteContent.toString())
         apiResponse.addWarnings(pacienteContent.warnings)
@@ -39,6 +51,7 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
             apiResponse.addStatusCode(400)
             return createResponseEntity(apiResponse, rc)
         }
+        // TODO find a solution to smartcast usuario
         val registerUserDto = RegisterUserDto(
             pacienteDto.persona.usuario!!,
             pacienteDto.persona.cedula,
