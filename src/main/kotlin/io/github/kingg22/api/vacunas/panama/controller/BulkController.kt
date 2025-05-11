@@ -51,9 +51,8 @@ class BulkController(private val usuarioService: UsuarioService, private val pac
             apiResponse.addStatusCode(400)
             return createResponseEntity(apiResponse, rc)
         }
-        // TODO find a solution to smartcast usuario
         val registerUserDto = RegisterUserDto(
-            pacienteDto.persona.usuario!!,
+            pacienteDto.persona.usuario,
             pacienteDto.persona.cedula,
             pacienteDto.persona.pasaporte,
         )

@@ -114,7 +114,7 @@ class PdfController(
 
     private suspend fun getDosisVacunaOfPaciente(idVacuna: UUID): Pair<List<DosisDto>, UUID> {
         val personaIdString = jwt.getClaim<String>("persona")
-        check(personaIdString != null) { "Persona ID is null in JWT claims with ID: ${jwt.tokenID}" }
+        checkNotNull(personaIdString) { "Persona ID is null in JWT claims with ID: ${jwt.tokenID}" }
 
         val idPaciente: UUID = UUID.fromString(personaIdString)
         return vacunaService.getDosisByIdPacienteIdVacuna(idPaciente, idVacuna) to idPaciente

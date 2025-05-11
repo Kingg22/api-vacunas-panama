@@ -171,8 +171,7 @@ class UsuarioServiceImpl(
                 )
                 return@let
             }
-            // TODO find a solution to smart cast
-            if (!it.fechaNacimiento!!.toLocalDate().isEqual(restoreDto.fechaNacimiento)) {
+            if (!it.fechaNacimiento.toLocalDate().isEqual(restoreDto.fechaNacimiento)) {
                 response.withError(
                     ApiResponseCode.VALIDATION_FAILED,
                     "La fecha de nacimiento no coincide con la registrada",
@@ -280,8 +279,7 @@ class UsuarioServiceImpl(
 
     private fun canRegisterRole(rolDto: RolDto, authenticatedRoles: Set<RolesEnum>): Boolean {
         val maxRolPriority = authenticatedRoles.maxBy { it.priority }.priority
-        // TODO find a solution to nombre smartcast
-        return rolDto.nombre != null && RolesEnum.valueOf(rolDto.nombre!!.uppercase()).priority <= maxRolPriority
+        return rolDto.nombre != null && RolesEnum.valueOf(rolDto.nombre.uppercase()).priority <= maxRolPriority
     }
 
     private fun hasUserManagementPermissions(authenticatedAuthorities: Set<String>) =
