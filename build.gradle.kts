@@ -14,12 +14,13 @@ plugins {
     alias(libs.plugins.license.report)
     alias(libs.plugins.kover)
     alias(libs.plugins.ktlint)
+    idea
 
     alias(libs.plugins.quarkus)
 }
 
 group = "io.github.kingg22"
-version = "0.15.0-RC4"
+version = "0.15.0-RC5"
 
 java {
     toolchain {
