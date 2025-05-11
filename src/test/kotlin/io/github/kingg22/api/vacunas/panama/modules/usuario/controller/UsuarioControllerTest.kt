@@ -115,5 +115,14 @@ class UsuarioControllerTest : TestBase() {
 
         assertNotNull(responseBody)
         responseBody.removeMetadata() shouldContain "\"persona\""
+
+        /* validate last used is updated
+        val now = Instant.now().minus(1, java.time.temporal.ChronoUnit.MINUTES)
+        val lastUsedString = responseBody.extractJsonToken("$.data.persona.usuario.last_used")
+            .shouldNotBeBlank().shouldNotBeNull()
+        val lastUsed = Instant.parse(lastUsedString)
+        lastUsed.shouldNotBeNull()
+        lastUsed.isAfter(now).shouldNotBeNull().shouldBeTrue()
+         */
     }
 }

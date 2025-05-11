@@ -1,9 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.TokenService
+import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
+import io.github.kingg22.api.vacunas.panama.util.getVertxDispatcher
 import io.github.kingg22.api.vacunas.panama.util.logger
 import io.smallrye.jwt.auth.cdi.NullJsonWebToken
 import jakarta.annotation.Priority
+import jakarta.enterprise.context.RequestScoped
+import jakarta.enterprise.context.control.ActivateRequestContext
 import jakarta.inject.Inject
 import jakarta.ws.rs.Priorities
 import jakarta.ws.rs.container.ContainerRequestContext
@@ -11,15 +15,18 @@ import jakarta.ws.rs.container.ContainerRequestFilter
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.Provider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.eclipse.microprofile.jwt.JsonWebToken
+import java.util.UUID
 
 @Provider
 @Priority(Priorities.AUTHORIZATION)
-class TokenTypeValidatorFilter(private val tokenService: TokenService) : ContainerRequestFilter {
+@RequestScoped
+class TokenTypeValidatorFilter(private val usuarioService: UsuarioService, private val tokenService: TokenService) :
+    ContainerRequestFilter {
+
     companion object {
         private const val REFRESH_TOKEN_ENDPOINT = "/vacunacion/v1/token/refresh"
 
@@ -43,6 +50,7 @@ class TokenTypeValidatorFilter(private val tokenService: TokenService) : Contain
     @Inject
     lateinit var jwt: JsonWebToken
 
+    @ActivateRequestContext
     override fun filter(requestContext: ContainerRequestContext) {
         try {
             if (jwt is NullJsonWebToken || jwt.subject == null || jwt.tokenID == null) return
@@ -50,7 +58,7 @@ class TokenTypeValidatorFilter(private val tokenService: TokenService) : Contain
             val tokenId = checkNotNull(jwt.tokenID)
             log.debug("Verifying token for $userId with tokenId: $tokenId")
 
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(getVertxDispatcher(true)).launch {
                 try {
                     val (accessTokenValid, refreshTokenValid) = awaitAll(
                         this.async { tokenService.isAccessTokenValid(userId, tokenId) },
@@ -84,6 +92,27 @@ class TokenTypeValidatorFilter(private val tokenService: TokenService) : Contain
                         !accessTokenValid && !refreshTokenValid -> {
                             log.debug("Access and refresh token invalid use. Returning 403 Forbidden.")
                             setWWWHeader(requestContext, "invalid_token", "Tokens has been revoked")
+                        }
+
+                        else -> {
+                            @Suppress("kotlin:S125")
+                            runCatching {
+                                /*
+                                TODO find a solution to update last used
+                                IllegalStateException: Illegal pop() with non-matching JdbcValuesSourceProcessingState
+                                after it:
+                                IllegalStateException: Session/EntityManager is closed
+                                 */
+                                log.debug("User ID for update last used: {}", userId)
+                                /* val uuid: UUID = */
+                                UUID.fromString(userId)
+                                /*
+                                usuarioService.updateLastUsed(uuid)
+                                log.debug("User updated successfully for usuario: {}", userId)
+                                 */
+                            }.onFailure { e ->
+                                log.error("Error occurred during updating last used for usuario: {}", userId, e)
+                            }
                         }
                     }
                 } catch (e: RuntimeException) {
