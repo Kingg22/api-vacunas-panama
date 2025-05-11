@@ -2,30 +2,43 @@ package io.github.kingg22.api.vacunas.panama.controller
 
 import io.github.kingg22.api.vacunas.panama.util.permanentRedirect
 import io.github.kingg22.api.vacunas.panama.util.toUri
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.annotation.security.PermitAll
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
 
 @Deprecated(message = "For compatibility in v1. Redirect to specific controller in modules.")
-@RestController
-@RequestMapping(path = ["/public"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@Path("/public")
+@Produces(MediaType.APPLICATION_JSON)
+@PermitAll
 class PublicResourcesController {
-    @GetMapping("/distritos")
-    suspend fun getDistritos() = permanentRedirect("/vacunacion/v1/direccion/distritos".toUri())
 
-    @GetMapping("/provincias")
-    suspend fun getProvincias() = permanentRedirect("/vacunacion/v1/direccion/provincias".toUri())
+    @GET
+    @Path("/distritos")
+    suspend fun getDistritos() = permanentRedirect("/direccion/distritos")
 
-    @GetMapping("/sedes")
-    suspend fun getSedes() = permanentRedirect("/vacunacion/v1/sedes".toUri())
+    @GET
+    @Path("/provincias")
+    suspend fun getProvincias() = permanentRedirect("/direccion/provincias")
 
-    @GetMapping("/vacunas", "/vaccines")
-    suspend fun getVacunas() = permanentRedirect("/vacunacion/v1/vaccines".toUri())
+    @GET
+    @Path("/sedes")
+    suspend fun getSedes() = permanentRedirect("/sedes")
 
-    @GetMapping("/roles")
-    suspend fun getRoles() = permanentRedirect("/vacunacion/v1/roles".toUri())
+    @GET
+    @Path("/vacunas")
+    suspend fun getVacunas() = permanentRedirect("/vaccines")
 
-    @GetMapping("/roles/permisos")
-    suspend fun getPermisos() = permanentRedirect("/vacunacion/v1/roles/permisos".toUri())
+    @GET
+    @Path("/vaccines")
+    suspend fun getVaccines() = permanentRedirect("/vaccines".toUri())
+
+    @GET
+    @Path("/roles")
+    suspend fun getRoles() = permanentRedirect("/roles".toUri())
+
+    @GET
+    @Path("/roles/permisos")
+    suspend fun getPermisos() = permanentRedirect("/roles/permisos".toUri())
 }

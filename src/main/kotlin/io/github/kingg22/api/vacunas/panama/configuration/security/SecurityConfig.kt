@@ -1,40 +1,9 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.configuration.security
 
-import com.nimbusds.jose.jwk.JWKSet
-import com.nimbusds.jose.jwk.RSAKey
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
-import org.springframework.security.authentication.password.ReactiveCompromisedPasswordChecker
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder
-import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm
-import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.JwtValidators
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
-import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiReactivePasswordChecker
-import org.springframework.security.web.server.SecurityWebFilterChain
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint
-import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
-import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
-import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher
-import java.security.interfaces.RSAPrivateKey
-import java.security.interfaces.RSAPublicKey
-
+/*
+TODO all configuration need be change to quarkus or something
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
@@ -54,7 +23,7 @@ class SecurityConfig(
     ): SecurityWebFilterChain = http
         .csrf {
             it.requireCsrfProtectionMatcher(
-                NegatedServerWebExchangeMatcher(PathPatternParserServerWebExchangeMatcher("/**")),
+                NegatedServerWebExchangeMatcher(PathPatternParserServerWebExchangeMatcher("/**/")),
             )
         }
         .headers {
@@ -68,9 +37,9 @@ class SecurityConfig(
             it.pathMatchers(
                 "/account/register",
                 "/account/login",
-                "/account/restore/**",
-                "/public/**",
-                "/bulk/**",
+                "/account/restore/**/",
+                "/public/**/",
+                "/bulk/**/",
                 "/direccion/provincias",
                 "/direccion/distritos",
                 "/sedes",
@@ -78,8 +47,8 @@ class SecurityConfig(
                 "/roles",
                 "/roles/permisos",
             ).permitAll()
-                .pathMatchers("/patient/**", "/pdf/**").hasAnyAuthority("PACIENTE_READ")
-                .pathMatchers("/vaccines/**").hasAnyRole("DOCTOR", "ENFERMERA")
+                .pathMatchers("/patient/**/", "/pdf/**/").hasAnyAuthority("PACIENTE_READ")
+                .pathMatchers("/vaccines/**/").hasAnyRole("DOCTOR", "ENFERMERA")
                 .anyExchange().authenticated()
         }
         .addFilterAfter(jwtRefreshFilter, SecurityWebFiltersOrder.AUTHENTICATION) // check this
@@ -144,3 +113,4 @@ class SecurityConfig(
         return provider
     }
 }
+*/

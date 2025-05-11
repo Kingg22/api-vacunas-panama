@@ -2,24 +2,27 @@ package io.github.kingg22.api.vacunas.panama.modules.vacuna.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheRepositoryBase
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-interface VacunaRepository : JpaRepository<Vacuna, UUID> {
-    @Query(
-        """
-        SELECT new io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.VacunaFabricanteDto(
-            v.id,
-            v.nombre,
-            f.id,
-            f.entidad.nombre
-        )
+@ApplicationScoped
+class VacunaRepository : PanacheRepositoryBase<Vacuna, UUID> {
+    suspend fun findByIdOrNull(id: UUID): Vacuna? = withSession { findById(id).awaitSuspending() }
+    suspend fun findAllIdAndNombreAndFabricante(): List<VacunaFabricanteDto> = withSession { _ ->
+        list(
+            """
+        SELECT DISTINCT v
         FROM Vacuna v
         LEFT JOIN v.fabricantes f
         LEFT JOIN f.entidad e
         ORDER BY v.id
         """,
-    )
-    fun findAllIdAndNombreAndFabricante(): List<VacunaFabricanteDto>
+        ).awaitSuspending().map {
+            val fabricante = it.fabricantes.firstOrNull()
+            VacunaFabricanteDto(it.id!!, it.nombre, fabricante?.id, fabricante?.entidad?.nombre)
+        }
+    }
 }

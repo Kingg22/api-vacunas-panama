@@ -1,6 +1,7 @@
-name: Publish Spring Boot Image with Boot Build Image
+name: Publish Docker Image
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v*"
@@ -23,7 +24,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'jetbrains'
+          distribution: 'graalvm'
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
@@ -42,8 +43,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build image using Boot Build Image
-        run: ./gradlew bootBuildImage
+      - name: Create PEM files
+        run: |
+          mkdir -p src/main/resources
+          echo "${JWT_PRIVATE}" > src/main/resources/private.pem
+          echo "${JWT_PUBLIC}" > src/main/resources/public.pem
+        env:
+          JWT_PRIVATE: ${{ secrets.JWT_PRIVATE }}
+          JWT_PUBLIC: ${{ secrets.JWT_PUBLIC }}
+
+      - name: Build image using gradle and container plugin
+        run: ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.enabled=false -Dquarkus.container-image.build=true
+        env:
+          JWT_PUBLIC_LOCATION: ${{ secrets.JWT_PUBLIC_LOCATION }}
+          JWT_PRIVATE_LOCATION: ${{ secrets.JWT_PRIVATE_LOCATION }}
 
       - name: Publish to Docker Hub
         run: |
@@ -52,12 +65,16 @@ jobs:
           docker push $REPO_LOWER:$TAG_WITHOUT_V
 
           # Only push the latest tag if this is not a prerelease (doesn't contain a hyphen)
-          if [[ ! "${{ github.ref_name }}" == *-* ]]; then
+          if [[ ! $TAG_WITHOUT_V == *-* ]]; then
             echo "Pushing latest tag for stable release"
             docker push $REPO_LOWER:latest
           else
             echo "Skipping latest tag for prerelease"
           fi
+
+      - name: Clean up PEM files
+        if: always()
+        run: rm -f src/main/resources/*.pem
 
   create_release:
     needs: build_and_push

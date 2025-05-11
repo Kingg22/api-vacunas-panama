@@ -5,11 +5,11 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPaciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.toPacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.repository.PacienteRepository
+import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.util.logger
-import jakarta.persistence.EntityManager
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
+import io.github.kingg22.api.vacunas.panama.util.withTransaction
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
 /**
@@ -19,12 +19,8 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
-class PacientePersistenceServiceImpl(
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
-    private val pacienteRepository: PacienteRepository,
-) : PacientePersistenceService {
+@ApplicationScoped
+class PacientePersistenceServiceImpl(private val pacienteRepository: PacienteRepository) : PacientePersistenceService {
     private val log = logger()
 
     /**
@@ -36,7 +32,7 @@ class PacientePersistenceServiceImpl(
     override suspend fun findPacienteById(id: UUID) = pacienteRepository.findByIdOrNull(id)
 
     /**
-     * Finds all vaccine-disease records for a paciente.
+     * Finds all vaccine-disease records for a patient.
      *
      * @param id The UUID of the paciente.
      * @param vacuna The UUID of the vaccine (optional).
@@ -94,13 +90,12 @@ class PacientePersistenceServiceImpl(
      * @return The saved paciente DTO.
      */
     override suspend fun savePaciente(pacienteDto: PacienteDto): PacienteDto {
-        var savedPaciente: Paciente? = null
-        transactionTemplate.execute {
+        val savedPaciente: Paciente? = withTransaction { _ ->
             log.trace("Saving pacienteDTO {}", pacienteDto)
             val paciente = pacienteDto.toPaciente()
             log.trace("Converted paciente {}", paciente)
-            entityManager.persist(paciente)
-            savedPaciente = paciente
+            Persona.persist(paciente.persona).awaitSuspending()
+            pacienteRepository.persistAndFlush(paciente).awaitSuspending()
         }
         checkNotNull(savedPaciente) { "Paciente not saved" }
         return savedPaciente.toPacienteDto()

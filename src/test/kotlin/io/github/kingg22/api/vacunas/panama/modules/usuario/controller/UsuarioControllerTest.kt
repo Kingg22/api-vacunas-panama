@@ -3,17 +3,18 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 import io.github.kingg22.api.vacunas.panama.TestBase
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.kotest.matchers.string.shouldContain
+import io.quarkus.test.junit.QuarkusTest
 import io.restassured.http.ContentType
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
-import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class UsuarioControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+@QuarkusTest
+class UsuarioControllerTest : TestBase() {
 
     @Test
     fun register() {
@@ -82,7 +83,7 @@ class UsuarioControllerTest(@LocalServerPort port: Int) : TestBase(port) {
                 {
                     "username": "1-123-456",
                     "new_password": "new*Secure2dPassword",
-                    "fecha_nacimiento": "1990-01-01T00:00:00"
+                    "fecha_nacimiento": "1990-01-01"
                 }
             """.trimIndent()
 

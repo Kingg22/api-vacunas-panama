@@ -1,12 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.doctor.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.doctor.domain.DoctorModel
-import io.github.kingg22.api.vacunas.panama.modules.doctor.dto.DoctorDto
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.sede.entity.Sede
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -31,7 +31,7 @@ import java.util.UUID
         Index(name = "ix_doctores_idoneidad", columnList = "idoneidad"),
     ],
 )
-@KonvertTo(DoctorDto::class)
+@KonvertFrom(DoctorModel::class, [Mapping(target = "idoneidad", expression = "it.idoneidad ?: \"\"")])
 class Doctor(
     @Id
     @ColumnDefault("gen_random_uuid()")
@@ -48,23 +48,22 @@ class Doctor(
     @JoinColumn(name = "sede")
     var sede: Sede? = null,
 
-    @Size(max = 20)
-    @NotNull
+    @all:Size(max = 20)
+    @all:NotNull
     @Column(name = "idoneidad", nullable = false, length = 20)
     var idoneidad: String,
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "categoria", length = 100)
     var categoria: String? = null,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-) {
-    @KonvertFrom(DoctorModel::class, mappings = [Mapping(target = "idoneidad", expression = "it.idoneidad ?: \"\"")])
-    companion object
+) : PanacheEntityBase {
+    companion object : PanacheCompanionBase<Doctor, UUID>
 }

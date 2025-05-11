@@ -1,12 +1,10 @@
 package io.github.kingg22.api.vacunas.panama.configuration
 
-import org.springframework.data.redis.cache.RedisCacheConfiguration
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
 enum class CacheDuration(private val ttl: Duration, private val cacheNames: String) {
     /** With 30 seconds */
@@ -34,18 +32,7 @@ enum class CacheDuration(private val ttl: Duration, private val cacheNames: Stri
     MASSIVE(30.days, "massive"),
     ;
 
-    /** Obtener la configuración de caché con TTL */
-    fun getCacheConfig(defaultCacheConfig: RedisCacheConfiguration) = defaultCacheConfig.entryTtl(ttl.toJavaDuration())
-
     companion object {
-        /**
-         * Obtener todas las configuraciones como [Map] con su [RedisCacheConfiguration].
-         *
-         * Listo para [org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder.withInitialCacheConfigurations]
-         */
-        internal fun asMapKeyRedisCacheConfig(redisCacheConfiguration: RedisCacheConfiguration) =
-            entries.associate { it.cacheNames to it.getCacheConfig(redisCacheConfiguration) }
-
         /**
          * With 30 seconds
          * @see CacheDuration.TINY

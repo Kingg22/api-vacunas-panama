@@ -1,10 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.response
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
+import io.quarkus.runtime.annotations.RegisterForReflection
 import java.io.Serializable
 
 /** Default implementation of [ApiError]. */
+@RegisterForReflection
 @JsonPropertyOrder(value = ["code", "property", "message"])
+@JvmRecord
 data class DefaultApiError(
     override val code: String,
     override val message: String,

@@ -2,11 +2,11 @@ package io.github.kingg22.api.vacunas.panama.modules.persona.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.persona.domain.PersonaModel
-import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.entity.Usuario
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -36,7 +36,15 @@ import java.util.UUID
         Index(name = "ix_personas_nombres_apellidos", columnList = "nombre, nombre2, apellido1, apellido2"),
     ],
 )
-@KonvertTo(PersonaDto::class)
+@KonvertFrom(
+    PersonaModel::class,
+    [
+        Mapping(
+            "direccion",
+            expression = "io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion.DIRECCION_DEFAULT",
+        ),
+    ],
+)
 class Persona(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -47,22 +55,22 @@ class Persona(
     @Column(name = "edad")
     var edad: Short? = null,
 
-    @Size(max = 1)
+    @all:Size(max = 1)
     @Column(name = "sexo", length = 1)
     var sexo: String? = null,
 
     @Column(name = "fecha_nacimiento")
     var fechaNacimiento: LocalDateTime? = null,
 
-    @Size(max = 15)
+    @all:Size(max = 15)
     @Column(name = "cedula", length = 15)
     var cedula: String? = null,
 
-    @Size(max = 15)
+    @all:Size(max = 15)
     @Column(name = "telefono", length = 15)
     var telefono: String? = null,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion = Direccion.DIRECCION_DEFAULT,
@@ -71,49 +79,38 @@ class Persona(
     @JoinColumn(name = "usuario")
     var usuario: Usuario? = null,
 
-    @Size(max = 20)
+    @all:Size(max = 20)
     @Column(name = "pasaporte", length = 20)
     var pasaporte: String? = null,
 
-    @Size(max = 50)
-    @NotNull
+    @all:Size(max = 50)
+    @all:NotNull
     @ColumnDefault("'NO_VALIDADO'")
     @Column(name = "estado", nullable = false, length = 50)
     var estado: String = "NO_VALIDADO",
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "apellido1", length = 100)
     var apellido1: String? = null,
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "apellido2", length = 100)
     var apellido2: String? = null,
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "nombre", length = 100)
     var nombre: String? = null,
 
-    @Size(max = 100)
+    @all:Size(max = 100)
     @Column(name = "nombre2", length = 100)
     var nombre2: String? = null,
 
-    @Size(max = 254)
+    @all:Size(max = 254)
     @Column(name = "correo", length = 254)
     var correo: String? = null,
-) {
+) : PanacheEntityBase {
     override fun toString(): String = Persona::class.simpleName +
         " id: $id, nombre: $nombre, apellido1: $apellido1, apellido2: $apellido2, cedula: $cedula, direccion: $direccion, estado: $estado, fechaNacimiento: $fechaNacimiento, pasaporte: $pasaporte, telefono: $telefono, usuario: $usuario, correo: $correo, sexo: $sexo, edad: $edad"
 
-    @KonvertFrom(
-        PersonaModel::class,
-        mappings = [
-            Mapping(
-                "fechaNacimiento",
-                expression =
-                "it.fechaNacimiento?.let { f -> java.time.LocalDateTime.from(f.atStartOfDay(java.time.ZoneOffset.UTC)) }",
-            ),
-            Mapping("direccion", ignore = true),
-        ],
-    )
-    companion object
+    companion object : PanacheCompanionBase<Persona, UUID>
 }

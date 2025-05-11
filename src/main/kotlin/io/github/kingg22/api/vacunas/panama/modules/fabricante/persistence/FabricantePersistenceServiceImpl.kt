@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.fabricante.persistence
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.repository.FabricanteRepository
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
 /**
@@ -11,7 +11,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class FabricantePersistenceServiceImpl(private val fabricanteRepository: FabricanteRepository) :
     FabricantePersistenceService {
 
@@ -29,5 +29,5 @@ class FabricantePersistenceServiceImpl(private val fabricanteRepository: Fabrica
      * @param idUsuario The UUID of the user.
      * @return The fabricante entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioId(idUsuario: UUID) = fabricanteRepository.findByUsuario_Id(idUsuario)
+    override suspend fun findByUsuarioId(idUsuario: UUID) = fabricanteRepository.findByUsuarioId(idUsuario)
 }

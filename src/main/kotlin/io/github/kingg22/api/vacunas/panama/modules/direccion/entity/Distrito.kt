@@ -1,9 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.direccion.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DistritoModel
-import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.DistritoDto
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -22,25 +20,24 @@ import jakarta.validation.constraints.Size
         Index(name = "ix_distritos_nombre", columnList = "nombre"),
     ],
 )
-@KonvertTo(DistritoDto::class)
+@KonvertFrom(DistritoModel::class)
 class Distrito(
     @Id
     @Column(name = "id", nullable = false)
     var id: Short? = null,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "provincia", nullable = false)
     var provincia: Provincia,
 
-    @Size(max = 100)
-    @NotNull
+    @all:Size(max = 100)
+    @all:NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
 ) {
     override fun toString(): String = Distrito::class.simpleName +
         "(id=$id, provincia=$provincia, nombre='$nombre')"
 
-    @KonvertFrom(DistritoModel::class)
     companion object
 }

@@ -2,7 +2,7 @@ package io.github.kingg22.api.vacunas.panama.modules.persona.domain
 
 import io.github.kingg22.api.vacunas.panama.modules.direccion.domain.DireccionModel
 import io.github.kingg22.api.vacunas.panama.modules.usuario.domain.UsuarioModel
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 /**
@@ -17,7 +17,7 @@ data class PersonaModel(
     val apellido2: String? = null,
     val correo: String? = null,
     val telefono: String? = null,
-    val fechaNacimiento: LocalDate? = null,
+    val fechaNacimiento: LocalDateTime? = null,
     val cedula: String? = null,
     val pasaporte: String? = null,
     val direccion: DireccionModel? = null,

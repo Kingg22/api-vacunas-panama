@@ -34,31 +34,31 @@ class Entidad(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @Size(max = 13)
+    @all:Size(max = 13)
     @Column(name = "dependencia", length = 13)
     var dependencia: String? = null,
 
-    @Size(max = 15)
+    @all:Size(max = 15)
     @Column(name = "telefono", length = 15)
     var telefono: String? = null,
 
-    @NotNull
+    @all:NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "direccion", nullable = false)
     var direccion: Direccion = Direccion.DIRECCION_DEFAULT,
 
-    @Size(max = 50)
-    @NotNull
+    @all:Size(max = 50)
+    @all:NotNull
     @ColumnDefault("'ACTIVO'")
     @Column(name = "estado", nullable = false, length = 50)
     var estado: String = "ACTIVO",
 
-    @Size(max = 100)
-    @NotNull
+    @all:Size(max = 100)
+    @all:NotNull
     @Column(name = "nombre", nullable = false, length = 100)
     var nombre: String,
 
-    @Size(max = 254)
+    @all:Size(max = 254)
     @Column(name = "correo", length = 254)
     var correo: String? = null,
 )

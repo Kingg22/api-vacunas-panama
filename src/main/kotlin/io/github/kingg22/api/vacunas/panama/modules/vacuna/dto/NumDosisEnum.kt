@@ -1,14 +1,31 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.dto
 
+import com.fasterxml.jackson.annotation.JsonAlias
+import io.quarkus.runtime.annotations.RegisterForReflection
 import java.io.Serializable
 
+@RegisterForReflection
 enum class NumDosisEnum(val value: String) : Serializable {
+    // TODO find if have solution to apply @all:
+    @field:JsonAlias("P", "p", "previa", "previous")
     DOSIS_PREVIA("P"),
+
+    @field:JsonAlias("1", "first", "one", "primera")
     PRIMERA_DOSIS("1"),
+
+    @field:JsonAlias("2", "second", "two", "segunda")
     SEGUNDA_DOSIS("2"),
+
+    @field:JsonAlias("3", "third", "three", "tercera")
     TERCERA_DOSIS("3"),
+
+    @field:JsonAlias("R", "r", "refuerzo", "refill")
     REFUERZO("R"),
+
+    @field:JsonAlias("R1", "r1", "refuerzo_1", "refill_1", "first_refill")
     PRIMER_REFUERZO("R1"),
+
+    @field:JsonAlias("R2", "r2", "refuerzo_2", "refill_2", "second_refill")
     SEGUNDO_REFUERZO("R2"),
     ;
 
@@ -24,9 +41,13 @@ enum class NumDosisEnum(val value: String) : Serializable {
 
     companion object {
         @JvmStatic
-        fun fromValue(value: String): NumDosisEnum = entries.find { it.value == value }.let {
-            it?.let { return it }
-            throw IllegalArgumentException("No enum constant founded for: $value")
+        fun fromValue(value: String): NumDosisEnum = value.let { valueParam ->
+            val value = valueParam.trim().uppercase()
+            require(value.isNotBlank())
+            entries.find { it.value == value }.let {
+                it?.let { return it }
+                throw IllegalArgumentException("No enum constant founded for: $value")
+            }
         }
     }
 }

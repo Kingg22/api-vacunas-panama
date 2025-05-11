@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="" />
+      <option name="scriptParameters" value="-Dquarkus.native.enabled=false -Dquarkus.package.jar.enabled=true -Dquarkus.native.container-build=true -Dquarkus.package.jar.type=uber-jar" />
       <option name="taskDescriptions">
         <list />
       </option>

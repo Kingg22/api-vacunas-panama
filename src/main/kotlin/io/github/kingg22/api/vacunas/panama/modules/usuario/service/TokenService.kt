@@ -1,8 +1,6 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.service
 
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
-import jakarta.validation.constraints.NotNull
-import reactor.core.publisher.Mono
 import java.io.Serializable
 
 /**
@@ -17,12 +15,9 @@ import java.io.Serializable
  * is used for each purpose. The tokens are encoded with data such as user information and expiration
  * times, using values set in the application's configuration (`application.properties`).
  *
- * Tokens are stored in Redis cache to facilitate fast access and efficient validation during
+ * Tokens are stored in a cache to facilitate fast access and efficient validation during
  * authentication. This ensures that the system can handle large-scale user bases while minimizing
  * redundant calculations.
- *
- * **Note:** The decoding of tokens is handled separately by the [org.springframework.security.oauth2.jwt.JwtDecoder].
- * This service is solely responsible for generating, storing, and validating tokens.
  */
 interface TokenService {
     /**
@@ -35,7 +30,7 @@ interface TokenService {
      *         is the token type (e.g., "access_token", "refresh_token") and the value is the encoded token string.
      */
     suspend fun generateTokens(
-        @NotNull usuarioDto: UsuarioDto,
+        usuarioDto: UsuarioDto,
         idsAdicionales: Map<String, Serializable?> = emptyMap(),
     ): Map<String, Serializable>
 
@@ -47,7 +42,7 @@ interface TokenService {
      * @param tokenId The unique token ID of the access token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    fun isAccessTokenValid(@NotNull userId: String, @NotNull tokenId: String): Mono<Boolean>
+    suspend fun isAccessTokenValid(userId: String, tokenId: String): Boolean
 
     /**
      * Validates the existence of a given refresh token in Redis cache.
@@ -57,5 +52,5 @@ interface TokenService {
      * @param tokenId The unique token ID of the refresh token to validate.
      * @return A Mono that emits `true` if the token is valid (exists in cache), or `false` otherwise.
      */
-    fun isRefreshTokenValid(@NotNull userId: String, @NotNull tokenId: String): Mono<Boolean>
+    suspend fun isRefreshTokenValid(userId: String, tokenId: String): Boolean
 }

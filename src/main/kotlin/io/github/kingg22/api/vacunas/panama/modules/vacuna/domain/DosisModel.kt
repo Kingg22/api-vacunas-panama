@@ -5,12 +5,10 @@ import io.github.kingg22.api.vacunas.panama.modules.paciente.domain.PacienteMode
 import io.github.kingg22.api.vacunas.panama.modules.persona.domain.PersonaModel
 import io.github.kingg22.api.vacunas.panama.modules.sede.domain.SedeModel
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneOffset.UTC
 import java.util.UUID
 
-/**
- * Domain model representing a vaccine dose.
- */
+/** Domain model representing a vaccine dose. */
 data class DosisModel(
     val id: UUID? = null,
     val paciente: PacienteModel,
@@ -42,14 +40,14 @@ data class DosisModel(
         fechaAplicacion: LocalDateTime? = null,
     ) : this(
         id = null,
-        PacienteModel(PersonaModel(pacienteId), createdAt = LocalDateTime.now(ZoneOffset.UTC)),
+        PacienteModel(PersonaModel(pacienteId), createdAt = LocalDateTime.now(UTC)),
         numeroDosis,
-        VacunaModel(vacunaId, "", createdAt = LocalDateTime.now(ZoneOffset.UTC)),
-        SedeModel(sedeId, "", createdAt = LocalDateTime.now()),
+        VacunaModel(vacunaId, "", createdAt = LocalDateTime.now(UTC)),
+        SedeModel(sedeId, "", createdAt = LocalDateTime.now(UTC)),
         lote,
-        doctorId?.let { DoctorModel(it, PersonaModel(), createdAt = LocalDateTime.now(ZoneOffset.UTC)) },
-        fechaAplicacion ?: LocalDateTime.now(ZoneOffset.UTC),
-        LocalDateTime.now(ZoneOffset.UTC),
+        doctorId?.let { DoctorModel(it, PersonaModel(), createdAt = LocalDateTime.now(UTC)) },
+        fechaAplicacion ?: LocalDateTime.now(UTC),
+        LocalDateTime.now(UTC),
         null,
     )
 }

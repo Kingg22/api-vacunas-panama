@@ -14,13 +14,12 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createContentResponse
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 
-@Service
+@ApplicationScoped
 class PersonaRegistrationStrategy(
-    @Lazy private val personaService: PersonaService,
-    @Lazy private val usuarioService: UsuarioService,
+    private val personaService: PersonaService,
+    private val usuarioService: UsuarioService,
 ) : RegistrationStrategy {
     private val log = logger()
 

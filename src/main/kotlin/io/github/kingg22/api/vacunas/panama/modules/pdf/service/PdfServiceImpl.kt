@@ -1,49 +1,50 @@
 package io.github.kingg22.api.vacunas.panama.modules.pdf.service
 
 import com.itextpdf.html2pdf.HtmlConverter
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.pdf.dto.PdfDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.DosisDto
 import io.github.kingg22.api.vacunas.panama.util.logger
-import io.github.kingg22.api.vacunas.panama.util.or
 import io.github.kingg22.api.vacunas.panama.util.orElse
-import jakarta.validation.constraints.NotNull
-import org.springframework.cache.annotation.Cacheable
-import org.springframework.core.io.ResourceLoader
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.io.ByteArrayOutputStream
 import java.util.Base64
 import java.util.UUID
 
-@Service
-class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
+@ApplicationScoped
+class PdfServiceImpl : PdfService {
     private val log = logger()
     private val iconImageBase64: String by lazy {
-        val resource = resourceLoader.getResource("classpath:images/icon.png")
-        require(resource.exists()) { "No se encontró el recurso icon.png en el classpath." }
+        val resource = Thread.currentThread().contextClassLoader.getResourceAsStream("images/icon.png")
+        requireNotNull(resource) { "No se encontró el recurso icon.png en el classpath." }
 
-        return@lazy resource.inputStream.use { input ->
+        return@lazy resource.use { input ->
             Base64.getEncoder().encodeToString(input.readBytes())
         }
     }
 
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'certificate:'.concat(#idCertificate)",
         unless = "#result == null or #result.length == 0",
     )
+    @CacheResult(cacheName = CacheDuration.MASSIVE_VALUE)
+     */
     override suspend fun generatePdf(
         pacienteDto: PacienteDto,
         dosisDtos: List<DosisDto>,
         idCertificate: UUID,
     ): ByteArray = this.generatePdf(idCertificate, this.generatePdfDto(pacienteDto, dosisDtos))
 
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.MASSIVE_VALUE],
         key = "'certificate64:'.concat(#idCertificate)",
         unless = "#result == null or #result.length == 0",
     )
+    @CacheResult(cacheName = CacheDuration.MASSIVE_VALUE)
+     */
     override suspend fun generatePdfBase64(
         pacienteDto: PacienteDto,
         dosisDtos: List<DosisDto>,
@@ -66,7 +67,7 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
         return outputStream.toByteArray()
     }
 
-    private fun generatePdfDto(pacienteDto: @NotNull PacienteDto, dosisDtos: List<DosisDto>): PdfDto {
+    private fun generatePdfDto(pacienteDto: PacienteDto, dosisDtos: List<DosisDto>): PdfDto {
         val identificacion = obtenerIdentificacion(pacienteDto)
         val personaDto = pacienteDto.persona
         val nombres = "${personaDto.nombre ?: ""} ${personaDto.nombre2 ?: ""}".trim()
@@ -94,14 +95,14 @@ class PdfServiceImpl(private val resourceLoader: ResourceLoader) : PdfService {
 
     /** Obtiene la identificación del paciente en el orden de prioridad correcto.  */
     private fun obtenerIdentificacion(pacienteDto: PacienteDto) = pacienteDto.persona.let { persona ->
-        persona.cedula.takeIf { !it.isNullOrBlank() }.or { persona.pasaporte.takeIf { !it.isNullOrBlank() } }
-            .or { pacienteDto.identificacionTemporal.takeIf { !it.isNullOrBlank() } }.orElse {
-                persona.id?.toString() orElse {
-                    val fakeId = "INVALID-${UUID.randomUUID()}"
-                    log.error("ID de la persona es null. Generando identificador temporal: $fakeId")
-                    fakeId
-                }
+        persona.cedula.takeIf { !it.isNullOrBlank() } ?: persona.pasaporte.takeIf { !it.isNullOrBlank() }
+            ?: pacienteDto.identificacionTemporal.takeIf { !it.isNullOrBlank() } ?: (
+            persona.id?.toString() orElse {
+                val fakeId = "INVALID-${UUID.randomUUID()}"
+                log.error("ID de la persona es null. Generando identificador temporal: $fakeId")
+                fakeId
             }
+            )
     }
 
     private fun generateHtmlTemplate(certificateId: UUID, pdfDto: PdfDto): String {

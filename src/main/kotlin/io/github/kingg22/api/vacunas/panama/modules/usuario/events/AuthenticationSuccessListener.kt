@@ -1,14 +1,9 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.modules.usuario.events
 
-import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
-import io.github.kingg22.api.vacunas.panama.util.logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.springframework.context.ApplicationListener
-import org.springframework.security.authentication.event.AuthenticationSuccessEvent
-import org.springframework.stereotype.Component
-import java.util.UUID
+/*
+TODO find a solution to this
 
 @Component
 class AuthenticationSuccessListener(private val usuarioService: UsuarioService) :
@@ -34,3 +29,4 @@ class AuthenticationSuccessListener(private val usuarioService: UsuarioService) 
         }
     }
 }
+*/

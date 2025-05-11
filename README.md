@@ -9,9 +9,8 @@ sedes sanitarias de Panamá, tanto públicas como privadas. La implementación d
 seguimiento de las vacunaciones, mejorar la precisión de los datos y apoyar en la toma de decisiones para el control
 sanitario del país. A continuación, se detallan los aspectos clave del proyecto, sus objetivos, alcance y
 recomendaciones para su implementación.
-Este proyecto consiste en el desarrollo de una API que gestiona la información sobre vacunación en Panamá. La
-solución está diseñada utilizando tecnologías como Java con Spring Boot y SQL Server, y se enfoca en varios aspectos
-clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad y la facilidad de uso.
+Este proyecto consiste en el desarrollo de una API que gestiona la información sobre vacunación en Panamá, se enfoca en
+varios aspectos clave, incluyendo la precisión de los datos, la seguridad, la interoperabilidad y la facilidad de uso.
 
 :construction: Proyecto mejorado lentamente en los tiempos libres :construction:
 
@@ -39,14 +38,8 @@ La base de datos será utilizada a nivel nacional por centros médicos estatales
 
 - [Kotlin](https://kotlinlang.org/) – Lenguaje de programación principal del API.
 - [PostgreSQL](https://www.postgresql.org/) - Gestor de base de datos.
-- [Spring Boot](https://spring.io/) - Framework de JVM, módulos utilizados: web, data, security, OAuth resource server,
-  validations, cache, testing.
-- [Spring Dotenv](https://github.com/paulschwarz/spring-dotenv) - Librería para cargar las variables de entornos para
-  Spring.
-- [Jackson](https://github.com/FasterXML/jackson) - JSON parser for JVM.
-- [Error handling Spring Boot](https://github.com/wimdeblauwe/error-handling-spring-boot-starter/) - Librería para
-  Spring Boot utilizada para dar Error Response uniformes y Logger de los mismos.
-- [Redis](https://redis.io/) - Base de datos en memoria para almacenar datos de forma rápida.
+- [Quarkus](https://quarkus.io/) — Framework non-blocking, reactive, native code. _Quarkus is a Kubernetes-native Java
+  framework tailored for GraalVM and HotSpot, crafted from best-of-breed Java libraries and standards._
 - Y más... Detalles
   en [libs.versions.toml](https://github.com/kingg22/api-vacunas-panama/blob/main/gradle/libs.versions.toml)
 

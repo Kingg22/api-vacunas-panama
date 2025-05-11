@@ -1,13 +1,21 @@
-@file:Suppress("ktlint:standard:function-naming", "kotlin:S100")
-
 package io.github.kingg22.api.vacunas.panama.modules.fabricante.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
-import org.springframework.data.jpa.repository.JpaRepository
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheRepositoryBase
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-interface FabricanteRepository : JpaRepository<Fabricante, UUID> {
-    fun findByLicencia(licencia: String): Fabricante?
+@ApplicationScoped
+class FabricanteRepository : PanacheRepositoryBase<Fabricante, UUID> {
+    suspend fun findByIdOrNull(id: UUID): Fabricante? = withSession { findById(id).awaitSuspending() }
 
-    fun findByUsuario_Id(idUsuario: UUID): Fabricante?
+    suspend fun findByLicencia(licencia: String): Fabricante? = withSession {
+        find("licencia = ?1", licencia).firstResult().awaitSuspending()
+    }
+
+    suspend fun findByUsuarioId(idUsuario: UUID): Fabricante? = withSession {
+        find("usuario.id = ?1", idUsuario).firstResult().awaitSuspending()
+    }
 }

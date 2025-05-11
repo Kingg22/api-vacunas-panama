@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.kingg22.api.vacunas.panama.modules.doctor.domain.DoctorModel
 import io.github.kingg22.api.vacunas.panama.modules.doctor.entity.Doctor
 import io.github.kingg22.api.vacunas.panama.modules.persona.dto.PersonaDto
+import io.mcarle.konvert.api.KonvertFrom
 import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.runtime.annotations.RegisterForReflection
 import jakarta.validation.Valid
 import jakarta.validation.constraints.PastOrPresent
 import jakarta.validation.constraints.Size
@@ -19,8 +21,8 @@ import java.time.ZoneOffset.UTC
  * _Warning_:
  * - [Doctor.idoneidad] is required, but in DTO it's nullable.
  * Set is an empty string if it's null.
-*/
-@JvmRecord
+ */
+@RegisterForReflection
 @KonvertTo(
     Doctor::class,
     mappings = [
@@ -30,26 +32,25 @@ import java.time.ZoneOffset.UTC
     ],
 )
 @KonvertTo(DoctorModel::class)
+@KonvertFrom(Doctor::class)
+@JvmRecord
 data class DoctorDto(
-    @field:Valid @param:Valid val persona: PersonaDto,
+    @all:Valid
+    val persona: PersonaDto,
 
-    @field:Size(max = 20)
-    @param:Size(max = 20)
+    @all:Size(max = 20)
     val idoneidad: String? = null,
 
-    @field:Size(max = 100)
-    @param:Size(max = 100)
+    @all:Size(max = 100)
     val categoria: String? = null,
 
-    @field:JsonProperty(value = "created_at")
-    @param:JsonProperty(value = "created_at")
-    @field:PastOrPresent
-    @param:PastOrPresent
+    @all:JsonProperty(value = "created_at")
+    @all:PastOrPresent
     val createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @field:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @param:JsonProperty(value = "updated_at", access = JsonProperty.Access.READ_ONLY)
-    @field:PastOrPresent
-    @param:PastOrPresent
+    @all:JsonProperty(value = "updated_at")
+    @all:PastOrPresent
     val updatedAt: LocalDateTime? = null,
-) : Serializable
+) : Serializable {
+    companion object
+}

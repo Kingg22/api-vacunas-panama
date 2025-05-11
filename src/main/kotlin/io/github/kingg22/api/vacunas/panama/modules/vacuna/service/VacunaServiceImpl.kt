@@ -1,14 +1,13 @@
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.service
 
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.doctor.service.DoctorService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.service.PacienteService
 import io.github.kingg22.api.vacunas.panama.modules.sede.service.SedeService
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.domain.DosisModel
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.InsertDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.dto.getNumeroDosisAsEnum
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toDosisDto
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.getNumeroDosisAsEnum
-import io.github.kingg22.api.vacunas.panama.modules.vacuna.extensions.toListDosisDto
+import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.toListDosisDto
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.persistence.VacunaPersistenceService
 import io.github.kingg22.api.vacunas.panama.response.ActualApiResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
@@ -16,17 +15,15 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.ifPresentOrElse
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.cache.annotation.Cacheable
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-@Service
+@ApplicationScoped
 class VacunaServiceImpl(
     private val vacunaPersistenceService: VacunaPersistenceService,
-    @Lazy private val doctorService: DoctorService,
-    @Lazy private val sedeService: SedeService,
-    @Lazy private val pacienteService: PacienteService,
+    private val doctorService: DoctorService,
+    private val sedeService: SedeService,
+    private val pacienteService: PacienteService,
 ) : VacunaService {
     private val log = logger()
 
@@ -106,11 +103,14 @@ class VacunaServiceImpl(
         return contentResponse.build()
     }
 
+    /*
     @Cacheable(
         cacheNames = [CacheDuration.HUGE_VALUE],
         key = "'vacunas'",
         unless = "#result==null or #result.isEmpty()",
     )
+    @CacheResult(cacheName = CacheDuration.HUGE_VALUE)
+     */
     override suspend fun getVacunasFabricante() = vacunaPersistenceService.findAllVacunasWithFabricantes()
 
     override suspend fun getDosisByIdPacienteIdVacuna(idPaciente: UUID, idVacuna: UUID) =

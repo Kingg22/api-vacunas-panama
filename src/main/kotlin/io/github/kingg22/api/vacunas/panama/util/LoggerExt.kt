@@ -10,3 +10,5 @@ import org.slf4j.LoggerFactory
  * @return Logger instance for the specified class.
  */
 inline fun <reified T> T.logger(): Logger = LoggerFactory.getLogger(T::class.java)
+
+fun logger(name: String): Logger = LoggerFactory.getLogger(name)

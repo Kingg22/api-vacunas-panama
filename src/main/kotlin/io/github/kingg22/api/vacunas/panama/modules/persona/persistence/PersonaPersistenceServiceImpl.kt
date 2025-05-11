@@ -1,7 +1,7 @@
 package io.github.kingg22.api.vacunas.panama.modules.persona.persistence
 
 import io.github.kingg22.api.vacunas.panama.modules.persona.repository.PersonaRepository
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
 /**
@@ -11,7 +11,7 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class PersonaPersistenceServiceImpl(private val personaRepository: PersonaRepository) : PersonaPersistenceService {
 
     /**
@@ -31,7 +31,7 @@ class PersonaPersistenceServiceImpl(private val personaRepository: PersonaReposi
      * @param id The UUID of the user.
      * @return The persona entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioId(id: UUID) = personaRepository.findByUsuario_Id(id)
+    override suspend fun findByUsuarioId(id: UUID) = personaRepository.findByUsuarioId(id)
 
     /**
      * Finds a persona by its username.
@@ -39,5 +39,5 @@ class PersonaPersistenceServiceImpl(private val personaRepository: PersonaReposi
      * @param username The username of the user.
      * @return The persona entity if found, null otherwise.
      */
-    override suspend fun findByUsuarioUsername(username: String) = personaRepository.findByUsuario_Username(username)
+    override suspend fun findByUsuarioUsername(username: String) = personaRepository.findByUsuarioUsername(username)
 }

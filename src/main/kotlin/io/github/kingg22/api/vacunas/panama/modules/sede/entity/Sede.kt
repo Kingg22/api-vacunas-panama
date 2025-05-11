@@ -2,10 +2,10 @@ package io.github.kingg22.api.vacunas.panama.modules.sede.entity
 
 import io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
 import io.github.kingg22.api.vacunas.panama.modules.sede.domain.SedeModel
-import io.github.kingg22.api.vacunas.panama.modules.sede.dto.SedeDto
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -31,7 +31,15 @@ import java.util.UUID
         Index(name = "ix_sedes_region", columnList = "region"),
     ],
 )
-@KonvertTo(SedeDto::class)
+@KonvertFrom(
+    SedeModel::class,
+    [
+        Mapping(
+            "entidad",
+            expression = "io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad(nombre = it.nombre)",
+        ),
+    ],
+)
 class Sede(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,26 +53,17 @@ class Sede(
     @JoinColumn(name = "id", nullable = false)
     var entidad: Entidad,
 
-    @Size(max = 50)
+    @all:Size(max = 50)
     @Column(name = "region", length = 50)
     var region: String? = null,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
-) {
-    @KonvertFrom(
-        SedeModel::class,
-        mappings = [
-            Mapping(
-                "entidad",
-                expression = "io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad(nombre = it.nombre)",
-            ),
-        ],
-    )
-    companion object
+) : PanacheEntityBase {
+    companion object : PanacheCompanionBase<Sede, UUID>
 }

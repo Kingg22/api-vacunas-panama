@@ -1,21 +1,8 @@
+@file:Suppress("ktlint:standard:no-empty-file")
+
 package io.github.kingg22.api.vacunas.panama.configuration
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
-import org.springframework.cache.annotation.EnableCaching
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.cache.RedisCacheConfiguration
-import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
-import org.springframework.data.redis.core.ReactiveRedisTemplate
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
-import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair
-import org.springframework.data.redis.serializer.RedisSerializationContext.newSerializationContext
-import org.springframework.data.redis.serializer.RedisSerializer
-import java.io.Serializable
-
+/*
 /**
  * Configuración principal de caché reactiva utilizando Redis.
  *
@@ -26,16 +13,17 @@ import java.io.Serializable
  * La configuración está optimizada para manejar objetos en formato JSON usando Jackson, y se integra con Spring
  * Cache para permitir la anotación de métodos con `@Cacheable`.
  */
+TODO Probably this file will be delete
 @Configuration
 @EnableCaching
 class ReactiveRedisConfiguration {
     /**
-     * Configura el serializador de caché que usa Jackson para serializar/deserialize objetos a JSON.
-     * Este serializador es utilizado en la configuración de caché de Redis.
-     *
-     * @param objectMapper el objeto ObjectMapper utilizado para serializar objetos.
-     * @return un [GenericJackson2JsonRedisSerializer] configurado.
-     */
+ * Configura el serializador de caché que usa Jackson para serializar/deserialize objetos a JSON.
+ * Este serializador es utilizado en la configuración de caché de Redis.
+ *
+ * @param objectMapper el objeto ObjectMapper utilizado para serializar objetos.
+ * @return un [GenericJackson2JsonRedisSerializer] configurado.
+ */
     @Bean
     fun redisCacheSerializer(objectMapper: ObjectMapper) =
         GenericJackson2JsonRedisSerializer(objectMapper).configure { objectMapper ->
@@ -44,35 +32,35 @@ class ReactiveRedisConfiguration {
         }
 
     /**
-     * Crea un [SerializationPair] utilizando un [RedisSerializer] específico de [Object].
-     * Este par de serialización es utilizado en la configuración de caché para definir cómo se serializan los valores.
-     *
-     * @param serializer el serializador de Redis.
-     * @return un [SerializationPair] para la configuración de caché.
-     */
+ * Crea un [SerializationPair] utilizando un [RedisSerializer] específico de [Object].
+ * Este par de serialización es utilizado en la configuración de caché para definir cómo se serializan los valores.
+ *
+ * @param serializer el serializador de Redis.
+ * @return un [SerializationPair] para la configuración de caché.
+ */
     @Bean
     fun retrieveRedisCacheAsSerializationPair(serializer: RedisSerializer<Object>) =
         SerializationPair.fromSerializer(serializer)
 
     /**
-     * Proporciona la configuración predeterminada para Redis Cache con un [SerializationPair].
-     * Se utiliza para definir cómo se serializan los valores de caché en Redis.
-     *
-     * @param serializationPair la configuración de serialización de valores.
-     * @return una instancia de [RedisCacheConfiguration] con la configuración de serialización.
-     */
+ * Proporciona la configuración predeterminada para Redis Cache con un [SerializationPair].
+ * Se utiliza para definir cómo se serializan los valores de caché en Redis.
+ *
+ * @param serializationPair la configuración de serialización de valores.
+ * @return una instancia de [RedisCacheConfiguration] con la configuración de serialización.
+ */
     @Bean
     fun redisCacheConfigurationDefault(serializationPair: SerializationPair<Object>) =
         RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(serializationPair)
 
     /**
-     * Configura un [ReactiveRedisTemplate] que es responsable de interactuar con Redis de manera reactiva.
-     * Usa el [ReactiveRedisConnectionFactory] para la conexión reactiva y el serializador para los valores.
-     *
-     * @param reactiveRedisConnectionFactory la fábrica de conexión reactiva de Redis.
-     * @param serializer el serializador para los valores de la plantilla de Redis.
-     * @return un [ReactiveRedisTemplate] configurado para operaciones reactivas de tipo [String] -> [kotlin.io.Serializable]
-     */
+ * Configura un [ReactiveRedisTemplate] que es responsable de interactuar con Redis de manera reactiva.
+ * Usa el [ReactiveRedisConnectionFactory] para la conexión reactiva y el serializador para los valores.
+ *
+ * @param reactiveRedisConnectionFactory la fábrica de conexión reactiva de Redis.
+ * @param serializer el serializador para los valores de la plantilla de Redis.
+ * @return un [ReactiveRedisTemplate] configurado para operaciones reactivas de tipo [String] -> [kotlin.io.Serializable]
+ */
     @Bean
     fun retrieveReactiveRedisTemplate(
         reactiveRedisConnectionFactory: ReactiveRedisConnectionFactory,
@@ -83,12 +71,12 @@ class ReactiveRedisConfiguration {
     )
 
     /**
-     * Configura el [org.springframework.cache.CacheManager] de Redis con la configuración predeterminada y las configuraciones iniciales de caché.
-     * Este `CacheManager` administra las cachés en la aplicación.
-     *
-     * @param cacheDefault configuración predeterminada de caché.
-     * @return un `CacheManager` que utiliza la configuración de Redis y la personalización de caché.
-     */
+ * Configura el [org.springframework.cache.CacheManager] de Redis con la configuración predeterminada y las configuraciones iniciales de caché.
+ * Este `CacheManager` administra las cachés en la aplicación.
+ *
+ * @param cacheDefault configuración predeterminada de caché.
+ * @return un `CacheManager` que utiliza la configuración de Redis y la personalización de caché.
+ */
     @Bean
     fun retrieveRedisCacheManagerBuilder(cacheDefault: RedisCacheConfiguration) = RedisCacheManagerBuilderCustomizer {
         it.cacheDefaults(cacheDefault)
@@ -97,3 +85,4 @@ class ReactiveRedisConfiguration {
         )
     }
 }
+*/

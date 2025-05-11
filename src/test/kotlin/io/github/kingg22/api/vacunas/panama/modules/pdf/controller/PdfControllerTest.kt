@@ -3,17 +3,18 @@ package io.github.kingg22.api.vacunas.panama.modules.pdf.controller
 import io.github.kingg22.api.vacunas.panama.TestBase
 import io.github.kingg22.api.vacunas.panama.util.removeMetadata
 import io.kotest.matchers.string.shouldContain
+import io.quarkus.test.junit.QuarkusTest
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import org.hamcrest.Matchers.containsString
-import org.springframework.boot.test.web.server.LocalServerPort
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
-class PdfControllerTest(@LocalServerPort port: Int) : TestBase(port) {
+@QuarkusTest
+class PdfControllerTest : TestBase() {
 
     @Test
     fun getPdfFile() {

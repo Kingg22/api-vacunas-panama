@@ -9,10 +9,10 @@ import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.DosisRepository
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.repository.VacunaRepository
-import jakarta.persistence.EntityManager
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.github.kingg22.api.vacunas.panama.util.withTransaction
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.time.LocalDateTime
 import java.time.ZoneOffset.UTC
 import java.util.UUID
@@ -24,10 +24,8 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class VacunaPersistenceServiceImpl(
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
     private val vacunaRepository: VacunaRepository,
     private val dosisRepository: DosisRepository,
 ) : VacunaPersistenceService {
@@ -36,7 +34,7 @@ class VacunaPersistenceServiceImpl(
      * Finds a vaccine by its ID.
      *
      * @param id The UUID of the vaccine.
-     * @return The vaccine entity if found, null otherwise.
+     * @return The vaccine entity, if found null otherwise.
      */
     override suspend fun findVacunaById(id: UUID) = vacunaRepository.findByIdOrNull(id)
 
@@ -52,9 +50,11 @@ class VacunaPersistenceServiceImpl(
 
     override suspend fun findTopDosisByPacienteAndVacuna(paciente: PacienteModel, vacuna: Vacuna): Dosis? {
         checkNotNull(paciente.persona.id) { "Paciente ID must not be null" }
-        val pacienteEntity = entityManager.find(Paciente::class.java, paciente.persona.id)
-            ?: throw IllegalArgumentException("Paciente with ID ${paciente.persona.id} does not exist")
-        return dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(pacienteEntity, vacuna)
+        return withSession {
+            val pacienteEntity = Paciente.findById(paciente.persona.id).awaitSuspending()
+                ?: throw IllegalArgumentException("Paciente with ID ${paciente.persona.id} does not exist")
+            return@withSession dosisRepository.findTopByPacienteAndVacunaOrderByCreatedAtDesc(pacienteEntity, vacuna)
+        }
     }
 
     /**
@@ -72,10 +72,9 @@ class VacunaPersistenceServiceImpl(
      * @return A list of dose entities.
      */
     override suspend fun findAllDosisByPacienteIdAndVacunaId(idPaciente: UUID, idVacuna: UUID) =
-        dosisRepository.findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(idPaciente, idVacuna)
+        dosisRepository.findAllByPacienteIdAndVacunaIdOrderByCreatedAtDesc(idPaciente, idVacuna)
 
     override suspend fun createAndSaveDosis(dosisModel: DosisModel): Dosis {
-        var savedDosis: Dosis? = null
         val pacienteId = dosisModel.paciente.persona.id
         val vacunaId = dosisModel.vacuna.id
         val sedeId = dosisModel.sede.id
@@ -87,38 +86,37 @@ class VacunaPersistenceServiceImpl(
         checkNotNull(vacunaId) { "Vacuna ID must not be null" }
         checkNotNull(sedeId) { "Sede ID must not be null" }
 
-        transactionTemplate.execute {
-            // Find entities using entityManager.find instead of fromModel mappers
-            val paciente = entityManager.find(Paciente::class.java, pacienteId)
+        return withTransaction { _ ->
+            // Find entities using findById
+            val paciente = Paciente.findById(pacienteId).awaitSuspending()
                 ?: throw IllegalArgumentException("Paciente with ID $pacienteId does not exist")
 
-            val vacuna = entityManager.find(Vacuna::class.java, vacunaId)
+            val vacuna = Vacuna.findById(vacunaId).awaitSuspending()
                 ?: throw IllegalArgumentException("Vacuna with ID $vacunaId does not exist")
 
-            val sede = entityManager.find(Sede::class.java, sedeId)
+            val sede = Sede.findById(sedeId).awaitSuspending()
                 ?: throw IllegalArgumentException("Sede with ID $sedeId does not exist")
 
             val doctor = doctorId?.let {
-                entityManager.find(Doctor::class.java, it)
+                Doctor.findById(it).awaitSuspending()
             }
 
-            val dosis = Dosis(
-                paciente = paciente,
-                numeroDosis = numeroDosis,
-                vacuna = vacuna,
-                sede = sede,
-                lote = lote,
-                doctor = doctor,
-                fechaAplicacion = fechaAplicacion,
-                createdAt = LocalDateTime.now(UTC),
-            )
-
-            entityManager.persist(dosis)
-            savedDosis = dosis
+            val savedDosis: Dosis? = dosisRepository.persistAndFlush(
+                Dosis(
+                    paciente = paciente,
+                    numeroDosis = numeroDosis,
+                    vacuna = vacuna,
+                    sede = sede,
+                    lote = lote,
+                    doctor = doctor,
+                    fechaAplicacion = fechaAplicacion,
+                    createdAt = LocalDateTime.now(UTC),
+                ),
+            ).awaitSuspending()
+            checkNotNull(savedDosis) {
+                "Dosis not saved for paciente=$pacienteId, sede=$sedeId, numero dosis=$numeroDosis, fecha aplicación=$fechaAplicacion, lote=$lote, doctor=$doctorId"
+            }
+            return@withTransaction savedDosis
         }
-        checkNotNull(savedDosis) {
-            "Dosis not saved for paciente=$pacienteId, sede=$sedeId, numero dosis=$numeroDosis, fecha aplicación=$fechaAplicacion, lote=$lote, doctor=$doctorId"
-        }
-        return savedDosis
     }
 }

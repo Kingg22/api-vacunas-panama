@@ -1,13 +1,12 @@
 package io.github.kingg22.api.vacunas.panama.modules.usuario.entity
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
 import io.github.kingg22.api.vacunas.panama.modules.persona.entity.Persona
 import io.github.kingg22.api.vacunas.panama.modules.usuario.domain.UsuarioModel
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.UsuarioDto
 import io.mcarle.konvert.api.KonvertFrom
-import io.mcarle.konvert.api.KonvertTo
 import io.mcarle.konvert.api.Mapping
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheCompanionBase
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -38,10 +37,7 @@ import java.util.UUID
         UniqueConstraint(name = "uq_usuarios_username", columnNames = ["username"]),
     ],
 )
-@KonvertTo(
-    UsuarioDto::class,
-    mappings = [Mapping("username", "usuario"), Mapping("password", "clave")],
-)
+@KonvertFrom(UsuarioModel::class, [Mapping("clave", constant = "\"\"")])
 class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -49,12 +45,12 @@ class Usuario(
     @Column(name = "id", nullable = false)
     var id: UUID? = null,
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(UTC),
 
-    @NotNull
+    @all:NotNull
     @ColumnDefault("true")
     @Column(name = "disabled", nullable = false)
     var disabled: Boolean = true,
@@ -65,12 +61,12 @@ class Usuario(
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime? = null,
 
-    @Size(max = 50)
+    @all:Size(max = 50)
     @Column(name = "username", length = 50)
     var username: String? = null,
 
-    @Size(max = 100)
-    @NotNull
+    @all:Size(max = 100)
+    @all:NotNull
     @Column(name = "clave", nullable = false, length = 100)
     var clave: String,
 
@@ -80,7 +76,6 @@ class Usuario(
         joinColumns = [JoinColumn(name = "usuario")],
         inverseJoinColumns = [JoinColumn(name = "rol")],
     )
-    @JsonManagedReference
     var roles: MutableSet<Rol> = mutableSetOf(),
 
     @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
@@ -88,7 +83,6 @@ class Usuario(
 
     @OneToOne(mappedBy = "usuario", fetch = FetchType.EAGER)
     var persona: Persona? = null,
-) {
-    @KonvertFrom(UsuarioModel::class, mappings = [Mapping("clave", constant = "\"\"")])
-    companion object
+) : PanacheEntityBase {
+    companion object : PanacheCompanionBase<Usuario, UUID>
 }

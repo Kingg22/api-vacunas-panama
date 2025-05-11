@@ -3,7 +3,6 @@ package io.github.kingg22.api.vacunas.panama.modules.usuario.controller
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.LoginDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RegisterUserDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RestoreDto
-import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolDto
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum
 import io.github.kingg22.api.vacunas.panama.modules.usuario.dto.RolesEnum.Companion.getByPriority
 import io.github.kingg22.api.vacunas.panama.modules.usuario.service.UsuarioService
@@ -12,22 +11,25 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseCode
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createApiErrorBuilder
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createResponse
 import io.github.kingg22.api.vacunas.panama.response.ApiResponseUtil.createResponseEntity
+import io.github.kingg22.api.vacunas.panama.util.HaveIBeenPwnedPasswordChecker
+import io.github.kingg22.api.vacunas.panama.util.bcryptMatch
+import io.github.kingg22.api.vacunas.panama.util.isCompromisedUsing
 import io.github.kingg22.api.vacunas.panama.util.logger
+import io.smallrye.jwt.auth.cdi.NullJsonWebToken
+import io.vertx.ext.web.RoutingContext
+import jakarta.annotation.security.PermitAll
+import jakarta.enterprise.context.RequestScoped
+import jakarta.inject.Inject
 import jakarta.validation.Valid
-import kotlinx.coroutines.reactive.awaitSingle
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.authentication.password.CompromisedPasswordException
-import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.PATCH
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.jwt.JsonWebToken
 import java.util.UUID
 
 /**
@@ -52,13 +54,18 @@ import java.util.UUID
  * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
  * @see io.github.kingg22.api.vacunas.panama.modules.fabricante.entity.Fabricante
  */
-@RestController
-@RequestMapping(path = ["/account"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@Path("/account")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@RequestScoped
 class UsuarioController(
-    private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
+    private val pwChecker: HaveIBeenPwnedPasswordChecker,
     private val usuarioService: UsuarioService,
 ) {
     private val log = logger()
+
+    @Inject
+    lateinit var jwt: JsonWebToken
 
     /**
      * Handles user registration.
@@ -86,21 +93,17 @@ class UsuarioController(
      * @see io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
      * @see io.github.kingg22.api.vacunas.panama.modules.common.entity.Entidad
      */
-    @PostMapping("/register")
-    suspend fun register(
-        @RequestBody @Valid registerUserDto: RegisterUserDto,
-        authentication: Authentication?,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/register")
+    @POST
+    @PermitAll
+    suspend fun register(@Valid registerUserDto: RegisterUserDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         val usuarioDto = registerUserDto.usuario
 
-        if (authentication == null &&
-            !usuarioDto.roles.all { rolDto: RolDto ->
-                rolDto.id != null &&
-                    getByPriority(rolDto.id) == RolesEnum.PACIENTE ||
-                    rolDto.nombre != null &&
-                    rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true)
+        if ((jwt is NullJsonWebToken || jwt.subject == null || jwt.groups.isEmpty()) &&
+            !usuarioDto.roles.all { rolDto ->
+                (rolDto.id != null && getByPriority(rolDto.id) == RolesEnum.PACIENTE) ||
+                    (rolDto.nombre != null && rolDto.nombre.equals(RolesEnum.PACIENTE.name, ignoreCase = true))
             }
         ) {
             apiResponse.addError(
@@ -111,35 +114,32 @@ class UsuarioController(
             )
             apiResponse.addStatusCode(403)
             apiResponse.addStatus("message", ApiResponseCode.INSUFFICIENT_ROLE_PRIVILEGES)
-            return createResponseEntity(apiResponse, request)
+            return createResponseEntity(apiResponse, rc)
         }
 
-        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, authentication))
+        apiResponse.mergeContentResponse(usuarioService.createUser(registerUserDto, jwt.groups ?: emptySet()))
         if (apiResponse.hasErrors()) {
             apiResponse.addStatusCode(400)
         } else {
             apiResponse.addStatusCode(201)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse, rc)
     }
 
-    @PostMapping("/login")
-    suspend fun login(
-        @RequestBody @Valid loginDto: LoginDto,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/login")
+    @POST
+    @PermitAll
+    suspend fun login(@Valid loginDto: LoginDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
-        try {
-            val authentication = reactiveAuthenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(loginDto.username, loginDto.password),
-            ).awaitSingle()
-            if (authentication.isAuthenticated) {
-                apiResponse.mergeContentResponse(usuarioService.getLogin(UUID.fromString(authentication.name)))
-                apiResponse.addStatusCode(200)
-                apiResponse.addStatus("message", "Login successful")
-            }
-        } catch (exception: CompromisedPasswordException) {
-            log.debug("CompromisedPassword for user with identifier: {}", loginDto.username, exception)
+        val usuarioDto = usuarioService.getUsuarioByIdentifier(loginDto.username)
+        if (usuarioDto == null) {
+            apiResponse.addStatusCode(401)
+            apiResponse.addStatus("message", "Intente nuevamente")
+            return createResponseEntity(apiResponse, rc)
+        }
+        checkNotNull(usuarioDto.id) { "Usuario id is null after retrieve with identifier: ${loginDto.username}" }
+        if (loginDto.password.isCompromisedUsing(pwChecker)) {
+            log.debug("CompromisedPassword for user with identifier: {}", loginDto.username)
             apiResponse.addStatusCode(307)
             apiResponse.addStatus("Please reset your password in the given uri", "/vacunacion/v1/account/restore")
             apiResponse.addError(
@@ -149,15 +149,23 @@ class UsuarioController(
                     withMessage("Su contraseña está comprometida, por favor cambiarla lo más pronto posible")
                 },
             )
+            return createResponseEntity(apiResponse, rc)
         }
-        return createResponseEntity(apiResponse, request)
+        if (loginDto.password.bcryptMatch(usuarioDto.password)) {
+            apiResponse.mergeContentResponse(usuarioService.getLogin(usuarioDto.id))
+            apiResponse.addStatusCode(200)
+            apiResponse.addStatus("message", "Login successful")
+        } else {
+            apiResponse.addStatusCode(403)
+            apiResponse.addStatus("message", "Intente nuevamente")
+        }
+        return createResponseEntity(apiResponse, rc)
     }
 
-    @PatchMapping("/restore")
-    suspend fun restore(
-        @RequestBody @Valid restoreDto: RestoreDto,
-        request: ServerHttpRequest,
-    ): ResponseEntity<ActualApiResponse> {
+    @Path("/restore")
+    @PATCH
+    @PermitAll
+    suspend fun restore(@Valid restoreDto: RestoreDto, rc: RoutingContext): Response {
         val apiResponse = createResponse()
         apiResponse.mergeContentResponse(usuarioService.changePassword(restoreDto))
         if (apiResponse.hasErrors()) {
@@ -165,19 +173,20 @@ class UsuarioController(
         } else {
             apiResponse.addStatusCode(200)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse, rc)
     }
 
-    @GetMapping
-    suspend fun profile(authentication: Authentication, request: ServerHttpRequest): ResponseEntity<ActualApiResponse> {
+    @GET
+    suspend fun profile(rc: RoutingContext): Response {
         val apiResponse = createResponse()
         try {
-            apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(authentication.name)))
+            val id = checkNotNull(jwt.subject) { "Jwt subject is null" }
+            apiResponse.mergeContentResponse(usuarioService.getProfile(UUID.fromString(id)))
             apiResponse.addStatusCode(200)
         } catch (e: IllegalArgumentException) {
             log.error("Error while user fetching the profile", e)
             apiResponse.addStatusCode(403)
         }
-        return createResponseEntity(apiResponse, request)
+        return createResponseEntity(apiResponse, rc)
     }
 }

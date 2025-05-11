@@ -1,15 +1,29 @@
-@file:Suppress("ktlint:standard:function-naming", "kotlin:S100")
-
 package io.github.kingg22.api.vacunas.panama.modules.vacuna.repository
 
 import io.github.kingg22.api.vacunas.panama.modules.paciente.entity.Paciente
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Dosis
 import io.github.kingg22.api.vacunas.panama.modules.vacuna.entity.Vacuna
-import org.springframework.data.jpa.repository.JpaRepository
+import io.github.kingg22.api.vacunas.panama.util.withSession
+import io.quarkus.hibernate.reactive.panache.kotlin.PanacheRepositoryBase
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-interface DosisRepository : JpaRepository<Dosis, UUID> {
-    fun findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente: Paciente, vacuna: Vacuna): Dosis?
+@ApplicationScoped
+class DosisRepository : PanacheRepositoryBase<Dosis, UUID> {
+    suspend fun findTopByPacienteAndVacunaOrderByCreatedAtDesc(paciente: Paciente, vacuna: Vacuna): Dosis? =
+        withSession {
+            find(
+                "paciente = :paciente AND vacuna = :vacuna ORDER BY createdAt DESC",
+                mapOf("paciente" to paciente, "vacuna" to vacuna),
+            ).firstResult().awaitSuspending()
+        }
 
-    fun findAllByPaciente_IdAndVacuna_IdOrderByCreatedAtDesc(paciente: UUID, id: UUID): List<Dosis>
+    suspend fun findAllByPacienteIdAndVacunaIdOrderByCreatedAtDesc(paciente: UUID, id: UUID): List<Dosis> =
+        withSession {
+            list(
+                "paciente.id = :paciente AND vacuna.id = :id ORDER BY createdAt DESC",
+                mapOf("paciente" to paciente, "id" to id),
+            ).awaitSuspending()
+        }
 }

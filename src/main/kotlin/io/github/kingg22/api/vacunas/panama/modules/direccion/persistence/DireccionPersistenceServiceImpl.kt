@@ -5,16 +5,15 @@ import io.github.kingg22.api.vacunas.panama.modules.direccion.dto.toDireccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.Direccion
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDireccionDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toDistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListDistritoDto
-import io.github.kingg22.api.vacunas.panama.modules.direccion.extensions.toListProvinciaDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toListDistritoDto
+import io.github.kingg22.api.vacunas.panama.modules.direccion.entity.toListProvinciaDto
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DireccionRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.DistritoRepository
 import io.github.kingg22.api.vacunas.panama.modules.direccion.repository.ProvinciaRepository
 import io.github.kingg22.api.vacunas.panama.util.logger
-import jakarta.persistence.EntityManager
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
-import org.springframework.transaction.support.TransactionTemplate
+import io.github.kingg22.api.vacunas.panama.util.withTransaction
+import io.smallrye.mutiny.coroutines.awaitSuspending
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
 /**
@@ -24,10 +23,8 @@ import java.util.UUID
  * acting as an intermediate layer between the repositories and the service layer.
  * It encapsulates all JPA-related operations.
  */
-@Service
+@ApplicationScoped
 class DireccionPersistenceServiceImpl(
-    private val entityManager: EntityManager,
-    private val transactionTemplate: TransactionTemplate,
     private val direccionRepository: DireccionRepository,
     private val distritoRepository: DistritoRepository,
     private val provinciaRepository: ProvinciaRepository,
@@ -39,14 +36,14 @@ class DireccionPersistenceServiceImpl(
      *
      * @return A list of district DTOs.
      */
-    override suspend fun findAllDistritos() = distritoRepository.findAll().toListDistritoDto()
+    override suspend fun findAllDistritos() = distritoRepository.listAllDistritos().toListDistritoDto()
 
     /**
      * Finds all provinces.
      *
      * @return A list of province DTOs.
      */
-    override suspend fun findAllProvincias() = provinciaRepository.findAll().toListProvinciaDto()
+    override suspend fun findAllProvincias() = provinciaRepository.listAllProvincias().toListProvinciaDto()
 
     /**
      * Finds a district by its ID.
@@ -63,13 +60,11 @@ class DireccionPersistenceServiceImpl(
      * @return The saved address DTO.
      */
     override suspend fun saveDireccion(direccionDto: DireccionDto): DireccionDto {
-        var direccionSaved: Direccion? = null
-        transactionTemplate.execute {
+        val direccionSaved: Direccion? = withTransaction { _ ->
             log.trace("Saving direccionDTO {}", direccionDto.toString())
             val direccion = direccionDto.toDireccion()
             log.trace("Converted direccion {}", direccion.toString())
-            entityManager.merge(direccion)
-            direccionSaved = direccionRepository.save(direccion)
+            direccionRepository.persistAndFlush(direccion).awaitSuspending()
         }
         checkNotNull(direccionSaved) { "Direccion not saved" }
         return direccionSaved.toDireccionDto()
@@ -91,7 +86,7 @@ class DireccionPersistenceServiceImpl(
      * @return A list of address entities.
      */
     override suspend fun findDireccionByDescripcionAndDistritoId(descripcion: String, distritoId: Short) =
-        direccionRepository.findDireccionByDescripcionAndDistrito_Id(descripcion, distritoId)
+        direccionRepository.findDireccionByDescripcionAndDistritoId(descripcion, distritoId)
 
     /**
      * Finds addresses by description and district name.
@@ -101,7 +96,7 @@ class DireccionPersistenceServiceImpl(
      * @return A list of address entities.
      */
     override suspend fun findDireccionByDescripcionAndDistritoNombre(descripcion: String, distritoNombre: String) =
-        direccionRepository.findDireccionByDescripcionAndDistrito_Nombre(descripcion, distritoNombre)
+        direccionRepository.findDireccionByDescripcionAndDistritoNombre(descripcion, distritoNombre)
 
     /**
      * Finds addresses by description starting with a given string.

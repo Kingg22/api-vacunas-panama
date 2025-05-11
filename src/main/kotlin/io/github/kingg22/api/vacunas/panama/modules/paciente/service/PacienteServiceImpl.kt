@@ -1,6 +1,5 @@
 package io.github.kingg22.api.vacunas.panama.modules.paciente.service
 
-import io.github.kingg22.api.vacunas.panama.configuration.CacheDuration
 import io.github.kingg22.api.vacunas.panama.modules.direccion.service.DireccionService
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.PacienteDto
 import io.github.kingg22.api.vacunas.panama.modules.paciente.dto.toPacienteModel
@@ -15,15 +14,13 @@ import io.github.kingg22.api.vacunas.panama.response.ApiResponseFactory.createRe
 import io.github.kingg22.api.vacunas.panama.response.returnIfErrors
 import io.github.kingg22.api.vacunas.panama.util.FormatterUtil
 import io.github.kingg22.api.vacunas.panama.util.logger
-import org.springframework.cache.annotation.Cacheable
-import org.springframework.context.annotation.Lazy
-import org.springframework.stereotype.Service
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.UUID
 
-@Service
+@ApplicationScoped
 class PacienteServiceImpl(
     private val pacientePersistenceService: PacientePersistenceService,
-    @Lazy private val direccionService: DireccionService,
+    private val direccionService: DireccionService,
 ) : PacienteService {
     private val log = logger()
 
@@ -68,7 +65,8 @@ class PacienteServiceImpl(
     override suspend fun getPacienteById(idPaciente: UUID) =
         pacientePersistenceService.findPacienteById(idPaciente)?.toPacienteDto()?.toPacienteModel()
 
-    @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
+    // @Cacheable(cacheNames = [CacheDuration.CACHE_VALUE], key = "'view_vacuna_enfermedad'.concat(#id)")
+    // @CacheResult(cacheName = CacheDuration.CACHE_VALUE)
     override suspend fun getViewVacunaEnfermedad(id: UUID) =
         pacientePersistenceService.findAllFromViewVacunaEnfermedad(id)
 
@@ -233,7 +231,7 @@ class PacienteServiceImpl(
             )
         }
 
-        if (pacienteDto.createdAt.toLocalDate() != usuario.createdAt.toLocalDate()) {
+        if (!pacienteDto.createdAt.toLocalDate().isEqual(usuario.createdAt.toLocalDate())) {
             withError(
                 ApiResponseCode.VALIDATION_FAILED,
                 "created_at de Paciente y Usuario deben coincidir",
