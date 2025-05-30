@@ -4,7 +4,7 @@ ksp = "2.2.0-Beta2-2.0.1"
 
 # PDF
 itextpdf-core = "9.1.0"
-itextpdf-html = "6.1.0"
+itextpdf-html = "6.2.0"
 
 # Plugins
 konvert = "4.1.0"
