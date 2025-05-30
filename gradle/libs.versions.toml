@@ -10,7 +10,7 @@ itextpdf-html = "6.1.0"
 konvert = "4.1.0"
 spotless = "7.0.3"
 gradle-license-report = "2.9"
-ktlint = "12.2.0"
+ktlint = "12.3.0"
 
 # Testing
 kover = "0.9.1"
