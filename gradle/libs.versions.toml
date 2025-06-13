@@ -21,7 +21,7 @@ rest-assured = "5.5.1"
 #redis-testcontainers = "2.2.2"
 
 # Quarkus
-quarkus = "3.22.2"
+quarkus = "3.23.3"
 
 [libraries]
 jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
